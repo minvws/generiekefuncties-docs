@@ -25,6 +25,9 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
       - run: mkdocs build --site-dir ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
