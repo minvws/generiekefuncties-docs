@@ -1,0 +1,11 @@
+site_name: VWS - Programma Generieke Functies
+
+repo_url: https://github.com/minvws/generiekefuncties-docs
+
+nav:
+  - Overzicht: index.md
+  - Handleidingen: handleidingen.md
+
+theme:
+  name: material
+  language: nl
