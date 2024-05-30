@@ -7,7 +7,18 @@ edit_uri: edit/main/docs/
 
 nav:
   - Overzicht: index.md
-  - Handleidingen: handleidingen.md
+  - Handleiding Github:
+      - Github introductie: handleidingen/github-intro.md
+      - Nieuw document toevoegen: handleidingen/nieuw-document.md
+      - Reviewen van wijziginen: handleidingen/reviewen.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+
+extra_css:
+  - assets/extra.css
 
 theme:
   name: material
@@ -15,3 +26,5 @@ theme:
   features:
     - content.action.view
     - content.action.edit
+  palette:
+    primary: custom
