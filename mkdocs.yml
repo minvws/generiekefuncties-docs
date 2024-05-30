@@ -7,7 +7,10 @@ edit_uri: edit/main/docs/
 
 nav:
   - Overzicht: index.md
-  - Handleiding Github: handleidingen/handleiding frequent gebruiker.md
+  - Handleiding Github:
+      - Github introductie: handleidingen/github-intro.md
+      - Nieuw document toevoegen: handleidingen/nieuw-document.md
+      - Reviewen van wijziginen: handleidingen/reviewen.md
 
 markdown_extensions:
   - admonition
