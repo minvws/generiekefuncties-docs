@@ -23,3 +23,5 @@ theme:
   features:
     - content.action.view
     - content.action.edit
+  palette:
+    primary: custom
