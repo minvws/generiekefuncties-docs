@@ -13,6 +13,7 @@ nav:
       - Nieuw document toevoegen: handleidingen/nieuw-document.md
       - Reviewen van wijzigingen: handleidingen/reviewen.md
       - Commentaar op requirements: handleidingen/handleiding commentaar plaatsen.md
+  - Architectuur proces: architectuur-proces.md
 
 markdown_extensions:
   - admonition
