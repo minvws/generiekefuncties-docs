@@ -1,1 +1,1 @@
-Auto-generated README for generiekefuncties-docs
+Startpagina: https://minvws.github.io/generiekefuncties-docs/
