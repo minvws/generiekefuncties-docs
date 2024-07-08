@@ -21,6 +21,7 @@ Er zijn op dit moment Github-omgevingen voor de volgende generieke functies:
 - [Toestemming](https://github.com/minvws/generiekefuncties-toestemming)
 - [Lokalisatie](https://github.com/minvws/generiekefuncties-lokalisatie)
 - [Adressering](https://github.com/minvws/generiekefuncties-adressering)
+- [Lokalisatie](https://github.com/minvws/generiekefuncties-lokalisatie)
 
 De andere generieke functies zullen binnenkort volgen.
 
