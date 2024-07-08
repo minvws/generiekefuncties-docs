@@ -1,1 +1,3 @@
-Auto-generated README for generiekefuncties-docs
+Hier vindt u algemene informatie over Generieke functies 
+https://minvws.github.io/generiekefuncties-docs/
+
