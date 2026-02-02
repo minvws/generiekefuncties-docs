@@ -6,9 +6,9 @@
 curl --request POST \
     --url https://us-central1-fhir-org-starter-project.cloudfunctions.net/ig-commit-trigger \
     --header 'content-type: application/json' \
-    --data '{"ref": "refs/tags/v0.2.0","repository": {"full_name": "nuts-foundation/nl-generic-functions-ig"}}'
+    --data '{"ref": "refs/tags/v0.2.0","repository": {"full_name": "minvws/generiekefuncties-docs"}}'
 
 curl --request POST \
     --url https://us-central1-fhir-org-starter-project.cloudfunctions.net/ig-commit-trigger \
     --header 'content-type: application/json' \
-    --data '{"ref": "refs/heads/fhir-ig-setup","repository": {"full_name": "nuts-foundation/nl-generic-functions-ig"}}'
+    --data '{"ref": "refs/heads/fhir-ig-setup","repository": {"full_name": "minvws/generiekefuncties-docs"}}'

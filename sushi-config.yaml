@@ -62,12 +62,11 @@ pages:
           valueCode: draft
 
 
-  routing.md:
-    title: Routing
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
-
+  # routing.md:
+  #   title: Routing
+  #   extension:
+  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+  #         valueCode: draft
 
   # localization.md:
   #   title: Localization
@@ -163,7 +162,7 @@ parameters:
 menu:
   Home: index.html
   Care Services Directory: care-services.html
-  Routing: routing.html
+  # Routing: routing.html
   # Localization: localization.html
   # Consent: consent.html
   # Identification: identification.html
