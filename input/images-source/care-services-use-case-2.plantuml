@@ -1,0 +1,33 @@
+@startuml care-services-use-case-2
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial 
+hide footbox
+
+!pragma teoz true
+
+actor  Doctor as "Dr. West"
+participant  EHR as "EHR"
+participant  CSD as "Query Directory"
+participant  EHR2 as "Endpoint supporting\nTransfer of care\n@Hospital East"
+
+
+activate Doctor
+activate EHR
+group create referral 
+ Doctor -> EHR: create referral for Dr. East\n for Orthopedic department\n at Hospital East
+end
+activate CSD
+EHR -> CSD: Find HealthcareService of Orthopedic department\n including Endpoints\n GET /HealthcareService/[id], GET /Endpoint/[id]
+EHR -> EHR: Check Endpoints for 'Transfer of care' support
+deactivate CSD
+EHR -> Doctor: If no endpoint found: Use other means to send referral
+
+deactivate Doctor
+activate EHR2
+EHR -> EHR2: Post **notification** to Endpoint\nof Hospital East with referral ID
+
+
+deactivate EHR
+deactivate EHR2
+@enduml
