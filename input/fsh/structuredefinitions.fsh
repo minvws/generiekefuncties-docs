@@ -104,6 +104,7 @@ Description: "The organizational hierarchy and details for healthcare organizati
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
+* type from NlGfOrgTypesVS (extensible)
 
 Profile: NlGfOrganizationLRZA
 Parent: $NlOrganization

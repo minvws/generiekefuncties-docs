@@ -68,7 +68,7 @@ Usage: #example
 Title: "Organization 3 - Endpoint FHIR R4"
 * insert AuthorAssignedIdentifier("https://cp3-test.example.org/api","8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://nuts-foundation.github.io/nl-generic-functions-ig/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR R4 Endpoint"

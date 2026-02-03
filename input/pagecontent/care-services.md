@@ -1,24 +1,12 @@
-### Introduction
 
-This FHIR Implementation Guide specifies the technical components of the Generic Function Addressing (GFA), a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS). GFA aims to establish a standardized, interoperable system for discovering and sharing current (digital) addresses of healthcare providers, enabling reliable and efficient exchange of health data across healthcare systems and organizations.
-
-This guide outlines the technical requirements and architectural principles underlying GFA, with a focus on trust, authenticity, and data integrity. Key design principles include:
-
-- International standards: The solution should be based on international standards, lowering the bar for international (European) data exchange and adoption by internationally operating software vendors.
-- Single Source of Truth: Each address record originates from one definitive and authoritative source.
-- Stakeholder Responsibility: Healthcare providers are accountable for maintaining the accuracy of address data in their source systems.
-
-By adhering to these principles, this Implementation Guide supports consistent and secure address discovery, fostering improved interoperability within the healthcare ecosystem.
 
 ### Solution overview
 
 
-GFA follows the IHE [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) ([GF-Adressering, ADR-0](https://github.com/minvws/generiekefuncties-adressering/issues/166)). The [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) provides multiple options for deployment. This guide specifies the choices made for The Netherlands. Most impactful/striking choice are:
+Generic Function Addressing (GFA) follows the IHE [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) ([GF-Adressering, ADR-0](https://github.com/minvws/generiekefuncties-adressering/issues/166)). The [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) provides multiple options for deployment. This guide specifies the choices made for The Netherlands. Most impactful/striking choice are:
 
 - using a combination of 'NL-core' and 'IHE mCSD' for the FHIR-profiles in this IG.
 - using the Landelijke Register Zorgaanbieders (LRZa) as the source/master-list of all other sources. 
-
-Unlike in the IHE mCSD specification, 
 
 Here is a brief overview of the processes that are involved: 
 1. Every care provider registers its addressable entities in an 'Administration Directory'. This IG distinguishes the actor ['***Administration*** Directory'](#administration-directory) and the ['***Query*** Directory'](#query-directory); in the IHE mCSD specification, these are both called a 'Directory'.
@@ -97,7 +85,7 @@ A brief description of the data models and their profile for this guide:
 
 #### Organization
 Organizations are “umbrella” entities; these may be considered the administrative bodies under whose auspices care services are provided. An (top-level)Organization-instance has a URA `identifier`, `type`, `status`, and `name`. It may have additional attributes like `endpoint`. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
-The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is based on the NL-Core-Healthcare-Provider-Organization profile, adds constraints from the mCSD-Organization profile and requires an author-assigned identifier. 
+The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is based on the NL-Core-Healthcare-Provider-Organization profile, adds the CBS Standaard Bedrijfsindeling (SBI) valueset, adds constraints from the mCSD-Organization profile and requires an author-assigned identifier. 
 
 #### Endpoint
 An Organization may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, an DICOM web services, or some other mechanism. 
