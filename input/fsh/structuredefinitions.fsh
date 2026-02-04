@@ -104,7 +104,15 @@ Description: "The organizational hierarchy and details for healthcare organizati
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type from NlGfOrgTypesVS (extensible)
+* type ^slicing.discriminator.type = #value
+* type ^slicing.discriminator.path = "$this"
+* type ^slicing.rules = #open
+* type contains
+    SBI 0..1
+* type[SBI] from NlGfOrgTypesVS (extensible)
+* type[SBI] ^short = "SBI"
+* type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
+* type[SBI] ^alias = "Standaard Bedrijfsindeling"
 
 Profile: NlGfOrganizationLRZA
 Parent: $NlOrganization

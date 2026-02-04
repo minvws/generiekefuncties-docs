@@ -5,7 +5,7 @@ Description: "The data exchange capabilities supported by the NL Generic Functio
 * ^status = #active
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
-* include codes from system http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-exchange-capabilities
+* include codes from system NlGfDataExchangeCapabilitiesCS
 
 ValueSet: NlGfWlzZorgprofielenVS
 Id: nl-gf-wlz-zorgprofielen-vs
@@ -14,7 +14,7 @@ Description: "The WLZ Zorgprofielen supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.19--20200901000000
-* include codes from system http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-wlz-zorgprofielen-cs
+* include codes from system NlGfWlzZorgprofielenCS
 
 ValueSet: NlGfOrgTypesVS
 Id: nl-gf-org-types-vs
@@ -23,4 +23,4 @@ Description: "The Organization Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.4--20200901000000
-* include codes from system http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs
+* include codes from system NlGfSBICS
