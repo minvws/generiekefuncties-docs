@@ -15,7 +15,7 @@ Here is a brief overview of the processes that are involved:
 1. A practitioner and/or system (EHR) can now use the Query Directory to search for resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
-<img src="careservices-overview-transactions.png" width="100%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
+<img src="careservices-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
 This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Adressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
@@ -23,16 +23,11 @@ Each component, data model, and transaction will be discussed in more detail.
 
 ### Components (actors)
 
-#### Administration Client
-The Administration Client is responsible for managing the registration and maintenance of addressable entities within a healthcare organization. It should be able to create, update, and delete records for healthcare services, organizations, departments, locations, endpoints, or practitioners in the Administration Directory. Addressable entities MUST conform to the [Data models](#data-models).
-
-The Administration Client of the LRZa provides a user interface for healthcare providers to administer their Administration Directory endpoint (URL).([GF-Adressering, ADR-10](https://github.com/minvws/generiekefuncties-adressering/issues/159) and [GF-Adressering, ADR#167](https://github.com/minvws/generiekefuncties-adressering/issues/167))
-
 
 #### Administration Directory
-The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Administration Client to create, update and delete resources. If you've implemented both an Administration Client & Directory, you can also choose to use proprietary formats/APIs/transactions between these components. 
+The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for a client (e.g. a webportal for users) to create, update and delete resources. 
 
-The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data externally for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
+The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data (externally) for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
 
 
 
@@ -71,10 +66,11 @@ The following sequence diagram illustrates how an Update Client performs a synch
 
 
 #### Query Directory
-The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Update Client to create, update and delete resources. If you've implemented both an Update Client & Query Directory, you can also choose to use proprietary formats/APIs/transactions between these components. 
+The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Update Client to create, update and delete resources. 
 Due to the consolidation process of the Update Client, not all (intermediate) changes are replicated between Administration Directories and Query Directory
 
-The Query Directory serves/exposes all addressable entities to one or more Query Clients. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a Query Client to search and read resources. If you've implemented both an Query Client & Query Directory, you can also choose to use proprietary formats/APIs/transactions between these components. 
+The Query Directory serves/exposes all addressable entities to one or more query clients (e.g. a webportal for users). The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a client to search and read resources.  
+
 
 #### Query Client
 The Query Client is used to search and retrieve information from the Query Directory, which contains consolidated data from all Administration Directories. It enables practitioners, EHR systems, and other healthcare applications to discover healthcare services, organizations, departments, locations, endpoints, or practitioners across the entire ecosystem. By querying the Query Directory, users can efficiently find up-to-date and authoritative addressable entities for care coordination, referrals, and electronic data exchange.
@@ -113,7 +109,7 @@ The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrol
 #### Practitioner
 ***This resource type is out-of-scope for this IG-version***
 Practitioner is a health worker such as physician, nurse, pharmacist, community health worker, district health manager, etc. Practitioners have a name and may have qualifications (like in the Dutch BIG-register).  The registry (Administration Directory) of Practitioners may be operated by the Dutch BIG-register or similar organizations. 
-The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html)is based on the NL-Core-HealthProfessional-Practitioner profile, adds constraints from the mCSD-Practitioner profile and requires an author-assigned identifier.
+The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html)is based on the NL-Core-HealthProfessional-Practitioner profile and adds constraints from the mCSD-Practitioner profile.
 
 
 #### OrganizationAffiliation
@@ -124,10 +120,9 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 
 
 
-
 ### Security
 
-The service provider of an Administration Directory must require mTLS. Qualified certificates from Qualified Trusted Service Providers (like PKIoverheid) should be trusted. The service may also have a certificate policy that allows for other types of certificates (e.g. self-signed certificates) provided that -through policy- a sufficient level of trust in these certificates can be established. ([GF-Adressering, ADR#178](https://github.com/minvws/generiekefuncties-adressering/issues/178))
+The service provider of an Administration Directory must require mTLS. Qualified certificates from Qualified Trusted Service Providers (like PKIoverheid) should be trusted. ([GF-Adressering, ADR#178](https://github.com/minvws/generiekefuncties-adressering/issues/178))
 
 
 ### Example use cases
