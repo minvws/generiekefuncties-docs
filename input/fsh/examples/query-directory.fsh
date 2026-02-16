@@ -2,7 +2,7 @@
 // // Resource of LRZa Admin Directory
 
 Instance: lrza-o1
-InstanceOf: NlGfOrganizationLRZA
+InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 1 - Organization"
 * insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
@@ -43,7 +43,7 @@ Title: "LRZa - Organization 1 - Endpoint"
 * address = "https://cp1-test.example.org/fhirr4"
 
 Instance: lrza-o2
-InstanceOf: NlGfOrganizationLRZA
+InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 2 - Organization"
 * insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
@@ -86,7 +86,7 @@ Title: "LRZa - Organization 2 - Endpoint"
 * address = "https://cp2-test.example.org/fhirr4"
 
 Instance: lrza-o3
-InstanceOf: NlGfOrganizationLRZA
+InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 3 - Organization"
 * insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")

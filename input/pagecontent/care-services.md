@@ -32,12 +32,8 @@ The Administration Client of the LRZa provides a user interface for healthcare p
 #### Administration Directory
 The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Administration Client to create, update and delete resources. If you've implemented both an Administration Client & Directory, you can also choose to use proprietary formats/APIs/transactions between these components. 
 
-The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). 
+The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data externally for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
 
-The performance/availability/data-quality requirements for an Administration Directory ([GF-Adressering, ADR#177](https://github.com/minvws/generiekefuncties-adressering/issues/177)):
-- **Query Response Time:** 95% of _history requests should be answered within 2000ms.
-- **Availability:** Minimum uptime of 99% between 8PM and 6AM (Europe/Amsterdam timezone).
-- **Data quality:** Resources should conform to the profiles under [Data models](#data-models), including valid references between reference (i.e. referential integrity)
 
 
 #### Update Client
@@ -62,6 +58,15 @@ During consolidation, multiple Administration Directories may have overlapping o
   - All Endpoint-instances MUST be linked to from one of the HealthcareService or Organization-instances.
 
 After consolidation, the Update Client writes the updates to a Query Directory. The Update Client MAY use the same interactions a Administration Client uses to register entities in an Administration Directory.
+
+##### Update Client Sync Example
+
+The following sequence diagram illustrates how an Update Client performs a synchronization operation to consolidate data from multiple Administration Directories into a Query Directory:
+
+<div>
+{% include care-services-sync-example.svg %}
+</div>
+
 
 
 
@@ -151,7 +156,6 @@ Dr. West just created a referral (for patient Vera Brooks from use case #1). The
 #### Alternative Administration Directories
 
 Currently, two types of Administration Directories are supported; LRZa as 'Root Administration Directory' and Care Providers having their 'Administration Directory'. In the Netherlands, there are other registries that don't fit in these two types, e.g.:  
-- [Vektis-AGB](https://www.vektis.nl/agb-register/) is the authoritative source for the care provider *type*. [GF Consent](./consent.html) uses the Organization.type element, so it is important to use the authoritative source.
 - [BIG-register](https://www.bigregister.nl/) is the authoritative source for (a part of the) Physicians/Practitioners and their qualifications.
 - Medmij has a register (OCL) that lists (qualified) Endpoints for certain data exchanges. Registers like the Medmij-OCL may form the authoritative source for element Endpoint.payloadType.
 

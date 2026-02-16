@@ -25,21 +25,13 @@ Description: "The technical details of a healthcare service that can be used in 
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
+* identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * providedBy 1.. 
+* providedBy only Reference(NlGfOrganization)
 * specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
 * type from NlGfWlzZorgprofielenVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
@@ -55,23 +47,14 @@ Description: "Physical location details for healthcare services, organizations, 
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
-
+* identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
+* managingOrganization only Reference(NlGfOrganization)
 
 
 Invariant:   ura-identifier-or-partof
@@ -90,16 +73,7 @@ Description: "The organizational hierarchy and details for healthcare organizati
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
+* identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
@@ -113,32 +87,8 @@ Description: "The organizational hierarchy and details for healthcare organizati
 * type[SBI] ^short = "SBI"
 * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
 * type[SBI] ^alias = "Standaard Bedrijfsindeling"
-
-Profile: NlGfOrganizationLRZA
-Parent: $NlOrganization
-Id: nl-gf-organization-lrza
-Title: "NL Generic Functions Organization Profile"
-Description: "The organizational hierarchy and details for healthcare organizations."
-* obeys ura-identifier-or-partof
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
-* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
+* partOf only Reference(NlGfOrganization)
+* endpoint only Reference(NlGfEndpoint)
 
 
 Profile: NlGfOrganizationAffiliation
@@ -151,16 +101,7 @@ Description: "The details of an affiliation/relationship between two organizatio
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
+* identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * active 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
@@ -169,29 +110,11 @@ Description: "The details of an affiliation/relationship between two organizatio
 * network 0.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 
-
-
-
 Profile: NlGfPractitioner
 Parent: $NlPractitioner
 Id: nl-gf-practitioner
 Title: "NL Generic Functions Practitioner Profile"
 Description: "The details of a healthcare practitioner, such as a doctor or nurse, who is directly or indirectly involved in the provisioning of healthcare."
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
@@ -207,20 +130,12 @@ Description: "The details of a healthcare practitioner's role within an organiza
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId].system 1..1
-* identifier[AssignedId].value 1..1
-* identifier[AssignedId].assigner 1..1
-* identifier[AssignedId].assigner.identifier 1..1
-* identifier[AssignedId].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* identifier[AssignedId].assigner.identifier.value 1..1
-* identifier[AssignedId].assigner.identifier.type 1..1
-* identifier[AssignedId].assigner.identifier.type.coding 1..1
-* identifier[AssignedId].assigner.identifier.type.coding.system = $provenance-participant-type
-* identifier[AssignedId].assigner.identifier.type.coding.code = #author
+* identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 * practitioner 1..
 * organization 1..
+* organization only Reference(NlGfOrganization)
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 
 
@@ -243,3 +158,21 @@ Title: "NL Generic Functions Task Profile for FHIR STU3"
 Description: "A task to be performed, such as a referral or order, with additional details specific to FHIR STU3."
 * extension contains TaskSTU3Location named taskLocation 0..1
 * extension contains TaskSTU3HealthcareService named healthcareservice 0..1
+
+Profile: AuthorAssignedIdentifier
+Parent: Identifier
+Id: nl-gf-authorassignedidentifier
+Title: " Author Assigned Identifier"
+Description: """Identifier assigned by the author of a resource, such as a healthcare service or organization, to uniquely identify that resource AND locate the original authoring organization when copies are stored at other locations """
+* use 1..
+* use = #official
+* system 1..
+* value 1..
+* assigner 1..1
+* assigner.identifier 1..1
+* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* assigner.identifier.value 1..1
+* assigner.identifier.type 1..1
+* assigner.identifier.type.coding 1..1
+* assigner.identifier.type.coding.system = $provenance-participant-type
+* assigner.identifier.type.coding.code = #author
