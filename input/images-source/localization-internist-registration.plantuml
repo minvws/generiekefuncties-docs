@@ -28,7 +28,7 @@ deactivate prs
 
 == Registration ==
 
-ehr -> ehr: Create List resource with:\n- identifier (author-assigned, URA:123)\n- subject.identifier.value (Pseudo-BSN JWE)\n- subject.identifier.extension[oprfKey] (blind_factor)\n- code (data type)\n- source (Device)
+ehr -> ehr: Create List resource with:\n- identifier (author-assigned, URA:123)\n- subject.identifier.value (Pseudo-BSN JWE)\n- code (data type)\n- source (Device)
 
 ehr -> nvi: POST Bundle (transaction)\nwith List resource
 

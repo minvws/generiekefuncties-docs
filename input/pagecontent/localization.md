@@ -85,13 +85,7 @@ The client SHALL be able to create and register List resources (localization rec
         "subject": {
           "identifier": {
             "system": "http://fhir.nl/fhir/NamingSystem/pseudo-bsn",
-            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw==",
-            "extension": [
-              {
-                "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/oprf-key",
-                "valueBase64Binary": "dGVzdC1ibGluZC1mYWN0b3ItZXhhbXBsZQ=="
-              }
-            ]
+            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
           }
         },
         "source": {
@@ -124,15 +118,16 @@ The client SHALL support searching for List resources (localization records). Th
 
 - **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
-- **subject-identifier-oprf-key**: Search for localization records by the OPRF key (blind_factor) for audit and verification purposes
+- **source.identifier**: Search for localization records registered by an application
+Client SHALL use either the patient.identifier or source.identifier in a search
 
 
 **Example Search Query**:
 ```
-GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&subject-identifier-oprf-key=dGVzdC1ibGluZC1mYWN0b3ItZXhhbXBsZQ==&code=LABBEPALING
+GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
-The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data. This response will not contain the (pseudomized) subject.identifier and oprfKey for privacy/security reasons.
+The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data. This response will not contain the (pseudomized) patient.identifier for privacy/security reasons.
 
 
 ##### OPRF Integration requirements
@@ -154,7 +149,6 @@ The Localization Client MUST implement the following requirements when interacti
 
 **3. Localization Record Submission**
 - Include JWE as `subject.identifier.value`
-- Include `blind_factor` in the [PseudoBsnIdentifier](./StructureDefinition-nl-gf-pseudo-bsn-identifier.html) extension's `oprfKey` field
 - Submit to NVI for decryption and unblinding
 
 Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py)
