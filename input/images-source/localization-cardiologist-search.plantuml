@@ -29,20 +29,11 @@ prs -> prs: Evaluate and encrypt\nwith NVI public key
 prs -> ehr: JWE (encrypted pseudonym)
 deactivate prs
 
-ehr -> ehr: Prepare search with\nPseudo-BSN (JWE)
+ehr -> ehr: Prepare search with\nPseudo-BSN (JWE) +\nretain blind_factor
 
 == Localization ==
 
-
-note over nvi
-  Required authorization attributes for GET:
-  - Organization Identifier (URA:456)
-  - OrganizationType: 2.16.840.1.113883.2.4.15.1060|V4 (Hospital)
-  - Practitioner Identifier: Dr. Smith's UZI/DEZI 
-  - Role code: Professional role code (e.g., cardiologist)
-end note
-
-ehr -> nvi: Search /List?patient.identifier=\npseudo-bsn|{JWE}
+ehr -> nvi: Search /List?\n patient.identifier={JWE}\n &subject-identifier-oprf-key={blind_factor}\n &code={data-type}
 
 nvi -> nvi: Decrypt JWE and unblind\nto get final Pseudo-BSN
 

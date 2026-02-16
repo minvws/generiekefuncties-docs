@@ -38,6 +38,12 @@ Usage: #definition
       * insert Expectation(SHALL)
       * name = "code"
       * type = #token
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "subject-identifier-oprf-key"
+      * definition = "http://minvws.github.io/generiekefuncties-docs/SearchParameter/nl-gf-list-subject-identifier-oprf-key"
+      * type = #token
+      * documentation = "Search for List resources by the OPRF key (blind_factor) in the subject.identifier extension."
   * interaction[+]
     * insert Expectation(SHALL)
     * code = #transaction

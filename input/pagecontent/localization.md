@@ -85,7 +85,13 @@ The client SHALL be able to create and register List resources (localization rec
         "subject": {
           "identifier": {
             "system": "http://fhir.nl/fhir/NamingSystem/pseudo-bsn",
-            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
+            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw==",
+            "extension": [
+              {
+                "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/oprf-key",
+                "valueBase64Binary": "dGVzdC1ibGluZC1mYWN0b3ItZXhhbXBsZQ=="
+              }
+            ]
           }
         },
         "source": {
@@ -118,6 +124,7 @@ The client SHALL support searching for List resources (localization records). Th
 
 - **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
+- **subject-identifier-oprf-key**: Search for localization records by the OPRF key (blind_factor) for audit and verification purposes
 
 
 **Example Search Query**:
