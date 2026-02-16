@@ -129,7 +129,7 @@ The client SHALL support searching for List resources (localization records). Th
 
 **Example Search Query**:
 ```
-GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&subject-identifier-oprf-key=dGVzdC1ibGluZC1mYWN0b3ItZXhhbXBsZQ==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data. This response will not contain the (pseudomized) subject.identifier and oprfKey for privacy/security reasons.
@@ -139,33 +139,25 @@ The search operation returns a Bundle of type `searchset` containing matching Li
 
 The Localization Client MUST implement the following requirements when interacting with the Pseudonymization Service:
 
-**1. Personal Identifier Preparation**
+**1. Prepare PRS Interaction**
 - Prepare the patient's BSN in a structured JSON format with country code (e.g., "NL") and identifier value
-
-**2. Context Information**
 - Construct context string: `{recipient_organization}|{recipient_scope}|{version}` (e.g., "URA-NVI|localization|v1")
-
-**3. HKDF Key Derivation**
-- Apply HKDF-SHA256 to derive a pseudonym from the personal identifier
-- Parameters: SHA-256, 32 bytes, no salt, using context string as info ([RFC 5869](https://datatracker.ietf.org/doc/html/rfc5869))
-
-**4. OPRF Blinding**
-- Perform cryptographic blinding on the derived pseudonym to create:
+- Apply HKDF-SHA256 to derive a pseudonym from the personal identifier (Parameters: SHA-256, 32 bytes, no salt, using context string as info ([RFC 5869](https://datatracker.ietf.org/doc/html/rfc5869)))
+- Perform cryptographic blinding on the derived pseudonym to create (Both values base64 URL-safe encoded):
   - `blind_factor`: Retained for NVI processing
   - `blinded_input`: Sent to Pseudonymization Service (PRS)
-- Both values base64 URL-safe encoded
 
-**5. PRS Interaction**
+**2. PRS Interaction**
 - Send `blinded_input` to PRS
 - Receive JWE (JSON Web Encryption) encrypted with NVI's public key
 - Client cannot decrypt the JWE
 
-**6. Localization Record Submission**
+**3. Localization Record Submission**
 - Include JWE as `subject.identifier.value`
 - Include `blind_factor` in the [PseudoBsnIdentifier](./StructureDefinition-nl-gf-pseudo-bsn-identifier.html) extension's `oprfKey` field
 - Submit to NVI for decryption and unblinding
 
-Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py) | [PRS.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/PRS.py)
+Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py)
 
 
 ### Data models
