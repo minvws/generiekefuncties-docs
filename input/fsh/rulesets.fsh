@@ -30,6 +30,11 @@ RuleSet: SupportCustomSearchParam (name, canonical, type)
 * rest.resource[=].searchParam[=].definition = "{canonical}"
 * rest.resource[=].searchParam[=].type = {type}
 
+RuleSet: BundleEntryPOST (type, resource)
+* entry[+].resource = {resource}
+* entry[=].request.method = #POST
+* entry[=].request.url = "{type}"
+
 RuleSet: BundleEntryPUT (type, resource)
 * entry[+].fullUrl = "urn:uuid:{resource}"
 * entry[=].resource = {resource}

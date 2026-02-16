@@ -64,12 +64,13 @@ Description: """A List profile for registering the availability of patient data
 at healthcare organizations for localization services. This profile is used to
 indicate that certain patient data is available at a specific organization and
 can be accessed for localization purposes."""
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+* implicitRules ..0
+* meta ..0
+* language ..0
+* text ..0
+* contained ..0
+* identifier ..0
+* title ..0
 * status 1..1
 * status ^comment = "All records are always current"
 * status = #current
@@ -81,12 +82,15 @@ can be accessed for localization purposes."""
 * subject only Reference(Patient)
 * subject.identifier 1..1
 * subject.identifier only PseudoBsnIdentifier
-* subject.reference 0..0
+* subject.reference ..0
+* extension contains NlGfLocalizationCustodian named custodian 1..1
+* extension[custodian] ^comment = "The Organization which published the data"
 * source 1..1
 * source only Reference(Device)
 * source.reference ..0
 * source.type = $resource-types#Device
-* entry 0..0
+* entry ..0
+* note ..0
 * emptyReason 1..1
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 
@@ -201,9 +205,6 @@ Description: """Identifier assigned by the author of a resource, such as a healt
 * use 1..
 * use = #official
 * system 1..
-* system = "urn:ietf:rfc:3986" (exactly)
-* value 1..
-* value obeys nl-gf-startswithuuid
 * value 1..
 * assigner 1..1
 * assigner.identifier 1..1
@@ -225,7 +226,13 @@ Description: """Identifier for pseudonymized Dutch citizen service numbers (BSN)
 * use = #temp
 
 
-Invariant: nl-gf-startswithuuid
-Description: "value must start with urn:uuid:"
-* severity = #error
-* expression = "startsWith('urn:uuid:')"
+Extension: NlGfLocalizationCustodian
+Id: nl-gf-localization-custodian
+Title: "NL Generic Functions Localization Custodian"
+Description: "The organization responsible for the localization record, identified by URA number."
+Context: List
+* value[x] only Reference(Organization)
+* valueReference.identifier 1..1
+* valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* valueReference.identifier.value 1..1
+* valueReference.reference 0..0

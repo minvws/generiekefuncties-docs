@@ -41,7 +41,7 @@ nvi -> nvi: Search localization records
 
 nvi -> ehr: Bundle (searchset) with\nList resources containing\ndata holder organizations (URAs)
 
-ehr -> ehr: Extract organization URAs\nfrom List.identifier.assigner
+ehr -> ehr: Extract organization URAs\nfrom List.extension.custodian
 
 == Addressing and fetching data ==
 

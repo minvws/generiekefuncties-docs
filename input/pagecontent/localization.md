@@ -52,36 +52,26 @@ The client SHALL be able to create and register List resources (localization rec
 ```json
 {
   "resourceType": "Bundle",
-  "type": "transaction",
+  "id": "nvi-org1",
   "entry": [
     {
-      "fullUrl": "urn:uuid:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "request": {
+        "method": "POST",
+        "url": "List"
+      },
       "resource": {
         "resourceType": "List",
-        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-        "identifier": [
+        "extension": [
           {
-            "system": "https://cp1-test.example.org/nvi",
-            "value": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-            "assigner": {
+            "valueReference": {
               "identifier": {
                 "system": "http://fhir.nl/fhir/NamingSystem/ura",
                 "value": "11111111"
               }
-            }
+            },
+            "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian"
           }
         ],
-        "status": "current",
-        "mode": "working",
-        "code": {
-          "coding": [
-            {
-              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs",
-              "code": "MEDAFSPRAAK",
-              "display": "Medicatieafspraak"
-            }
-          ]
-        },
         "subject": {
           "identifier": {
             "system": "http://fhir.nl/fhir/NamingSystem/pseudo-bsn",
@@ -95,21 +85,29 @@ The client SHALL be able to create and register List resources (localization rec
           },
           "type": "Device"
         },
+        "status": "current",
+        "mode": "working",
         "emptyReason": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason",
-              "code": "withheld"
+              "code": "withheld",
+              "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "MEDAFSPRAAK",
+              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs",
+              "display": "Medicatieafspraak"
             }
           ]
         }
-      },
-      "request": {
-        "method": "POST",
-        "url": "List"
       }
     }
-  ]
+  ],
+  "type": "transaction"
 }
 ```
 
@@ -118,8 +116,9 @@ The client SHALL support searching for List resources (localization records). Th
 
 - **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
-- **source.identifier**: Search for localization records registered by an application
-Client SHALL use either the patient.identifier or source.identifier in a search
+- **source.identifier**: Search for localization records registered by an application.  
+
+Client SHALL either use the patient.identifier or source.identifier in a search.
 
 
 **Example Search Query**:
@@ -127,7 +126,8 @@ Client SHALL use either the patient.identifier or source.identifier in a search
 GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
-The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data. This response will not contain the (pseudomized) patient.identifier for privacy/security reasons.
+The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
+This response will not contain the (pseudomized) patient.identifier for privacy/security reasons.
 
 
 ##### OPRF Integration requirements
