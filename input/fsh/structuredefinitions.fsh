@@ -56,6 +56,40 @@ Description: "Physical location details for healthcare services, organizations, 
 * managingOrganization 1..
 * managingOrganization only Reference(NlGfOrganization)
 
+Profile: NlGfLocalizationList
+Parent: List
+Id: nl-gf-localization-list
+Title: "NL Generic Functions Localization List Profile"
+Description: """A List profile for registering the availability of patient data
+at healthcare organizations for localization services. This profile is used to
+indicate that certain patient data is available at a specific organization and
+can be accessed for localization purposes."""
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "$this"
+* identifier ^slicing.rules = #open
+* identifier contains
+    AssignedId 1..1
+* identifier[AssignedId] only AuthorAssignedIdentifier
+* status 1..1
+* status ^comment = "All records are always current"
+* status = #current
+* mode 1..1
+* mode = #working
+* code 1..1
+* code from NlGfZorgcontextVS (required)
+* subject 1..1
+* subject only Reference(Patient)
+* subject.identifier 1..1
+* subject.identifier.system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
+* subject.reference 0..0
+* source 1..1
+* source only Reference(Device)
+* source.reference ..0
+* source.type = $resource-types#Device
+* entry 0..0
+* emptyReason 1..1
+* emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
+
 
 Invariant:   ura-identifier-or-partof
 Description: "an Organization instance must either have an URA-identifier or must be 'partOf' some other instance that is an nl-gf-organization instance."

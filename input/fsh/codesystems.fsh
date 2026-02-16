@@ -14,6 +14,11 @@ Description: "Local code system for NL Generic Functions."
 * #Nuts-OAuth "Nuts OAuth endpoint"
 * #http://nictiz.nl/fhir/CapabilityStatement/eOverdracht-servercapabilities "Transfer of Care - eOverdracht Server"
 * #http://nictiz.nl/fhir/CapabilityStatement/bgz2017-servercapabilities "BGZ Server"
+* #http://nictiz.nl/fhir/CapabilityStatement/bglz-servercapabilities "BGLZ Server"
+* #http://nictiz.nl/fhir/CapabilityStatement/gp-patientdata2017-servercapabilities "GP Patient Data 2017 Server"
+* #http://nictiz.nl/fhir/CapabilityStatement/labresults-servercapabilities "Lab Results Server"
+* #http://nictiz.nl/fhir/CapabilityStatement/allergyintolerance-servercapabilities "Allergy Intolerance Server"
+* #http://nictiz.nl/fhir/CapabilityStatement/ggz-servercapabilities "GGZ Server"
 * #http://nictiz.nl/fhir/CapabilityStatement/mp-MedicationData.RetrieveServe "Minimal requirements for a server to fulfill the 'Serve medication data' transaction (system role: MP-MGB)."
 * #http://nictiz.nl/fhir/CapabilityStatement/mp-MedicationData.SendReceive "Minimal requirements for a server to fulfill the 'Receive medication data' transaction (system role: MP-MGO)."
 * #http://nictiz.nl/fhir/CapabilityStatement/mp-MedicationOverview.RetrieveServe "Minimal requirements for a server to fulfill the 'Serve medication overview' transaction (system role: MP-MOB)."
@@ -271,3 +276,29 @@ Description: "Standaard Bedrijfsindeling (SBI) 2025 codes for healthcare-related
   * ^designation[=].value = "Overige welzijnszorg"
   * ^designation[+].language = #en-US
   * ^designation[=].value = "Other social work activities without accommodation n.e.c. (rest)"
+
+
+CodeSystem: NlGfZorgcontextCS
+Id: nl-gf-zorgcontext-cs
+Title: "NL GF Zorgcontext CodeSystem"
+Description: "Local code system for care context concepts in NL Generic Functions."
+* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs"
+* ^status = #active
+* ^experimental = true
+* ^caseSensitive = true
+* #LABBEPALING "Lab Bepaling"
+* #ALGBEPALING "Algemene Bepaling"
+* #CONTACTMOMENT "Contactmoment"
+* #CONTACTVERSLAG "Contactverslag"
+* #MEDAFSPRAAK "Medicatieafspraak"
+* #OVERDRACHTSCONCERN "Overdrachtsconcern"
+* #ALERT "Alert"
+* #ALLERGIEINTOLERANTIE "Allergie Intolerantie"
+* #TOEDIENING "Toediening"
+* #DOSEERSCHEMA "Doseerschema"
+* #MEDGEBRUIK "Medicatiegebruik"
+* #MEDOVERZICHT "Medicatieoverzicht"
+* #MEDVERSTREKKING "Medicatieverstrekking"
+* #TOEDIENINGSAFSPRAAK "Toedieningsafspraak"
+* #VERSTREKKINGSVERZOEK "Verstrekkingsverzoek"
+* #BEHAANWIJZING "Behandelaanwijzing"
