@@ -66,6 +66,41 @@ Title: "Organization 1 - Practitioner Harry Arts"
 * name.family = "Arts"
 * name.given = "Harry"
 
+Instance: ehr-system-example-001
+InstanceOf: Device
+Usage: #example
+Title: "Electronic Health Record System Example"
+Description: "Example of an EHR system device used in a healthcare organization"
+* identifier[+].system = "http://example.org/device-identifiers"
+* identifier[=].value = "EHR-SYS-2024-001"
+* identifier[+].system = "urn:ietf:rfc:3986"
+* identifier[=].value = "urn:uuid:a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+* status = #active
+* manufacturer = "HealthTech Solutions BV"
+* deviceName[0].name = "MedicalRecords Pro"
+* deviceName[=].type = #user-friendly-name
+* deviceName[+].name = "MRP-Enterprise-v5.2"
+* deviceName[=].type = #model-name
+* modelNumber = "MRP-ENT-5.2.1"
+* version[0].type.coding.system = "http://hl7.org/fhir/device-versiontype"
+* version[=].type.coding.code = #software
+* version[=].value = "5.2.1"
+* version[+].type.coding.system = "http://hl7.org/fhir/device-versiontype"
+* version[=].type.coding.code = #firmware
+* version[=].value = "2.8.0"
+* type.coding.system = "http://snomed.info/sct"
+* type.coding.code = #706689003
+* type.coding.display = "Electronic health record system application software"
+* type.text = "Electronic Health Record System"
+* owner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* owner.identifier.value = "9999999"
+* contact[0].system = #email
+* contact[=].value = "support@healthtech.example.com"
+* contact[+].system = #phone
+* contact[=].value = "+31201234567"
+* contact[=].use = #work
+
+
 Instance: admin-directory-org1
 InstanceOf: Bundle
 Usage: #example
@@ -76,4 +111,4 @@ Description: "This bundle contains all care services for the Organization 1 Admi
 * insert BundleEntryPUT(Endpoint, 59654248-477c-4694-b156-e0042f0765a6)
 * insert BundleEntryPUT(PractitionerRole, 5fa4c91a-a12f-48ae-a4c7-92971dc7ab53)
 * insert BundleEntryPUT(Practitioner, 9a63e407-34af-4ae4-ad3c-f7107fbbc0cd)
-
+* insert BundleEntryPUT(Device, ehr-system-example-001)

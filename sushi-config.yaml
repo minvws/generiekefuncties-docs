@@ -61,18 +61,11 @@ pages:
         - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
           valueCode: draft
 
-
-  # routing.md:
-  #   title: Routing
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
-
-  # localization.md:
-  #   title: Localization
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
+  localization.md:
+    title: Localization
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
   # consent.md:
   #   title: Consent
@@ -125,18 +118,6 @@ pages:
   history.md:
     title: History
 
-  # usecase-enrollment.md:
-  #   title: Use cases - Enroll patient in home monitoring
-  # usecase-view-all-data.md:
-  #   title: Use cases - Get data for home care
-  # usecase-nursing-handoff.md:
-  #   title: Use cases - How execute a nursing referral
-#   implementation.xml:
-#   examples.xml:
-#     title: Examples Overview
-#     simpleExamples.xml:
-#     complexExamples.xml:
-
 #
 # The parameters property represents IG.definition.parameter. Rather
 # than a list of code/value pairs (as in the ImplementationGuide
@@ -162,13 +143,11 @@ parameters:
 menu:
   Home: index.html
   Care Services Directory: care-services.html
-  # Routing: routing.html
-  # Localization: localization.html
+  Localization: localization.html
   # Consent: consent.html
   # Identification: identification.html
   # Authentication: authentication.html
   # Authorization: authorization.html
-  # Credential Catalog: credential-catalog.html
   Artifacts: artifacts.html
   History: history.html
 

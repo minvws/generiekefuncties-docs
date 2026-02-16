@@ -80,7 +80,7 @@ can be accessed for localization purposes."""
 * subject 1..1
 * subject only Reference(Patient)
 * subject.identifier 1..1
-* subject.identifier.system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
+* subject.identifier only PseudoBsnIdentifier
 * subject.reference 0..0
 * source 1..1
 * source only Reference(Device)
@@ -210,3 +210,22 @@ Description: """Identifier assigned by the author of a resource, such as a healt
 * assigner.identifier.type.coding 1..1
 * assigner.identifier.type.coding.system = $provenance-participant-type
 * assigner.identifier.type.coding.code = #author
+
+Extension: OprfKey
+Id:        oprf-key
+Title:    "OPRF Key Extension"
+Description: "Extension to hold an Oblivious Pseudorandom Function (OPRF) key used in pseudonymization processes."
+Context: Identifier
+* value[x] only base64Binary
+
+Profile: PseudoBsnIdentifier
+Parent: Identifier
+Id: nl-gf-pseudo-bsn-identifier
+Title: "Pseudo-BSN Identifier"
+Description: """Identifier for pseudonymized Dutch citizen service numbers (BSN). 
+This profile includes an extension to optionally hold an OPRF key used in the pseudonymization process."""
+* extension contains OprfKey named oprfKey 0..1
+* system 1..
+* system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn" (exactly)
+* value 1..
+* use = #temp

@@ -1,16 +1,6 @@
 ### Introduction
-This FHIR Implementation Guide specifies the Generic Function 'Medical Record Localization' (GF Localization), a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS). GF-Localization provides a standardized framework that enables healthcare professionals to discover which organizations hold relevant patient data of a specific type, ensuring GDPR compliance through proportionality and subsidiarity principles while facilitating secure and efficient health information exchange.
+Patient data is often divided over multiple data holders. Generic Function Localization provides a standardized framework that enables healthcare professionals to discover which organizations hold relevant patient data of a specific type.
 
-Patient data is divided over multiple data holders. In today’s healthcare landscape organizations rely on several different types of indices to find data concerning a specific patient and context. However, none of these indices are complete and
-all of these indices have different requirements for usage, hindering interoperability and timely access to health information. GF-Localization addresses this challenge by providing a unified framework that ensures an index of all data holders concerning a specific patient and type is easily and securely accessible.
-
-This guide outlines the technical requirements and architectural principles underlying GF-Localization, with a focus on trust, authenticity, and data integrity. Key design principles include:
-
-- International standards: The solution should be based on international standards, lowering the bar for international (European) data exchange and adoption by internationally operating software vendors.
-- Single Source of Truth: Each localization record originates from exactly one organization: the data holder itself.
-- Stakeholder Responsibility: Data holders are accountable for maintaining the accuracy of localization records at the Localization service.
-
-By adhering to these principles, this Implementation Guide supports consistent and secure data holder discovery, fostering improved interoperability within the healthcare ecosystem.
 
 ### Solution overview
 
@@ -18,7 +8,7 @@ GF-Localization is based on the IHE [MHD profile](https://profiles.ihe.net/ITI/M
 
 - using one national Medical Record Localization Service: the 'Nationale Verwijs Index' (NVI)
 - using one national service for pseudonymizing and depseudonymizing citizen service numbers (BSN's): the Pseudonymization Service
-- using IHE [MHD profile](https://profiles.ihe.net/ITI/MHD/) to publish and find Localization records (transactions [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) and [ITI-66](https://profiles.ihe.net/ITI/MHD/ITI-66.html)).
+- using IHE [MHD profile](https://profiles.ihe.net/ITI/MHD/) to publish and find Localization records (transactions [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) and [ITI-66](https://profiles.ihe.net/ITI/MHD/ITI-66.html)). As a pseudonimization service is used, the FHIR profiles and transactions are compatible with the IHE MHD profile, but not directly compliant. 
 
 Here is a brief overview of the processes that are involved: 
 1. Every data holder registers the presence of data concerning a specific patient and data category at the Localization service. 
@@ -35,11 +25,141 @@ For more detail on the topology of GF-Localization, see [GF-Lokalisatie, ADR-2](
 
 #### Localization Service
 
-A (Medical Record) Localization Service is responsible for managing the registration, maintenance, and publication of localization records. It should be able to create and update localization records. A Localization Service MUST implement these [FHIR capabilities](https://profiles.ihe.net/ITI/MHD/CapabilityStatement-IHE.MHD.DocumentRecipient.UnContained.html)
-
+A (Medical Record) Localization Service is responsible for managing the registration, maintenance, and publication of localization records. It should be able to create and update localization records. A Localization Service MUST implement these [FHIR capabilities](./CapabilityStatement-nl-gf-localization-repository-list.html)
 
 #### Pseudonymization Service
-The Pseudonymization Service is responsible for creating and retrieving Polymorphic Pseudonyms of Patient identifiers. More information will follow.
+The Pseudonymization Service is responsible for creating and retrieving Polymorphic Pseudonyms of Patient identifiers using Oblivious Pseudorandom Function (OPRF) protocols.
+
+
+#### Localization client
+
+A Localization Client is responsible for registering and managing localization records at the Localization Service on behalf of healthcare organizations. The client is typically embedded within or integrated with Electronic Health Record (EHR) systems, Picture Archiving and Communication Systems (PACS), or other clinical systems that manage patient data.
+
+The Localization Client MUST support the following capabilities:
+
+##### Registration of Localization Records
+The client SHALL be able to create and register List resources (localization records) at the Localization Service. The client MUST support Bundle transactions to register localization records:
+- Create FHIR Bundle resources of type `transaction`
+- Include List resources (localization records) as Bundle entries with appropriate HTTP methods (POST for create, DELETE for delete)
+- Submit the Bundle to the Localization Service's transaction endpoint
+- Handle transaction responses, including success confirmations and error conditions
+
+**Pseudonymization Integration**: Before submitting localization records, the client MUST obtain pseudonymized patient identifiers (pseudonymized BSN) from the Pseudonymization Service to protect patient privacy.
+
+**Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the author-assigned identifier of each localization record to identify the data holder/custodian.
+
+**Example Bundle Transaction**:
+```json
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "resource": {
+        "resourceType": "List",
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "identifier": [
+          {
+            "system": "https://cp1-test.example.org/nvi",
+            "value": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "assigner": {
+              "identifier": {
+                "system": "http://fhir.nl/fhir/NamingSystem/ura",
+                "value": "11111111"
+              }
+            }
+          }
+        ],
+        "status": "current",
+        "mode": "working",
+        "code": {
+          "coding": [
+            {
+              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs",
+              "code": "MEDAFSPRAAK",
+              "display": "Medicatieafspraak"
+            }
+          ]
+        },
+        "subject": {
+          "identifier": {
+            "system": "http://fhir.nl/fhir/NamingSystem/pseudo-bsn",
+            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
+          }
+        },
+        "source": {
+          "identifier": {
+            "system": "https://cp1-test.example.org/device-identifiers",
+            "value": "EHR-SYS-2024-001"
+          },
+          "type": "Device"
+        },
+        "emptyReason": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason",
+              "code": "withheld"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "List"
+      }
+    }
+  ]
+}
+```
+
+##### Search for Localization Records
+The client SHALL support searching for List resources (localization records). This enables healthcare professionals to discover which organizations hold relevant patient data. The Localization Client SHALL support the following search parameters:
+
+- **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
+- **code**: Search for localization records by data type/category code
+
+
+**Example Search Query**:
+```
+GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+```
+
+The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data. This response will not contain the (pseudomized) subject.identifier and oprfKey for privacy/security reasons.
+
+
+##### OPRF Integration requirements
+
+The Localization Client MUST implement the following requirements when interacting with the Pseudonymization Service:
+
+**1. Personal Identifier Preparation**
+- Prepare the patient's BSN in a structured JSON format with country code (e.g., "NL") and identifier value
+
+**2. Context Information**
+- Construct context string: `{recipient_organization}|{recipient_scope}|{version}` (e.g., "URA-NVI|localization|v1")
+
+**3. HKDF Key Derivation**
+- Apply HKDF-SHA256 to derive a pseudonym from the personal identifier
+- Parameters: SHA-256, 32 bytes, no salt, using context string as info ([RFC 5869](https://datatracker.ietf.org/doc/html/rfc5869))
+
+**4. OPRF Blinding**
+- Perform cryptographic blinding on the derived pseudonym to create:
+  - `blind_factor`: Retained for NVI processing
+  - `blinded_input`: Sent to Pseudonymization Service (PRS)
+- Both values base64 URL-safe encoded
+
+**5. PRS Interaction**
+- Send `blinded_input` to PRS
+- Receive JWE (JSON Web Encryption) encrypted with NVI's public key
+- Client cannot decrypt the JWE
+
+**6. Localization Record Submission**
+- Include JWE as `subject.identifier.value`
+- Include `blind_factor` in the [PseudoBsnIdentifier](./StructureDefinition-nl-gf-pseudo-bsn-identifier.html) extension's `oprfKey` field
+- Submit to NVI for decryption and unblinding
+
+Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py) | [PRS.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/PRS.py)
+
 
 ### Data models
 
@@ -47,47 +167,18 @@ The Pseudonymization Service is responsible for creating and retrieving Polymorp
 
 Within GF-Localization the [NL-gf-localization-List profile](./StructureDefinition-nl-gf-localization-list.html) is used to register, search, and validate localization records ([NL-GF-IG, ADR#10](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/10)).
 This data model basically states ***"Care provider X has data of type Y for Patient Z"***. It contains the following elements:
-- **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian.
+- **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian. This attribute is part of the 'Author assigned identifier'.
 - **Patient identifier**: The pseudonymized BSN to identify the patient.
-- **Type**: Represents type of data stored at the data holder/custodian. ***No ValueSet has been decided upon yet [GF-Lokalisatie, ADR#62](https://github.com/minvws/generiekefuncties-lokalisatie/issues/62), so in this IG-version, a fixed LOINC code '55188-7' is used: "Patient data Document"***
-- **Url**: A link/url to a document (e.g. FHIR resource) that represents the data type of this localization record. This url used by the Localization service to check authorization (consent) at the data holder for the data user/requester.
+- **Code**: Represents type of data stored at the data holder/custodian.
+- **Source identifier**: The identifier of the system (software instance) that registered the localization record.
 
-<!-- A [Location record example](./DocumentReference-52b792ba-11ae-42f3-bcc1-231f333f2317.html) is in the IG artifacts. -->
-
-
-### Security and Privacy Considerations
-
-One of things you can do to mitigate privacy risks: ***Please don't put dates or other privacy-sensitive data into the localization records since it can expose the identity patient***
-
-#### Pseudonymization
-Patient identifier BSN (BurgerServiceNummer) is pseudonymized to enhance patient privacy. The pseudonymization service will ensure that patient identities are protected while still allowing organizations to use a joint index.([GF-Lokalisatie, ADR-1](https://github.com/minvws/generiekefuncties-lokalisatie/issues/8))
-
+A [Location record example](./List-a1b2c3d4-e5f6-7890-abcd-ef1234567890.html) is in the IG artifacts.
 
 
 
 #### Authentication and Authorization
-Authentication and authorization follows the [GF Authorization](./authorization.html) specification. The required ***authentication and authorization*** attributes for Localization Service are:
+Link to 'NVI/PRS Aansluitdocument'?
 
-**For POST operations (registering localization records):**
-- **Organization identifier** (URA): The organization identifier of the registering organization
-
-**For GET operations (querying localization records):**
-- **Organization identifier** (URA): The organization identifier of the requesting organization (URA)
-- **Organization type**: The type of healthcare organization making the query
-- **Practitioner identifier** (UZI/DEZI): The unique healthcare professional identifier of the requester
-- **Role code**: The [professional role code](./ValueSet-uzi-rolcode-vs.html) of the requester
-- **Patient identifier** (pseudoBSN): The Patient identifier, used to check/fetch a Consent
-
-**For HEAD operations (checking access for data requester at data holder by localization service):**
-- **Url**: Url in the localization record (DocumentReference). Based on the HTTP-status in the response, the relationship between data holder and patient may be exposed to the data requester.
-
-<div markdown="1" class="w-100 bg-danger">
-> The 'HEAD operation and use of existing (FHIR) APIs' is evaluated in the Proof of concept phase. Other solutions are discussed on [this page](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/42)
-</div>
-
-These attributes ensure proper access control and auditing while maintaining the security requirements outlined in the [GF Authorization](./authorization.html) specification.
-
----
 
 ### Example Use Cases
 
@@ -104,19 +195,24 @@ The following diagram illustrates the registration workflow, including interacti
 
 **Scenario**: Dr. Smith, a cardiologist at Hospital A, is treating a patient who was recently referred from another hospital. She needs to know what imaging data (X-rays, CT scans, MRIs) might be available from other healthcare providers to avoid unnecessary duplicate examinations and to get a complete picture of the patient's medical history.
 
-For brevity, interactions to the Pseudonymization Service are left out here.
 
 {% include localization-cardiologist-search.svg %}
 
 
-### Roadmap for GF Localization
 
+#### Use Case: Localization Client retrieving all registered localization records
+
+**Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific device/system (the Localization Client)
+
+```
+GET [base]/List?source.identifier=https://cp1-test.example.org/device-identifiers|EHR-SYS-2024-001
+```
+
+**Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or device.
+
+
+### Roadmap for GF Localization
 
 #### Localization Service
 Potential future enhancements to the Localization Service include:
 - Audit logging capabilities (MUST HAVE, TODO)
-- ValueSet constraint on List.designationType
-
-#### Pseudonymization Service
-- Specification of Pseudonymization Service API
-- Specification of how to include/combine Pseudonymization transactions in FHIR request/responses

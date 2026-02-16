@@ -10,11 +10,26 @@ hide footbox
 
 actor "Dr. Smith\n(Cardiologist)" as doctor
 participant "EHR System @\n(Care Provider, URA:456)" as ehr
-participant "Localization Service" as nvi
+participant "Pseudonymization\nService (PRS)" as prs
+participant "Localization Service\n(NVI)" as nvi
 participant "Addressing Service" as addressing
 participant "EHR @\n(Care Provider)" as ehr_reg
 
 doctor -> ehr: Request data\n for patient (BSN:987654321)
+
+== Pseudonymization ==
+
+ehr -> ehr: Generate context info +\nHKDF key derivation +\nOPRF blinding
+
+activate prs
+ehr -> prs: POST /evaluate\nblinded_input
+
+prs -> prs: Evaluate and encrypt\nwith NVI public key
+
+prs -> ehr: JWE (encrypted pseudonym)
+deactivate prs
+
+ehr -> ehr: Prepare search with\nPseudo-BSN (JWE)
 
 == Localization ==
 
@@ -25,26 +40,27 @@ note over nvi
   - OrganizationType: 2.16.840.1.113883.2.4.15.1060|V4 (Hospital)
   - Practitioner Identifier: Dr. Smith's UZI/DEZI 
   - Role code: Professional role code (e.g., cardiologist)
-  ' Use of **pseudonymized** patient identifier 
-  '  (pseudoBsn) is out of scope for this diagram
 end note
 
-ehr -> nvi: Search /DocumentReference?subject=bsn|987654321
+ehr -> nvi: Search /List?patient.identifier=\npseudo-bsn|{JWE}
 
-loop for each DocumentReference found,\n using DocumentReference.content.attachment.url
-  nvi -> ehr_reg: HEAD https://careprovider123.org/fhir/Patient/345fa-9076-9be4b\n (checking access for Cardiologist Smith at Care provider 456)
-  
-  return: return HTTP-status
-end
+nvi -> nvi: Decrypt JWE and unblind\nto get final Pseudo-BSN
 
-nvi -> ehr: Bundle with DocumentReferences \ncontaining custodian's (URA's)\n that returned HTTP-status 200 OK.
+nvi -> nvi: Search localization records
+
+nvi -> ehr: Bundle (searchset) with\nList resources containing\ndata holder organizations (URAs)
+
+ehr -> ehr: Extract organization URAs\nfrom List.identifier.assigner
 
 == Addressing and fetching data ==
 
-loop for each custodian
-  ehr -> addressing: Search /Organization?identifier=ura&_include=Organization:endpoint
+loop for each data holder organization (URA)
+  ehr -> addressing: Search /Organization?identifier=ura|{URA}\n&_include=Organization:endpoint
+
+  addressing -> ehr: Organization + Endpoint resources
 
   ehr -> ehr_reg: GET /Condition?subject=bsn|987654321
+  ehr_reg -> ehr: Condition resources
 end
 
 ehr -> doctor: Display consolidated list of \nconditions to Dr. Smith

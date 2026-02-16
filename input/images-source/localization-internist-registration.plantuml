@@ -8,23 +8,38 @@ hide footbox
 
 actor "Dr. Carter\n(Internist)" as doctor
 participant "EHR @\n(Care Provider, URA:123)" as ehr
-' participant "Pseudonymisation\nService" as pseudonymisation
-participant "Localization Service" as nvi
+participant "Pseudonymization\nService (PRS)" as prs
+participant "Localization Service\n(NVI)" as nvi
 
 doctor -> ehr: Register finding at first consult\n for patient\n (BSN:987654321)
 ehr -> ehr: Create Encounter\n and Condition\n for patient
-' ehr -> pseudonymisation: Request pseudoBsn for patient
-' return pseudonym=3f5c8b2e9a1d4
+
+== Pseudonymization ==
+
+ehr -> ehr: Generate context info +\nHKDF key derivation +\nOPRF blinding
+
+activate prs
+ehr -> prs: POST /evaluate\nblinded_input
+
+prs -> prs: Evaluate and encrypt\nwith NVI public key
+
+prs -> ehr: JWE (encrypted pseudonym)\n+ blind_factor retained
+deactivate prs
+
+== Registration ==
+
+ehr -> ehr: Create List resource with:\n- identifier (author-assigned, URA:123)\n- subject.identifier (Pseudo-BSN JWE)\n- code (data type)\n- source (Device)\n- oprfKey extension (blind_factor)
 
 note over nvi
   Required authorization attributes for POST:
   - Organization identifier (URA)
-  ' Use of **pseudonymized** patient identifier 
-  '  (pseudoBsn) is out of scope for this diagram
+  - Valid mTLS certificate
 end note
 
-ehr -> nvi: POST DocumentReference, containing:\n custodian: URA:123,\n patient: BSN:987654321,\n url: https://careprovider123.org/fhir/Patient/345fa-9076-9be4b"
+ehr -> nvi: POST Bundle (transaction)\nwith List resource
 
-nvi -> ehr: 201 Created
+nvi -> nvi: Decrypt JWE and unblind\nto get final Pseudo-BSN
+
+nvi -> ehr: 200 OK\nBundle (transaction-response)
 
 @enduml

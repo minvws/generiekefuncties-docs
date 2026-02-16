@@ -9,7 +9,7 @@ Description: "Example instance of the NlGfLocalizationList profile. It expresses
 * code = nl-gf-zorgcontext-cs#MEDAFSPRAAK "Medicatieafspraak"
 * subject.identifier.system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
-* source.identifier.system = "tbd"
-* source.identifier.value = "an-identifier"
+* source.identifier.system = "https://cp1-test.example.org/device-identifiers"
+* source.identifier.value = "EHR-SYS-2024-001"
 * source.type = $resource-types#Device
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
