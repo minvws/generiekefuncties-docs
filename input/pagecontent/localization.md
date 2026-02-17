@@ -40,15 +40,17 @@ The Localization Client MUST support the following capabilities:
 ##### Registration of Localization Records
 The client SHALL be able to create and register List resources (localization records) at the Localization Service. The client MUST support Bundle transactions to register localization records:
 - Create FHIR Bundle resources of type `transaction`
-- Include List resources (localization records) as Bundle entries with appropriate HTTP methods (POST for create, DELETE for delete)
+- Include List resources (localization records) as Bundle entries with appropriate HTTP methods (POST for create, DELETE for remove). Updates are not supported; to correct a record, delete it and create a new one.
 - Submit the Bundle to the Localization Service's transaction endpoint
 - Handle transaction responses, including success confirmations and error conditions
 
-**Pseudonymization Integration**: Before submitting localization records, the client MUST obtain pseudonymized patient identifiers (pseudonymized BSN) from the Pseudonymization Service to protect patient privacy.
+**Pseudonymization Integration**: Before submitting localization records, client MUST obtain a pseudonymized patient identifier from the Pseudonymization Service. This pseudonym is a transient encrypted token (JWE) intended for single-use in registration or query operations.
 
-**Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the author-assigned identifier of each localization record to identify the data holder/custodian.
+**Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 
 **Example Bundle Transaction**:
+For more information on the content, see the paragraph on [Localization record](#localization-record)
+
 ```json
 {
   "resourceType": "Bundle",
@@ -163,7 +165,8 @@ This data model basically states ***"Care provider X has data of type Y for Pati
 - **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian. This attribute is part of the 'Author assigned identifier'.
 - **Patient identifier**: The pseudonymized BSN to identify the patient.
 - **Code**: Represents type of data stored at the data holder/custodian.
-- **Source identifier**: The identifier of the system (software instance) that registered the localization record.
+- **Source identifier**: The identifier of the specific software installation (e.g., EHR deployment) that registered this localization record, using a `Device` reference with an identifier. 
+- **emptyReason**: The `emptyReason` is set to withheld because this List signals the existence of data at a custodian, without enumerating the actual records. The List resource is used as a localization pointer, not as a container for document references
 
 A [Location record example](./List-a1b2c3d4-e5f6-7890-abcd-ef1234567890.html) is in the IG artifacts.
 
