@@ -1,0 +1,60 @@
+@startuml localization-cardiologist-search
+
+title Localization of patient data
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial 
+hide footbox
+
+!pragma teoz true
+
+actor "Dr. Smith\n(Cardiologist)" as doctor
+participant "EHR System @\n(Care Provider, URA:456)" as ehr
+participant "Pseudonymization\nService (PRS)" as prs
+participant "Localization Service\n(NVI)" as nvi
+participant "Addressing Service" as addressing
+participant "EHR @\n(Care Provider)" as ehr_reg
+
+doctor -> ehr: Request data\n for patient (BSN:987654321)
+
+== Pseudonymization ==
+
+ehr -> ehr: Generate context info +\nHKDF key derivation +\nOPRF blinding
+
+activate prs
+ehr -> prs: POST /evaluate\nblinded_input
+
+prs -> prs: Evaluate and encrypt\nwith NVI public key
+
+prs -> ehr: JWE (encrypted pseudonym)
+deactivate prs
+
+== Localization ==
+
+ehr -> ehr: Prepare search with\nPseudo-BSN (JWE) +\nretain blind_factor
+
+ehr -> nvi: Search /List?\n patient.identifier={JWE}\n &code={data-type}
+
+nvi -> nvi: Decrypt JWE and unblind\nto get final Pseudo-BSN
+
+nvi -> nvi: Search localization records
+
+nvi -> ehr: Bundle (searchset) with\nList resources containing\ndata holder organizations (URAs)
+
+ehr -> ehr: Extract organization URAs\nfrom List.extension.custodian
+
+== Addressing and fetching data ==
+
+loop for each data holder organization (URA)
+  ehr -> addressing: Search /Organization?identifier=ura|{URA}\n&_include=Organization:endpoint
+
+  addressing -> ehr: Organization + Endpoint resources
+
+  ehr -> ehr_reg: GET /Condition?subject=bsn|987654321
+  ehr_reg -> ehr: Condition resources
+end
+
+ehr -> doctor: Display consolidated list of \nconditions to Dr. Smith
+
+@enduml
+

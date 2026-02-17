@@ -1,0 +1,62 @@
+@startuml care-services-sync-example
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial 
+hide footbox
+
+!pragma teoz true
+
+participant  UC as "Update Client"
+participant  LRZa as "LRZa\nAdministration Directory"
+participant  AD1 as "Care Provider\nAdmin Directory 1"
+participant  AD2 as "Care Provider\nAdmin Directory 2"
+participant  QD as "Query Directory"
+
+activate UC
+note over UC: Periodic sync triggered\n(e.g., every day)
+
+UC -> LRZa: GET /Organization?_include=Organization:endpoint\nGet list of organizations and their endpoints
+activate LRZa
+LRZa -> UC: Bundle with Organizations + Endpoints
+deactivate LRZa
+
+note over UC: Extract Administration Directory URLs\nfrom returned Endpoints
+
+UC -> AD1: GET /Organization/_history?_include=Organization:endpoint&_since=2025-02-07T13:28:17
+activate AD1
+UC -> AD1: GET /Location/_history?_since=2025-02-07T13:28:17
+UC -> AD1: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
+AD1 -> UC: Bundle (history) with changes
+AD1 -> UC: Bundle (history) with changes
+AD1 -> UC: Bundle (history) with changes
+deactivate AD1
+
+UC -> AD2: GET /Organization/_history?_include=Organization:endpoint&_since=2025-02-07T13:28:17
+activate AD2
+UC -> AD2: GET /Location/_history?_since=2025-02-07T13:28:17
+UC -> AD2: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
+AD2 -> UC: Bundle (history) with changes
+AD2 -> UC: Bundle (history) with changes
+AD2 -> UC: Bundle (history) with changes
+deactivate AD2
+
+note over UC: Consolidate & validate data:\n- Apply authoritative source rules\n- Filter non-authoritative data\n- Validate URA linkage\n- Resolve conflicts
+
+UC -> QD: POST /Organization (create/update)
+activate QD
+QD -> UC: 201 Created / 200 OK
+
+UC -> QD: POST /Location (create/update)
+QD -> UC: 201 Created / 200 OK
+
+UC -> QD: POST /HealthcareService (create/update)
+QD -> UC: 201 Created / 200 OK
+
+UC -> QD: DELETE /HealthcareService/{id}\n(for deleted resources)
+QD -> UC: 204 No Content
+deactivate QD
+
+note over UC,QD: Sync complete.\nStore timestamp for next sync.
+deactivate UC
+
+@enduml
