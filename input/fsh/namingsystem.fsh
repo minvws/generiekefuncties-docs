@@ -1,11 +1,11 @@
-Instance: pseudo-bsn
+Instance: nvi-identifier
 InstanceOf: NamingSystem
 Usage: #definition
-* name = "Pseudonymized BSN"
+* name = "NVI identifier"
 * status = #active
 * kind = #identifier
 * date = "2025-11-05T00:00:00-00:00"
-* description = "This Patient identifier represents a pseudonymized BSN."
+* description = "This Patient identifier is specific for the NVI and represents a pseudonymized BSN."
 * uniqueId[0].type = #uri
-* uniqueId[=].value = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
+* uniqueId[=].value = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
 * uniqueId[=].preferred = true
