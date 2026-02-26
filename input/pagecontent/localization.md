@@ -44,7 +44,7 @@ The client SHALL be able to create and register List resources (localization rec
 - Submit the Bundle to the Localization Service's transaction endpoint
 - Handle transaction responses, including success confirmations and error conditions
 
-**Pseudonymization Integration**: Before submitting localization records, client MUST obtain a pseudonymized patient identifier from the Pseudonymization Service. This pseudonym is a transient encrypted token (JWE) intended for single-use in registration or query operations.
+**Pseudonymization Integration**: Before submitting localization records, client MUST compose a pseudonymized patient identifier in collaboration with the Pseudonymization Service. This patient identifier consists of an OPRF blind_factor and an evaluated_output of the blinded_input where the latter is evaluated at the Pseudonymization Service and included as a transient encrypted token (JWE) intended for single-use in registration or query operations.
 
 **Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 
@@ -76,8 +76,8 @@ For more information on the content, see the paragraph on [Localization record](
         ],
         "subject": {
           "identifier": {
-            "system": "http://fhir.nl/fhir/NamingSystem/pseudo-bsn",
-            "value": "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
+            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+            "value": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJldmFsdWF0ZWRfb3V0cHV0IjogIkpXRV9GUk9NX1BTRVVET05ZTUlTQVRJT05fU0VSVklDRSIsICJibGluZF9mYWN0b3IiOiJDTElFTlRfR0VORVJBVEVEX0JMSU5EX0ZBQ1RPUiIsImlhdCI6MTUxNjIzOTAyMn0."
           }
         },
         "source": {
@@ -125,7 +125,7 @@ Client SHALL either use the patient.identifier or source.identifier in a search.
 
 **Example Search Query**:
 ```
-GET [base]/List?patient.identifier=http://fhir.nl/fhir/NamingSystem/pseudo-bsn|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+GET [base]/List?patient.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
@@ -150,7 +150,11 @@ The Localization Client MUST implement the following requirements when interacti
 - Client cannot decrypt the JWE
 
 **3. Localization Record Submission**
-- Include JWE as `subject.identifier.value`
+- construct `subject.identifier` as a jwt with the following claims:
+  - evaluated_output: The JWE received from the Pseudonymization Service
+  - blind_factor: The blind factor
+  - iat: The timestamp of issuance
+- Include the JWT as `subject.identifier.value`
 - Submit to NVI for decryption and unblinding
 
 Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py)
@@ -163,7 +167,7 @@ Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationa
 Within GF-Localization the [NL-gf-localization-List profile](./StructureDefinition-nl-gf-localization-list.html) is used to register, search, and validate localization records ([NL-GF-IG, ADR#10](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/10)).
 This data model basically states ***"Care provider X has data of type Y for Patient Z"***. It contains the following elements:
 - **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian. This attribute is part of the 'Author assigned identifier'.
-- **Patient identifier**: The pseudonymized BSN to identify the patient.
+- **Patient identifier**: The NVI identifier to identify the patient in the NVI.
 - **Code**: Represents type of data stored at the data holder/custodian.
 - **Source identifier**: The identifier of the specific software installation (e.g., EHR deployment) that registered this localization record, using a `Device` reference with an identifier. 
 - **emptyReason**: The `emptyReason` is set to withheld because this List signals the existence of data at a custodian, without enumerating the actual records. The List resource is used as a localization pointer, not as a container for document references
