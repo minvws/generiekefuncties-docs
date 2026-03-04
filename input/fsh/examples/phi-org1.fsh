@@ -117,31 +117,6 @@ Title: "MedicationStatement Urokinase"
 * dosage[0].doseAndRate[0].doseQuantity.unit = "mg"
 
 
-
-Instance: f304c628-c19f-4207-adfb-ad34447ab044
-InstanceOf: CareTeam
-Usage: #inline
-Title: "CareTeam of Patient Jaantje Merkens"
-* insert AuthorAssignedIdentifier("http://organization1.example.org/EHR/careteams","f304c628-c19f-4207-adfb-ad34447ab044","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
-* participant[+].period.start = "2024-08-27"
-* participant[=].member = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db)
-* participant[+].period.start = "2024-08-27"
-* participant[=].member = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53)
-* participant[+].period.start = "2024-08-27"
-* insert RefAuthorAssignedIdentifier(participant[=].member, "https://cp2-test.example.org/employees", "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba", "http://fhir.nl/fhir/NamingSystem/ura","22222222","Cardioloog Caroline van Dijk at Organization 2")
-* participant[+].period.start = "2024-08-27"
-* insert RefAuthorAssignedIdentifier(participant[=].member, "https://cp3-test.example.org/employees", "d60525bd-5caf-4437-8f4b-4156300a27de", "http://fhir.nl/fhir/NamingSystem/ura","33333333", "Klinisch geriater John Doe at Organization 3")
-
-* participant[+].period.start = "2024-08-27"
-* participant[=].member = Reference(Organization/4cb35b96-f021-4e15-bf71-d67a6d4bebec)
-* participant[=].member.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* participant[=].member.identifier.value = "11111111"
-* participant[+].period.start = "2024-08-27"
-* insert RefAuthorAssignedIdentifier(participant[=].member, "https://cp2-test.example.org/departments", "cff921f3-c1c1-4a4c-8f0f-cafd0aa25067", "http://fhir.nl/fhir/NamingSystem/ura","22222222","example Hospital")
-
-
-
-
 Instance: phi-org1
 InstanceOf: Bundle
 Usage: #example
@@ -155,4 +130,3 @@ Description: "This bundle contains all personal health information for Patient J
 * insert BundleEntryPUT(ServiceRequest, 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb)
 * insert BundleEntryPUT(ServiceRequest, 3cb7873f-c222-4196-b441-02b3790ec97e)
 * insert BundleEntryPUT(MedicationStatement, 98f9d4a7-d58d-4889-8e63-0cb2d4e35144)
-* insert BundleEntryPUT(CareTeam, f304c628-c19f-4207-adfb-ad34447ab044)

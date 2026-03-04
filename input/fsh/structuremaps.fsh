@@ -83,6 +83,7 @@ InstanceOf: StructureMap
 Usage: #definition
 Title: "KVK Basisprofiel naar FHIR Organization"
 Description: "StructureMap die een KVK Basisprofiel API response transformeert naar een FHIR Organization resource."
+* id = "KvkBasisprofielToOrganization"
 * url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
 * name = "KvkBasisprofielToOrganization"
 * status = #draft
@@ -103,6 +104,21 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].input[=].type = "Organization"
 * group[=].input[=].mode = #target
 
+// Rule: set meta.profile to NlGfOrganization
+* group[=].rule[+].name = "setProfile"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "meta"
+* group[=].rule[=].target[=].variable = "meta"
+* group[=].rule[=].rule[+].name = "setProfileUrl"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].target[+].context = "meta"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "profile"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-organization"
+
 // Rule: kvkNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk)
 * group[=].rule[+].name = "kvkNummer"
 * group[=].rule[=].source[+].context = "src"
@@ -112,6 +128,13 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "identifier"
 * group[=].rule[=].target[=].variable = "kvkId"
+* group[=].rule[=].rule[+].name = "kvkUse"
+* group[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].target[+].context = "kvkId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "use"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "official"
 * group[=].rule[=].rule[+].name = "kvkSystem"
 * group[=].rule[=].rule[=].source[+].context = "kvkNum"
 * group[=].rule[=].rule[=].target[+].context = "kvkId"
@@ -126,6 +149,58 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "kvkNum"
+* group[=].rule[=].rule[+].name = "kvkAssigner"
+* group[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].target[+].context = "kvkId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "assigner"
+* group[=].rule[=].rule[=].target[=].variable = "assignerRef"
+* group[=].rule[=].rule[=].rule[+].name = "assignerIdentifier"
+* group[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].target[+].context = "assignerRef"
+* group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
+* group[=].rule[=].rule[=].rule[=].target[=].variable = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "type"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "coding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingCode"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "author"
 
 // Rule: naam → name
 * group[=].rule[+].name = "naam"
@@ -186,33 +261,33 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].source[=].element = "embedded"
 * group[=].rule[=].source[=].variable = "emb"
 
-// // Nested: eigenaar.rsin → identifier (system: rsin)
-// * group[=].rule[=].rule[+].name = "eigenaar"
-// * group[=].rule[=].rule[=].source[+].context = "emb"
-// * group[=].rule[=].rule[=].source[=].element = "eigenaar"
-// * group[=].rule[=].rule[=].source[=].variable = "eig"
-// * group[=].rule[=].rule[=].rule[+].name = "rsin"
-// * group[=].rule[=].rule[=].rule[=].source[+].context = "eig"
-// * group[=].rule[=].rule[=].rule[=].source[=].element = "rsin"
-// * group[=].rule[=].rule[=].rule[=].source[=].variable = "rsin"
-// * group[=].rule[=].rule[=].rule[=].target[+].context = "tgt"
-// * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-// * group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
-// * group[=].rule[=].rule[=].rule[=].target[=].variable = "rsinId"
-// * group[=].rule[=].rule[=].rule[=].rule[+].name = "rsinSystem"
-// * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "rsin"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "rsinId"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/rsin"
-// * group[=].rule[=].rule[=].rule[=].rule[+].name = "rsinValue"
-// * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "rsin"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "rsinId"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-// * group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "rsin"
+// Nested: eigenaar.rsin → identifier (system: rsin)
+* group[=].rule[=].rule[+].name = "eigenaar"
+* group[=].rule[=].rule[=].source[+].context = "emb"
+* group[=].rule[=].rule[=].source[=].element = "eigenaar"
+* group[=].rule[=].rule[=].source[=].variable = "eig"
+* group[=].rule[=].rule[=].rule[+].name = "rsin"
+* group[=].rule[=].rule[=].rule[=].source[+].context = "eig"
+* group[=].rule[=].rule[=].rule[=].source[=].element = "rsin"
+* group[=].rule[=].rule[=].rule[=].source[=].variable = "rsin"
+* group[=].rule[=].rule[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
+* group[=].rule[=].rule[=].rule[=].target[=].variable = "rsinId"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "rsinSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "rsin"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "rsinId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/rsin"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "rsinValue"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "rsin"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "rsinId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "rsin"
 
 // Nested: hoofdvestiging → address + telecom
 * group[=].rule[=].rule[+].name = "hoofdvestiging"
@@ -372,6 +447,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].variable = "addrLine2"
 * group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisnr"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-houseNumber extension
 * group[=].rule[=].rule[+].name = "houseNumberExt"
 * group[=].rule[=].rule[=].source[+].context = "huisnr"
@@ -393,6 +469,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnr"
+* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "string"
 
 // huisletter → line + iso21090-ADXP-buildingNumberSuffix extension
 * group[=].rule[+].name = "huisletter"
@@ -607,6 +684,7 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Vestigin
 //   adressen[]                      → Location.address
 //   adressen[].geoData              → Location.position (latitude/longitude)
 //   websites[]                      → Location.telecom (system: url)
+//   sbiActiviteiten[]               → Location.type (SBI CodeSystem)
 //   indHoofdvestiging/materieleReg  → Location.status (active/inactive)
 // ============================================================================
 
@@ -615,6 +693,7 @@ InstanceOf: StructureMap
 Usage: #definition
 Title: "KVK Vestigingsprofiel naar FHIR Location"
 Description: "StructureMap die een KVK Vestigingsprofiel API response transformeert naar een FHIR Location resource."
+* id = "KvkVestigingsprofielToLocation"
 * url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkVestigingsprofielToLocation"
 * name = "KvkVestigingsprofielToLocation"
 * status = #draft
@@ -635,6 +714,21 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].input[=].type = "Location"
 * group[=].input[=].mode = #target
 
+// Rule: set meta.profile to NlGfLocation
+* group[=].rule[+].name = "setProfile"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "meta"
+* group[=].rule[=].target[=].variable = "meta"
+* group[=].rule[=].rule[+].name = "setProfileUrl"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].target[+].context = "meta"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "profile"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-location"
+
 // Rule: vestigingsnummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer)
 * group[=].rule[+].name = "vestigingsnummer"
 * group[=].rule[=].source[+].context = "src"
@@ -644,6 +738,13 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "identifier"
 * group[=].rule[=].target[=].variable = "vestId"
+* group[=].rule[=].rule[+].name = "vestUse"
+* group[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].target[+].context = "vestId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "use"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "official"
 * group[=].rule[=].rule[+].name = "vestSystem"
 * group[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].target[+].context = "vestId"
@@ -658,6 +759,58 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "vestNr"
+* group[=].rule[=].rule[+].name = "vestAssigner"
+* group[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].target[+].context = "vestId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "assigner"
+* group[=].rule[=].rule[=].target[=].variable = "assignerRef"
+* group[=].rule[=].rule[=].rule[+].name = "assignerIdentifier"
+* group[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].target[+].context = "assignerRef"
+* group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
+* group[=].rule[=].rule[=].rule[=].target[=].variable = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "type"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "coding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingCode"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "author"
 
 // Rule: kvkNummer → managingOrganization (Reference by identifier, system: kvk)
 * group[=].rule[+].name = "kvkNummer"
@@ -788,6 +941,19 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].dependent[=].variable[+] = "web"
 * group[=].rule[=].dependent[=].variable[+] = "tel"
 
+// Rule: sbiActiviteiten → type (via dependent group)
+* group[=].rule[+].name = "sbiActiviteiten"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].source[=].element = "sbiActiviteiten"
+* group[=].rule[=].source[=].variable = "sbi"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "type"
+* group[=].rule[=].target[=].variable = "cc"
+* group[=].rule[=].dependent[+].name = "KvkVestSBIToCodeableConcept"
+* group[=].rule[=].dependent[=].variable[+] = "sbi"
+* group[=].rule[=].dependent[=].variable[+] = "cc"
+
 // ── Group 1: Handelsnaam → Location.alias ───────────────────────────────────
 * group[+].name = "KvkVestHandelsnaamToAlias"
 * group[=].typeMode = #none
@@ -871,6 +1037,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].variable = "addrLine2"
 * group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisnr"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-houseNumber extension
 * group[=].rule[=].rule[+].name = "houseNumberExt"
 * group[=].rule[=].rule[=].source[+].context = "huisnr"
@@ -892,6 +1059,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnr"
+* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "string"
 
 // huisletter → line + iso21090-ADXP-buildingNumberSuffix extension
 * group[=].rule[+].name = "huisletter"
@@ -1079,3 +1247,60 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].element = "use"
 * group[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].target[=].parameter[+].valueString = "work"
+
+// ── Group 5: SBI Activiteit → CodeableConcept (vestigingsprofiel) ────────────
+* group[+].name = "KvkVestSBIToCodeableConcept"
+* group[=].typeMode = #none
+* group[=].input[+].name = "src"
+* group[=].input[=].mode = #source
+* group[=].input[+].name = "tgt"
+* group[=].input[=].type = "CodeableConcept"
+* group[=].input[=].mode = #target
+
+// Create coding element and populate it
+* group[=].rule[+].name = "sbiCoding"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "coding"
+* group[=].rule[=].target[=].variable = "coding"
+// Set system
+* group[=].rule[=].rule[+].name = "sbiSystem"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].target[+].context = "coding"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
+// Map sbiCode → coding.code
+* group[=].rule[=].rule[+].name = "sbiCode"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].source[=].element = "sbiCode"
+* group[=].rule[=].rule[=].source[=].variable = "code"
+* group[=].rule[=].rule[=].target[+].context = "coding"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "code"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "code"
+// Map sbiOmschrijving → coding.display
+* group[=].rule[=].rule[+].name = "sbiDisplay"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].source[=].element = "sbiOmschrijving"
+* group[=].rule[=].rule[=].source[=].variable = "omschr"
+* group[=].rule[=].rule[=].target[+].context = "coding"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "display"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "omschr"
+
+
+Instance: kvk-logicals-and-struturemaps
+InstanceOf: Bundle
+Usage: #example
+Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
+Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
+* type = #transaction
+* insert BundleEntryPUT(StructureDefinition, KvkBasisprofiel)
+* insert BundleEntryPUT(StructureMap, KvkBasisprofielToOrganization)
+* insert BundleEntryPUT(StructureDefinition, KvkVestigingsprofiel)
+* insert BundleEntryPUT(StructureMap, KvkVestigingsprofielToLocation)
