@@ -25,14 +25,18 @@ mkdir -p "$OUTPUT_DIR"
 
 
 INPUT_FILE="${INPUT_DIR}/kvk-basisprofiel-90006623.json"
+INPUT_FILE_WITH_URA="${INPUT_DIR}/kvk-basisprofiel-90006623-with-ura.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-organization-90006623.json"
 TRANSFORM_MAP="http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
+
+# Add uraNummer to the basisprofiel input
+jq '. + {"uraNummer": ["00012345"]}' "$INPUT_FILE" > "$INPUT_FILE_WITH_URA"
 
 # Transform the KVK Basisprofiel JSON to a FHIR Organization resource
 echo "======Transforming KVK Basisprofiel to Organization..."
 java -jar "$VALIDATOR_JAR" \
   transform "$TRANSFORM_MAP" \
-  "$INPUT_FILE" \
+  "$INPUT_FILE_WITH_URA" \
   -output "$OUTPUT_FILE" \
   -version 4.0.1 \
   -ig "$RESOURCES_DIR" \

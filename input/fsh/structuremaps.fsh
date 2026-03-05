@@ -7,6 +7,7 @@ Id: kvk-basisprofiel
 Title: "KVK Basisprofiel"
 Description: "Logical model representing the KVK (Kamer van Koophandel) Basisprofiel API response structure as defined in the KVK API v1.4.0."
 * kvkNummer 0..1 string "Nederlands Kamer van Koophandel nummer: bestaat uit 8 cijfers"
+* uraNummer 0..* string "URA nummer uit het LRZa"
 * indNonMailing 0..1 string "Indicatie geen ongevraagde reclame per post of verkoop aan de deur"
 * naam 0..1 string "Naam onder Maatschappelijke Activiteit"
 * formeleRegistratiedatum 0..1 string "Registratiedatum onderneming in het Handelsregister"
@@ -149,53 +150,85 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "kvkNum"
-* group[=].rule[=].rule[+].name = "kvkAssigner"
-* group[=].rule[=].rule[=].source[+].context = "kvkNum"
-* group[=].rule[=].rule[=].target[+].context = "kvkId"
+
+
+// Rule: uraNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/ura)
+* group[=].rule[+].name = "uraNummer"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].source[=].element = "uraNummer"
+* group[=].rule[=].source[=].variable = "uraNum"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "identifier"
+* group[=].rule[=].target[=].variable = "uraId"
+* group[=].rule[=].rule[+].name = "uraUse"
+* group[=].rule[=].rule[=].source[+].context = "uraNum"
+* group[=].rule[=].rule[=].target[+].context = "uraId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "use"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "official"
+* group[=].rule[=].rule[+].name = "uraSystem"
+* group[=].rule[=].rule[=].source[+].context = "uraNum"
+* group[=].rule[=].rule[=].target[+].context = "uraId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
+* group[=].rule[=].rule[+].name = "uraValue"
+* group[=].rule[=].rule[=].source[+].context = "uraNum"
+* group[=].rule[=].rule[=].target[+].context = "uraId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "value"
+* group[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "uraNum"
+* group[=].rule[=].rule[+].name = "uraAssigner"
+* group[=].rule[=].rule[=].source[+].context = "uraNum"
+* group[=].rule[=].rule[=].target[+].context = "uraId"
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "assigner"
 * group[=].rule[=].rule[=].target[=].variable = "assignerRef"
 * group[=].rule[=].rule[=].rule[+].name = "assignerIdentifier"
-* group[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "assignerRef"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
 * group[=].rule[=].rule[=].rule[=].target[=].variable = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdSystem"
-* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
-* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "00000001"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
-* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "type"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdType"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCoding"
-* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdType"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "coding"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "assignerIdTypeCoding"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingSystem"
-* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdTypeCodingCode"
-* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerIdTypeCoding"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
@@ -848,6 +881,14 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].element = "type"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueString = "Organization"
+* group[=].rule[=].rule[+].name = "orgRefReference"
+* group[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].target[+].context = "orgRef"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "reference"
+* group[=].rule[=].rule[=].target[=].transform = #append
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "Organization/"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "kvkNum"
 
 // Rule: eersteHandelsnaam → name
 * group[=].rule[+].name = "eersteHandelsnaam"
