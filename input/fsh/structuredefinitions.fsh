@@ -22,7 +22,7 @@ Id: nl-gf-healthcareservice
 Title: "NL Generic Functions HealthcareService Profile"
 Description: "The technical details of a healthcare service that can be used in referrals, requests and orders"
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService"
-* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
@@ -45,7 +45,7 @@ Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
 Description: "Physical location details for healthcare services, organizations, and practitioners."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location"
-* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
@@ -100,7 +100,12 @@ can be accessed for localization purposes."""
 
 Invariant:   ura-identifier-or-partof
 Description: "an Organization instance must either have an URA-identifier or must be 'partOf' some other instance that is an nl-gf-organization instance."
-Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or partOf.exists()"
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or identifier.where(system='http://fhir.nl/fhir/NamingSystem/kvk').exists() or partOf.exists()"
+Severity:    #error
+
+Invariant:   assigner-identifier-system
+Description: "The assigner identifier system must be either URA or KVK."
+Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http://fhir.nl/fhir/NamingSystem/kvk'"
 Severity:    #error
 
 Profile: NlGfOrganization
@@ -110,22 +115,20 @@ Title: "NL Generic Functions Organization Profile"
 Description: "The organizational hierarchy and details for healthcare organizations."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization"
 * obeys ura-identifier-or-partof
-* identifier ^slicing.discriminator.type = #value
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+// * identifier ^slicing.discriminator[+].type = #profile
+// * identifier ^slicing.discriminator[=].path = "$this"
+// * identifier ^slicing.rules = #open
+// * identifier contains
+//     AssignedId 1..1
+// * identifier[AssignedId] only AuthorAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type ^slicing.discriminator.type = #value
-* type ^slicing.discriminator.path = "$this"
-* type ^slicing.rules = #open
 * type contains
     SBI 0..1
 * type[SBI] from NlGfOrgTypesVS (extensible)
+* type[SBI] ^patternCodeableConcept.coding.system = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
 * type[SBI] ^short = "SBI"
 * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
 * type[SBI] ^alias = "Standaard Bedrijfsindeling"
@@ -139,7 +142,7 @@ Id: nl-gf-organizationaffiliation
 Title: "NL Generic Functions OrganizationAffiliation Profile"
 Description: "The details of an affiliation/relationship between two organizations, such as a healthcare provider and a software vendor."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation"
-* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
@@ -170,7 +173,7 @@ Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
 Description: "The details of a healthcare practitioner's role within an organization."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole"
-* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
@@ -215,7 +218,8 @@ Description: """Identifier assigned by the author of a resource, such as a healt
 * value 1..
 * assigner 1..1
 * assigner.identifier 1..1
-* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* assigner.identifier obeys assigner-identifier-system
+* assigner.identifier.system 1..1
 * assigner.identifier.value 1..1
 * assigner.identifier.type 1..1
 * assigner.identifier.type.coding 1..1
