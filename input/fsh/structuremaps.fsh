@@ -810,14 +810,14 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "00000001"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
