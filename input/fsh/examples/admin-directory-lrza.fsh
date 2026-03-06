@@ -25,7 +25,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 1 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// // * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
@@ -68,7 +69,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 2 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
@@ -109,7 +111,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 3 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3"

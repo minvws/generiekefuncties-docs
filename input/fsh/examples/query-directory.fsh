@@ -28,7 +28,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 1 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
@@ -71,7 +72,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 2 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
@@ -112,7 +114,8 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "LRZa - Organization 3 - Endpoint"
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3"
@@ -159,7 +162,8 @@ Usage: #example
 Title: "Organization 1 - Endpoint"
 * insert AuthorAssignedIdentifier("https://cp1-test.example.org/api","59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
@@ -233,7 +237,8 @@ Usage: #example
 Title: "Organization 2 - Endpoint FHIR R4"
 * insert AuthorAssignedIdentifier("https://cp2-test.example.org/api","430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
@@ -253,7 +258,7 @@ Usage: #example
 Title: "Organization 2 - Endpoint DICOM-WADO-RS"
 * insert AuthorAssignedIdentifier("https://cp2-test.example.org/api","d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
-* payloadType[+].coding = $endpoint-payload-type#any "Any"
+* payloadType[+].coding = nl-gf-data-categories-cs#BEELDEN "Beelden"
 * connectionType = $endpoint-connection-type#dicom-wado-rs
 * name = "DICOM-WADO-RS Endpoint"
 * managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
@@ -272,7 +277,8 @@ Usage: #example
 Title: "Organization 2 - Endpoint FHIR STU3"
 * insert AuthorAssignedIdentifier("https://cp2-test.example.org/api","2427ca0c-8a29-4a6a-aabd-50cf02f587a7","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://nictiz.nl/fhir/CapabilityStatement/eOverdracht-servercapabilities "Transfer of Care - eOverdracht Server"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://nictiz.nl/fhir/CapabilityStatement/eOverdracht-servercapabilities "Transfer of Care - eOverdracht Server"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR STU3 Endpoint"
@@ -471,7 +477,8 @@ Usage: #example
 Title: "Organization 3 - Endpoint FHIR R4"
 * insert AuthorAssignedIdentifier("https://cp3-test.example.org/api","8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-admin-directory-update-client "Care Services Directory for Update Client"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://minvws.github.io/generiekefuncties-docs/CapabilityStatement/nl-gf-directory-for-update-client "Care Services Directory for Update Client"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR R4 Endpoint"
@@ -491,7 +498,8 @@ Usage: #example
 Title: "Organization 3 - Endpoint FHIR STU3"
 * insert AuthorAssignedIdentifier("https://cp3-test.example.org/api","72a349cc-7336-4a91-873d-fc9349769e1a","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * status = #active
-* payloadType[+].coding = nl-gf-data-exchange-capabilities#http://nictiz.nl/fhir/CapabilityStatement/eOverdracht-servercapabilities "Transfer of Care - eOverdracht Server"
+// * payloadType[+].coding = nl-gf-data-exchange-capabilities#http://nictiz.nl/fhir/CapabilityStatement/eOverdracht-servercapabilities "Transfer of Care - eOverdracht Server"
+* payloadType[+].coding = nl-gf-data-categories-cs#ENTITEITEN "Entiteiten"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR STU3 Endpoint"

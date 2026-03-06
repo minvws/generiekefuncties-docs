@@ -7,7 +7,8 @@ Description: "The technical details of an endpoint that can be used for electron
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * managingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
-* payloadType from NlGfDataExchangeCapabilitiesVS (extensible)
+* connectionType from NlGfConnectionTypesVS (extensible)
+* payloadType from NlGfPayloadTypeVS (extensible)
 
 Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
@@ -155,6 +156,32 @@ Description: "The details of an affiliation/relationship between two organizatio
 * participatingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * network 0.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
+* code from NlGfAuthorizationTypeVS (required)
+* extension contains NlGfDeviceIdentifier named deviceIdentifier 0..*
+* extension[deviceIdentifier] ^comment = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
+
+Profile: NlGfDevice
+Parent: Device
+Id: nl-gf-device
+Title: "NL Generic Functions Device Profile"
+Description: "The details of a device, such as a software application, used in the context of healthcare data exchange."
+* identifier ^slicing.discriminator.type = #pattern
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains
+    DeviceUrn 1..1
+* identifier[DeviceUrn].system = "urn:ietf:rfc:3986"
+* identifier[DeviceUrn].value 1..1
+* identifier[DeviceUrn].value obeys device-identifier-urn
+* extension contains NlGfDeviceEndpoint named endpoint 0..*
+* extension[endpoint].value[x] only Reference(NlGfEndpoint)
+
+Extension: NlGfDeviceEndpoint
+Id: nl-gf-device-endpoint
+Title: "NL Generic Functions Device Endpoint"
+Description: "A reference to an endpoint associated with this device."
+Context: Device
+* value[x] only Reference(NlGfEndpoint)
 
 Profile: NlGfPractitioner
 Parent: $NlPractitioner
@@ -247,3 +274,19 @@ Context: List
 * valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * valueReference.identifier.value 1..1
 * valueReference.reference 0..0
+
+Extension: NlGfDeviceIdentifier
+Id: nl-gf-device-identifier
+Title: "NL Generic Functions Device Identifier"
+Description: "An identifier for a device, such as a software application."
+* value[x] only Reference(NlGfDevice)
+* valueReference.identifier 1..1
+* valueReference.identifier.system = "urn:ietf:rfc:3986"
+* valueReference.identifier.value 1..1
+* valueReference.identifier.value obeys device-identifier-urn
+
+Invariant:   device-identifier-urn
+Description: "The device identifier must be a URN with a valid UUID or OID."
+Expression:  "valueReference.identifier.value.startsWith('urn:uuid:') or valueReference.identifier.value.startsWith('urn:oid:')"
+Severity:    #error
+

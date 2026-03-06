@@ -1,12 +1,3 @@
-ValueSet: NlGfDataExchangeCapabilitiesVS
-Id: nl-gf-data-exchange-capabilities-vs
-Title: "NL GF Data exchange capabilities"
-Description: "The data exchange capabilities supported by the NL Generic Functions."
-* ^status = #active
-* ^experimental = true
-* include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
-* include codes from system NlGfDataExchangeCapabilitiesCS
-
 ValueSet: NlGfWlzZorgprofielenVS
 Id: nl-gf-wlz-zorgprofielen-vs
 Title: "NL GF WLZ Zorgprofielen ValueSet"
@@ -31,4 +22,31 @@ Title: "NL GF Zorgcontext ValueSet"
 Description: "The care context concepts supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
-* include codes from system NlGfZorgcontextCS
+* include codes from system NlGfDataCategoriesCS
+
+ValueSet: NlGfConnectionTypesVS
+Id: nl-gf-connection-types-vs
+Title: "NL GF Connection Types ValueSet"
+Description: "Authorization and endpoint connection type codes supported by NL Generic Functions."
+* ^status = #active
+* ^experimental = true
+* include codes from system NlGfAuthorizationServerCS
+* include codes from system $endpoint-connection-type
+
+ValueSet: NlGfPayloadTypeVS
+Id: nl-gf-payload-type-vs
+Title: "NL GF Data exchange capabilities"
+Description: "The data exchange capabilities supported"
+* ^status = #active
+* ^experimental = true
+* include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
+* include codes from system NlGfDataCategoriesCS
+
+ValueSet: NlGfAuthorizationTypeVS
+Id: nl-gf-authorization-type-vs
+Title: "NL GF Authorization Type ValueSet"
+Description: "Authorization types supported by NL Generic Functions."
+* ^status = #active
+* ^experimental = true
+* include codes from system NlGfAuthorizationTypeCS
+

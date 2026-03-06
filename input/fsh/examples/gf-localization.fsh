@@ -7,7 +7,7 @@ Description: "Example instance of the NlGfLocalizationList profile. It expresses
 * extension[custodian].valueReference.identifier.value = "11111111"
 * status = #current
 * mode = #working
-* code = nl-gf-zorgcontext-cs#MEDAFSPRAAK "Medicatieafspraak"
+* code = nl-gf-data-categories-cs#MEDAFSPRAAK "Medicatieafspraak"
 * subject.identifier.system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
 * source.identifier.system = "https://cp1-test.example.org/device-identifiers"

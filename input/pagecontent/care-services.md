@@ -18,16 +18,16 @@ Here is a brief overview of the processes that are involved:
 <img src="careservices-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Adressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
+This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Addressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
 Each component, data model, and transaction will be discussed in more detail.
 
 ### Components (actors)
 
 
 #### Administration Directory
-The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for a client (e.g. a webportal for users) to create, update and delete resources. 
+The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-admin-client.html) for a client (e.g. a webportal for users) to create, update and delete resources. 
 
-The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data (externally) for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
+The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data (externally) for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
 
 
 
@@ -66,7 +66,7 @@ The following sequence diagram illustrates how an Update Client performs a synch
 
 
 #### Query Directory
-The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Update Client to create, update and delete resources. 
+The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-admin-client.html) for an Update Client to create, update and delete resources. 
 Due to the consolidation process of the Update Client, not all (intermediate) changes are replicated between Administration Directories and Query Directory
 
 The Query Directory serves/exposes all addressable entities to one or more query clients (e.g. a webportal for users). The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a client to search and read resources.  

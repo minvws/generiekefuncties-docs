@@ -1,19 +1,19 @@
-Instance: nl-gf-query-directory-query-client-reads
+Instance: nl-gf-directory-for-admin-client
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Query Directory for Query Client for only Read operations"
+* title = "Directory capability for an Administration Client actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
-* description = "Dutch profile of the CapabilityStatement for Query Directory Actor that should be able to work with an Query Client for only Read operations."
+* description = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
 * kind = #requirements
 * fhirVersion = #4.0.1
 * format[+] = #application/fhir+xml
 * format[+] = #application/fhir+json
 * rest
   * mode = #server
-  * documentation = "Dutch profile of the IHE ITI mCSD ITI-90 endpoint for just read operations"
+  * documentation = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
   * resource[+]
     * insert Expectation(MAY)
     * type = #HealthcareService
@@ -21,7 +21,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #Location
@@ -29,7 +32,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #Organization
@@ -37,7 +43,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #Practitioner
@@ -45,7 +54,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #PractitionerRole
@@ -53,7 +65,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #Endpoint
@@ -61,7 +76,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(MAY)
     * type = #OrganizationAffiliation
@@ -69,4 +87,21 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #read
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
+  * resource[+]
+    * insert Expectation(MAY)
+    * type = #Device
+    * supportedProfile[+] = Canonical(NlGfDevice)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
+  * interaction[+]
+    * insert Expectation(SHALL)
+    * code = #transaction
