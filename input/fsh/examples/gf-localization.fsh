@@ -7,11 +7,11 @@ Description: "Example instance of the NlGfLocalizationList profile. It expresses
 * extension[custodian].valueReference.identifier.value = "11111111"
 * status = #current
 * mode = #working
-* code = nl-gf-data-categories-cs#MEDAFSPRAAK "Medicatieafspraak"
+* code = nl-gf-data-categories-cs#MedicationRequest "Medicatieafspraak"
 * subject.identifier.system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
-* source.identifier.system = "https://cp1-test.example.org/device-identifiers"
-* source.identifier.value = "EHR-SYS-2024-001"
+* source.identifier.system = "urn:ietf:rfc:3986"
+* source.identifier.value = "40d46027-db87-40b0-b674-61a9a97f0954"
 * source.type = $resource-types#Device
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 

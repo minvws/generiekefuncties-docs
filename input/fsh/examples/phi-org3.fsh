@@ -20,7 +20,10 @@ Title: "Patient Jaantje Merkens"
 * address.line = "Kerkstraat 18"
 * address.postalCode = "7071 WZ"
 * address.city = "Ulft"
-* managingOrganization = Reference(Organization/3e799075-63a2-4a4c-913d-a91b8198463d) "Organization 1"
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* managingOrganization.identifier.value = "33333333"
+* managingOrganization.type = "Organization"
+* managingOrganization.display = "Organization 1"
 
 Instance: 8732d369-7759-447b-af01-f3e0c601b452
 InstanceOf: MedicationStatement
@@ -31,7 +34,9 @@ Title: "MedicationStatement for Apremilast"
 * medicationCodeableConcept = $atc#L04AA32 "apremilast"
 * subject = Reference(Patient/96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
 * dateAsserted = "2024-10-03"
-* informationSource = Reference(PractitionerRole/d60525bd-5caf-4437-8f4b-4156300a27de)
+* informationSource.identifier.system = "https://cp3-test.example.org/employees"
+* informationSource.identifier.value = "d60525bd-5caf-4437-8f4b-4156300a27de"
+* informationSource.type = "PractitionerRole"
 * dosage[0].text = "10 mg orally every 4 hours"
 * dosage[0].timing.repeat.frequency = 6
 * dosage[0].timing.repeat.period = 1
@@ -49,11 +54,14 @@ Title: "CareTeam of Patient Jaantje Merkens"
 * participant[+].period.start = "2024-08-27"
 * participant[=].member = Reference(Patient/96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
 * participant[+].period.start = "2024-08-27"
-* participant[=].member = Reference(PractitionerRole/d60525bd-5caf-4437-8f4b-4156300a27de)
+* participant[=].member.identifier.system = "https://cp3-test.example.org/employees"
+* participant[=].member.identifier.value = "d60525bd-5caf-4437-8f4b-4156300a27de"
+* participant[=].member.type = "PractitionerRole"
 * participant[+].period.start = "2024-08-27"
-* participant[=].member = Reference(Organization/3e799075-63a2-4a4c-913d-a91b8198463d)
+* participant[=].member.display = "Organization 1"
 * participant[=].member.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * participant[=].member.identifier.value = "33333333"
+* participant[=].member.type = "Organization"
 
 Instance: phi-org3
 InstanceOf: Bundle

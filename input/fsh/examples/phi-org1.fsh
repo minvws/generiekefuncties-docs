@@ -18,7 +18,10 @@ Title: "Patient Jaantje Merkens"
 * address.line = "Kerkstraat 18"
 * address.postalCode = "7071 WZ"
 * address.city = "Ulft"
-* managingOrganization = Reference(Organization/4cb35b96-f021-4e15-bf71-d67a6d4bebec) "Organization 1"
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* managingOrganization.identifier.value = "11111111"
+* managingOrganization.type = "Organization"
+* managingOrganization.display = "Organization 1"
 
 Instance: 8cdd8f8d-f75b-4285-851e-ff302dad46fb
 InstanceOf: Condition
@@ -34,7 +37,10 @@ Title: "Condition General Weakness"
 * bodySite[+] = $sct#421480009 "Lower extremity or both lower extremities"
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
 * onsetDateTime = "2021-08-01T00:00:00Z"
-* recorder = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53) "Caroline van Dijk at Organization 1"
+* recorder.identifier.system = "https://cp1-test.example.org/employees"
+* recorder.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* recorder.type = "PractitionerRole"
+* recorder.display = "Caroline van Dijk at Organization 1"
 * note.text = "Patient reports general weakness and loss of energy in legs."
 
 Instance: 73f4bffe-eac4-4863-8e4a-852c578f95dd
@@ -47,7 +53,10 @@ Title: "ServiceRequest Vascular medicine"
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
-* requester = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53) "Caroline van Dijk at Organization 1"
+* requester.identifier.system = "https://cp1-test.example.org/employees"
+* requester.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* requester.type = "PractitionerRole"
+* requester.display = "Caroline van Dijk at Organization 1"
 * code = $sct#11429006 "Consultation"
 * reasonReference = Reference(Condition/8cdd8f8d-f75b-4285-851e-ff302dad46fb) "General Weakness"
 * performerType = $sct#722414000 "Vascular medicine"
@@ -62,7 +71,10 @@ Title: "ServiceRequest Neurological Diagnostics"
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
-* requester = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53) "Caroline van Dijk at Organization 1"
+* requester.identifier.system = "https://cp1-test.example.org/employees"
+* requester.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* requester.type = "PractitionerRole"
+* requester.display = "Caroline van Dijk at Organization 1"
 * code = $sct#11429006 "Consultation"
 * reasonReference = Reference(Condition/8cdd8f8d-f75b-4285-851e-ff302dad46fb) "General Weakness"
 * performerType = $sct#394591006 "Neurology"
@@ -77,7 +89,10 @@ Title: "ServiceRequest Orthoptic Diagnostics"
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
-* requester = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53) "Caroline van Dijk at Organization 1"
+* requester.identifier.system = "https://cp1-test.example.org/employees"
+* requester.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* requester.type = "PractitionerRole"
+* requester.display = "Caroline van Dijk at Organization 1"
 * code = $sct#11429006 "Consultation"
 * reasonReference = Reference(Condition/8cdd8f8d-f75b-4285-851e-ff302dad46fb) "General Weakness"
 * performerType = $sct#1345026002 "Orthopedic specialty"
@@ -92,7 +107,10 @@ Title: "ServiceRequest Internal medicine"
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
-* requester = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53) "Caroline van Dijk at Organization 1"
+* requester.identifier.system = "https://cp1-test.example.org/employees"
+* requester.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* requester.type = "PractitionerRole"
+* requester.display = "Caroline van Dijk at Organization 1"
 * code = $sct#11429006 "Consultation"
 * reasonReference = Reference(Condition/8cdd8f8d-f75b-4285-851e-ff302dad46fb) "General Weakness"
 * performerType = $sct#419192003 "Internal medicine"
@@ -108,7 +126,9 @@ Title: "MedicationStatement Urokinase"
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db)
 * effectiveDateTime = "2017-09-03"
 * dateAsserted = "2017-09-03"
-* informationSource = Reference(PractitionerRole/5fa4c91a-a12f-48ae-a4c7-92971dc7ab53)
+* informationSource.identifier.system = "https://cp1-test.example.org/employees"
+* informationSource.identifier.value = "5fa4c91a-a12f-48ae-a4c7-92971dc7ab53"
+* informationSource.type = "PractitionerRole"
 * dosage[0].text = "Take one tablet by mouth twice daily"
 * dosage[0].timing.repeat.frequency = 2
 * dosage[0].timing.repeat.period = 1

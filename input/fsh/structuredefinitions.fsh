@@ -90,6 +90,9 @@ can be accessed for localization purposes."""
 * extension contains NlGfLocalizationCustodian named custodian 1..1
 * extension[custodian] ^comment = "The Organization which published the data"
 * source 1..1
+* source.identifier.system = "urn:ietf:rfc:3986"
+* source.identifier.value 1..1
+* source.identifier.value obeys device-identifier-urn
 * source only Reference(Device)
 * source.reference ..0
 * source.type = $resource-types#Device

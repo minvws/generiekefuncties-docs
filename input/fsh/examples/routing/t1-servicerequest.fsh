@@ -9,5 +9,8 @@ Description: "Request from Organization 2 for nursing care"
 * status = #active
 * intent = #order
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) "Patient Jaantje Merkens"
-* requester = Reference(PractitionerRole/f051d3bd-26ff-4030-a5b6-fc4ef2be83ba) "Caroline van Dijk at Organization 2"
+* requester.identifier.system = "https://cp2-test.example.org/employees"
+* requester.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* requester.type = "PractitionerRole"
+* requester.display = "Caroline van Dijk at Organization 2"
 * code = NlGfWlzZorgprofielenCS#6VV "VV Beschermd wonen met intensieve verzorging en verpleging"

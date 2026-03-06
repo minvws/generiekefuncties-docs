@@ -21,7 +21,10 @@ Description: "Patient Jaantje Merkens in EHR of Organization 2"
 * address.line = "Kerkstraat 18"
 * address.postalCode = "7071 WZ"
 * address.city = "Ulft"
-* managingOrganization = Reference(Organization/cff921f3-c1c1-4a4c-8f0f-cafd0aa25067) "Organization 2"
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* managingOrganization.identifier.value = "22222222"
+* managingOrganization.type = "Organization"
+* managingOrganization.display = "Organization 2"
 
 //8jr geleden: Aortadissectie
 Instance: 8f26c2c2-9a7b-4a2f-84ac-264f1177964c
@@ -47,7 +50,9 @@ Title: "MedicationRequest Cisplatine"
 * medicationCodeableConcept = $atc#L01BC05 "gemcitabine"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) 
 * authoredOn = "2017-09-03"
-* requester = Reference(PractitionerRole/f051d3bd-26ff-4030-a5b6-fc4ef2be83ba) // Organization 2
+* requester.identifier.system = "https://cp2-test.example.org/employees"
+* requester.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* requester.type = "PractitionerRole"
 * dosageInstruction[0].text = "Take one tablet by mouth twice daily"
 * dosageInstruction[0].timing.repeat.frequency = 2
 * dosageInstruction[0].timing.repeat.period = 1
@@ -66,7 +71,9 @@ Title: "MedicationStatement Cisplatine"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d)
 * effectiveDateTime = "2017-09-03"
 * dateAsserted = "2017-09-03"
-* informationSource = Reference(PractitionerRole/f051d3bd-26ff-4030-a5b6-fc4ef2be83ba)
+* informationSource.identifier.system = "https://cp2-test.example.org/employees"
+* informationSource.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* informationSource.type = "PractitionerRole"
 * dosage[0].text = "Take one tablet by mouth twice daily"
 * dosage[0].timing.repeat.frequency = 2
 * dosage[0].timing.repeat.period = 1
@@ -96,7 +103,9 @@ Title: "Procedure Thyroidectomy"
 * code = $sct#13619001 "Thyroidectomy"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) 
 * performedDateTime = "2022-05-15T08:00:00Z"
-* performer[0].actor = Reference(PractitionerRole/f051d3bd-26ff-4030-a5b6-fc4ef2be83ba)
+* performer[0].actor.identifier.system = "https://cp2-test.example.org/employees"
+* performer[0].actor.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* performer[0].actor.type = "PractitionerRole"
 * reasonReference = Reference(Condition/5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757)
 
 Instance: phi-org2

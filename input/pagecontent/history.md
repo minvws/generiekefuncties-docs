@@ -18,7 +18,7 @@
 #### Significant changes/Closed issues:
 - Care-services; Simplified architecture and synchronization between directories.
 - Care-services; Support for Endpoint-management for all organizations that own/operate endpoints (not just the service providers that supply an mCSD-Directory); added OrganizationAffiliations-profile and Device-profile 
-- Care-services & Localization; updated codesystem/valueset 'data categories' for (Care-services) Endpoint.payloadType and (Localization) List.code (a.k.a. 'zorgcontext')
+- Care-services & Localization; updated codesystem/valueset 'data categories' for (Care-services) Endpoint.payloadType and (Localization) List.code (a.k.a. 'zorgcontext'). 'Oauth'-endpoints are specified by connectionType (not PayloadType)
 - Care-services; Renamed transactions and CapabilityStatements to, e.g., ITI-91-***NL*** to reflect Generic Function Addressing is the Dutch implementation of the IHE mCSD implementation Guide
 - Care-services; Added structuremaps for Chamber-of-commerce (KvK) data transformation to FHIR Organization and Location resourcetypes
 
