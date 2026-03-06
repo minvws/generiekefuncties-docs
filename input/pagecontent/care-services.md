@@ -118,6 +118,41 @@ The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html)i
 OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. It could also be used the represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is based on the mCSD-OrganizationAffiliation profile and requires an author-assigned identifier
 
+### Resource lifecycle management
+
+#### Deactivation over deletion
+
+All resource types in this IG have a `status` or `active` field that indicates whether the resource is currently in use:
+
+| Resource                | Field    | Inactive value                         |
+|-------------------------|----------|----------------------------------------|
+| Endpoint                | `status` | `suspended`, `off`, `entered-in-error` |
+| Location                | `status` | `suspended`, `inactive`                |
+| HealthcareService       | `active` | `false`                                |
+| Organization            | `active` | `false`                                |
+| OrganizationAffiliation | `active` | `false`                                |
+| PractitionerRole        | `active` | `false`                                |
+| Practitioner            | `active` | `false`                                |
+
+When a resource is no longer in use (e.g. a department is closed, a practitioner leaves, or a healthcare service is discontinued), the Administration Client SHOULD set the `status` or `active` field to reflect this rather than issuing a FHIR `DELETE`. This is the preferred method for removing resources from active use.
+
+The FHIR `DELETE` interaction is not prohibited by this IG: it remains available for system-administrative tasks such as correcting erroneous registrations or data cleanup. However, `DELETE` SHOULD NOT be used for the routine deactivation of resources.
+
+#### Rationale
+
+Deactivation is preferred over deletion for the following reasons:
+
+- **Referential integrity:** Other resources (and external systems) may reference a deleted resource. Keeping the resource with an inactive status preserves these references.
+- **Audit and traceability:** Retaining deactivated resources provides an audit trail of what was previously available.
+- **Synchronization reliability:** The `_history` mechanism can represent status changes as regular updates, which are simpler to process than `DELETE` entries. A full reload (without `_history`) will naturally include deactivated resources but will miss deleted ones, potentially causing the Query Directory to retain stale records.
+
+#### Client obligations
+
+Clients (both Update Clients and Query Clients) MUST respect the `status` and `active` fields:
+
+- An Update Client MUST propagate status changes to the Query Directory. Deactivated resources MUST be kept in the Query Directory with their updated status, not removed.
+- A Query Client SHOULD treat resources with an inactive status as unavailable for operational use (e.g. exclude them from search results presented to end users, not use their Endpoints for data exchange).
+- Clients SHOULD NOT delete resources from their local stores solely because they have been deactivated. The resource SHOULD be retained for referential integrity and audit purposes.
 
 
 ### Security
