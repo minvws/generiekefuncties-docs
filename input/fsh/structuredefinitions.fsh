@@ -157,8 +157,8 @@ Description: "The details of an affiliation/relationship between two organizatio
 * network 0.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code from NlGfAuthorizationTypeVS (required)
-* extension contains NlGfDeviceIdentifier named deviceIdentifier 0..*
-* extension[deviceIdentifier] ^comment = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
+* extension contains NlGfDeviceIdentifier named device 0..*
+* extension[device] ^comment = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
 
 Profile: NlGfDevice
 Parent: Device
