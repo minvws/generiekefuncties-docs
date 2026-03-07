@@ -1,26 +1,28 @@
+### Introduction
+
+Generic Function Addressing (GFA) defines how healthcare parties can publish, discover, and use trusted addressing information for organizations, services, locations, and endpoints. Its purpose is to make healthcare data exchange interoperable and reliable by helping practitioners and systems route requests, referrals, and notifications to the correct destination.
 
 
 ### Solution overview
 
-
-Generic Function Addressing (GFA) follows the IHE [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) ([GF-Adressering, ADR-0](https://github.com/minvws/generiekefuncties-adressering/issues/166)). The [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) provides multiple options for deployment. This guide specifies the choices made for The Netherlands. Most impactful/striking choice are:
-
 Here is a brief overview of the processes that are involved: 
-1. Every care provider registers its addressable entities in an 'Administration Directory'. This IG distinguishes the actor ['***Administration*** Directory'](#administration-directory) and the ['***Query*** Directory'](#query-directory); in the IHE mCSD specification, these are both called a 'Directory'.
-1. Every care provider registers the endpoint (URL) of its 'Administration Directory' at the LRZa registry (also an 'Administration Directory').
-1. An 'Update Client' uses the LRZa ([GF-Adressering, ADR-7](https://github.com/minvws/generiekefuncties-adressering/issues/155)) and the care provider Administration Directories to consolidate all data into a 'Query Directory.'
-1. A practitioner and/or system (EHR) can now use the Query Directory to search for resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
+
+1. Every care provider registers one or more parties (e.g. an IT vendor) that is authorized to manage their addressable entities at the ['Directory'](#directory) of the 'Landelijk Register Zorgaanbieders' (LRZa).
+1. The authorized parties ('Data Source' actors) create and manage addressable entities in the LRZa Directory.
+1. A 'Query client' is used to, initially, populate a local replica of the LRZa Directory
+1. An 'Update Client' is used periodically to fetch updates from the LRZa Directory.
+1. A practitioner and/or system (EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
 <img src="careservices-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Addressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
-Each component, data model, and transaction will be discussed in more detail.
+This overview implies a decentralized architecture (local Data Source actors and LRZa Directory replica's) for the many components. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities).  
+The solution is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile.
 
 ### National Constraints Compared to IHE mCSD
 
-This specification constrains and profiles IHE mCSD for the Dutch national context. The following national choices apply:
+This specification constrains and profiles [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) for the Dutch national context. The following national choices apply:
 
 1. Data model profiling:
 The national profiles SHALL be based on NL-core where available and SHALL be aligned with relevant IHE mCSD profile constraints.
@@ -32,82 +34,74 @@ The Practitioner resource is intentionally removed from the operational exchange
 The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including Localization and TA Notified Pull.
 
 1. LRZa Directory operational role:
-The LRZa Directory SHALL NOT support matching of care service entities. Matching SHALL be performed on a local replica (Query Directory) populated from LRZa and other authoritative sources. The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions without search parameters.
+The LRZa Directory SHALL NOT support matching of care service entities. Matching SHALL be performed on a local replica (Query Directory) populated from LRZa and other authoritative sources. The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions without search parameters.  
+Addressable entities may become inactive/deprecated at some point, but as these will be referred to from health records (for decades), deletion of addressable entities SHALL not be supported by the LRZa Directory. 
 
-### Components (actors)
+### Actors
+Each actor will now be discussed in more detail.
 
+#### LRZa Directory
+The LRZa Directory is the central national directory for publishing and distributing addressable entities. It is the authoritative source for nationally governed directory content and provides interfaces for administration and retrieval of updates. The LRZa Directory is not intended for runtime matching in operational healthcare workflows; searching/matching SHALL be performed on local replicas.
 
-#### Administration Directory
-The Administration Directory persist all addressable entities of one or more healthcare organizations. The Administration Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-admin-client.html) for a client (e.g. a webportal for users) to create, update and delete resources. 
-
-The Administration Directory MUST implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-update-client.html) to publish changes of addressable entities. These changes are consumed by an [Update Client](#update-client). If the Administration directory also acts as the [Query Directory](#query-directory) locally, please make sure the Administration Directory only exposes data (externally) for which it is the original source (author/custodian). In other words; data that has been copied from the original source, SHOULD NOT be exposed to other organizations.
-
-
+#### Data Source
+A Data Source is an authorized party (for example an IT vendor) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-data-source.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
 
 #### Update Client
-
-The Update Client is responsible for aggregating and synchronizing addressable entity data from multiple Administration Directories. It periodically retrieves updates, including new, modified, or deleted records, and consolidates this information into a Query Directory. 
-
-The Update Client uses a [FHIR 'history-type' operation](http://hl7.org/fhir/R4/http.html#history) and (optionally) parameter `_since` to get updates from Administration Directories, for example:
-
-
-```
-GET https://somecareprovider.nl/fhirR4/Organization/_history?_since=2025-02-07T13:28:17.239+02:00&_format=application/fhir+json
-```
-Besides using the 'history-type' operation, the Update Client should be able to query all instances in the Administration Directory using a search operation. Either for the initial load or periodically for a full reload to fix edge-case scenario's (e.g. Administration Directory backup restores). ([GF-Adressering, ADR-14](https://github.com/minvws/generiekefuncties-adressering/issues/163))
-
-
-During consolidation, multiple Administration Directories may have overlapping or conflicting entities. An Update Client MUST only use data from authoritative data sources ([GF-Adressering, ADR#186](https://github.com/minvws/generiekefuncties-adressering/issues/186)) and MUST obey these guidelines:
-- The LRZa Administration Directory is authoritative for Organization instances with `identifier` of system `http://fhir.nl/fhir/NamingSystem/ura` (URA) and its `name`. When the healthcare provider's Administration Directory also provides a `name` value (for an Organization-instance with a URA-identifier), these values should be ignored. Other elements from the healthcare provider's Administration Directory should be added. This way, a healthcare provider can add an `alias` or `endpoint` using it's own Administration Directory.
-- The LRZa Administration Directory contains a list of Organization resources (identified by a URA) and Endpoint resources referencing the Administration Directory endpoint (URL). An Administration Directory is only authoritative for the healthcare providers that registered this Administration Directory endpoint (URL) at the LRZa. Information about other healthcare providers MUST be disregarded. For example, if the LRZa Administration Directory has 20.000 Organization-records, of which 2 Organizations (identified by 'URA-1' and 'URA-2') use the same Administration Directory endpoint ('https://admindirectory.example.com/'). This Endpoint MAY contain other resources (e.g. Organization/Location/HealthcareService-records), not authored by URA-1 and URA-2. These other resources MUST be disregarded by update clients as this Administration Directory is not the authoritative source.
-- All HealthcareServices, Locations, PractitionerRoles and Organization-entities of a single healthcare provider MUST (indirectly) link to a top-level Organization-instance with a URA-identifier:
-  - All HealthcareService, Location, PractitionerRole entities MUST be directly linked to an Organization-instance (could be 'sub-Organization' like a department).
-  - All Organization-instances MUST either link to a parent-Organization or have a URA-identifier (being a top-level Organization instance)
-  - All Endpoint-instances MUST be linked to from one of the HealthcareService or Organization-instances.
-
-After consolidation, the Update Client writes the updates to a Query Directory. The Update Client MAY use the same interactions a Administration Client uses to register entities in an Administration Directory.
+The Update Client periodically synchronizes from the LRZa Directory to a local replica. It consumes update-oriented interactions defined in [these capabilities](./CapabilityStatement-nl-gf-directory-for-update-client.html). In this specification, this is modeled with `history-type` interactions per resource type and `_since` to request incremental updates. The Update Client may additionally perform periodic full reloads for recovery scenarios.
 
 ##### Update Client Sync Example
-
-The following sequence diagram illustrates how an Update Client performs a synchronization operation to consolidate data from multiple Administration Directories into a Query Directory:
+The following sequence diagram illustrates how an Update Client synchronizes data from the LRZa Directory into a local replica:
 
 <div>
 {% include care-services-sync-example.svg %}
 </div>
 
-
-
-
-#### Directory
-The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-admin-client.html) for an Update Client to create, update and delete resources. 
-Due to the consolidation process of the Update Client, not all (intermediate) changes are replicated between Administration Directories and Query Directory
-
-The Query Directory serves/exposes all addressable entities to one or more query clients (e.g. a webportal for users). The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a client to search and read resources.  
-
-
 #### Query Client
-The Query Client is used to search and retrieve information from the Query Directory. It enables practitioners, EHR systems, and other healthcare applications to discover healthcare services, organizations, departments, locations, endpoints, or other EHR-systems across the entire ecosystem. By querying the Query Directory, users can efficiently find up-to-date and authoritative addressable entities for care coordination, referrals, and electronic data exchange.
+The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
+
+The [Query Client capabilities](./CapabilityStatement-nl-gf-directory-for-query-client.html) are also used to populate the local repository. The `search-type` interaction (without search parameters) is used for this initial load.
+
+### Transactions
+
+#### Care Services Feed: ITI-130-NL
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement.
+
+#### Request Care Services Updates: ITI-91-NL
+The Update Client retrieves changes from the LRZa Directory using `history-type` interactions per supported resource, optionally constrained by `_since` for incremental synchronization.
+
+#### Search Care Services: ITI-90-NL
+The Query Client loads/queryies directory data for initial population of the local replication using `search-type` interactions without search parameters.
 
 
-### Data models
-Within GF Addressing, profiles are used to validate data. They are based on both mCSD-profiles and nl-core-profiles. 
-An overview of the *most common* elements and relations between data models:
+### Entities
+Within GF Addressing, several addressable entities are used to capture information. 
+An overview of the *most common* elements and relations between entities:
 
 <img src="careservices-datamodel.png" width="100%" style="float: none"/>
 
-A brief description of the data models and their profile for this guide:
-
-#### Organization
-Organizations are “umbrella” entities; these may be considered the administrative bodies under whose auspices care services are provided. An (top-level)Organization-instance has a URA `identifier`, `type`, `status`, and `name`. It may have additional attributes like `endpoint`. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
-The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is used to represent organizations and their hierarchical relations in this guide.
-
-#### Endpoint
-An Organization may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, an DICOM web services, or some other mechanism. 
-The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used to represent electronic access points for data exchange.
+A brief description of the entities:
 
 #### HealthcareService
-Healthcare services are used to publish which (medical) services are provided by a (child) Organization. Examples include surgical services, antenatal care services, or primary care services. These services in `HealthcareService.type` can be extended by references to specific ActivityDefinitions and PlanDefinitions that are supported. The combination of a HealthcareService offered at a Location may have specific attributes including contact person, hours of operation, etc.
+Healthcare services are used to publish which (medical) services are provided by a (child) Organization at some Location(s). Examples include surgical services, antenatal care services, or primary care services. These services in `HealthcareService.type` can be extended by references to specific ActivityDefinitions and PlanDefinitions that are supported. The combination of a HealthcareService offered at a Location may have specific attributes including contact person, hours of operation, etc. Typically, HealthcareServices use Endpoints that support receiving notifications or requests. 
 The [NL-GF-HealthcareService profile](./StructureDefinition-nl-gf-healthcareservice.html) is used to represent healthcare service offerings.
+
+
+#### Organization
+Organizations are “umbrella” entities; these may be considered the administrative bodies under whose auspices care services are provided. Typically, (top-level)Organization-instances use Endpoints that publish healthcare data for other (healthcare) organizations to query. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
+The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is used to represent organizations and their hierarchical relations in this guide.
+
+
+
+#### Endpoint
+An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, an DICOM web services, or some other mechanism. Typically, Organizations, Devices and HealthcareServices refer to Endpoints. This relationship is meant to indicate that an, e.g. a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization; the managing organization (e.g. IT vendor) and not the organization using the endpoint.
+The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used to represent electronic access points for data exchange.
+
+
+#### Device
+Device resources are, in GF Adressing, used to represent software applications or technical systems involved in healthcare data exchange. A Device can reference one or more Endpoints that it uses/provides, enabling efficient endpoint lookup and query-routing in workflows such as Localization and TA Notified Pull. In this guide, Devices are also referenced from OrganizationAffiliation to indicate which technical system is authorized in the relationship between a care provider and an IT vendor.
+The [NL-GF-Device profile](./StructureDefinition-nl-gf-device.html) is used to represent these technical systems and their endpoint references.
+
+
 
 #### Location
 Locations are physical places where care can be delivered such as buildings (NL: Vestiging), wards, rooms, or vehicles. A Location may have geographic attributes (address, geocode), attributes regarding its hours of operation, etc. Each Location is related to one (child) Organization. A location may have a hierarchical relationship with other locations (e.g. building > floor > room).
@@ -115,7 +109,7 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 
 
 #### PractitionerRole
-PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations, supporting scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging.
+PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations, supporting scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging, but should not contain privacy-sensitive data.
 The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations.
 
 

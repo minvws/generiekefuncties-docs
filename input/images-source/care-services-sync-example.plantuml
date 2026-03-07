@@ -7,56 +7,60 @@ hide footbox
 !pragma teoz true
 
 participant  UC as "Update Client"
-participant  LRZa as "LRZa\nAdministration Directory"
-participant  AD1 as "Care Provider\nAdmin Directory 1"
-participant  AD2 as "Care Provider\nAdmin Directory 2"
-participant  QD as "Query Directory"
+participant  QC as "Query Client"
+participant  LRZa as "LRZa\nDirectory"
+participant  QD as "Local Replica\n(Query Directory)"
 
 activate UC
-note over UC: Periodic sync triggered\n(e.g., every day)
+activate QC
+note over QC: Initial load of local replica
 
-UC -> LRZa: GET /Organization?_include=Organization:endpoint\nGet list of organizations and their endpoints
+QC -> LRZa: GET /Organization
 activate LRZa
-LRZa -> UC: Bundle with Organizations + Endpoints
+LRZa -> QC: Bundle (searchset)
+QC -> LRZa: GET /Location
+LRZa -> QC: Bundle (searchset)
+QC -> LRZa: GET /HealthcareService
+LRZa -> QC: Bundle (searchset)
+QC -> LRZa: GET /Endpoint
+LRZa -> QC: Bundle (searchset)
+QC -> LRZa: GET /Device
+LRZa -> QC: Bundle (searchset)
+QC -> LRZa: GET /OrganizationAffiliation
+LRZa -> QC: Bundle (searchset)
 deactivate LRZa
 
-note over UC: Extract Administration Directory URLs\nfrom returned Endpoints
-
-UC -> AD1: GET /Organization/_history?_include=Organization:endpoint&_since=2025-02-07T13:28:17
-activate AD1
-UC -> AD1: GET /Location/_history?_since=2025-02-07T13:28:17
-UC -> AD1: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
-AD1 -> UC: Bundle (history) with changes
-AD1 -> UC: Bundle (history) with changes
-AD1 -> UC: Bundle (history) with changes
-deactivate AD1
-
-UC -> AD2: GET /Organization/_history?_include=Organization:endpoint&_since=2025-02-07T13:28:17
-activate AD2
-UC -> AD2: GET /Location/_history?_since=2025-02-07T13:28:17
-UC -> AD2: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
-AD2 -> UC: Bundle (history) with changes
-AD2 -> UC: Bundle (history) with changes
-AD2 -> UC: Bundle (history) with changes
-deactivate AD2
-
-note over UC: Consolidate & validate data:\n- Apply authoritative source rules\n- Filter non-authoritative data\n- Validate URA linkage\n- Resolve conflicts
-
-UC -> QD: POST /Organization (create/update)
+QC -> QD: POST / (transaction bundle)\ninitial population
 activate QD
-QD -> UC: 201 Created / 200 OK
+QD -> QC: 200 OK
+deactivate QD
+deactivate QC
 
-UC -> QD: POST /Location (create/update)
-QD -> UC: 201 Created / 200 OK
+note over UC: Periodic incremental sync\n(e.g., every day)
 
-UC -> QD: POST /HealthcareService (create/update)
-QD -> UC: 201 Created / 200 OK
+UC -> LRZa: GET /Organization/_history?_since=2025-02-07T13:28:17
+activate LRZa
+LRZa -> UC: Bundle (history)
+UC -> LRZa: GET /Location/_history?_since=2025-02-07T13:28:17
+LRZa -> UC: Bundle (history)
+UC -> LRZa: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
+LRZa -> UC: Bundle (history)
+UC -> LRZa: GET /Endpoint/_history?_since=2025-02-07T13:28:17
+LRZa -> UC: Bundle (history)
+UC -> LRZa: GET /Device/_history?_since=2025-02-07T13:28:17
+LRZa -> UC: Bundle (history)
+UC -> LRZa: GET /OrganizationAffiliation/_history?_since=2025-02-07T13:28:17
+LRZa -> UC: Bundle (history)
+deactivate LRZa
 
-UC -> QD: DELETE /HealthcareService/{id}\n(for deleted resources)
-QD -> UC: 204 No Content
+note over UC: Consolidate and validate updates
+
+UC -> QD: POST / (transaction bundle)\napply updates to replica
+activate QD
+QD -> UC: 200 OK
 deactivate QD
 
-note over UC,QD: Sync complete.\nStore timestamp for next sync.
+note over UC,QD: Sync complete.\nPersist new watermark timestamp.
 deactivate UC
 
 @enduml
