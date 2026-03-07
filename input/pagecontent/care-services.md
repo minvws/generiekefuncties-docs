@@ -5,9 +5,6 @@
 
 Generic Function Addressing (GFA) follows the IHE [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) ([GF-Adressering, ADR-0](https://github.com/minvws/generiekefuncties-adressering/issues/166)). The [mCSD profile](https://profiles.ihe.net/ITI/mCSD/index.html) provides multiple options for deployment. This guide specifies the choices made for The Netherlands. Most impactful/striking choice are:
 
-- using a combination of 'NL-core' and 'IHE mCSD' for the FHIR-profiles in this IG.
-- using the Landelijke Register Zorgaanbieders (LRZa) as the source/master-list of all other sources. 
-
 Here is a brief overview of the processes that are involved: 
 1. Every care provider registers its addressable entities in an 'Administration Directory'. This IG distinguishes the actor ['***Administration*** Directory'](#administration-directory) and the ['***Query*** Directory'](#query-directory); in the IHE mCSD specification, these are both called a 'Directory'.
 1. Every care provider registers the endpoint (URL) of its 'Administration Directory' at the LRZa registry (also an 'Administration Directory').
@@ -20,6 +17,22 @@ Here is a brief overview of the processes that are involved:
 
 This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Addressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
 Each component, data model, and transaction will be discussed in more detail.
+
+### National Constraints Compared to IHE mCSD
+
+This specification constrains and profiles IHE mCSD for the Dutch national context. The following national choices apply:
+
+1. Data model profiling:
+The national profiles SHALL be based on NL-core where available and SHALL be aligned with relevant IHE mCSD profile constraints.
+
+1. Practitioner resource scope:
+The Practitioner resource is intentionally removed from the operational exchange scope of this specification to limit distribution of privacy-sensitive data. Practitioner registration SHALL be sourced from dedicated authoritative registries (for example the BIG-register).
+
+1. Device resource addition:
+The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including Localization and TA Notified Pull.
+
+1. LRZa Directory operational role:
+The LRZa Directory SHALL NOT support matching of care service entities. Matching SHALL be performed on a local replica (Query Directory) populated from LRZa and other authoritative sources. The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions without search parameters.
 
 ### Components (actors)
 
@@ -65,7 +78,7 @@ The following sequence diagram illustrates how an Update Client performs a synch
 
 
 
-#### Query Directory
+#### Directory
 The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-directory-for-admin-client.html) for an Update Client to create, update and delete resources. 
 Due to the consolidation process of the Update Client, not all (intermediate) changes are replicated between Administration Directories and Query Directory
 
@@ -73,11 +86,11 @@ The Query Directory serves/exposes all addressable entities to one or more query
 
 
 #### Query Client
-The Query Client is used to search and retrieve information from the Query Directory, which contains consolidated data from all Administration Directories. It enables practitioners, EHR systems, and other healthcare applications to discover healthcare services, organizations, departments, locations, endpoints, or practitioners across the entire ecosystem. By querying the Query Directory, users can efficiently find up-to-date and authoritative addressable entities for care coordination, referrals, and electronic data exchange.
+The Query Client is used to search and retrieve information from the Query Directory. It enables practitioners, EHR systems, and other healthcare applications to discover healthcare services, organizations, departments, locations, endpoints, or other EHR-systems across the entire ecosystem. By querying the Query Directory, users can efficiently find up-to-date and authoritative addressable entities for care coordination, referrals, and electronic data exchange.
 
 
 ### Data models
-Within GF Addressing, profiles are used to validate data. They are based on both mCSD-profiles and nl-core-profiles (TODO: use Nictiz nl-core package as soon as dependency-bug is fixed)([GF-Adressering, ADR#188](https://github.com/minvws/generiekefuncties-adressering/issues/188)). Ideally, these profiles are merged in the nl-core-profiles in the future. 
+Within GF Addressing, profiles are used to validate data. They are based on both mCSD-profiles and nl-core-profiles. 
 An overview of the *most common* elements and relations between data models:
 
 <img src="careservices-datamodel.png" width="100%" style="float: none"/>
@@ -86,43 +99,38 @@ A brief description of the data models and their profile for this guide:
 
 #### Organization
 Organizations are “umbrella” entities; these may be considered the administrative bodies under whose auspices care services are provided. An (top-level)Organization-instance has a URA `identifier`, `type`, `status`, and `name`. It may have additional attributes like `endpoint`. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
-The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is based on the NL-Core-Healthcare-Provider-Organization profile, adds the CBS Standaard Bedrijfsindeling (SBI) valueset, adds constraints from the mCSD-Organization profile and requires an author-assigned identifier. 
+The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is used to represent organizations and their hierarchical relations in this guide.
 
 #### Endpoint
 An Organization may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, an DICOM web services, or some other mechanism. 
-The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) has an extra value set constraint on `.payloadType` ([GF-Adressering, ADR-8](https://github.com/minvws/generiekefuncties-adressering/issues/156)) and adds constraints from the mCSD-Endpoint profile.
+The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used to represent electronic access points for data exchange.
 
 #### HealthcareService
 Healthcare services are used to publish which (medical) services are provided by a (child) Organization. Examples include surgical services, antenatal care services, or primary care services. These services in `HealthcareService.type` can be extended by references to specific ActivityDefinitions and PlanDefinitions that are supported. The combination of a HealthcareService offered at a Location may have specific attributes including contact person, hours of operation, etc.
-The [NL-GF-HealthcareService profile](./StructureDefinition-nl-gf-healthcareservice.html) contains a value set constraint on `.type` and `.specialty` and an extension on `.type` to refer to Activity/PlanDefinitions. This profile also adds constraints from the mCSD-HealthcareService profile.
+The [NL-GF-HealthcareService profile](./StructureDefinition-nl-gf-healthcareservice.html) is used to represent healthcare service offerings.
 
 #### Location
 Locations are physical places where care can be delivered such as buildings (NL: Vestiging), wards, rooms, or vehicles. A Location may have geographic attributes (address, geocode), attributes regarding its hours of operation, etc. Each Location is related to one (child) Organization. A location may have a hierarchical relationship with other locations (e.g. building > floor > room).
-The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is based on the NL-Core-Healthcare-Provider profile, adds constraints from the mCSD-Location profile and requires an author-assigned identifier.
+The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used to represent physical care-delivery locations.
 
 
 #### PractitionerRole
 PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations, supporting scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging.
-The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is based on the NL-Core-HealthProfessional-PractitionerRole profile, adds constraints from the mCSD-PractitionerRole profile and requires an author-assigned identifier.
-
-
-#### Practitioner
-***This resource type is out-of-scope for this IG-version***
-Practitioner is a health worker such as physician, nurse, pharmacist, community health worker, district health manager, etc. Practitioners have a name and may have qualifications (like in the Dutch BIG-register).  The registry (Administration Directory) of Practitioners may be operated by the Dutch BIG-register or similar organizations. 
-The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html)is based on the NL-Core-HealthProfessional-Practitioner profile and adds constraints from the mCSD-Practitioner profile.
+The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations.
 
 
 #### OrganizationAffiliation
-***This resource type is out-of-scope for this IG-version (waiting for [GF-Adressering, ADR#169](https://github.com/minvws/generiekefuncties-adressering/issues/169))***
-
 OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. It could also be used the represent multiple care providers working together under some agreement (e.g. in a region).
-The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is based on the mCSD-OrganizationAffiliation profile and requires an author-assigned identifier
+The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide.
 
 
 
 ### Security
 
-The service provider of an Administration Directory must require mTLS. Qualified certificates from Qualified Trusted Service Providers (like PKIoverheid) should be trusted. ([GF-Adressering, ADR#178](https://github.com/minvws/generiekefuncties-adressering/issues/178))
+A Data Source actor SHALL use mTLS for transport layer security. Qualified certificates from Qualified Trusted Service Providers (like PKIoverheid) should be trusted. ([GF-Adressering, ADR#178](https://github.com/minvws/generiekefuncties-adressering/issues/178)).
+The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliations by Care Providers, not by the parties that are being authorized (the `.participatingOrganization`).
+
+
 
 
 ### Example use cases
@@ -148,18 +156,4 @@ Dr. West just created a referral (for patient Vera Brooks from use case #1). The
 
 ### Roadmap for Care Services
 
-#### Alternative Administration Directories
-
-Currently, two types of Administration Directories are supported; LRZa as 'Root Administration Directory' and Care Providers having their 'Administration Directory'. In the Netherlands, there are other registries that don't fit in these two types, e.g.:  
-- [BIG-register](https://www.bigregister.nl/) is the authoritative source for (a part of the) Physicians/Practitioners and their qualifications.
-- Medmij has a register (OCL) that lists (qualified) Endpoints for certain data exchanges. Registers like the Medmij-OCL may form the authoritative source for element Endpoint.payloadType.
-
-These sources contain valuable information and may be added/integrated in the future.
-
-#### Practitioner resource
-
-Practitioner instances may contain private data (e.g. the name of a physician) and should be registered at an authoritative source (see [Alternative Administration Directories](#alternative-administration-directories)). This is currently out of scope.
-
-#### OrganizationAffiliation resource
-
-The OrganizationAffiliation resource may be added in the future to publish relationships between organizations. ([GF-Adressering, ADR#169](https://github.com/minvws/generiekefuncties-adressering/issues/169))
+- The data profiles should be added/merged in the NL Core profiles

@@ -1,19 +1,19 @@
-Instance: nl-gf-directory-for-update-client
+Instance: nl-gf-directory-for-query-client
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Directory capability for an Update Client actor"
+* title = "Directory capability for a Query Client actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
-* description = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint. Note that this CapabilityStatement includes the search-interaction without any specific search-parameter (the `_since` is added to allow for history-type interactions). This search interaction can be used to retrieve the latest state of all resources of a specific type."
+* description = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint. Note that this CapabilityStatement excludes all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
 * kind = #requirements
 * fhirVersion = #4.0.1
 * format[+] = #application/fhir+xml
 * format[+] = #application/fhir+json
 * rest
   * mode = #server
-  * documentation = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint. Note that this CapabilityStatement includes the search-interaction without any specific search-parameter (the `_since` is added to allow for history-type interactions). This search interaction can be used to retrieve the latest state of all resources of a specific type."
+  * documentation = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint. Note that this CapabilityStatement excludes all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Organization
@@ -21,11 +21,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Location
@@ -33,11 +29,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #PractitionerRole
@@ -45,11 +37,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #HealthcareService
@@ -57,11 +45,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Endpoint
@@ -69,11 +53,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #OrganizationAffiliation
@@ -81,11 +61,7 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Device
@@ -93,8 +69,4 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #search-type

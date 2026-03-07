@@ -2,7 +2,7 @@ Profile: NlGfEndpoint
 Parent: Endpoint
 Id: nl-gf-endpoint
 Title: "NL Generic Functions Endpoint Profile"
-Description: "The technical details of an endpoint that can be used for electronic services, such as for web services providing access to FHIR resources."
+Description: "Endpoint profile for electronic services, aligned with IHE mCSD Endpoint constraints and extended with a value set constraint on payloadType and connectionType."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint"
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
@@ -21,7 +21,7 @@ Profile: NlGfHealthcareService
 Parent: HealthcareService
 Id: nl-gf-healthcareservice
 Title: "NL Generic Functions HealthcareService Profile"
-Description: "The technical details of a healthcare service that can be used in referrals, requests and orders"
+Description: "HealthcareService profile aligned with IHE mCSD HealthcareService constraints, with required value set bindings on type and specialty, support for ActivityDefinition/PlanDefinition references on type, and a required author-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService"
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
@@ -44,7 +44,7 @@ Profile: NlGfLocation
 Parent: $NlLocation
 Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
-Description: "Physical location details for healthcare services, organizations, and practitioners."
+Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required author-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location"
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
@@ -116,7 +116,7 @@ Profile: NlGfOrganization
 Parent: $NlOrganization
 Id: nl-gf-organization
 Title: "NL Generic Functions Organization Profile"
-Description: "The organizational hierarchy and details for healthcare organizations."
+Description: "Organization profile based on NL Core Healthcare Provider Organization and aligned with IHE mCSD Organization constraints, extended with CBS Standaard Bedrijfsindeling (SBI) typing."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization"
 * obeys ura-identifier-or-partof
 // * identifier ^slicing.discriminator[+].type = #profile
@@ -144,7 +144,7 @@ Profile: NlGfOrganizationAffiliation
 Parent: OrganizationAffiliation
 Id: nl-gf-organizationaffiliation
 Title: "NL Generic Functions OrganizationAffiliation Profile"
-Description: "The details of an affiliation/relationship between two organizations, such as a healthcare provider and a software vendor."
+Description: "OrganizationAffiliation profile aligned with IHE mCSD OrganizationAffiliation constraints, with a required author-assigned identifier and extended with a value set constraint on code and support for device identifiers in extensions."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation"
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
@@ -186,22 +186,12 @@ Description: "A reference to an endpoint associated with this device."
 Context: Device
 * value[x] only Reference(NlGfEndpoint)
 
-Profile: NlGfPractitioner
-Parent: $NlPractitioner
-Id: nl-gf-practitioner
-Title: "NL Generic Functions Practitioner Profile"
-Description: "The details of a healthcare practitioner, such as a doctor or nurse, who is directly or indirectly involved in the provisioning of healthcare."
-* ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner"
-* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-
 
 Profile: NlGfPractitionerRole
 Parent: $NlPractitionerRole
 Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
-Description: "The details of a healthcare practitioner's role within an organization."
+Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required author-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole"
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
@@ -241,7 +231,7 @@ Profile: AuthorAssignedIdentifier
 Parent: Identifier
 Id: nl-gf-authorassignedidentifier
 Title: " Author Assigned Identifier"
-Description: """Identifier assigned by the author of a resource, such as a healthcare service or organization, to uniquely identify that resource AND locate the original authoring organization when copies are stored at other locations """
+Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To avoid uncontrolled data dispersion and redundant versions of truth, each original object is assigned an identifier by its author, owner, or responsible care provider. This author-assigned identifier uniquely identifies the resource and enables locating the original authoring organization when copies are stored at other locations. This pattern is used in this IG, including NL-GF-Organization and NL-GF-HealthCareService, and in example resources such as Organization (department), Condition, and Task."""
 * use 1..
 * use = #official
 * system 1..

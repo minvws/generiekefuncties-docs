@@ -1,8 +1,8 @@
-Instance: nl-gf-directory-for-admin-client
+Instance: nl-gf-directory-for-data-source
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Directory capability for an Administration Client actor"
+* title = "Directory capability for a Data Source actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
@@ -15,7 +15,7 @@ Usage: #definition
   * mode = #server
   * documentation = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
   * resource[+]
-    * insert Expectation(MAY)
+    * insert Expectation(SHALL)
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
     * documentation = "."
@@ -26,7 +26,7 @@ Usage: #definition
       * insert Expectation(SHALL)
       * code = #update
   * resource[+]
-    * insert Expectation(MAY)
+    * insert Expectation(SHALL)
     * type = #Location
     * supportedProfile[+] = Canonical(NlGfLocation)
     * documentation = "."
@@ -37,20 +37,9 @@ Usage: #definition
       * insert Expectation(SHALL)
       * code = #update
   * resource[+]
-    * insert Expectation(MAY)
+    * insert Expectation(SHALL)
     * type = #Organization
     * supportedProfile[+] = Canonical(NlGfOrganization)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
-  * resource[+]
-    * insert Expectation(MAY)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
@@ -70,7 +59,7 @@ Usage: #definition
       * insert Expectation(SHALL)
       * code = #update
   * resource[+]
-    * insert Expectation(MAY)
+    * insert Expectation(SHALL)
     * type = #Endpoint
     * supportedProfile[+] = Canonical(NlGfEndpoint)
     * documentation = "."
@@ -92,7 +81,7 @@ Usage: #definition
       * insert Expectation(SHALL)
       * code = #update
   * resource[+]
-    * insert Expectation(MAY)
+    * insert Expectation(SHALL)
     * type = #Device
     * supportedProfile[+] = Canonical(NlGfDevice)
     * documentation = "."
