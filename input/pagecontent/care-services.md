@@ -91,9 +91,9 @@ Key attributes:
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | Author-assigned identifier for provenance and traceability. |
+| identifier (AuthorAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
 | providedBy → Organization | 1..1 | The organization that provides this service. |
-| type | 1..* | The type of service (bound to procedure and care-type codesystems in CBV, DHD, Geboortezorg, GGZ, NHG, NZa and WLZ). |
+| type | 1..* | The type of service (required binding to [NL-GF Service Types](./ValueSet-nl-gf-service-types-vs.html), including procedure and care-type codesystems in CBV, DHD, Geboortezorg, GGZ, NHG, NZa and WLZ). |
 | type.supportedActivityDefinitions | 0..* | References to ActivityDefinitions or PlanDefinitions specifying the service type further. |
 | specialty | 0..* | The specialty of the service (required binding). |
 | name | 0..1 | A human-readable name for the service. |
@@ -110,7 +110,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 | Attribute | Card. | Description |
 |---|---|---|
 | identifier (URA or KVK) | 0..* | An Organization must have a URA or KVK identifier, or be `partOf` another Organization. |
-| type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code. |
+| type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code (extensible binding to [NL-GF Organization Types](./ValueSet-nl-gf-org-types-vs.html)). |
 | name | 1..1 | The name of the organization. |
 | alias | 0..* | Alternative names. |
 | telecom | 0..* | Contact details. |
@@ -125,8 +125,8 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | Attribute | Card. | Description |
 |---|---|---|
 | status | 1..1 | The operational status of the endpoint (e.g. active, off). |
-| connectionType | 1..1 | The type of connection (extensible binding to NL-GF connection types). |
-| payloadType | 1..* | The payload type(s) supported (extensible binding to NL-GF payload types). |
+| connectionType | 1..1 | The type of connection (extensible binding to [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
+| payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |
 
@@ -150,7 +150,7 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | Author-assigned identifier for provenance and traceability. |
+| identifier (AuthorAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
 | name | 1..1 | The name of the location. |
 | type | 1..1 | The type of location. |
 | status | 1..1 | The operational status (e.g. active, inactive). |
@@ -165,8 +165,8 @@ The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrol
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | Author-assigned identifier for provenance and traceability. |
-| practitioner → Practitioner | 1..1 | The practitioner fulfilling this role. |
+| identifier (AuthorAssignedIdentifier) | 1..1 | Identifier for provenance and traceability; UZI/DEZI-number |
+| practitioner → Practitioner | 1..1 | The practitioner fulfilling this role, identified by its, e.g., BIG-number. |
 | organization → Organization | 1..1 | The organization where the practitioner works. |
 | code | 1..* | The role(s) the practitioner performs. |
 | specialty | 0..* | The specialty of the practitioner in this role. |
@@ -179,11 +179,10 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | Author-assigned identifier for provenance and traceability. |
 | active | 1..1 | Whether this affiliation is currently active. |
 | organization → Organization | 1..1 | The care provider organization. |
 | participatingOrganization → Organization | 1..1 | The affiliated party (e.g. IT vendor). |
-| code | 1..* | The type of affiliation (required binding to NL-GF authorization types). |
+| code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-authorization-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
 

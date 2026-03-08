@@ -23,6 +23,8 @@ Description: "Patient Jaantje Merkens in EHR of Organization 2"
 * address.city = "Ulft"
 * managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * managingOrganization.identifier.value = "22222222"
+* managingOrganization.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.assigner.identifier.value = "50000535"
 * managingOrganization.type = "Organization"
 * managingOrganization.display = "Organization 2"
 
@@ -42,7 +44,7 @@ Title: "Condition Aortadissectie"
 Instance: 8c2d4009-4322-4d4a-8e29-3e70cd67d286
 InstanceOf: MedicationRequest
 Usage: #inline
-Title: "MedicationRequest Cisplatine"
+Title: "MedicationRequest Gemcitabine"
 * meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-MedicationRequest"
 * insert AuthorAssignedIdentifier("https://cp2-test.example.org/MedicationRequest","8c2d4009-4322-4d4a-8e29-3e70cd67d286","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
@@ -50,8 +52,10 @@ Title: "MedicationRequest Cisplatine"
 * medicationCodeableConcept = $atc#L01BC05 "gemcitabine"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) 
 * authoredOn = "2017-09-03"
-* requester.identifier.system = "https://cp2-test.example.org/employees"
-* requester.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* requester.identifier.system = "http://fhir.nl/fhir/NamingSystem/uzi"
+* requester.identifier.value = "02222222"
+* requester.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* requester.identifier.assigner.identifier.value = "50000535"
 * requester.type = "PractitionerRole"
 * dosageInstruction[0].text = "Take one tablet by mouth twice daily"
 * dosageInstruction[0].timing.repeat.frequency = 2
@@ -63,7 +67,7 @@ Title: "MedicationRequest Cisplatine"
 Instance: e00a59fa-7d7e-422d-8505-ef3e645404e9
 InstanceOf: MedicationStatement
 Usage: #inline
-Title: "MedicationStatement Cisplatine"
+Title: "MedicationStatement Gemcitabine"
 * meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-MedicationStatement"
 * insert AuthorAssignedIdentifier("https://cp2-test.example.org/MedicationStatement","e00a59fa-7d7e-422d-8505-ef3e645404e9","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
@@ -71,8 +75,10 @@ Title: "MedicationStatement Cisplatine"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d)
 * effectiveDateTime = "2017-09-03"
 * dateAsserted = "2017-09-03"
-* informationSource.identifier.system = "https://cp2-test.example.org/employees"
-* informationSource.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* informationSource.identifier.system = "http://fhir.nl/fhir/NamingSystem/uzi"
+* informationSource.identifier.value = "02222222"
+* informationSource.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* informationSource.identifier.assigner.identifier.value = "50000535"
 * informationSource.type = "PractitionerRole"
 * dosage[0].text = "Take one tablet by mouth twice daily"
 * dosage[0].timing.repeat.frequency = 2
@@ -103,8 +109,10 @@ Title: "Procedure Thyroidectomy"
 * code = $sct#13619001 "Thyroidectomy"
 * subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) 
 * performedDateTime = "2022-05-15T08:00:00Z"
-* performer[0].actor.identifier.system = "https://cp2-test.example.org/employees"
-* performer[0].actor.identifier.value = "f051d3bd-26ff-4030-a5b6-fc4ef2be83ba"
+* performer[0].actor.identifier.system = "http://fhir.nl/fhir/NamingSystem/uzi"
+* performer[0].actor.identifier.value = "02222222"
+* performer[0].actor.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* performer[0].actor.identifier.assigner.identifier.value = "50000535"
 * performer[0].actor.type = "PractitionerRole"
 * reasonReference = Reference(Condition/5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757)
 

@@ -100,9 +100,9 @@ For more information on the content, see the paragraph on [Localization record](
         "code": {
           "coding": [
             {
-              "code": "MEDAFSPRAAK",
-              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs",
-              "display": "Medicatieafspraak"
+              "code": "MedicationRequest",
+              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+              "display": "Medicatie voorschrift"
             }
           ]
         }
@@ -166,9 +166,9 @@ Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationa
 
 Within GF-Localization the [NL-gf-localization-List profile](./StructureDefinition-nl-gf-localization-list.html) is used to register, search, and validate localization records ([NL-GF-IG, ADR#10](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/10)).
 This data model basically states ***"Care provider X has data of type Y for Patient Z"***. It contains the following elements:
-- **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian. This attribute is part of the 'Author assigned identifier'.
+- **Custodian identifier**: The care provider identifier (URA) representing the data holder/custodian.
 - **Patient identifier**: The NVI identifier to identify the patient in the NVI.
-- **Code**: Represents type of data stored at the data holder/custodian.
+- **Code**: Represents type of data stored at the data holder/custodian (required binding to [NL-GF Zorgcontext Types](./ValueSet-nl-gf-zorgcontext-vs.html).
 - **Source identifier**: The identifier of the specific software installation (e.g., EHR deployment) that registered this localization record, using a `Device` reference with an identifier. 
 - **emptyReason**: The `emptyReason` is set to withheld because this List signals the existence of data at a custodian, without enumerating the actual records. The List resource is used as a localization pointer, not as a container for document references
 
