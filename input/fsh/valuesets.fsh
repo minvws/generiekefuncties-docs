@@ -1,7 +1,7 @@
-ValueSet: NlGfWlzZorgprofielenVS
-Id: nl-gf-wlz-zorgprofielen-vs
-Title: "NL GF WLZ Zorgprofielen ValueSet"
-Description: "The WLZ Zorgprofielen supported by the NL Generic Functions."
+ValueSet: NlGfServiceTypeVS
+Id: nl-gf-service-types-vs
+Title: "NL GF Service Types ValueSet"
+Description: "The Service Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.19--20200901000000

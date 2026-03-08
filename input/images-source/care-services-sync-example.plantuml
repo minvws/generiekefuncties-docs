@@ -6,61 +6,48 @@ hide footbox
 
 !pragma teoz true
 
-participant  UC as "Update Client"
-participant  QC as "Query Client"
+participant  QD as "Directory\n(local replica)"
+participant  QUC as "Query & Update\nClient"
 participant  LRZa as "LRZa\nDirectory"
-participant  QD as "Local Replica\n(Query Directory)"
 
-activate UC
-activate QC
-note over QC: Initial load of local replica
 
-QC -> LRZa: GET /Organization
+
+activate QUC
+note over QUC: Initial load of local replica
+
 activate LRZa
-LRZa -> QC: Bundle (searchset)
-QC -> LRZa: GET /Location
-LRZa -> QC: Bundle (searchset)
-QC -> LRZa: GET /HealthcareService
-LRZa -> QC: Bundle (searchset)
-QC -> LRZa: GET /Endpoint
-LRZa -> QC: Bundle (searchset)
-QC -> LRZa: GET /Device
-LRZa -> QC: Bundle (searchset)
-QC -> LRZa: GET /OrganizationAffiliation
-LRZa -> QC: Bundle (searchset)
+loop For each resource type to be replicated\n(Organization, HealthcareService, Location, etc. )
+QUC -> LRZa: GET /{resourceType}
+LRZa -> QUC: Bundle (searchset)
+end
 deactivate LRZa
 
-QC -> QD: POST / (transaction bundle)\ninitial population
+QUC -> QD: POST / (transaction bundle)\ninitial population
 activate QD
-QD -> QC: 200 OK
+
+QD -> QUC: 200 OK
 deactivate QD
-deactivate QC
 
-note over UC: Periodic incremental sync\n(e.g., every day)
+== Time passes, updates happen on the LRZa Directory ==
 
-UC -> LRZa: GET /Organization/_history?_since=2025-02-07T13:28:17
+
+note over QUC: Periodic incremental sync\n(e.g., every day)
+
 activate LRZa
-LRZa -> UC: Bundle (history)
-UC -> LRZa: GET /Location/_history?_since=2025-02-07T13:28:17
-LRZa -> UC: Bundle (history)
-UC -> LRZa: GET /HealthcareService/_history?_since=2025-02-07T13:28:17
-LRZa -> UC: Bundle (history)
-UC -> LRZa: GET /Endpoint/_history?_since=2025-02-07T13:28:17
-LRZa -> UC: Bundle (history)
-UC -> LRZa: GET /Device/_history?_since=2025-02-07T13:28:17
-LRZa -> UC: Bundle (history)
-UC -> LRZa: GET /OrganizationAffiliation/_history?_since=2025-02-07T13:28:17
-LRZa -> UC: Bundle (history)
+loop For each resource type to be replicated\n(Organization, HealthcareService, Location, etc. )
+QUC -> LRZa: GET /{resourceType}/_history?_since=2025-02-07T13:28:17
+LRZa -> QUC: Bundle (history)
+end
 deactivate LRZa
 
-note over UC: Consolidate and validate updates
+note over QUC: Consolidate and validate updates
 
-UC -> QD: POST / (transaction bundle)\napply updates to replica
+QUC -> QD: POST / (transaction bundle)\napply updates to replica
 activate QD
-QD -> UC: 200 OK
+QD -> QUC: 200 OK
 deactivate QD
+deactivate QUC
+note over QUC,QD: Sync complete.\nPersist new watermark timestamp.
 
-note over UC,QD: Sync complete.\nPersist new watermark timestamp.
-deactivate UC
 
 @enduml

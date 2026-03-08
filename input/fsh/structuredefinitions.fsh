@@ -36,7 +36,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
 * specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
-* type from NlGfWlzZorgprofielenVS (required)
+* type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
 
 
