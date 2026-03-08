@@ -2,7 +2,7 @@ Instance: nl-gf-directory-for-data-source
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Directory capability for a Data Source actor"
+* title = "Directory capability [ITI-130-NL] for a Data Source actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
