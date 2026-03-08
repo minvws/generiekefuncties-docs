@@ -1,7 +1,7 @@
 ### Introduction
 
 Generic Function Addressing (GFA) defines how healthcare parties can publish, discover, and use trusted addressing information for organizations, services, locations, and endpoints. Its purpose is to make healthcare data exchange interoperable and reliable by helping practitioners and systems route requests, referrals, data retrievals and notifications to the correct destination.  
-This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile and reuses the actor and transaction definitions the were defined in that specification. You should be able to read this specification without prior knowledge of IHE mCSD, but a basic understanding of the FHIR specification is preferred.
+This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile and reuses the actor and transaction definitions that were defined in that specification. You should be able to read this specification without prior knowledge of IHE mCSD, but a basic understanding of the FHIR specification is preferred.
 
 
 ### Solution overview
@@ -17,7 +17,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 <img src="careservices-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replica's. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities).  
+This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities).  
 
 
 ### National Constraints Compared to IHE mCSD
@@ -46,10 +46,10 @@ The LRZa Directory is the central national directory for publishing and distribu
 - for Query & Update clients: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html) and [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-update-client.html)
 
 #### Data Source
-A Data Source is an client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-data-source.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
+A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-data-source.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
 
 #### Query & Update Client
-The Query & Update Client refers to two separate actors [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) and are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-query-client.html) and update-oriented interactions defined in [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-update-client.html).
+The Query & Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) and are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-query-client.html) and update-oriented interactions defined in [this CapabilityStatement](./CapabilityStatement-nl-gf-directory-for-update-client.html).
 
 #### Query Client
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
@@ -65,7 +65,7 @@ The Data Source publishes entities to the LRZa Directory using create/update sem
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-data-source.html)
 
 #### Search Care Services: ITI-90-NL
-The Query Client loads/queryies directory data for initial population of the local replication using `search-type` interactions without search parameters.
+The Query Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters.
 CapabilityStatement: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html)
 
 #### Request Care Services Updates: ITI-91-NL
@@ -119,7 +119,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 
 
 #### Endpoint
-An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, a DICOM web service, OAuth token endpoint, or some other mechanism. Typically, Organizations, Devices and HealthcareServices refer to Endpoints. This relationship is meant to indicate that an, e.g. a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization that manages the Endpoint (e.g. IT vendor); this is not the organization ***using*** the endpoint.
+An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, a DICOM web service, OAuth token endpoint, or some other mechanism. Typically, Organizations, Devices and HealthcareServices refer to Endpoints. This relationship is meant to indicate that, e.g., a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization that manages the Endpoint (e.g. IT vendor); this is not the organization ***using*** the endpoint.
 The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used to represent electronic access points for data exchange. Key attributes:
 
 | Attribute | Card. | Description |
@@ -132,7 +132,7 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 
 
 #### Device
-Device resources are, in GF Adressing, used to represent software applications or technical systems involved in healthcare data exchange. A Device can reference one or more Endpoints that it uses/provides, enabling efficient endpoint lookup and query-routing in workflows such as GF Localization, eOverdracht, and TA Notified Pull. In this guide, Devices are also referenced from OrganizationAffiliation to indicate which technical system is authorized in the relationship between a care provider and an IT vendor.
+Device resources are, in GF Addressing, used to represent software applications or technical systems involved in healthcare data exchange. A Device can reference one or more Endpoints that it uses/provides, enabling efficient endpoint lookup and query-routing in workflows such as GF Localization, eOverdracht, and TA Notified Pull. In this guide, Devices are also referenced from OrganizationAffiliation to indicate which technical system is authorized in the relationship between a care provider and an IT vendor.
 The [NL-GF-Device profile](./StructureDefinition-nl-gf-device.html) is used to represent these technical systems and their endpoint references. Key attributes:
 
 | Attribute | Card. | Description |
@@ -174,7 +174,7 @@ The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrol
 
 
 #### OrganizationAffiliation
-OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used the represent multiple care providers working together under some agreement (e.g. in a region).
+OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide. Key attributes:
 
 | Attribute | Card. | Description |
@@ -198,7 +198,7 @@ The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliatio
 #### Use Case #1: Healthcare service Query
 The patient, Vera Brooks, consults with her physician who recommends surgery. The physician can assist the patient in finding a suitable care provider, taking into consideration the location and specialty for orthopedic surgeons.
 - Vera Brooks sees her family physician, Dr. West, regarding a recent knee injury.
-- Dr. West diagnoses the problem as a torn ACL and decides to refer Vera to an clinic that provides orthopedic specialists.
+- Dr. West diagnoses the problem as a torn ACL and decides to refer Vera to a clinic that provides orthopedic specialists.
 - Dr. West uses her EHR query tool, which implements a Query Client to search for orthopedic healthcare services within 30km of Vera’s home.
 - The EHR retrieves the information from a Query Directory and displays it to Dr. West.
 - Vera and Dr. West decide on the Orthopedic department at Hospital East; Dr. West prepares a referral.
