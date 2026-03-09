@@ -231,7 +231,7 @@ Profile: AuthorAssignedIdentifier
 Parent: Identifier
 Id: nl-gf-authorassignedidentifier
 Title: " Author Assigned Identifier"
-Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To avoid uncontrolled data dispersion and redundant versions of truth, each original object is assigned an identifier by its author, owner, or responsible care provider. This author-assigned identifier uniquely identifies the resource and enables locating the original authoring organization when copies are stored at other locations. This pattern is used in this IG, including NL-GF-Organization and NL-GF-HealthCareService, and in example resources such as Organization (department), Condition, and Task."""
+Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To avoid uncontrolled data dispersion and redundant versions of truth, each original object is assigned an identifier by its original custodian (the ***author***itative source). This author-assigned identifier uniquely identifies the resource and enables locating the original authoring organization when copies are stored at other locations. This pattern is used in this IG, including NL-GF-Organization and NL-GF-HealthCareService, and in example resources such as Organization (department), Condition, and Task."""
 * use 1..
 * use = #official
 * system 1..
