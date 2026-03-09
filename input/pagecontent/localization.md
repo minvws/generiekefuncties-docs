@@ -116,20 +116,20 @@ For more information on the content, see the paragraph on [Localization record](
 ##### Search for Localization Records
 The client SHALL support searching for List resources (localization records). This enables healthcare professionals to discover which organizations hold relevant patient data. The Localization Client SHALL support the following search parameters:
 
-- **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
+- **subject.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
 - **source.identifier**: Search for localization records registered by an application.  
 
-Client SHALL either use the patient.identifier or source.identifier in a search.
+Client SHALL either use the subject.identifier or source.identifier in a search.
 
 
 **Example Search Query**:
 ```
-GET [base]/List?patient.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+GET [base]/List?subject:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
-This response will not contain the (pseudomized) patient.identifier for privacy/security reasons.
+This response will not contain the (pseudomized) subject.identifier for privacy/security reasons.
 
 
 ##### OPRF Integration requirements

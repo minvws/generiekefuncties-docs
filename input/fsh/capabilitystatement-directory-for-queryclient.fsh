@@ -22,6 +22,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Location
@@ -30,6 +33,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #PractitionerRole
@@ -38,6 +44,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #HealthcareService
@@ -46,6 +55,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Endpoint
@@ -54,6 +66,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #OrganizationAffiliation
@@ -62,6 +77,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Device
@@ -70,3 +88,6 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
