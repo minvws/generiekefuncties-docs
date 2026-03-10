@@ -8,7 +8,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 
  Here is a brief overview of the processes that are involved: 
 
-1. Every care provider registers one or more parties (e.g. an IT vendor) that is authorized to manage their addressable entities at the ['Directory'](#directory) of the 'Landelijk Register Zorgaanbieders' (LRZa).
+1. Every care provider registers one or more parties (e.g. an IT vendor) that is authorized to manage their addressable entities at the ['Directory'](#directory) of the 'Landelijk Register Zorgaanbieders' (LRZa). Care provider administrators register their addressable entities in an Service Provider application (e.g. an EHR).
 1. The authorized Service Providers create and manage addressable entities in the LRZa Directory. In the schema below, this is represented as the 'Data source' performing 'Care Service Feed' transactions.
 1. A 'Query & Update client' is used to copy and (periodically) fetch updates from the LRZa Directory to a local replica Directory. 
 1. A practitioner and/or system (e.g. an EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
@@ -17,7 +17,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 <img src="careservices-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory (periodically) imports Organization, Location and PractitionerRole resources from the KvK and DEZI-registry.
+This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization, Location and Practitioner(-Role) resources from the KvK and DEZI-registry.
 
 
 ### National Constraints Compared to IHE mCSD
@@ -27,15 +27,14 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 1. Data model profiling:
 The national profiles SHALL be based on NL-core where available and SHALL be aligned with relevant IHE mCSD profile constraints.
 
-1. Practitioner resource removal:
-The Practitioner resource is intentionally removed from the operational exchange scope of this specification to limit distribution of privacy-sensitive data. Practitioner registration SHOULD be sourced from dedicated authoritative registries (for example the BIG-register).
-
 1. Device resource addition:
 The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including GF Localization and TA Notified Pull.
 
 1. LRZa Directory operational role:
-The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica.  
-No deletes: Addressable entities (e.g. a Location or HealthcareService) may become inactive/deprecated over time, but their identifier will be used and referred to from health records for their lifetime. Therefore, deletion of addressable entities SHALL not be supported by the LRZa Directory. The status of an addressable entity may be adjusted to `inactive`, `off`, `entered-in-error` or whatever appropriate status for the resource type.
+The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. 
+ 
+1. No deletes: 
+Addressable entities (e.g. a Location or HealthcareService) may become inactive/deprecated over time, but their identifier will be used and referred to from health records for their lifetime. Therefore, deletion of addressable entities SHALL not be supported by the LRZa Directory. The status of an addressable entity may be adjusted to `inactive`, `off`, `entered-in-error` or whatever appropriate status for the resource type.
 
 ### Actors
 Each actor will now be discussed in more detail.
@@ -91,7 +90,7 @@ Key attributes:
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
+| identifier (CustodianAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
 | providedBy → Organization | 1..1 | The organization that provides this service. |
 | type | 1..* | The type of service (required binding to [NL-GF Service Types](./ValueSet-nl-gf-service-types-vs.html), including procedure and care-type codesystems in CBV, DHD, Geboortezorg, GGZ, NHG, NZa and WLZ). |
 | type.supportedActivityDefinitions | 0..* | References to ActivityDefinitions or PlanDefinitions specifying the service type further. |
@@ -150,7 +149,7 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
+| identifier (CustodianAssignedIdentifier) | 1..1 | identifier for provenance and traceability. |
 | name | 1..1 | The name of the location. |
 | type | 1..1 | The type of location. |
 | status | 1..1 | The operational status (e.g. active, inactive). |
@@ -159,13 +158,24 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 | partOf → Location | 0..1 | The parent location (e.g. building → floor → room). |
 
 
+#### Practitioner
+Practitioner resources represent healthcare professionals as persons, independent of where or in which role they are currently working. In GF Addressing, a Practitioner is used as the stable identity anchor for professional identification across organizations, and can be linked to one or more PractitionerRole resources that describe context-specific roles and specialties. Practitioner identifiers typically include a DEZI number and MAY include a BIG number for professional registration details.
+The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html) is used to represent healthcare professionals. Key attributes:
+
+| Attribute | Card. | Description |
+|---|---|---|
+| identifier (DEZI/BIG) | 0..* | Professional identifiers, typically DEZI and optionally BIG. |
+| name | 1..* | Human name of the practitioner. |
+| qualification | 0..* | Professional qualifications, licenses, or registrations relevant for care delivery. |
+
+
 #### PractitionerRole
 PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations and MAY represent employment relationships. It supports scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging, but should not contain privacy-sensitive data.
 The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations. Key attributes:
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (AuthorAssignedIdentifier) | 1..1 | Identifier for provenance and traceability; UZI/DEZI-number |
+| identifier (CustodianAssignedIdentifier) | 1..1 | Identifier for provenance and traceability; UZI/DEZI-number |
 | practitioner → Practitioner | 1..1 | The practitioner fulfilling this role, identified by its, e.g., BIG-number. |
 | organization → Organization | 1..1 | The organization where the practitioner works. |
 | code | 1..* | The role(s) the practitioner performs. |

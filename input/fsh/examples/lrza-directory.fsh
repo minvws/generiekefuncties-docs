@@ -6,7 +6,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 1 - Organization"
 Description: "Example: LRZa - Organization 1 - Organization"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example General Practice"
 * type[+] = $organization-type#Z3 "Huisartspraktijk (zelfstandig of groepspraktijk)"
 * telecom[0].system = #phone
@@ -31,7 +31,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
 * type[+] = $organization-type#V4 "Ziekenhuis"
 * type[+] = $sct#22232009 "Hospital"
@@ -58,7 +58,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 3 - Organization"
 Description: "Example: LRZa - Organization 3 - Organization"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Care Institution"
 * type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
 * telecom[0].system = #phone
@@ -82,7 +82,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - PharmaPartners"
 Description: "Example: Software Vendor - PharmaPartners"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "PharmaPartners B.V."
 * type.text = "IT vendor organization"
 
@@ -91,7 +91,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - Nedap"
 Description: "Example: Software Vendor - Nedap"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nedap N.V."
 * type.text = "IT vendor organization"
 
@@ -100,7 +100,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - Gerimedica"
 Description: "Example: Software Vendor - Gerimedica"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Gerimedica"
 * type.text = "IT vendor organization"
 
@@ -109,7 +109,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 1 authorizes PharmaPartners"
 Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * organization = Reference(Organization/lrza-o1)
 * participatingOrganization = Reference(Organization/org-pharmapartners)
@@ -123,7 +123,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 2 authorizes Nedap"
 Description: "Example: Authorization: Organization 2 authorizes Nedap"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * organization = Reference(Organization/lrza-o2)
 * participatingOrganization = Reference(Organization/org-nedap)
@@ -137,7 +137,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 3 authorizes Gerimedica"
 Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * organization = Reference(Organization/lrza-o3)
 * participatingOrganization = Reference(Organization/org-gerimedica)
@@ -156,7 +156,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint"
 Description: "Example: Organization 1 - Endpoint"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
@@ -178,21 +178,32 @@ InstanceOf: NlGfPractitionerRole
 Usage: #example
 Title: "Organization 1 - PractitionerRole Harry Arts"
 Description: "Example: Organization 1 - PractitionerRole Harry Arts"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/uzi","01111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner.identifier.system = "http://fhir.nl/fhir/NamingSystem/big"
-* practitioner.identifier.value = "19011111101"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* practitioner = Reference(Practitioner/4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4)
 * organization = Reference(Organization/lrza-o1)
 * code.coding = $uzi-rolcode#01.015 "Huisarts"
 * telecom[+].system = #email
 * telecom[=].value = "h.arts@cp1.example.org"
 
+Instance: 4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4
+InstanceOf: NlGfPractitioner
+Usage: #example
+Title: "Practitioner Harry Arts at Organization 1"
+Description: "Example practitioner for Organization 1"
+* meta.profile = Canonical(NlGfPractitioner)
+* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/dezi"
+* identifier[=].value = "DEZI-01111111"
+* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/big"
+* identifier[=].value = "19011111101"
+* name.given[0] = "Harry"
+* name.family = "Arts"
 
 Instance: dev-pharmapartners-ad1
 InstanceOf: NlGfDevice
 Usage: #example
 Title: "PharmaPartners Device for Organization 1"
 Description: "Example: PharmaPartners Device for Organization 1"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * identifier[DeviceUrn].value = "urn:uuid:3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1"
 * extension[endpoint][+].valueReference = Reference(Endpoint/ad1-e1)
 
@@ -204,7 +215,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR R4"
 Description: "Example: Organization 2 - Endpoint FHIR R4"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
@@ -225,7 +236,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint DICOM-WADO-RS"
 Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Images "Images"
 * connectionType = $endpoint-connection-type#dicom-wado-rs
@@ -244,7 +255,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR STU3"
 Description: "Example: Organization 2 - Endpoint FHIR STU3"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","2427ca0c-8a29-4a6a-aabd-50cf02f587a7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","2427ca0c-8a29-4a6a-aabd-50cf02f587a7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
@@ -278,7 +289,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Polikliniek 't Vaatje"
 Description: "Example consultation healthcare service named Polikliniek 't Vaatje at Organization 2."
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -292,7 +303,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Neurochirurgie"
 Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","c79125e5-739f-4238-959c-cd5872518c1f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","c79125e5-739f-4238-959c-cd5872518c1f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -306,7 +317,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Orthopedie"
 Description: "Example: Organization 2 - HealthcareService Orthopedie"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","9d47ca45-4166-4531-a23d-ef5fa613ece4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","9d47ca45-4166-4531-a23d-ef5fa613ece4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -320,7 +331,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Interne Geneeskunde"
 Description: "Example: Organization 2 - HealthcareService Interne Geneeskunde"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","f6a508bd-9455-4afa-aad0-baec0833602d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","f6a508bd-9455-4afa-aad0-baec0833602d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -335,7 +346,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Geriatrie"
 Description: "Example: Organization 2 - HealthcareService Geriatrie"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","120325af-083c-40ee-b16e-01230fe65655","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","120325af-083c-40ee-b16e-01230fe65655","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -349,7 +360,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Urologie"
 Description: "Example: Organization 2 - HealthcareService Urologie"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","08013141-16b2-42a0-8c9a-af57cee5511b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","08013141-16b2-42a0-8c9a-af57cee5511b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o2)
 * active = true
@@ -367,21 +378,33 @@ Title: "Organization 2 - PractitionerRole Cardioloog Caroline van Dijk at Organi
 Description: "Example: Organization 2 - PractitionerRole Cardioloog Caroline van Dijk at Organization 2"
 * identifier[+].system = "http://cp2.example.org/HRM/assignments"
 * identifier[=].value = "123456"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/uzi","02222222","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner.identifier.system = "http://fhir.nl/fhir/NamingSystem/big"
-* practitioner.identifier.value = "19022222201"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* practitioner = Reference(Practitioner/c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a)
 * organization = Reference(Organization/lrza-o2)
 * code.coding = $uzi-rolcode#01.010 "Cardioloog"
 * specialty.coding = $uzi-rolcode#01.010 "Cardioloog"
 * telecom[+].system = #email
 * telecom[=].value = "c.vandijk@cp2.example.org"
 
+Instance: c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a
+InstanceOf: NlGfPractitioner
+Usage: #example
+Title: "Practitioner Caroline van Dijk at Organization 2"
+Description: "Example practitioner for Organization 2"
+* meta.profile = Canonical(NlGfPractitioner)
+* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/dezi"
+* identifier[=].value = "DEZI-02222222"
+* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/big"
+* identifier[=].value = "19022222201"
+* name.given[0] = "Caroline"
+* name.family = "van Dijk"
+
 Instance: dev-nedap-ad2
 InstanceOf: NlGfDevice
 Usage: #example
 Title: "Nedap Device for Organization 2"
 Description: "Example: Nedap Device for Organization 2"
-* insert AuthorAssignedIdentifier("https://nedap.example.org/devices","90f95f4c-3360-4f97-8c2a-77831e9e1cc7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","90f95f4c-3360-4f97-8c2a-77831e9e1cc7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * identifier[DeviceUrn].value = "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
 * extension[endpoint][+].valueReference = Reference(Endpoint/ad2-e1)
 * extension[endpoint][+].valueReference = Reference(Endpoint/ad2-e2)
@@ -397,7 +420,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Organization 3 - Organization Nursing department"
 Description: "Nursing department at Organization 3"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","631cf10e-42d6-4165-9907-11e2333d4a85","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","631cf10e-42d6-4165-9907-11e2333d4a85","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nursing department at Organization 3"
 * type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
 * partOf = Reference(Organization/lrza-o3)
@@ -407,7 +430,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Main Building"
 Description: "Example: Organization 3 - Location Main Building"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","7c5e3d2a-1f9e-4b8c-9d6a-8e2f5c3b1a4d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","7c5e3d2a-1f9e-4b8c-9d6a-8e2f5c3b1a4d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 * name = "Main Building"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
@@ -422,7 +445,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Verpleeghuis Weltevree"
 Description: "Example location Verpleeghuis Weltevree managed by the nursing department of Organization 3."
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","9a2b8f1c-4e7d-42a1-b3c9-2d5e8f7a6c1b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","9a2b8f1c-4e7d-42a1-b3c9-2d5e8f7a6c1b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 * name = "Verpleeghuis Weltevree"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
@@ -435,7 +458,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR R4"
 Description: "Example: Organization 3 - Endpoint FHIR R4"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
@@ -456,7 +479,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR STU3"
 Description: "Example: Organization 3 - Endpoint FHIR STU3"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","72a349cc-7336-4a91-873d-fc9349769e1a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","72a349cc-7336-4a91-873d-fc9349769e1a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
@@ -491,7 +514,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Geriatrie"
 Description: "Example: Organization 3 - HealthcareService Geriatrie"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","4fcf98c7-b198-4d61-8b3e-5ea39e33c405","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","4fcf98c7-b198-4d61-8b3e-5ea39e33c405","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/lrza-o3)
 * active = true
@@ -507,7 +530,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Verpleging"
 Description: "Example: Organization 3 - HealthcareService Verpleging"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","b48826dc-2d58-479a-bfd3-80b7a9d69757","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","b48826dc-2d58-479a-bfd3-80b7a9d69757","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/ad3-o2)
 * name = "Verpleging"
@@ -525,9 +548,8 @@ InstanceOf: NlGfPractitionerRole
 Usage: #example
 Title: "Organization 3 - PractitionerRole Klinisch Geriater John Doe"
 Description: "Example: Organization 3 - PractitionerRole Klinisch Geriater John Doe"
-* insert AuthorAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/uzi","03333333","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner.identifier.system = "http://fhir.nl/fhir/NamingSystem/big"
-* practitioner.identifier.value = "19033333301"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* practitioner = Reference(Practitioner/3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8)
 * organization = Reference(Organization/lrza-o3)
 * active = true
 * code.coding = $uzi-rolcode#01.022 "Klinisch geriater"
@@ -543,13 +565,23 @@ Description: "Example: Organization 3 - PractitionerRole Klinisch Geriater John 
 * telecom[=].value = "https://matrix.to/#doctorno:cp3.example.org"
 * telecom[=].use = #work
 
+Instance: 3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8
+InstanceOf: NlGfPractitioner
+Usage: #example
+Title: "Practitioner John Doe at Organization 3"
+Description: "Example practitioner for Organization 3"
+* meta.profile = Canonical(NlGfPractitioner)
+* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/dezi"
+* identifier[=].value = "DEZI-03333333"
+* name.given[0] = "John"
+* name.family = "Doe"
 
 Instance: dev-gerimedica-ad3
 InstanceOf: NlGfDevice
 Usage: #example
 Title: "Gerimedica Device for Organization 3"
 Description: "Example: Gerimedica Device for Organization 3"
-* insert AuthorAssignedIdentifier("urn:ietf:rfc:3986","6c627191-6c6a-4b64-b2a1-049ac8fd6b4b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","6c627191-6c6a-4b64-b2a1-049ac8fd6b4b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * identifier[DeviceUrn].value = "urn:uuid:6c627191-6c6a-4b64-b2a1-049ac8fd6b4b"
 * extension[endpoint][+].valueReference = Reference(Endpoint/ad3-e1)
 * extension[endpoint][+].valueReference = Reference(Endpoint/ad3-e2)
