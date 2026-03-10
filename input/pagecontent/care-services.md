@@ -1,5 +1,3 @@
-
-
 ### Solution overview
 
 
@@ -20,6 +18,41 @@ Here is a brief overview of the processes that are involved:
 
 This overview implies a decentralized architecture for many components. An important central component is the LRZa Administration Directory. For more detail on the topology of GF Adressing, see [GF-Adressering, ADR-5](https://github.com/minvws/generiekefuncties-adressering/issues/153).   
 Each component, data model, and transaction will be discussed in more detail.
+
+#### Interoperability boundary
+
+The **interoperability boundary** in this architecture lies at the Administration Directory. The Administration Directory is the publicly facing, standardized interface through which organizations expose their care services data to the ecosystem. Update Clients from any party can pull data from any Administration Directory using the standardized FHIR `_history` operation.
+
+The Query Directory, by contrast, is a **local component**. Each party (vendor, region, network) runs its own Query Directory as a local cache of the consolidated data. The interface between an Update Client and its Query Directory, and between a Query Client and its Query Directory, are internal to that party's infrastructure. This is why these interfaces are specified as MAY rather than SHALL.
+
+This design is analogous to mCSD [Use Case #3 (Cross-jurisdictional Site Management)](https://profiles.ihe.net/ITI/mCSD/volume-1.html#146423-use-case-3-cross-jurisdictional-site-management), where multiple Directories expose data and a central Update Client aggregates it. In GFA, every party can act as their own aggregator.
+
+Note that when a party chooses to offer a Query Directory as a **publicly accessible service** (e.g., for a region or network), that Query Directory takes on the role of an mCSD Directory and should expose a standard FHIR query interface conforming to [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html).
+
+#### Conformance to IHE mCSD
+
+The table below maps GFA components to IHE mCSD actors and transactions. GFA constrains and extends the mCSD profile for the Dutch context; it does not relax required mCSD transactions on the interoperability boundary.
+
+| GFA Component | mCSD Actor | [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) (Find Matching Care Services) | [ITI-91](https://profiles.ihe.net/ITI/mCSD/ITI-91.html) (Request Care Services Updates) | [ITI-130](https://profiles.ihe.net/ITI/mCSD/ITI-130.html) (Care Services Feed) | Notes |
+|---|---|---|---|---|---|
+| Administration Directory | Directory (Update Option) | — | R (via `_history`) | — | Publicly facing; the interoperability boundary |
+| Query Directory (internal) | — | — | — | — | Internal component; interface not prescribed |
+| Query Directory (public) | Directory | R | O | — | When offered as a service, SHALL support ITI-90 |
+| Update Client | Update Client | — | R | — | Pulls from Administration Directories |
+| Query Client | Query Client | R | — | — | Queries a (local or public) Query Directory |
+| LRZa | Directory (Update Option) | — | R (via `_history`) | O (subset) | Root registry; authoritative for URA-identified Organizations. May support ITI-130 for a subset of resources (Organization, Endpoint) |
+
+**Data model conformance:** All FHIR resource profiles in this IG are based on both IHE mCSD profiles and NL-core profiles, adding Dutch-specific constraints (value sets, required identifiers) without relaxing mCSD requirements. See [Data models](#data-models) for details.
+
+#### Participation by international implementers
+
+An international party that implements IHE mCSD can participate in GFA in several ways:
+
+- **As an Administration Directory:** Expose care services data via the FHIR `_history` operation so that Update Clients in the ecosystem can pull the data. This requires implementing the Administration Directory [capabilities](./CapabilityStatement-nl-gf-admin-directory-update-client.html) and registering at the LRZa.
+- **As a consumer (self-hosted):** Run an Update Client and Query Directory to pull data from the ecosystem's Administration Directories. Open source implementations of these components are available (e.g., [Nuts-knooppunt](https://github.com/nuts-foundation/nuts-knooppunt/)) and can be deployed as a container, lowering the adoption barrier.
+- **As a consumer (via a shared Query Directory):** The architecture allows for regional organizations, networks, or other parties to offer a shared Query Directory as a service. Such a publicly accessible Query Directory exposes a standard FHIR query interface conforming to [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html), meaning any mCSD-compliant Query Client can query it directly without needing to run its own Update Client or Query Directory. This also applies to national or sector-wide initiatives that choose to offer a Directory-as-a-Service.
+
+The architecture does not prescribe whether Query Directories are operated locally, regionally, or nationally — it supports all models. This flexibility means that the ecosystem can evolve over time: parties can start with local Query Directories and later migrate to shared services, or vice versa.
 
 ### Components (actors)
 
@@ -69,7 +102,9 @@ The following sequence diagram illustrates how an Update Client performs a synch
 The Query Directory persist all addressable entities it receives from the Update Client. The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-admin-directory-admin-client.html) for an Update Client to create, update and delete resources. 
 Due to the consolidation process of the Update Client, not all (intermediate) changes are replicated between Administration Directories and Query Directory
 
-The Query Directory serves/exposes all addressable entities to one or more query clients (e.g. a webportal for users). The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a client to search and read resources.  
+The Query Directory serves/exposes all addressable entities to one or more query clients (e.g. a webportal for users). The Query Directory MAY implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) for a client to search and read resources.
+
+The Query Directory interface is specified as MAY because it is a local component: each party runs their own instance and can optimize the query interface for their internal use case. When a Query Directory is offered as a publicly accessible service (e.g., for a region, network, or as a shared service), it SHOULD implement [these capabilities](./CapabilityStatement-nl-gf-query-directory-query-client.html) conforming to [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html). See [Interoperability boundary](#interoperability-boundary) for more context.
 
 
 #### Query Client
@@ -85,7 +120,7 @@ An overview of the *most common* elements and relations between data models:
 A brief description of the data models and their profile for this guide:
 
 #### Organization
-Organizations are “umbrella” entities; these may be considered the administrative bodies under whose auspices care services are provided. An (top-level)Organization-instance has a URA `identifier`, `type`, `status`, and `name`. It may have additional attributes like `endpoint`. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
+Organizations are "umbrella" entities; these may be considered the administrative bodies under whose auspices care services are provided. An (top-level)Organization-instance has a URA `identifier`, `type`, `status`, and `name`. It may have additional attributes like `endpoint`. Departments of an institution, or other administrative units, may be represented as child Organizations of a parent Organization.
 The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) is based on the NL-Core-Healthcare-Provider-Organization profile, adds the CBS Standaard Bedrijfsindeling (SBI) valueset, adds constraints from the mCSD-Organization profile and requires an author-assigned identifier. 
 
 #### Endpoint
@@ -131,7 +166,7 @@ The service provider of an Administration Directory must require mTLS. Qualified
 The patient, Vera Brooks, consults with her physician who recommends surgery. The physician can assist the patient in finding a suitable care provider, taking into consideration the location and specialty for orthopedic surgeons.
 - Vera Brooks sees her family physician, Dr. West, regarding a recent knee injury.
 - Dr. West diagnoses the problem as a torn ACL and decides to refer Vera to an clinic that provides orthopedic specialists.
-- Dr. West uses her EHR query tool, which implements a Query Client to search for orthopedic healthcare services within 30km of Vera’s home.
+- Dr. West uses her EHR query tool, which implements a Query Client to search for orthopedic healthcare services within 30km of Vera's home.
 - The EHR retrieves the information from a Query Directory and displays it to Dr. West.
 - Vera and Dr. West decide on the Orthopedic department at Hospital East; Dr. West prepares a referral.
 <div>
