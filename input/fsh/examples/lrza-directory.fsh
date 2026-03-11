@@ -87,7 +87,7 @@ Title: "Software Vendor - PharmaPartners"
 Description: "Example: Software Vendor - PharmaPartners"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "PharmaPartners B.V."
-* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: 4484c2f2-795a-54fc-8de6-e565ff0dce30
@@ -97,7 +97,7 @@ Title: "Software Vendor - Nedap"
 Description: "Example: Software Vendor - Nedap"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nedap N.V."
-* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: 2c5ebd34-5961-51ec-a263-cb07a76079c0
@@ -107,7 +107,7 @@ Title: "Software Vendor - Gerimedica"
 Description: "Example: Software Vendor - Gerimedica"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Gerimedica"
-* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: fe43d49a-4748-5c42-a731-e40d614be8f9
