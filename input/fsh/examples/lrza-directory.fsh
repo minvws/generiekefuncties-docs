@@ -9,6 +9,7 @@ Description: "Example: LRZa - Organization 1 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example General Practice"
 * type[+] = $organization-type#Z3 "Huisartspraktijk (zelfstandig of groepspraktijk)"
+* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
 * telecom[0].system = #phone
 * telecom[=].value = "+3131599991"
 * telecom[=].use = #work
@@ -34,6 +35,7 @@ Description: "Example: LRZa - Organization 2 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
 * type[+] = $organization-type#V4 "Ziekenhuis"
+* type[+] = nl-gf-sbi-cs#8610 "Activiteiten van ziekenhuizen"
 * type[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
@@ -61,6 +63,7 @@ Description: "Example: LRZa - Organization 3 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Care Institution"
 * type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
+* type[+] = nl-gf-sbi-cs#8710 "Verpleeghuiszorg"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
 * telecom[=].use = #work
@@ -84,7 +87,8 @@ Title: "Software Vendor - PharmaPartners"
 Description: "Example: Software Vendor - PharmaPartners"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "PharmaPartners B.V."
-* type.text = "IT vendor organization"
+* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+].text = "IT vendor organization"
 
 Instance: 4484c2f2-795a-54fc-8de6-e565ff0dce30
 InstanceOf: NlGfOrganization
@@ -93,7 +97,8 @@ Title: "Software Vendor - Nedap"
 Description: "Example: Software Vendor - Nedap"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nedap N.V."
-* type.text = "IT vendor organization"
+* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+].text = "IT vendor organization"
 
 Instance: 2c5ebd34-5961-51ec-a263-cb07a76079c0
 InstanceOf: NlGfOrganization
@@ -102,7 +107,8 @@ Title: "Software Vendor - Gerimedica"
 Description: "Example: Software Vendor - Gerimedica"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Gerimedica"
-* type.text = "IT vendor organization"
+* type[+] = nl-gf-sbi-cs#6210 "Ontwerpen van computerprogramma's"
+* type[+].text = "IT vendor organization"
 
 Instance: fe43d49a-4748-5c42-a731-e40d614be8f9
 InstanceOf: NlGfOrganizationAffiliation
@@ -430,6 +436,7 @@ Description: "Example: Organization 3 - Location Main Building"
 * status = #active
 * name = "Main Building"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
+* physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * address.line = "Smidsstraat 10"
 * address.city = "Zelhem"
@@ -445,6 +452,7 @@ Description: "Example location Verpleeghuis Weltevree managed by the nursing dep
 * status = #active
 * name = "Verpleeghuis Weltevree"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
+* physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/e1ce0872-8a80-5fdd-8b30-a3b2203ef46b)
 * address.city = "Doetinchem"
 * address.country = "NL"
