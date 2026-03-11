@@ -1,4 +1,5 @@
 Alias: $NlOrganization = http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthcareProvider-Organization
+Alias: $EuOrganization = http://hl7.eu/fhir/base/StructureDefinition/organization-eu-core
 Alias: $NlLocation = http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthcareProvider
 Alias: $NlPractitioner = http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthProfessional-Practitioner
 Alias: $NlPractitionerRole = http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthProfessional-PractitionerRole

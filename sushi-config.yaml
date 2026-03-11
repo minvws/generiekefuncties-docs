@@ -11,11 +11,11 @@ title: Netherlands - Generic Functions for data exchange Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: draft # draft | active | retired | unknown
-version: 0.2.0
+version: 0.2.0-ballot
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2026+
 releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
-license: EUPL-1.2 # https://www.hl7.org/fhir/valueset-spdx-license.html
+license: CC-BY-4.0 # https://www.hl7.org/fhir/valueset-spdx-license.html
 jurisdiction: urn:iso:std:iso:3166#NL "Netherlands" # https://www.hl7.org/fhir/valueset-jurisdiction.html
 publisher:
   name: Ministerie van Volksgezondheid, Welzijn en Sport
@@ -30,7 +30,7 @@ dependencies:
   nictiz.fhir.nl.r4.nl-core: 0.12.0-beta.4
   nictiz.fhir.nl.r4.zib2020: 0.12.0-beta.4
   ihe.iti.mcsd: 4.0.0
-  hl7.fhir.uv.extensions: 5.2.0
+  hl7.fhir.eu.base: 2.0.0-ballot
   # hl7.fhir.eu.base: 0.1.0-ballot # Depending on discussion with Nictiz if we want to base our profiles on this or not
 #
 #
@@ -45,14 +45,7 @@ dependencies:
 # with supported extensions (e.g., .md/.xml) will be treated as
 # sub-pages.
 #
-# pages:
-#   index.md:
-#     title: Example Home
-#   implementation.xml:
-#   examples.xml:
-#     title: Examples Overview
-#     simpleExamples.xml:
-#     complexExamples.xml:
+
 pages:
   index.md:
     title: Home
@@ -86,24 +79,6 @@ pages:
   #   extension:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
-  #   GFI-001.md:
-  #     title: Request key material [GFI-001]
-  #     generation: markdown
-  #   GFI-002.md:
-  #     title: Issue Claims [GFI-002]
-  #     generation: markdown
-  #   GFI-003.md:
-  #     title: Request Revocation status [GFI-003]
-  #     generation: markdown
-  #   GFI-004.md:
-  #     title: Request Access Token [GFI-004]
-  #     generation: markdown
-  #   GFI-005.md:
-  #     title: Authenticated Interaction [GFI-005]
-  #     generation: markdown
-  #   GFI-006.md:
-  #     title: Token introspection [GFI-006]
-  #     generation: markdown
 
   # authorization.md:
   #   title: Authorization
@@ -111,11 +86,7 @@ pages:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
 
-  # credential-catalog.md:
-  #   title: Credential Catalog
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
+
 
   history.md:
     title: History

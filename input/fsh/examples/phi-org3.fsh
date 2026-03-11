@@ -71,12 +71,12 @@ Title: "CareTeam of Patient Jaantje Merkens"
 * participant[=].member.identifier.assigner.identifier.value = "50000535"
 * participant[=].member.type = "Organization"
 
-Instance: phi-org3
-InstanceOf: Bundle
-Usage: #example
-Title: "Bundle of personal health information in ECD of Organization 3"
-Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 3"
-* type = #transaction
-* insert BundleEntryPUT(Patient, 96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
-* insert BundleEntryPUT(MedicationStatement, 8732d369-7759-447b-af01-f3e0c601b452)
-* insert BundleEntryPUT(CareTeam, bd8f360a-7bf2-4b65-9202-f3c092525492)
+// Instance: phi-org3
+// InstanceOf: Bundle
+// Usage: #example
+// Title: "Bundle of personal health information in ECD of Organization 3"
+// Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 3"
+// * type = #transaction
+// * insert BundleEntryPUT(urn:uuid:,Patient, 96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
+// * insert BundleEntryPUT(urn:uuid:,MedicationStatement, 8732d369-7759-447b-af01-f3e0c601b452)
+// * insert BundleEntryPUT(urn:uuid:,CareTeam, bd8f360a-7bf2-4b65-9202-f3c092525492)

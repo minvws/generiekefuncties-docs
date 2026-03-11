@@ -24,7 +24,7 @@ Description: "Authorization and endpoint connection type codes supported by NL G
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfAuthorizationServerCS
-* include codes from system $endpoint-connection-type
+
 
 ValueSet: NlGfPayloadTypeVS
 Id: nl-gf-payload-type-vs
@@ -76,4 +76,12 @@ Description: "Data categories (a.k.a. zorgcontext) that map to FHIR resource typ
 * NlGfDataCategoriesCS#Procedure
 * NlGfDataCategoriesCS#Request
 * NlGfDataCategoriesCS#Specimen
+
+ValueSet: AortaDataCategoriesVS
+Id: aorta-data-categories-vs
+Title: "AORTA Data Categories ValueSet"
+Description: "The data categories defined in the AORTA code system."
+* ^status = #active
+* ^experimental = true
+* include codes from system AORTADataCategoriesCS
 

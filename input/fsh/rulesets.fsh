@@ -35,8 +35,8 @@ RuleSet: BundleEntryPOST (type, resource)
 * entry[=].request.method = #POST
 * entry[=].request.url = "{type}"
 
-RuleSet: BundleEntryPUT (type, resource)
-* entry[+].fullUrl = "urn:uuid:{resource}"
+RuleSet: BundleEntryPUT (base, type, resource)
+* entry[+].fullUrl = "{base}{resource}"
 * entry[=].resource = {resource}
 * entry[=].request.method = #PUT
 * entry[=].request.url = "{type}/{resource}"
@@ -60,7 +60,7 @@ RuleSet: CustodianAssignedIdentifier (system, value, assigner-system, assigner-v
 * identifier[=].use = #official
 * identifier[=].assigner.identifier.system = {assigner-system}
 * identifier[=].assigner.identifier.value = {assigner-value}
-* identifier[=].assigner.identifier.type = $provenance-participant-type#author
+* identifier[=].assigner.identifier.type = $provenance-participant-type#custodian
 
 RuleSet: RefCustodianAssignedIdentifier (resource-element, system, value, assigner-system, assigner-value, display)
 * {resource-element}.identifier.system = {system}
@@ -68,7 +68,7 @@ RuleSet: RefCustodianAssignedIdentifier (resource-element, system, value, assign
 * {resource-element}.identifier.use = #official
 * {resource-element}.identifier.assigner.identifier.system = {assigner-system}
 * {resource-element}.identifier.assigner.identifier.value = {assigner-value}
-* {resource-element}.identifier.assigner.identifier.type = $provenance-participant-type#author
+* {resource-element}.identifier.assigner.identifier.type = $provenance-participant-type#custodian
 * {resource-element}.display = {display}
 
 RuleSet: RefIdentifier (resource-element, resource-type, instance-number, identifier-system, identifier-value, assigner-system, assigner-value, source)

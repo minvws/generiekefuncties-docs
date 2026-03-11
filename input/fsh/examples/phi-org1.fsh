@@ -151,16 +151,16 @@ Title: "MedicationStatement Urokinase"
 * dosage[0].doseAndRate[0].doseQuantity.unit = "mg"
 
 
-Instance: phi-org1
-InstanceOf: Bundle
-Usage: #example
-Title: "Bundle of personal health information in HIS of Organization 1"
-Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 1"
-* type = #transaction
-* insert BundleEntryPUT(Patient, 128447d2-e153-4c93-8ac6-6c357555f3db)
-* insert BundleEntryPUT(Condition, 8cdd8f8d-f75b-4285-851e-ff302dad46fb)
-* insert BundleEntryPUT(ServiceRequest, 73f4bffe-eac4-4863-8e4a-852c578f95dd)
-* insert BundleEntryPUT(ServiceRequest, d2f1d123-9bfb-485f-8b6f-2db411c4884e)
-* insert BundleEntryPUT(ServiceRequest, 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb)
-* insert BundleEntryPUT(ServiceRequest, 3cb7873f-c222-4196-b441-02b3790ec97e)
-* insert BundleEntryPUT(MedicationStatement, 98f9d4a7-d58d-4889-8e63-0cb2d4e35144)
+// Instance: phi-org1
+// InstanceOf: Bundle
+// Usage: #example
+// Title: "Bundle of personal health information in HIS of Organization 1"
+// Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 1"
+// * type = #transaction
+// * insert BundleEntryPUT(urn:uuid:,Patient, 128447d2-e153-4c93-8ac6-6c357555f3db)
+// * insert BundleEntryPUT(urn:uuid:,Condition, 8cdd8f8d-f75b-4285-851e-ff302dad46fb)
+// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 73f4bffe-eac4-4863-8e4a-852c578f95dd)
+// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, d2f1d123-9bfb-485f-8b6f-2db411c4884e)
+// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb)
+// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 3cb7873f-c222-4196-b441-02b3790ec97e)
+// * insert BundleEntryPUT(urn:uuid:,MedicationStatement, 98f9d4a7-d58d-4889-8e63-0cb2d4e35144)

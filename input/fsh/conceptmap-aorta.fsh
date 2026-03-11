@@ -2,6 +2,7 @@ CodeSystem: AORTADataCategoriesCS
 Id: aorta-data-categories-cs
 Title: "AORTA Data Categories CodeSystem"
 Description: "Local code system for data categories in AORTA."
+* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/aorta-data-categories-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true
@@ -27,13 +28,15 @@ Description: "Local code system for data categories in AORTA."
 Instance: AortaToNlGfDataCategories
 InstanceOf: ConceptMap
 Usage: #definition
-* url = "http://minvws.github.io/generiekefuncties-docs/ConceptMap/aorta-to-nlgf-datacategories"
+* id = "aorta-to-nl-gf-datacategories"
+* url = "http://minvws.github.io/generiekefuncties-docs/ConceptMap/aorta-to-nl-gf-datacategories"
 * name = "AortaToNlGfDataCategories"
 * title = "AORTA to NL GF Data Categories"
+* description = "Concept map defining the equivalence between AORTA (Architecture for Organizing Trusted and Reliable Access) data categories and NL Generic Functions (NL-GF) data categories. This mapping enables interoperability between systems using the AORTA terminology and those conforming to the NL-GF framework for healthcare data exchange in the Netherlands."
 * status = #active
 * experimental = true
-* sourceUri = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/aorta-data-categories-cs"
-* targetUri = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
+* sourceUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/aorta-data-categories-vs"
+* targetUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-zorgcontext-vs"
 * group[+].source = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/aorta-data-categories-cs"
 * group[=].target = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
 * group[=].element[+].code = #LABBEPALING
@@ -61,25 +64,25 @@ Usage: #definition
 * group[=].element[=].target[+].code = #AllergyIntolerance
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #TOEDIENING
-* group[=].element[=].target[+].code = #MedicationDispense
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #DOSEERSCHEMA
 * group[=].element[=].target[+].code = #MedicationRequest
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #MEDGEBRUIK
-* group[=].element[=].target[+].code = #MedicationStatement
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #MEDOVERZICHT
-* group[=].element[=].target[+].code = #MedicationStatement
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #MEDVERSTREKKING
-* group[=].element[=].target[+].code = #MedicationDispense
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #TOEDIENINGSAFSPRAAK
-* group[=].element[=].target[+].code = #MedicationDispense
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #VERSTREKKINGSVERZOEK
-* group[=].element[=].target[+].code = #MedicationDispense
+* group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #BEHAANWIJZING
 * group[=].element[=].target[+].code = #AdvanceDirectives

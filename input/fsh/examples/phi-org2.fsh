@@ -97,7 +97,8 @@ Title: "Condition hypercalciëmie"
 * insert CustodianAssignedIdentifier("https://cp2-test.example.org/Condition","5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * onsetDateTime = "2021-09-03T12:00:00Z"
 * code = $sct#66931009 "Hypercalcemia"
-* subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d) 
+* subject = Reference(Patient/27e58ece-409e-44f9-8cc1-b33495a0ef9d)
+* note[+].text = "Patient presents with elevated serum calcium levels. Clinical management requires investigation of underlying etiology and monitoring of symptoms including fatigue, weakness, and cognitive changes." 
 
 Instance: 6bc0f95c-f281-475e-a279-4ed6beb59024
 InstanceOf: Procedure
@@ -116,15 +117,15 @@ Title: "Procedure Thyroidectomy"
 * performer[0].actor.type = "PractitionerRole"
 * reasonReference = Reference(Condition/5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757)
 
-Instance: phi-org2
-InstanceOf: Bundle
-Usage: #example
-Title: "Bundle of personal health information in EHR of Organization 2"
-Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 2"
-* type = #transaction
-* insert BundleEntryPUT(Patient, 27e58ece-409e-44f9-8cc1-b33495a0ef9d)
-* insert BundleEntryPUT(Condition, 8f26c2c2-9a7b-4a2f-84ac-264f1177964c)
-* insert BundleEntryPUT(Condition, 5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757)
-* insert BundleEntryPUT(Procedure, 6bc0f95c-f281-475e-a279-4ed6beb59024)
-* insert BundleEntryPUT(MedicationRequest, 8c2d4009-4322-4d4a-8e29-3e70cd67d286)
-* insert BundleEntryPUT(MedicationStatement, e00a59fa-7d7e-422d-8505-ef3e645404e9)
+// Instance: phi-org2
+// InstanceOf: Bundle
+// Usage: #example
+// Title: "Bundle of personal health information in EHR of Organization 2"
+// Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 2"
+// * type = #transaction
+// * insert BundleEntryPUT(urn:uuid:,Patient, 27e58ece-409e-44f9-8cc1-b33495a0ef9d)
+// * insert BundleEntryPUT(urn:uuid:,Condition, 8f26c2c2-9a7b-4a2f-84ac-264f1177964c)
+// * insert BundleEntryPUT(urn:uuid:,Condition, 5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757)
+// * insert BundleEntryPUT(urn:uuid:,Procedure, 6bc0f95c-f281-475e-a279-4ed6beb59024)
+// * insert BundleEntryPUT(urn:uuid:,MedicationRequest, 8c2d4009-4322-4d4a-8e29-3e70cd67d286)
+// * insert BundleEntryPUT(urn:uuid:,MedicationStatement, e00a59fa-7d7e-422d-8505-ef3e645404e9)

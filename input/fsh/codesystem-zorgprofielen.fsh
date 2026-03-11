@@ -5,6 +5,7 @@ Description: "Local code system for NL Generic Functions WLZ Zorgprofielen."
 * ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-wlz-zorgprofielen-cs"
 * ^status = #active
 * ^experimental = true
+* ^caseSensitive = true
 * #4VV "VV Beschut wonen met intensieve begeleiding en uitgebreide verzorging" "Pgb mogelijk"
 * #5VV "VV Beschermd wonen met intensieve dementiezorg" "Pgb mogelijk"
 * #6VV "VV Beschermd wonen met intensieve verzorging en verpleging" "Pgb mogelijk"

@@ -2,7 +2,7 @@ CodeSystem: NlGfSBICS
 Id: nl-gf-sbi-cs
 Title: "NL GF Standaard Bedrijfsindeling 2025"
 Description: "Standaard Bedrijfsindeling (SBI) 2025 codes. Based on the Dutch SBI 2025 classification system, which is used to classify business activities in the Netherlands. The codes and descriptions are derived from the official SBI 2025 documentation provided by the Dutch government."
-* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
+* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true

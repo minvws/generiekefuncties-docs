@@ -21,7 +21,7 @@ This identifier is applied in the profiles specified in this IG (e.g. [NL-GF-Org
 
 ### Patient Identification
 
-Patients are identified by BSN as specified in the [nl-core-Patient profile](http://nictiz.nl/fhir/StructureDefinition/nl-core-Patient). The authentic source for this identifier is Basisregistratie Personen (BRP) that is administered by Rijksdienst voor Identiteitsgegevens (RvIG). The pseudonymization service may be used to transform the BSN to/from a pseudonymized BSN (or from one pseudonymized BSN to another pseudonymized BSN). See namingsystem ['http://fhir.nl/fhir/NamingSystem/pseudo-bsn'](./NamingSystem-pseudo-bsn.html) for the specification of this identifier. 
+Patients are identified by BSN as specified in the [nl-core-Patient profile](http://nictiz.nl/fhir/StructureDefinition/nl-core-Patient). The authentic source for this identifier is Basisregistratie Personen (BRP) that is administered by Rijksdienst voor Identiteitsgegevens (RvIG). The pseudonymization service may be used to transform the BSN to/from a pseudonymized BSN (or from one pseudonymized BSN to another pseudonymized BSN). See namingsystem ['http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier'](./NamingSystem-http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier.html) for the specification of this identifier. 
 
 ### Practitioner Identification
 
