@@ -44,7 +44,7 @@ The client SHALL be able to create and register List resources (localization rec
 - Submit the Bundle to the Localization Service's transaction endpoint
 - Handle transaction responses, including success confirmations and error conditions
 
-**Pseudonymization Integration**: Before submitting localization records, client MUST compose a pseudonymized patient identifier in collaboration with the Pseudonymization Service. This patient identifier consists of an OPRF blind_factor and an evaluated_output of the blinded_input where the latter is evaluated at the Pseudonymization Service and included as a transient encrypted token (JWE) intended for single-use in registration or query operations.
+**Pseudonymization Integration**: Before submitting localization records, client MUST compose a pseudonymized patient identifier in collaboration with the Pseudonymization Service. This patient identifier consists of an OPRF blind_factor and an evaluated_output of the blinded_input where the latter is evaluated at the Pseudonymization Service and included as a transient encrypted token (JWE) intended for single-use in registration or query operations. The patient identifier needs to be an base64 URL safe encoded string of a json object with the 'blind_factor' and the 'evaluated_output'.
 
 **Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 
@@ -77,12 +77,12 @@ For more information on the content, see the paragraph on [Localization record](
         "subject": {
           "identifier": {
             "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
-            "value": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJldmFsdWF0ZWRfb3V0cHV0IjogIkpXRV9GUk9NX1BTRVVET05ZTUlTQVRJT05fU0VSVklDRSIsICJibGluZF9mYWN0b3IiOiJDTElFTlRfR0VORVJBVEVEX0JMSU5EX0ZBQ1RPUiIsImlhdCI6MTUxNjIzOTAyMn0."
+            "value": "eyJldmFsdWF0ZWRfb3V0cHV0IjoiSldFX0ZST01fUFJTIiwiYmxpbmRfZmFjdG9yIjoiQ0xJRU5UX0dFTl9CTElORF9GQUNUT1IifQ"
           }
         },
         "source": {
           "identifier": {
-            "system": "http://example.org/device-identifiers",
+            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-device-identifier",
             "value": "EHR-SYS-2024-001"
           },
           "type": "Device"
@@ -182,7 +182,7 @@ The following diagram illustrates the registration workflow, including interacti
 **Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific device/system (the Localization Client)
 
 ```
-GET [base]/List?source.identifier=http://example.org/device-identifiers|EHR-SYS-2024-001
+GET [base]/List?source.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-device-identifier|EHR-SYS-2024-001
 ```
 
 **Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or device.
