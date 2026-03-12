@@ -1,0 +1,53 @@
+@startuml care-services-sync-use-case
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial 
+hide footbox
+
+!pragma teoz true
+
+participant  QD as "Directory\n(local replica)"
+participant  QUC as "Query & Update\nClient"
+participant  LRZa as "LRZa\nDirectory"
+
+
+
+activate QUC
+note over QUC: Initial load of local replica
+
+activate LRZa
+loop For each resource type to be replicated\n(Organization, HealthcareService, Location, etc. )
+QUC -> LRZa: GET /{resourceType}
+LRZa -> QUC: Bundle (searchset)
+end
+deactivate LRZa
+
+QUC -> QD: POST / (transaction bundle)\ninitial population
+activate QD
+
+QD -> QUC: 200 OK
+deactivate QD
+
+== Time passes, updates happen on the LRZa Directory ==
+
+
+note over QUC: Periodic incremental sync\n(e.g., every day)
+
+activate LRZa
+loop For each resource type to be replicated\n(Organization, HealthcareService, Location, etc. )
+QUC -> LRZa: GET /{resourceType}/_history?_since=2025-02-07T13:28:17
+LRZa -> QUC: Bundle (history)
+end
+deactivate LRZa
+
+note over QUC: Consolidate and validate updates
+
+QUC -> QD: POST / (transaction bundle)\napply updates to replica
+activate QD
+QD -> QUC: 200 OK
+deactivate QD
+deactivate QUC
+note over QUC,QD: Sync complete.\nPersist new watermark timestamp.
+
+
+@enduml

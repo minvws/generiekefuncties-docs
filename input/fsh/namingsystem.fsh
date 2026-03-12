@@ -1,7 +1,7 @@
 Instance: nvi-identifier
 InstanceOf: NamingSystem
 Usage: #definition
-* name = "NVI identifier"
+* name = "NviIdentifier"
 * status = #active
 * kind = #identifier
 * date = "2025-11-05T00:00:00-00:00"
@@ -10,14 +10,28 @@ Usage: #definition
 * uniqueId[=].value = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
 * uniqueId[=].preferred = true
 
-Instance: nvi-device-identifier
+Instance: kvk-nummer
 InstanceOf: NamingSystem
 Usage: #definition
-* name = "NVI device identifier"
+* name = "KVK"
 * status = #active
 * kind = #identifier
-* date = "2026-03-12T00:00:00-00:00"
-* description = "This Device identifier is specific for the NVI and represents a specific Software Installation."
+* date = "2026-03-11T00:00:00-00:00"
+* description = "This identifier system represents KvK identifiers."
 * uniqueId[0].type = #uri
-* uniqueId[=].value = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-device-identifier"
+* uniqueId[=].value = "http://fhir.nl/fhir/NamingSystem/kvk"
 * uniqueId[=].preferred = true
+
+Instance: kvk-vestigingsnummer
+InstanceOf: NamingSystem
+Usage: #definition
+* name = "KvkVestigingsnummer"
+* status = #active
+* kind = #identifier
+* date = "2026-03-11T00:00:00-00:00"
+* description = "This identifier system represents KvK vestigingsnummers."
+* uniqueId[0].type = #uri
+* uniqueId[=].value = "http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer"
+* uniqueId[=].preferred = true
+
+

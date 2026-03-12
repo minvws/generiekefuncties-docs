@@ -32,7 +32,7 @@ Usage: #definition
       * code = #search-type
     * searchParam[+]
       * insert Expectation(SHALL)
-      * name = "patient.identifier"
+      * name = "subject"
       * type = #token
     * searchParam[+]
       * insert Expectation(SHALL)

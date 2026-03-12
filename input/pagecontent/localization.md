@@ -15,7 +15,7 @@ Here is a brief overview of the processes that are involved:
 1. A data user (practitioner and/or system (EHR)) can now use the Localization service to discover data holders for a specific patient and data category.
 
 
-These processes require the use of pseudonyms that are generated and resolved using a national Pseudonymization Service. The Localization service-response provides a list of data holders; the endpoints of these data holders (e.g. FHIR or DICOM-urls) need to be resolved using a [Care service (Query) Directory](./care-services.html#query-directory). This process is illustrated in [this example](./care-services.html#use-case-2-endpoint-discovery). 
+These processes require the use of pseudonyms that are generated and resolved using a national Pseudonymization Service. The Localization service-response provides a list of data holders; the endpoints of these data holders (e.g. FHIR or DICOM-urls) need to be resolved using a [Care service (Query) Directory](./care-services.html#lrza-directory). This process is illustrated in [this example](./care-services.html#use-case-4-endpoint-discovery). 
 
 <img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/>
 
@@ -100,9 +100,9 @@ For more information on the content, see the paragraph on [Localization record](
         "code": {
           "coding": [
             {
-              "code": "MEDAFSPRAAK",
-              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-zorgcontext-cs",
-              "display": "Medicatieafspraak"
+              "code": "MedicationRequest",
+              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+              "display": "Medicatie voorschrift"
             }
           ]
         }
@@ -116,48 +116,25 @@ For more information on the content, see the paragraph on [Localization record](
 ##### Search for Localization Records
 The client SHALL support searching for List resources (localization records). This enables healthcare professionals to discover which organizations hold relevant patient data. The Localization Client SHALL support the following search parameters:
 
-- **patient.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
+- **subject.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
 - **source.identifier**: Search for localization records registered by an application.  
 
-Client SHALL either use the patient.identifier or source.identifier in a search.
+Client SHALL either use the subject.identifier or source.identifier in a search.
 
 
 **Example Search Query**:
 ```
-GET [base]/List?patient.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|eyJldmFsdWF0ZWRfb3V0cHV0IjoiSldFX0ZST01fUFJTIiwiYmxpbmRfZmFjdG9yIjoiQ0xJRU5UX0dFTl9CTElORF9GQUNUT1IifQ&code=LABBEPALING
+GET [base]/List?subject:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
-This response will not contain the (pseudomized) patient.identifier for privacy/security reasons.
+This response will not contain the (pseudomized) subject.identifier for privacy/security reasons.
 
 
-##### OPRF Integration requirements
+##### Pseudonymization Integration
 
-The Localization Client MUST implement the following requirements when interacting with the Pseudonymization Service:
-
-**1. Prepare PRS Interaction**
-- Prepare the patient's BSN in a structured JSON format with country code (e.g., "NL") and identifier value
-- Construct context string: `{recipient_organization}|{recipient_scope}|{version}` (e.g., "URA-NVI|localization|v1")
-- Apply HKDF-SHA256 to derive a pseudonym from the personal identifier (Parameters: SHA-256, 32 bytes, no salt, using context string as info ([RFC 5869](https://datatracker.ietf.org/doc/html/rfc5869)))
-- Perform cryptographic blinding on the derived pseudonym to create (Both values base64 URL-safe encoded):
-  - `blind_factor`: Retained for NVI processing
-  - `blinded_input`: Sent to Pseudonymization Service (PRS)
-
-**2. PRS Interaction**
-- Send `blinded_input` to PRS
-- Receive JWE (JSON Web Encryption) encrypted with NVI's public key
-- Client cannot decrypt the JWE
-
-**3. Localization Record Submission**
-- construct `subject.identifier` as a jwt with the following claims:
-  - evaluated_output: The JWE received from the Pseudonymization Service
-  - blind_factor: The blind factor
-  - iat: The timestamp of issuance
-- Include the JWT as `subject.identifier.value`
-- Submit to NVI for decryption and unblinding
-
-Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py)
+For detailed OPRF integration requirements, see the [NVI/PRS Aansluitdocument](https://todo-add-link) and [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
 
 
 ### Data models
@@ -166,9 +143,9 @@ Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationa
 
 Within GF-Localization the [NL-gf-localization-List profile](./StructureDefinition-nl-gf-localization-list.html) is used to register, search, and validate localization records ([NL-GF-IG, ADR#10](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/10)).
 This data model basically states ***"Care provider X has data of type Y for Patient Z"***. It contains the following elements:
-- **Organization identifier**: The care provider identifier (URA) representing the data holder/custodian. This attribute is part of the 'Author assigned identifier'.
+- **Custodian identifier**: The care provider identifier (URA) representing the data holder/custodian.
 - **Patient identifier**: The NVI identifier to identify the patient in the NVI.
-- **Code**: Represents type of data stored at the data holder/custodian.
+- **Code**: Represents type of data stored at the data holder/custodian (required binding to [NL-GF Zorgcontext Types](./ValueSet-nl-gf-zorgcontext-vs.html).
 - **Source identifier**: The identifier of the specific software installation (e.g., EHR deployment) that registered this localization record, using a `Device` reference with an identifier. 
 - **emptyReason**: The `emptyReason` is set to withheld because this List signals the existence of data at a custodian, without enumerating the actual records. The List resource is used as a localization pointer, not as a container for document references
 

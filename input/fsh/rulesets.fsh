@@ -35,8 +35,8 @@ RuleSet: BundleEntryPOST (type, resource)
 * entry[=].request.method = #POST
 * entry[=].request.url = "{type}"
 
-RuleSet: BundleEntryPUT (type, resource)
-* entry[+].fullUrl = "urn:uuid:{resource}"
+RuleSet: BundleEntryPUT (base, type, resource)
+* entry[+].fullUrl = "{base}{resource}"
 * entry[=].resource = {resource}
 * entry[=].request.method = #PUT
 * entry[=].request.url = "{type}/{resource}"
@@ -54,22 +54,22 @@ RuleSet: BundleEntryWithFullurl (fullUrl, resource, method, url)
 * entry[=].request.url = "{url}"
 
 
-RuleSet: AuthorAssignedIdentifier (system, value, assigner-system, assigner-value)
+RuleSet: CustodianAssignedIdentifier (system, value, assigner-system, assigner-value)
 * identifier[+].system = {system}
 * identifier[=].value = {value}
 * identifier[=].use = #official
 * identifier[=].assigner.identifier.system = {assigner-system}
 * identifier[=].assigner.identifier.value = {assigner-value}
-* identifier[=].assigner.identifier.type = $provenance-participant-type#author
+* identifier[=].assigner.identifier.type = $provenance-participant-type#custodian
 
-// RuleSet: RefAuthorAssignedIdentifier (resource-element, system, value, assigner-system, assigner-value, display)
-// * {resource-element}.identifier.system = {system}
-// * {resource-element}.identifier.value = {value}
-// * {resource-element}.identifier.use = #official
-// * {resource-element}.identifier.assigner.identifier.system = {assigner-system}
-// * {resource-element}.identifier.assigner.identifier.value = {assigner-value}
-// * {resource-element}.identifier.assigner.identifier.type = $provenance-participant-type#author
-// * {resource-element}.display = {display}
+RuleSet: RefCustodianAssignedIdentifier (resource-element, system, value, assigner-system, assigner-value, display)
+* {resource-element}.identifier.system = {system}
+* {resource-element}.identifier.value = {value}
+* {resource-element}.identifier.use = #official
+* {resource-element}.identifier.assigner.identifier.system = {assigner-system}
+* {resource-element}.identifier.assigner.identifier.value = {assigner-value}
+* {resource-element}.identifier.assigner.identifier.type = $provenance-participant-type#custodian
+* {resource-element}.display = {display}
 
 RuleSet: RefIdentifier (resource-element, resource-type, instance-number, identifier-system, identifier-value, assigner-system, assigner-value, source)
 * {resource-element} = Reference({{{source}-fhir-url}}{resource-type}/{{{resource-type}{instance-number}}})

@@ -3,7 +3,6 @@
 // ============================================================================
 
 Logical: KvkBasisprofiel
-Id: kvk-basisprofiel
 Title: "KVK Basisprofiel"
 Description: "Logical model representing the KVK (Kamer van Koophandel) Basisprofiel API response structure as defined in the KVK API v1.4.0."
 * kvkNummer 0..1 string "Nederlands Kamer van Koophandel nummer: bestaat uit 8 cijfers"
@@ -88,7 +87,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
 * name = "KvkBasisprofielToOrganization"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/kvk-basisprofiel"
+* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkBasisprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkBasisprofiel"
 * structure[+].url = Canonical(NlGfOrganization)
@@ -200,14 +199,14 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "00000001"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
@@ -233,7 +232,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "author"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "custodian"
 
 // Rule: naam → name
 * group[=].rule[+].name = "naam"
@@ -394,7 +393,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
 // Map sbiCode → coding.code
 * group[=].rule[=].rule[+].name = "sbiCode"
 * group[=].rule[=].rule[=].source[+].context = "src"
@@ -445,8 +444,9 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "straat"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-streetName extension
 * group[=].rule[=].rule[+].name = "streetNameExt"
 * group[=].rule[=].rule[=].source[+].context = "straat"
@@ -465,7 +465,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].source[+].context = "straat"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "straat"
 
@@ -499,7 +499,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisnr"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnr"
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "string"
@@ -513,8 +513,9 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine3"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisltr"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-buildingNumberSuffix extension
 * group[=].rule[=].rule[+].name = "houseLetterExt"
 * group[=].rule[=].rule[=].source[+].context = "huisltr"
@@ -533,11 +534,11 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisltr"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisltr"
 
-// huisnummerToevoeging → line + iso21090-ADXP-buildingNumberSuffix extension
+// huisnummerToevoeging → line + iso21090-ADXP-additionalLocator extension
 * group[=].rule[+].name = "huisnummerToevoeging"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "huisnummerToevoeging"
@@ -546,9 +547,10 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine4"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisnrToev"
-// nested: iso21090-ADXP-buildingNumberSuffix extension
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
+// nested: iso21090-ADXP-additionalLocator extension
 * group[=].rule[=].rule[+].name = "houseNumberAdditionExt"
 * group[=].rule[=].rule[=].source[+].context = "huisnrToev"
 * group[=].rule[=].rule[=].target[+].context = "addrLine4"
@@ -561,12 +563,12 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].target[=].element = "url"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-buildingNumberSuffix"
+* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator"
 * group[=].rule[=].rule[=].rule[+].name = "houseNumberAdditionExtValue"
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisnrToev"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnrToev"
 
@@ -654,7 +656,6 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 // ============================================================================
 
 Logical: KvkVestigingsprofiel
-Id: kvk-vestigingsprofiel
 Title: "KVK Vestigingsprofiel"
 Description: "Logical model representing the KVK (Kamer van Koophandel) Vestigingsprofiel API response structure as defined in the KVK API v1.4.0."
 * vestigingsnummer 0..1 string "Vestigingsnummer: uniek nummer dat bestaat uit 12 cijfers"
@@ -730,7 +731,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkVestigingsprofielToLocation"
 * name = "KvkVestigingsprofielToLocation"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/kvk-vestigingsprofiel"
+* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkVestigingsprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkVestigingsprofiel"
 * structure[+].url = Canonical(NlGfLocation)
@@ -810,14 +811,14 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "00000001"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdType"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
@@ -843,7 +844,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "author"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "custodian"
 
 // Rule: kvkNummer → managingOrganization (Reference by identifier, system: kvk)
 * group[=].rule[+].name = "kvkNummer"
@@ -1043,8 +1044,9 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "straat"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-streetName extension
 * group[=].rule[=].rule[+].name = "streetNameExt"
 * group[=].rule[=].rule[=].source[+].context = "straat"
@@ -1063,7 +1065,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].source[+].context = "straat"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "straat"
 
@@ -1097,7 +1099,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisnr"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnr"
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "string"
@@ -1111,8 +1113,9 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine3"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisltr"
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
 // nested: iso21090-ADXP-buildingNumberSuffix extension
 * group[=].rule[=].rule[+].name = "houseLetterExt"
 * group[=].rule[=].rule[=].source[+].context = "huisltr"
@@ -1131,11 +1134,11 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisltr"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisltr"
 
-// huisnummerToevoeging → line + iso21090-ADXP-buildingNumberSuffix extension
+// huisnummerToevoeging → line + iso21090-ADXP-additionalLocator extension
 * group[=].rule[+].name = "huisnummerToevoeging"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "huisnummerToevoeging"
@@ -1144,9 +1147,10 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].target[=].element = "line"
 * group[=].rule[=].target[=].variable = "addrLine4"
-* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].transform = #cast
 * group[=].rule[=].target[=].parameter[+].valueId = "huisnrToev"
-// nested: iso21090-ADXP-buildingNumberSuffix extension
+* group[=].rule[=].target[=].parameter[+].valueString = "string"
+// nested: iso21090-ADXP-additionalLocator extension
 * group[=].rule[=].rule[+].name = "houseNumberAdditionExt"
 * group[=].rule[=].rule[=].source[+].context = "huisnrToev"
 * group[=].rule[=].rule[=].target[+].context = "addrLine4"
@@ -1159,12 +1163,12 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].target[=].element = "url"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-buildingNumberSuffix"
+* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator"
 * group[=].rule[=].rule[=].rule[+].name = "houseNumberAdditionExtValue"
 * group[=].rule[=].rule[=].rule[=].source[+].context = "huisnrToev"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "ext"
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].rule[=].target[=].element = "valueString"
+* group[=].rule[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueId = "huisnrToev"
 
@@ -1227,7 +1231,6 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].input[+].name = "src"
 * group[=].input[=].mode = #source
 * group[=].input[+].name = "tgt"
-* group[=].input[=].type = "Location.position"
 * group[=].input[=].mode = #target
 
 // gpsLatitude → latitude
@@ -1312,7 +1315,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
 // Map sbiCode → coding.code
 * group[=].rule[=].rule[+].name = "sbiCode"
 * group[=].rule[=].rule[=].source[+].context = "src"
@@ -1335,13 +1338,13 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "omschr"
 
 
-Instance: kvk-logicals-and-struturemaps
-InstanceOf: Bundle
-Usage: #example
-Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
-Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
-* type = #transaction
-* insert BundleEntryPUT(StructureDefinition, KvkBasisprofiel)
-* insert BundleEntryPUT(StructureMap, KvkBasisprofielToOrganization)
-* insert BundleEntryPUT(StructureDefinition, KvkVestigingsprofiel)
-* insert BundleEntryPUT(StructureMap, KvkVestigingsprofielToLocation)
+// Instance: kvk-logicals-and-struturemaps
+// InstanceOf: Bundle
+// Usage: #example
+// Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
+// Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
+// * type = #transaction
+// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
+// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
+// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
+// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)

@@ -1,4 +1,4 @@
-@startuml care-services-use-case-2
+@startuml care-services-endpoint-query-use-case
 
 skinparam roundcorner 20
 skinparam defaultFontName Arial 
@@ -8,7 +8,7 @@ hide footbox
 
 actor  Doctor as "Dr. West"
 participant  EHR as "EHR"
-participant  CSD as "Query Directory"
+participant  CSD as "Directory\n(local replica)"
 participant  EHR2 as "Endpoint supporting\nTransfer of care\n@Hospital East"
 
 

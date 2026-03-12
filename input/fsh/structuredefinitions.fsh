@@ -2,12 +2,21 @@ Profile: NlGfEndpoint
 Parent: Endpoint
 Id: nl-gf-endpoint
 Title: "NL Generic Functions Endpoint Profile"
-Description: "The technical details of an endpoint that can be used for electronic services, such as for web services providing access to FHIR resources."
+Description: "Endpoint profile for electronic services, aligned with IHE mCSD Endpoint constraints and extended with a value set constraint on payloadType and connectionType."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint"
+* ^experimental = true
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * managingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
-* payloadType from NlGfDataExchangeCapabilitiesVS (extensible)
+* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
+* connectionType ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
+* connectionType ^binding.extension[=].extension[+].url = "key"
+* connectionType ^binding.extension[=].extension[=].valueId = "nl-gf-connection-types"
+* connectionType ^binding.extension[=].extension[+].url = "purpose"
+* connectionType ^binding.extension[=].extension[=].valueCode = #extensible
+* connectionType ^binding.extension[=].extension[+].url = "valueSet"
+* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs"
+* payloadType from NlGfPayloadTypeVS (extensible)
 
 Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
@@ -20,14 +29,15 @@ Profile: NlGfHealthcareService
 Parent: HealthcareService
 Id: nl-gf-healthcareservice
 Title: "NL Generic Functions HealthcareService Profile"
-Description: "The technical details of a healthcare service that can be used in referrals, requests and orders"
+Description: "HealthcareService profile aligned with IHE mCSD HealthcareService constraints, with required value set bindings on type and specialty, support for ActivityDefinition/PlanDefinition references on type, and a required custodian-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService"
+* ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+* identifier[AssignedId] only CustodianAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
@@ -35,7 +45,7 @@ Description: "The technical details of a healthcare service that can be used in 
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
 * specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
-* type from NlGfWlzZorgprofielenVS (required)
+* type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
 
 
@@ -43,21 +53,22 @@ Profile: NlGfLocation
 Parent: $NlLocation
 Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
-Description: "Physical location details for healthcare services, organizations, and practitioners."
+Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required custodian-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location"
+* ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+* identifier[AssignedId] only CustodianAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
-* managingOrganization only Reference(NlGfOrganization)
+// * managingOrganization only Reference(NlGfOrganization)
 
 Profile: NlGfLocalizationList
 Parent: List
@@ -67,10 +78,10 @@ Description: """A List profile for registering the availability of patient data
 at healthcare organizations for localization services. This profile is used to
 indicate that certain patient data is available at a specific organization and
 can be accessed for localization purposes."""
+* ^experimental = true
 * implicitRules ..0
 * meta ..0
 * language ..0
-* text ..0
 * contained ..0
 * identifier ..0
 * title ..0
@@ -84,11 +95,14 @@ can be accessed for localization purposes."""
 * subject 1..1
 * subject only Reference(Patient)
 * subject.identifier 1..1
-* subject.identifier only PseudoBsnIdentifier
+* subject.identifier only NviIdentifier
 * subject.reference ..0
 * extension contains NlGfLocalizationCustodian named custodian 1..1
 * extension[custodian] ^comment = "The Organization which published the data"
 * source 1..1
+* source.identifier.system = "urn:ietf:rfc:3986"
+* source.identifier.value 1..1
+* source.identifier.value obeys device-identifier-urn
 * source only Reference(Device)
 * source.reference ..0
 * source.type = $resource-types#Device
@@ -109,82 +123,126 @@ Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http:
 Severity:    #error
 
 Profile: NlGfOrganization
-Parent: $NlOrganization
+// Parent: $NlOrganization
+Parent: $EuOrganization
 Id: nl-gf-organization
 Title: "NL Generic Functions Organization Profile"
-Description: "The organizational hierarchy and details for healthcare organizations."
+Description: "Organization profile based on NL Core Healthcare Provider Organization and aligned with IHE mCSD Organization constraints, extended with CBS Standaard Bedrijfsindeling (SBI) typing."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization"
+* ^experimental = true
 * obeys ura-identifier-or-partof
-// * identifier ^slicing.discriminator[+].type = #profile
+// * identifier ^slicing.discriminator[0].type = #value
 // * identifier ^slicing.discriminator[=].path = "$this"
-// * identifier ^slicing.rules = #open
-// * identifier contains
-//     AssignedId 1..1
-// * identifier[AssignedId] only AuthorAssignedIdentifier
+* identifier ^slicing.discriminator[+].type = #profile
+* identifier ^slicing.discriminator[=].path = "$this"
+* identifier ^slicing.rules = #open
+* identifier contains
+    AssignedId 1..1
+* identifier[AssignedId] only CustodianAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type contains
-    SBI 0..1
-* type[SBI] from NlGfOrgTypesVS (extensible)
-* type[SBI] ^patternCodeableConcept.coding.system = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-2025-cs"
-* type[SBI] ^short = "SBI"
-* type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
-* type[SBI] ^alias = "Standaard Bedrijfsindeling"
-* partOf only Reference(NlGfOrganization)
-* endpoint only Reference(NlGfEndpoint)
+* type from NlGfOrgTypesVS (extensible)
+// * type ^slicing.discriminator[+].type = #value
+// * type ^slicing.discriminator[=].path = "$this"
+// * type ^slicing.rules = #open
+// * type contains
+//     SBI 0..*
+// * type[SBI] from NlGfOrgTypesVS (extensible)
+// * type[SBI] ^patternCodeableConcept.coding.system = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
+// * type[SBI] ^short = "SBI"
+// * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
+// * type[SBI] ^alias = "Standaard Bedrijfsindeling"
+// * partOf only Reference(NlGfOrganization)
+// * endpoint only Reference(NlGfEndpoint)
 
 
 Profile: NlGfOrganizationAffiliation
 Parent: OrganizationAffiliation
 Id: nl-gf-organizationaffiliation
 Title: "NL Generic Functions OrganizationAffiliation Profile"
-Description: "The details of an affiliation/relationship between two organizations, such as a healthcare provider and a software vendor."
+Description: "OrganizationAffiliation profile aligned with IHE mCSD OrganizationAffiliation constraints, with a required custodian-assigned identifier and extended with a value set constraint on code and support for device identifiers in extensions."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation"
+* ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+* identifier[AssignedId] only CustodianAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * active 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * organization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * participatingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
-* network 0.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
+* network 0..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
+* code from NlGfAuthorizationTypeVS (required)
+* extension contains NlGfDeviceIdentifier named device 0..*
+* extension[device] ^comment = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
 
-Profile: NlGfPractitioner
-Parent: $NlPractitioner
-Id: nl-gf-practitioner
-Title: "NL Generic Functions Practitioner Profile"
-Description: "The details of a healthcare practitioner, such as a doctor or nurse, who is directly or indirectly involved in the provisioning of healthcare."
-* ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner"
-* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
+Profile: NlGfDevice
+Parent: Device
+Id: nl-gf-device
+Title: "NL Generic Functions Device Profile"
+Description: "The details of a device, such as a software application, used in the context of healthcare data exchange."
+* ^experimental = true
+* identifier ^slicing.discriminator.type = #profile
+* identifier ^slicing.discriminator.path = "$this"
+* identifier ^slicing.rules = #open
+* identifier contains
+    AssignedId 1..1
+* identifier[AssignedId] only CustodianAssignedUrnIdentifier
+* extension contains NlGfDeviceEndpoint named endpoint 0..*
+// * extension[endpoint].value[x] only Reference(NlGfEndpoint)
+
+Extension: NlGfDeviceEndpoint
+Id: nl-gf-device-endpoint
+Title: "NL Generic Functions Device Endpoint"
+Description: "A reference to an endpoint associated with this device."
+Context: Device
+* value[x] only Reference(NlGfEndpoint)
 
 
 Profile: NlGfPractitionerRole
 Parent: $NlPractitionerRole
 Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
-Description: "The details of a healthcare practitioner's role within an organization."
+Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole"
+* ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
 * identifier contains
     AssignedId 1..1
-* identifier[AssignedId] only AuthorAssignedIdentifier
+* identifier[AssignedId] only CustodianAssignedIdentifier
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 * practitioner 1..
 * organization 1..
-* organization only Reference(NlGfOrganization)
+// * organization only Reference(NlGfOrganization)
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
+
+Profile: NlGfPractitioner
+Parent: $NlPractitioner
+Id: nl-gf-practitioner
+Title: "NL Generic Functions Practitioner Profile"
+Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints."
+* ^experimental = true
+* identifier ^slicing.discriminator[0].type = #value
+* identifier ^slicing.discriminator[=].path = "$this"
+* identifier ^slicing.discriminator[+].type = #profile
+* identifier ^slicing.discriminator[=].path = "$this"
+* identifier ^slicing.rules = #open
+* identifier contains
+    AssignedId 1..1
+* identifier[AssignedId] only CustodianAssignedIdentifier
+* ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner"
+* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
+* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
+* name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
 
 
 Extension: TaskSTU3Location
@@ -207,11 +265,11 @@ Description: "A task to be performed, such as a referral or order, with addition
 * extension contains TaskSTU3Location named taskLocation 0..1
 * extension contains TaskSTU3HealthcareService named healthcareservice 0..1
 
-Profile: AuthorAssignedIdentifier
+Profile: CustodianAssignedIdentifier
 Parent: Identifier
-Id: nl-gf-authorassignedidentifier
-Title: " Author Assigned Identifier"
-Description: """Identifier assigned by the author of a resource, such as a healthcare service or organization, to uniquely identify that resource AND locate the original authoring organization when copies are stored at other locations """
+Id: nl-gf-custodianassignedidentifier
+Title: "Custodian Assigned Identifier"
+Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To preserve provenance and avoid uncontrolled duplication, each original object SHALL be assigned an identifier by its original custodian (the accountable source). The custodian-assigned identifier uniquely identifies the resource and enables resolution to the originating organization when copies are stored in other systems. This pattern is used throughout this IG, including NL-GF-Organization and NL-GF-HealthcareService, and in example resources such as Organization (department), Condition, and Task."""
 * use 1..
 * use = #official
 * system 1..
@@ -224,15 +282,36 @@ Description: """Identifier assigned by the author of a resource, such as a healt
 * assigner.identifier.type 1..1
 * assigner.identifier.type.coding 1..1
 * assigner.identifier.type.coding.system = $provenance-participant-type
-* assigner.identifier.type.coding.code = #author
+* assigner.identifier.type.coding.code = #custodian
 
-Profile: PseudoBsnIdentifier
+Profile: CustodianAssignedUrnIdentifier
 Parent: Identifier
-Id: nl-gf-pseudo-bsn-identifier
-Title: "Pseudo-BSN Identifier"
+Id: nl-gf-custodianassignedurnidentifier
+Title: "Custodian Assigned URN Identifier"
+Description: """Data objects are identified by an identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
+* use 1..
+* use = #official
+* system 1..
+* system = "urn:ietf:rfc:3986"
+* value 1..
+* value obeys device-identifier-urn
+* assigner 1..1
+* assigner.identifier 1..1
+* assigner.identifier obeys assigner-identifier-system
+* assigner.identifier.system 1..1
+* assigner.identifier.value 1..1
+* assigner.identifier.type 1..1
+* assigner.identifier.type.coding 1..1
+* assigner.identifier.type.coding.system = $provenance-participant-type
+* assigner.identifier.type.coding.code = #custodian
+
+Profile: NviIdentifier
+Parent: Identifier
+Id: nl-gf-nvi-identifier
+Title: "NVI Identifier"
 Description: """Identifier for pseudonymized Dutch citizen service numbers (BSN)."""
 * system 1..
-* system = "http://fhir.nl/fhir/NamingSystem/pseudo-bsn" (exactly)
+* system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier" (exactly)
 * value 1..
 * use = #temp
 
@@ -247,3 +326,20 @@ Context: List
 * valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * valueReference.identifier.value 1..1
 * valueReference.reference 0..0
+
+Extension: NlGfDeviceIdentifier
+Id: nl-gf-device-identifier
+Title: "NL Generic Functions Device Identifier"
+Description: "An identifier for a device, such as a software application."
+Context: OrganizationAffiliation
+* value[x] only Reference(NlGfDevice)
+* valueReference.identifier 1..1
+* valueReference.identifier.system = "urn:ietf:rfc:3986"
+* valueReference.identifier.value 1..1
+* valueReference.identifier.value obeys device-identifier-urn
+
+Invariant:   device-identifier-urn
+Description: "The device identifier must be a URN with a valid UUID or OID."
+Expression:  "startsWith('urn:uuid:') or startsWith('urn:oid:')"
+Severity:    #error
+
