@@ -58,6 +58,8 @@
           "volledigAdres": "Sint Jacobsstraat 300 3511BT Utrecht",
           "straatnaam": "Sint Jacobsstraat",
           "huisnummer": 300,
+          "huisletter": "a",
+          "huisnummerToevoeging": "bla",
           "postcode": "3511BT",
           "plaats": "Utrecht",
           "land": "Nederland",

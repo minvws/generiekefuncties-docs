@@ -1,0 +1,69 @@
+@startuml care-services-registration-use-case
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+actor Admin as "Care provider\nadministrator"
+actor SPAdmin as "Service Provider\nadministrator"
+participant SP as "Service Provider\n(Data Source)"
+participant DSAdmin as "LRZa Portal\n(Data Source)"
+participant LRZa as "LRZa\nDirectory"
+
+
+activate Admin
+activate DSAdmin
+Admin -> DSAdmin: Register authorization for IT vendor
+activate LRZa
+DSAdmin -> LRZa: POST /OrganizationAffiliation\n(organization, participatingOrganization,\ncode, device identifier)
+LRZa -> DSAdmin: 201 Created
+DSAdmin -> Admin: Authorization active
+deactivate DSAdmin
+
+
+== After affiliation is active ==
+activate SPAdmin
+activate SP
+SPAdmin -> SP: Register new EHR system
+SP -> LRZa: POST /Device
+
+
+note right of SP
+If the endpoint or device were already
+registered for other care providers,
+these Device and Endpoint updates 
+can be skipped.
+end note
+
+SPAdmin -> SP: Register new endpoints for EHR system
+SP -> LRZa: POST /Endpoint
+deactivate SPAdmin
+
+
+
+
+
+Admin -> SP: Link endpoints to organization
+SP -> LRZa: PUT /Organization/ura-123
+
+Admin -> SP: Register new location
+SP -> LRZa: POST /Location
+
+Admin -> SP: Register new healthcare service\nwith links to location and endpoints
+SP -> LRZa: POST /HealthcareService
+
+
+
+
+
+note over LRZa
+Authorization checks are based on
+OrganizationAffiliation and requested scope.
+end note
+
+deactivate SP
+deactivate LRZa
+deactivate Admin
+@enduml

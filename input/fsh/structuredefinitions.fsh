@@ -288,7 +288,7 @@ Profile: CustodianAssignedUrnIdentifier
 Parent: Identifier
 Id: nl-gf-custodianassignedurnidentifier
 Title: "Custodian Assigned URN Identifier"
-Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To preserve provenance and avoid uncontrolled duplication, each original object SHALL be assigned an identifier by its original custodian (the accountable source). The custodian-assigned identifier uniquely identifies the resource and enables resolution to the originating organization when copies are stored in other systems. This pattern is used throughout this IG, including NL-GF-Organization and NL-GF-HealthcareService, and in example resources such as Organization (department), Condition, and Task."""
+Description: """Data objects are identified by an identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
 * use 1..
 * use = #official
 * system 1..

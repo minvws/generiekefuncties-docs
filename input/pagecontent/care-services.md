@@ -49,11 +49,12 @@ A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the
 
 #### Query & Update Client
 The Query & Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) and are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-update-client.html).
+For more information, see the [synchronization example](#use-case-2-query-client--update-client-sync-example)
 
 #### Query Client
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
+Note that the data exchange between Query Client and (local) Directory MAY use a proprietary interface. [Use case 3](#use-case-3-healthcare-service-query) and [use case 4](#use-case-4-endpoint-discovery) illustrate how to search for healthcare services and endpoints. 
 
-The Query Client is also used to populate the local repository.  For more information, see the [synchronization usecase](#use-case-3-query-client--update-client-sync-example)
 
 ### Transactions
 
@@ -204,31 +205,43 @@ The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliatio
 
 ### Example use cases
 
-#### Use Case #1: Healthcare service Query
+
+
+##### Use Case #1: Admin Registers Affiliation, Service Provider Publishes Resources
+This sequence shows a two-step onboarding flow: first, the care provider administrator creates an OrganizationAffiliation that authorizes the service provider (and optionally a Device). After this authorization exists, the service provider is able to register their Endpoints and Devices (if not already registered). Finally, the care provider administrator is able to register and update the remaining mCSD resource types in the application of the service provider (e.g. the EHR).
+
+<div>
+{% include care-services-registration-use-case.svg %}
+</div>
+
+##### Use Case #2: Query Client & Update Client Sync Example
+The following sequence diagram illustrates how a Query Client and Update Client synchronize data from the LRZa Directory into a local replica:
+
+<div>
+{% include care-services-sync-use-case.svg %}
+</div>
+
+#### Use Case #3: Healthcare service Query
 The patient, Vera Brooks, consults with her physician who recommends surgery. The physician can assist the patient in finding a suitable care provider, taking into consideration the location and specialty for orthopedic surgeons.
 - Vera Brooks sees her family physician, Dr. West, regarding a recent knee injury.
 - Dr. West diagnoses the problem as a torn ACL and decides to refer Vera to a clinic that provides orthopedic specialists.
 - Dr. West uses her EHR query tool, which implements a Query Client to search for orthopedic healthcare services within 30km of Vera’s home.
-- The EHR retrieves the information from a Query Directory and displays it to Dr. West.
+- The EHR retrieves the information from the Directory and displays it to Dr. West.
 - Vera and Dr. West decide on the Orthopedic department at Hospital East; Dr. West prepares a referral.
+
 <div>
-{% include care-services-use-case-1.svg %}
+{% include care-services-service-query-use-case.svg %}
 </div>
 
-#### Use Case #2: Endpoint Discovery
-Dr. West just created a referral (for patient Vera Brooks from use case #1). The EHR has to notify Hospital East and the Orthopedic department of this referral. This may include some recurring requests:
+#### Use Case #4: Endpoint Discovery
+Dr. West just created a referral (for patient Vera Brooks from use case #3). The EHR has to notify Hospital East and the Orthopedic department of this referral. This may include some recurring requests:
 - The EHR looks up the HealthcareService instance of the Orthopedic department at the (local) Directory, fetches the related endpoints and checks if these support a 'Request' payloadType. The EHR sends the notification and referral-workflow continues.
 
 <div>
-{% include care-services-use-case-2.svg %}
+{% include care-services-endpoint-query-use-case.svg %}
 </div>
 
-##### Use Case #3: Query Client & Update Client Sync Example
-The following sequence diagram illustrates how a Query Client and Update Client synchronize data from the LRZa Directory into a local replica:
 
-<div>
-{% include care-services-sync-example.svg %}
-</div>
 
 ### Roadmap for Care Services
 

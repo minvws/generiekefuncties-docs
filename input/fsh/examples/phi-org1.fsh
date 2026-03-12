@@ -25,6 +25,17 @@ Title: "Patient Jaantje Merkens"
 * managingOrganization.type = "Organization"
 * managingOrganization.display = "Organization 1"
 
+Instance: 607bc9c7-8a3b-47e6-ac72-8a50e97d6ae2
+InstanceOf: CustodianAssignedIdentifier
+Usage: #inline
+Title: "CustodianAssignedIdentifier for a Condition at care provider with URA 11111111"
+* system = "https://cp1-test.example.org/Condition"
+* value = "8cdd8f8d-f75b-4285-851e-ff302dad46fb"
+* use = #official
+* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* assigner.identifier.value = "11111111"
+* assigner.identifier.type = $provenance-participant-type#custodian
+
 Instance: 8cdd8f8d-f75b-4285-851e-ff302dad46fb
 InstanceOf: Condition
 Usage: #inline
@@ -32,7 +43,8 @@ Title: "Condition General Weakness"
 * meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Condition"
 * meta.versionId = "1"
 * meta.lastUpdated = "2024-09-03T12:00:00Z"
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
+* identifier = 607bc9c7-8a3b-47e6-ac72-8a50e97d6ae2
+//* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * clinicalStatus = $condition-clinical#active
 * verificationStatus = $condition-ver-status#provisional
 * code = $sct#13791008 "General weakness"
@@ -151,16 +163,16 @@ Title: "MedicationStatement Urokinase"
 * dosage[0].doseAndRate[0].doseQuantity.unit = "mg"
 
 
-// Instance: phi-org1
-// InstanceOf: Bundle
-// Usage: #example
-// Title: "Bundle of personal health information in HIS of Organization 1"
-// Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 1"
-// * type = #transaction
-// * insert BundleEntryPUT(urn:uuid:,Patient, 128447d2-e153-4c93-8ac6-6c357555f3db)
-// * insert BundleEntryPUT(urn:uuid:,Condition, 8cdd8f8d-f75b-4285-851e-ff302dad46fb)
-// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 73f4bffe-eac4-4863-8e4a-852c578f95dd)
-// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, d2f1d123-9bfb-485f-8b6f-2db411c4884e)
-// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb)
-// * insert BundleEntryPUT(urn:uuid:,ServiceRequest, 3cb7873f-c222-4196-b441-02b3790ec97e)
-// * insert BundleEntryPUT(urn:uuid:,MedicationStatement, 98f9d4a7-d58d-4889-8e63-0cb2d4e35144)
+Instance: phi-org1
+InstanceOf: Bundle
+Usage: #example
+Title: "Bundle of personal health information in HIS of Organization 1"
+Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 1"
+* type = #transaction
+* insert BundleEntryPUT(urn:uuid:,Patient, 128447d2-e153-4c93-8ac6-6c357555f3db)
+* insert BundleEntryPUT(urn:uuid:,Condition, 8cdd8f8d-f75b-4285-851e-ff302dad46fb)
+* insert BundleEntryPUT(urn:uuid:,ServiceRequest, 73f4bffe-eac4-4863-8e4a-852c578f95dd)
+* insert BundleEntryPUT(urn:uuid:,ServiceRequest, d2f1d123-9bfb-485f-8b6f-2db411c4884e)
+* insert BundleEntryPUT(urn:uuid:,ServiceRequest, 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb)
+* insert BundleEntryPUT(urn:uuid:,ServiceRequest, 3cb7873f-c222-4196-b441-02b3790ec97e)
+* insert BundleEntryPUT(urn:uuid:,MedicationStatement, 98f9d4a7-d58d-4889-8e63-0cb2d4e35144)

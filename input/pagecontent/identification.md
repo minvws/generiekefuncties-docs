@@ -15,7 +15,43 @@ The GF Identification follows the national FHIR-profiles for patient, healthcare
 
 ### Data-object Identification
 
-Data objects (e.g. Observation, Condition, Medication, or HealthcareService resources) are frequently copied, federated, or accessed via intermediary platforms. This complicates provenance tracking, authenticity verification, and long-term resolution to the originating source. Therefore, each data object SHALL be assigned a custodian-assigned identifier by the original custodian that is accountable for that object. For health records, the custodian SHOULD be a care provider. For addressable entities (see [Care Services](./care-services.html)), the custodian is CiBG (responsible for LRZa).
+Data objects (e.g. Observation, Condition, Medication, or HealthcareService resources) are identified by an identifier ***that was assigned by the original custodian***. The custodian is "The entity that is accountable for maintaining a true an accurate copy of the ***original*** record". I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian. 
+
+Example identifier for a Condition registered at a Care provider with URA-number '11111111':
+```
+"identifier": [{
+    "system": "https://cp1-test.example.org/Condition",
+    "value": "8cdd8f8d-f75b-4285-851e-ff302dad46fb",
+    "use": "official",
+    "assigner": {
+        "identifier": {
+        "system": "http://fhir.nl/fhir/NamingSystem/ura",
+        "value": "11111111",
+        "type": {
+            "coding": [{
+                "code": "custodian",
+                "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+    }]}}}}]
+```
+
+Example identifier for a HealthcareService (registered at the [LRZa Directory](./care-services.html#lrza-directory) with KvK-number of custodian CiBG):
+```
+"identifier": [{
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:uuid:9d47ca45-4166-4531-a23d-ef5fa613ece4",
+    "use": "official",
+    "assigner": {
+    "identifier": {
+        "system": "http://fhir.nl/fhir/NamingSystem/kvk",
+        "value": "50000535",
+        "type": {
+        "coding": [{
+            "code": "custodian",
+            "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+    }]}}}}]
+```
+
+However, the custodian may have multiple systems or endpoints that expose the data-object in varying formats (e.g. FHIR STU3 and R4). Systems may also changes over time. This requires a lookup of the actual system/endpoint using [GF Addressing](./care-services.md)
 
 This identifier is applied in the profiles specified in this IG (e.g. [NL-GF-Organization](./StructureDefinition-nl-gf-organization.html) or [NL-GF-HealthCareService](./StructureDefinition-nl-gf-healthcareservice.html)) and example FHIR-resources (e.g. [Organization](./Organization-631cf10e-42d6-4165-9907-11e2333d4a85.json.html) (department), [Condition](./Condition-5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757.json.html) and [Task](./Task-a0fc5221-bcd9-46f1-922f-c2913dae5d63.json.html) that references the example Organization/department). For discussion and other solutions that were considered, see [GF-Identification, ADR#48](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/48) and [GF-Identification, ADR#33](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/33).
 

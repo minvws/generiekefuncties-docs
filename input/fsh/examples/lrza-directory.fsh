@@ -288,12 +288,24 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * contact[=].use = #work
 * address = "https://cp2-test.example.org/fhirstu3"
 
+Instance: 01b4a250-f331-477e-8762-1ad392473c63
+InstanceOf: CustodianAssignedIdentifier
+Usage: #inline
+Title: "CustodianAssignedIdentifier for a HealthcareService registered at CiBG (responsible for the LRZa Directory)"
+* system = "urn:ietf:rfc:3986"
+* value = "urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274"
+* use = #official
+* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* assigner.identifier.value = "50000535"
+* assigner.identifier.type = $provenance-participant-type#custodian
+
 Instance: 11d46e82-1566-5772-8404-563aa31c3846
 InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Polikliniek 't Vaatje"
 Description: "Example consultation healthcare service named Polikliniek 't Vaatje at Organization 2."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* identifier = 01b4a250-f331-477e-8762-1ad392473c63
+// * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true

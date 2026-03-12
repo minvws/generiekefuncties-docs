@@ -29,8 +29,9 @@ INPUT_FILE_WITH_URA="${INPUT_DIR}/kvk-basisprofiel-90006623-with-ura.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-organization-90006623.json"
 TRANSFORM_MAP="http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
 
-# Add uraNummer to the basisprofiel input
-jq '. + {"uraNummer": ["00012345"]}' "$INPUT_FILE" > "$INPUT_FILE_WITH_URA"
+# Preprocess: rename _embedded → embedded (underscore prefix is reserved in FHIR JSON)
+# and add uraNummer to the basisprofiel input
+jq '(if has("_embedded") then .embedded = ._embedded | del(._embedded) else . end) + {"uraNummer": ["00012345"]}' "$INPUT_FILE" > "$INPUT_FILE_WITH_URA"
 
 # Transform the KVK Basisprofiel JSON to a FHIR Organization resource
 echo "======Transforming KVK Basisprofiel to Organization..."
@@ -41,7 +42,9 @@ java -jar "$VALIDATOR_JAR" \
   -version 4.0.1 \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
-  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4"
+  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
+  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+
 
 # Validate the transformed outputs against their profiles
 echo "======Validating Organization..."
@@ -50,7 +53,8 @@ java -jar "$VALIDATOR_JAR" \
   -version 4.0.1 \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
-  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4"
+  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
+  -ig "hl7.fhir.eu.base#2.0.0-ballot"
 
 
 
@@ -67,7 +71,9 @@ java -jar "$VALIDATOR_JAR" \
   -version 4.0.1 \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
-  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4"
+  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
+  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+
 
 # Validate the transformed outputs against their profiles
 echo "======Validating Location..."
@@ -76,4 +82,6 @@ java -jar "$VALIDATOR_JAR" \
   -version 4.0.1 \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
-  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4"
+  -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
+  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+

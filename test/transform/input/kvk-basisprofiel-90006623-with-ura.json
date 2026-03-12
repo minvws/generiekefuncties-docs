@@ -39,7 +39,7 @@
       "href": "https://api.kvk.nl/test/api/v1/basisprofielen/90006623/vestigingen"
     }
   ],
-  "_embedded": {
+  "embedded": {
     "hoofdvestiging": {
       "vestigingsnummer": "990064773193",
       "kvkNummer": "90006623",
@@ -58,6 +58,8 @@
           "volledigAdres": "Sint Jacobsstraat 300 3511BT Utrecht",
           "straatnaam": "Sint Jacobsstraat",
           "huisnummer": 300,
+          "huisletter": "a",
+          "huisnummerToevoeging": "bla",
           "postcode": "3511BT",
           "plaats": "Utrecht",
           "land": "Nederland",

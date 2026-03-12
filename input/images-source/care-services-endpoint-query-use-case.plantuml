@@ -1,4 +1,4 @@
-@startuml care-services-use-case-2
+@startuml care-services-endpoint-query-use-case
 
 skinparam roundcorner 20
 skinparam defaultFontName Arial 

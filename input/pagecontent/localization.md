@@ -15,7 +15,7 @@ Here is a brief overview of the processes that are involved:
 1. A data user (practitioner and/or system (EHR)) can now use the Localization service to discover data holders for a specific patient and data category.
 
 
-These processes require the use of pseudonyms that are generated and resolved using a national Pseudonymization Service. The Localization service-response provides a list of data holders; the endpoints of these data holders (e.g. FHIR or DICOM-urls) need to be resolved using a [Care service (Query) Directory](./care-services.html#lrza-directory). This process is illustrated in [this example](./care-services.html#use-case-2-endpoint-discovery). 
+These processes require the use of pseudonyms that are generated and resolved using a national Pseudonymization Service. The Localization service-response provides a list of data holders; the endpoints of these data holders (e.g. FHIR or DICOM-urls) need to be resolved using a [Care service (Query) Directory](./care-services.html#lrza-directory). This process is illustrated in [this example](./care-services.html#use-case-4-endpoint-discovery). 
 
 <img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/>
 
