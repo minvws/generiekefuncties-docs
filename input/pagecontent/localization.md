@@ -132,32 +132,9 @@ The search operation returns a Bundle of type `searchset` containing matching Li
 This response will not contain the (pseudomized) subject.identifier for privacy/security reasons.
 
 
-##### OPRF Integration requirements
+##### Pseudonymization Integration
 
-The Localization Client MUST implement the following requirements when interacting with the Pseudonymization Service:
-
-**1. Prepare PRS Interaction**
-- Prepare the patient's BSN in a structured JSON format with country code (e.g., "NL") and identifier value
-- Construct context string: `{recipient_organization}|{recipient_scope}|{version}` (e.g., "URA-NVI|localization|v1")
-- Apply HKDF-SHA256 to derive a pseudonym from the personal identifier (Parameters: SHA-256, 32 bytes, no salt, using context string as info ([RFC 5869](https://datatracker.ietf.org/doc/html/rfc5869)))
-- Perform cryptographic blinding on the derived pseudonym to create (Both values base64 URL-safe encoded):
-  - `blind_factor`: Retained for NVI processing
-  - `blinded_input`: Sent to Pseudonymization Service (PRS)
-
-**2. PRS Interaction**
-- Send `blinded_input` to PRS
-- Receive JWE (JSON Web Encryption) encrypted with NVI's public key
-- Client cannot decrypt the JWE
-
-**3. Localization Record Submission**
-- construct `subject.identifier` as a jwt with the following claims:
-  - evaluated_output: The JWE received from the Pseudonymization Service
-  - blind_factor: The blind factor
-  - iat: The timestamp of issuance
-- Include the JWT as `subject.identifier.value`
-- Submit to NVI for decryption and unblinding
-
-Reference implementations: [OPRF.py](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py)
+For detailed OPRF integration requirements, see the [NVI/PRS Aansluitdocument](https://todo-add-link) and [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
 
 
 ### Data models
