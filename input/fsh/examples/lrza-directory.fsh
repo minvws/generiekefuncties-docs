@@ -552,10 +552,10 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * name = "Verpleging"
 * location[+] = Reference(Location/f37e7fdb-21b9-54ac-bd36-70c56f2f09c7)
 * location[+] = Reference(Location/bbec4d2a-1be2-539b-817e-f85ef6e895f2)
-* type[+] = NlGfWlzZorgprofielenCS#5VV "VV Beschermd wonen met intensieve dementiezorg"
-* type[+] = NlGfWlzZorgprofielenCS#6VV "VV Beschermd wonen met intensieve verzorging en verpleging"
-* type[+] = NlGfWlzZorgprofielenCS#7VV "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op begeleiding"
-* type[+] = NlGfWlzZorgprofielenCS#8VV "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
+* type[+] = $zorgzwaartepakket##754 "VV Beschermd wonen met intensieve dementiezorg"
+* type[+] = $zorgzwaartepakket#755 "VV Beschermd wonen met intensieve verzorging en verpleging"
+* type[+] = $zorgzwaartepakket#756 "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op begeleiding"
+* type[+] = $zorgzwaartepakket#757 "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
 * specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0100 "Verpleegkundige"
 
 

@@ -5,7 +5,7 @@ Description: "The Service Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.19--20200901000000
-* include codes from system NlGfWlzZorgprofielenCS
+* include codes from system http://istandaarden.nl/ibieb/codelijsten/COD163
 
 ValueSet: NlGfOrgTypesVS
 Id: nl-gf-org-types-vs
