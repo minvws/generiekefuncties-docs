@@ -24,6 +24,7 @@ Description: "Authorization and endpoint connection type codes supported by NL G
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfAuthorizationServerCS
+* http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type#hti-smart-on-fhir
 
 
 ValueSet: NlGfPayloadTypeVS
@@ -34,6 +35,7 @@ Description: "The data exchange capabilities supported"
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
 * include codes from system NlGfDataCategoriesCS
+
 
 ValueSet: NlGfAuthorizationTypeVS
 Id: nl-gf-authorization-type-vs
