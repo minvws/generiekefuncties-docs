@@ -116,11 +116,11 @@ For more information on the content, see the paragraph on [Localization record](
 ##### Search for Localization Records
 The client SHALL support searching for List resources (localization records). This enables healthcare professionals to discover which organizations hold relevant patient data. The Localization Client SHALL support the following search parameters:
 
-- **subject.identifier**: Search for localization records by pseudonymized patient identifier (BSN)
+- **subject:identifier**: Search for localization records by pseudonymized patient identifier (BSN)
 - **code**: Search for localization records by data type/category code
-- **source.identifier**: Search for localization records registered by an application.  
+- **source:identifier**: Search for localization records registered by an application.  
 
-Client SHALL either use the subject.identifier or source.identifier in a search.
+Client SHALL either use the subject:identifier or source:identifier in a search.
 
 
 **Example Search Query**:
@@ -182,7 +182,7 @@ The following diagram illustrates the registration workflow, including interacti
 **Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific device/system (the Localization Client)
 
 ```
-GET [base]/List?source.identifier=urn:ietf:rfc:3986|urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7
+GET [base]/List?source:identifier=urn:ietf:rfc:3986|urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7
 ```
 
 **Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or device.
