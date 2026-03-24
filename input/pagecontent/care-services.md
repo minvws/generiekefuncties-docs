@@ -125,7 +125,7 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | Attribute | Card. | Description |
 |---|---|---|
 | status | 1..1 | The operational status of the endpoint (e.g. active, off). |
-| connectionType | 1..1 | The type of connection (extensible binding to [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
+| connectionType | 1..1 | The type of connection (extensible binding to [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html) and [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
 | payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |

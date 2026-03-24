@@ -82,8 +82,8 @@ For more information on the content, see the paragraph on [Localization record](
         },
         "source": {
           "identifier": {
-            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-device-identifier",
-            "value": "EHR-SYS-2024-001"
+            "system": "urn:ietf:rfc:3986",
+            "value": "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
           },
           "type": "Device"
         },
@@ -182,7 +182,7 @@ The following diagram illustrates the registration workflow, including interacti
 **Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific device/system (the Localization Client)
 
 ```
-GET [base]/List?source:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-device-identifier|EHR-SYS-2024-001
+GET [base]/List?source:identifier=urn:ietf:rfc:3986|urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7
 ```
 
 **Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or device.

@@ -6,14 +6,14 @@ Usage: #definition
 * status = #active
 * experimental = false
 * date = "2025-08-28"
-* description = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
+* description = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes nearly all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
 * kind = #requirements
 * fhirVersion = #4.0.1
 * format[+] = #application/fhir+xml
 * format[+] = #application/fhir+json
 * rest
   * mode = #server
-  * documentation = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
+  * documentation = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes nearly all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Organization
@@ -22,6 +22,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -33,6 +37,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -44,6 +52,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -55,6 +67,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -66,6 +82,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -77,6 +97,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
@@ -88,6 +112,10 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
