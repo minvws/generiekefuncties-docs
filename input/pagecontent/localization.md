@@ -129,7 +129,7 @@ GET [base]/List?subject:identifier=http://minvws.github.io/generiekefuncties-doc
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
-This response will not contain the (pseudomized) subject:identifier for privacy/security reasons.
+This response will not contain the (pseudomized) subject.identifier for privacy/security reasons.
 
 
 ##### Pseudonymization Integration
