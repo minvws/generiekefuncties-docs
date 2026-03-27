@@ -8,8 +8,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
 
 Functional design: <a href="FO-adressering-v0.95.pdf">FO-adressering-v0.95.pdf</a><br/>
-Technical design: TODO<br/>
-Twiin implementatiewijzer: <a href="Implementatiewijzer_Twiin_GF_adressering.docx">Implementatiewijzer_Twiin_GF_adressering.docx</a>
+Technical design: TODO
 
 </p>
 
