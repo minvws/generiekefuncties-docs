@@ -7,11 +7,11 @@ Enables healthcare providers and systems to discover and retrieve up-to-date dig
 
 <p class="note-to-balloters">
 
-This guide outlines the technical requirements and architectural principles underlying these generic functions. For the functional design, the technical design and the specification in TWIIN-format, download files: 
+This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
 
-Download Functional design: [FO-adressering-v0.95.pdf](FO-adressering-v0.95.pdf)
-Download Technical design: TODO
-Download TWIIN implementatiehandleiding: [care-services-dummy.docx](care-services-dummy.docx)
+Functional design: <a href="FO-adressering-v0.95.pdf">FO-adressering-v0.95.pdf</a><br/>
+Technical design: TODO<br/>
+Twiin implementatiewijzer: <a href="Implementatiewijzer_Twiin_GF_adressering.docx">Implementatiewijzer_Twiin_GF_adressering.docx</a>
 
 </p>
 
