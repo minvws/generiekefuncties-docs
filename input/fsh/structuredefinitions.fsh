@@ -99,7 +99,7 @@ can be accessed for localization purposes."""
 * subject.identifier only NviIdentifier
 * subject.reference ..0
 * extension contains NlGfLocalizationCustodian named custodian 1..1
-* extension[custodian] ^comment = "The Organization which published the data"
+* extension[custodian] ^short = "The Organization which published the data"
 * source 1..1
 * source.identifier.system = "urn:ietf:rfc:3986"
 * source.identifier.value 1..1
@@ -181,7 +181,7 @@ Description: "OrganizationAffiliation profile aligned with IHE mCSD Organization
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code from NlGfAuthorizationTypeVS (required)
 * extension contains NlGfDeviceIdentifier named device 0..*
-* extension[device] ^comment = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
+* extension[device] ^short = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
 
 Profile: NlGfDevice
 Parent: Device

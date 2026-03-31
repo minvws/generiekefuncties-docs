@@ -58,7 +58,7 @@ A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the
 
 #### Update Client
 The Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) a 'lite version' of the Query Client and the Update Client. These clients are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html).
-For more information, see the [synchronization example](#use-case-2-query-client--update-client-sync-example)
+For more information, see the [synchronization example](#use-case-2-update-client-sync-example)
 
 #### Query Client
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
