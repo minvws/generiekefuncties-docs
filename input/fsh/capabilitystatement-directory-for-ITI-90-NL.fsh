@@ -1,8 +1,8 @@
-Instance: nl-gf-directory-for-query-client
+Instance: nl-gf-directory-for-ITI-90-NL
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Directory capability [ITI-90-NL] for a Query Client actor"
+* title = "Directory capability [ITI-90-NL] for Update Client actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
@@ -48,6 +48,21 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #PractitionerRole
     * supportedProfile = Canonical(NlGfPractitionerRole)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #search-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "identifier"
+      * type = #token
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #read
+  * resource[+]
+    * insert Expectation(SHALL)
+    * type = #Practitioner
+    * supportedProfile = Canonical(NlGfPractitioner)
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)

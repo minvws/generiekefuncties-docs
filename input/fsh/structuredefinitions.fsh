@@ -45,6 +45,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
 * specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
+* specialty ^comment = "The referenced Nictiz/DECOR value set does not currently resolve reliably in all tooling. When needed, inspect the underlying artifact manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
 
@@ -53,7 +54,7 @@ Profile: NlGfLocation
 Parent: $NlLocation
 Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
-Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required custodian-assigned identifier."
+Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location"
 * ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
@@ -102,7 +103,7 @@ can be accessed for localization purposes."""
 * source 1..1
 * source.identifier.system = "urn:ietf:rfc:3986"
 * source.identifier.value 1..1
-* source.identifier.value obeys device-identifier-urn
+* source.identifier.value obeys identifier-is-a-urn
 * source only Reference(Device)
 * source.reference ..0
 * source.type = $resource-types#Device
@@ -209,7 +210,7 @@ Profile: NlGfPractitionerRole
 Parent: $NlPractitionerRole
 Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
-Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier."
+Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole"
 * ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
@@ -229,7 +230,7 @@ Profile: NlGfPractitioner
 Parent: $NlPractitioner
 Id: nl-gf-practitioner
 Title: "NL Generic Functions Practitioner Profile"
-Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints."
+Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * ^experimental = true
 * identifier ^slicing.discriminator[0].type = #value
 * identifier ^slicing.discriminator[=].path = "$this"
@@ -269,7 +270,7 @@ Profile: CustodianAssignedIdentifier
 Parent: Identifier
 Id: nl-gf-custodianassignedidentifier
 Title: "Custodian Assigned Identifier"
-Description: """Data objects are frequently copied, federated, or accessed through intermediary platforms, which complicates provenance tracking, authenticity verification, and long-term traceability to the original source. To preserve provenance and avoid uncontrolled duplication, each original object SHALL be assigned an identifier by its original custodian (the accountable source). The custodian-assigned identifier uniquely identifies the resource and enables resolution to the originating organization when copies are stored in other systems. This pattern is used throughout this IG, including NL-GF-Organization and NL-GF-HealthcareService, and in example resources such as Organization (department), Condition, and Task."""
+Description: """An (unique) identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
 * use 1..
 * use = #official
 * system 1..
@@ -288,13 +289,13 @@ Profile: CustodianAssignedUrnIdentifier
 Parent: Identifier
 Id: nl-gf-custodianassignedurnidentifier
 Title: "Custodian Assigned URN Identifier"
-Description: """Data objects are identified by an identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
+Description: """An (unique) ***OID or UUID*** identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
 * use 1..
 * use = #official
 * system 1..
 * system = "urn:ietf:rfc:3986"
 * value 1..
-* value obeys device-identifier-urn
+* value obeys identifier-is-a-urn
 * assigner 1..1
 * assigner.identifier 1..1
 * assigner.identifier obeys assigner-identifier-system
@@ -309,7 +310,7 @@ Profile: NviIdentifier
 Parent: Identifier
 Id: nl-gf-nvi-identifier
 Title: "NVI Identifier"
-Description: """Identifier for pseudonymized Dutch citizen service numbers (BSN)."""
+Description: """Identifier used at the NVI for pseudonymized Dutch citizen service numbers (BSN)."""
 * system 1..
 * system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier" (exactly)
 * value 1..
@@ -336,10 +337,10 @@ Context: OrganizationAffiliation
 * valueReference.identifier 1..1
 * valueReference.identifier.system = "urn:ietf:rfc:3986"
 * valueReference.identifier.value 1..1
-* valueReference.identifier.value obeys device-identifier-urn
+* valueReference.identifier.value obeys identifier-is-a-urn
 
-Invariant:   device-identifier-urn
-Description: "The device identifier must be a URN with a valid UUID or OID."
+Invariant:   identifier-is-a-urn
+Description: "The identifier must be a URN with a valid UUID or OID."
 Expression:  "startsWith('urn:uuid:') or startsWith('urn:oid:')"
 Severity:    #error
 

@@ -1,55 +1,19 @@
-Instance: nl-gf-directory-for-update-client
+Instance: nl-gf-directory-for-ITI-130-NL
 InstanceOf: CapabilityStatement
 Usage: #definition
 * version = "20250828"
-* title = "Directory capability [ITI-91-NL] for an Update Client actor"
+* title = "Directory capability [ITI-130-NL] for a Data Source actor"
 * status = #active
 * experimental = false
 * date = "2025-08-28"
-* description = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint."
+* description = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
 * kind = #requirements
 * fhirVersion = #4.0.1
 * format[+] = #application/fhir+xml
 * format[+] = #application/fhir+json
 * rest
   * mode = #server
-  * documentation = "ITI-91-NL; Dutch profile of the IHE ITI mCSD ITI-91 endpoint."
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Organization
-    * supportedProfile[+] = Canonical(NlGfOrganization)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Location
-    * supportedProfile[+] = Canonical(NlGfLocation)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+  * documentation = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
   * resource[+]
     * insert Expectation(SHALL)
     * type = #HealthcareService
@@ -57,11 +21,54 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
+      * code = #create
+    * interaction[+]
       * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #update
+  * resource[+]
+    * insert Expectation(SHALL)
+    * type = #Location
+    * supportedProfile[+] = Canonical(NlGfLocation)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
+  * resource[+]
+    * insert Expectation(SHALL)
+    * type = #Organization
+    * supportedProfile[+] = Canonical(NlGfOrganization)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
+  * resource[+]
+    * insert Expectation(MAY)
+    * type = #PractitionerRole
+    * supportedProfile = Canonical(NlGfPractitionerRole)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
+  * resource[+]
+    * insert Expectation(MAY)
+    * type = #Practitioner
+    * supportedProfile = Canonical(NlGfPractitioner)
+    * documentation = "."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #update
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Endpoint
@@ -69,23 +76,21 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
+      * code = #create
+    * interaction[+]
       * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #update
   * resource[+]
-    * insert Expectation(SHALL)
+    * insert Expectation(MAY)
     * type = #OrganizationAffiliation
     * supportedProfile[+] = Canonical(NlGfOrganizationAffiliation)
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
+      * code = #create
+    * interaction[+]
       * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #update
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Device
@@ -93,8 +98,10 @@ Usage: #definition
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
+      * code = #create
+    * interaction[+]
       * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
+      * code = #update
+  * interaction[+]
+    * insert Expectation(SHALL)
+    * code = #transaction

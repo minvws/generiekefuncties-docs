@@ -7,8 +7,8 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 
 This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
 
-Functional design: <a href="FO-adressering-v0.95.pdf">FO-adressering-v0.95.pdf</a><br/>
-Technical design: TODO
+Functional design: <a href="GFO-adressering-v0.9.0.pdf">FO-adressering-v0.95.pdf</a><br/>
+Technical design: GTO-adressering-v0.9.0.pdf
 
 </p>
 
@@ -19,7 +19,7 @@ Technical design: TODO
 
 1. Every care provider registers one or more parties (e.g. an IT vendor) that is authorized to manage their addressable entities at the ['Directory'](#lrza-directory) of the 'Landelijk Register Zorgaanbieders' (LRZa). Care provider administrators register their addressable entities in an Service Provider application (e.g. an EHR).
 1. The authorized Service Providers create and manage addressable entities in the LRZa Directory. In the schema below, this is represented as the 'Data source' performing 'Care Service Feed' transactions.
-1. A 'Query & Update client' is used to copy and (periodically) fetch updates from the LRZa Directory to a local replica Directory. 
+1. An 'Update Client' is used to copy and (periodically) fetch updates from the LRZa Directory to a local replica Directory. 
 1. A practitioner and/or system (e.g. an EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
@@ -49,15 +49,15 @@ Addressable entities (e.g. a Location or HealthcareService) may become inactive/
 Each actor will now be discussed in more detail.
 
 #### LRZa Directory
-The LRZa Directory is the central national directory for publishing and distributing addressable entities. It is the authoritative source for nationally governed directory content and provides interfaces for administration and retrieval of updates. The LRZa Directory is not intended for runtime matching in operational healthcare workflows; searching/matching SHALL be performed on local replicas. This Directory provides an API for the 'Data Source' and 'Query & Update Client' that implements these CapabilityStatements:
-- for Data Source clients: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-data-source.html)
-- for Query & Update clients: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html) and [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-update-client.html)
+The LRZa Directory is the central national directory for publishing and distributing addressable entities. It is the authoritative source for nationally governed directory content and provides interfaces for administration and retrieval of updates. The LRZa Directory is not intended for runtime matching in operational healthcare workflows; searching/matching SHALL be performed on local replicas. This Directory provides an API for the 'Data Source' and 'Update Client' that implements these CapabilityStatements:
+- for Data Source clients: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
+- for Update Clients: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
 
 #### Data Source
-A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [CapabilityStatement ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-data-source.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
+A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [CapabilityStatement ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
 
-#### Query & Update Client
-The Query & Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) and are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-update-client.html).
+#### Update Client
+The Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) a 'lite version' of the Query Client and the Update Client. These clients are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html).
 For more information, see the [synchronization example](#use-case-2-query-client--update-client-sync-example)
 
 #### Query Client
@@ -71,15 +71,15 @@ Transactions between Service Providers and the LRZa are defined here. Other (loc
 
 #### Care Services Feed: ITI-130-NL
 The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement.
-CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-data-source.html)
+CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
-The Query Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters.
-CapabilityStatement: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-query-client.html)
+The Update Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters.
+CapabilityStatement: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html)
 
 #### Request Care Services Updates: ITI-91-NL
 The Update Client retrieves changes from the LRZa Directory using `history-type` interactions per supported resource, optionally constrained by `_since` for incremental synchronization.
-CapabilityStatement: [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-update-client.html)
+CapabilityStatement: [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
 
 
 
@@ -223,8 +223,8 @@ This sequence shows a two-step onboarding flow: first, the care provider adminis
 {% include care-services-registration-use-case.svg %}
 </div>
 
-##### Use Case #2: Query Client & Update Client Sync Example
-The following sequence diagram illustrates how a Query Client and Update Client synchronize data from the LRZa Directory into a local replica:
+##### Use Case #2: Update Client Sync Example
+The following sequence diagram illustrates how an Update Client synchronize data from the LRZa Directory into a local replica:
 
 <div>
 {% include care-services-sync-use-case.svg %}
