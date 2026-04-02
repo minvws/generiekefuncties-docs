@@ -7,8 +7,8 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 
 This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
 
-Functional design: <a href="GFO-adressering-v0.9.0.pdf">FO-adressering-v0.95.pdf</a><br/>
-Technical design: GTO-adressering-v0.9.0.pdf
+Functional design: <a href="FO adressering v0.9.0.pdf">FO adressering v0.9.0.pdf</a><br/>
+Technical design: <a href="GTO adressering v0.9.0.pdf">GTO adressering v0.9.0.pdf</a>
 
 </p>
 
