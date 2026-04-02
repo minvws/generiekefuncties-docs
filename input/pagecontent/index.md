@@ -9,6 +9,8 @@ Enables healthcare providers and systems to discover and retrieve up-to-date dig
 
 This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
 
+Consultation memo: <a href="Oplegnotitie Consultatie GF Adressering v0.9.0.pdf">Oplegnotitie Consultatie GF Adressering v0.9.0.pdf</a><br/>
+Consultation reviewsheet: <a href="Reviewsheet consultatie GF Adressering v0.9.0.xlsx">Reviewsheet consultatie GF Adressering v0.9.0.xlsx</a><br/>
 Functional design: <a href="FO adressering v0.9.0.pdf">FO adressering v0.9.0.pdf</a><br/>
 Technical design: <a href="GTO adressering v0.9.0.pdf">GTO adressering v0.9.0.pdf</a>
 
