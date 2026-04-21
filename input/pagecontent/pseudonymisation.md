@@ -148,7 +148,7 @@ Both values are exchanged base64url-encoded.
 
 #### JWE container
 
-The PRS response is a JWE compact serialization (per the Logius BSNk v2 specification) encrypted to the recipient's public key. The JWE is opaque to the client and is intended for one-time use in a single downstream transaction.
+The PRS response is a JWE compact serialization encrypted to the recipient's public key. The JWE is opaque to the client and is intended for one-time use in a single downstream transaction.
 
 #### Combined patient identifier
 
