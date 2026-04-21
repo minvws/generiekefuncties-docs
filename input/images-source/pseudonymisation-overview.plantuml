@@ -1,0 +1,40 @@
+@startuml pseudonymisation-overview
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+participant "Pseudonymization\nClient (e.g. EHR)" as client
+participant "Pseudonymization\nService (PRS)" as prs
+participant "Recipient\n(e.g. NVI)" as recipient
+
+== Client-side preparation ==
+
+client -> client: Build Identifier\n{ landCode, type, value }
+client -> client: HKDF(SHA-256, info=\n"{recipient_org}|{recipient_scope}|v1")\n→ pseudonym
+client -> client: OPRF.blind(pseudonym)\n→ (blind_factor, blinded_input)
+
+== PRS evaluation ==
+
+activate prs
+client -> prs: POST /evaluate\n{ blinded_input,\n  recipient_organization,\n  recipient_scope }
+
+prs -> prs: Validate input,\nevaluate OPRF and\nencrypt for recipient
+prs -> client: JWE (evaluated_output)\nencrypted to recipient public key
+deactivate prs
+
+== Hand-off to recipient ==
+
+client -> client: Compose patient identifier:\nbase64url(JSON{ evaluated_output,\n  blind_factor })
+
+client -> recipient: Request carrying patient identifier\n(+ blind_factor as oprf_key)
+
+activate recipient
+recipient -> recipient: Decrypt JWE with own private key
+recipient -> recipient: De-blind with blind_factor\n→ stable pseudonym
+recipient -> client: Response
+deactivate recipient
+
+@enduml
