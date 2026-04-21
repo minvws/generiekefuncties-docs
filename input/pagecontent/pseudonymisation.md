@@ -56,7 +56,7 @@ A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or
 - SHALL perform the OPRF blinding locally and keep the `blind_factor` confidential;
 - SHALL submit only the `blinded_input` (and the recipient identifiers) to the PRS;
 - SHALL forward the resulting JWE together with the `blind_factor` to the recipient as part of a single downstream transaction;
-- SHALL NOT log or persist the `Identifier`, the derived pseudonym, or the `blind_factor` beyond the lifetime of the transaction.
+- SHALL NOT log or persist the derived pseudonym, or the `blind_factor` beyond the lifetime of the transaction.
 
 #### Recipient
 
