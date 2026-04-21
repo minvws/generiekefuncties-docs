@@ -188,10 +188,3 @@ A care provider's Localization Client needs to register the existence of patient
 #### Use case: preparing a Localization query
 
 A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used as the value of the `subject:identifier` search parameter on `GET [base]/List` (see [Localization](./localization.html#search-for-localization-records)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
-
-### Roadmap for GF Pseudonymisation
-
-Potential future enhancements include:
-
-- alignment/mapping of identifiers used in the PRS (e.g. `{landCode: NL, type: BSN, value: 123456789}`) and in healthcare information models (e.g. `{system: http://fhir.nl/fhir/NamingSystem/bsn, value: 123456789}`) 
-- adding a profile for input-validation in the Pseudonymization-client, specifying identifier-types, (recipient-) organization-identifiers and recipient scopes.
