@@ -136,7 +136,6 @@ The pseudonym handed to OPRF is derived as:
 - info: `"{recipient_organization}|{recipient_scope}|v1"`
 - input keying material: the UTF-8 JSON serialisation of the PID.
 
-The `info` string binds the resulting pseudonym to one specific recipient and scope, so the same identifier deterministically yields a different pseudonym per recipient.
 
 #### OPRF blinding
 
