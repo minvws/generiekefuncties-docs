@@ -101,13 +101,6 @@ Content-Type: application/json
 
 The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Registration of Localization Records](./localization.html#registration-of-localization-records) for how this identifier is represented in a `List` resource.
 
-#### Endpoints
-
-| DTAP-environment | Base URL | Authorization documentation | API documentation |
-|---|---|---|---|
-| Test | https://pseudoniemendienst.proeftuin.gf.irealisatie.nl | [Aansluitdocument-iRealisatie-proeftuin-v0.10.pdf](Aansluitdocument-iRealisatie-proeftuin-v0.10.pdf) | [/docs](https://pseudoniemendienst.proeftuin.gf.irealisatie.nl/docs) |
-| Acceptance | n/a | n/a |
-| Production | n/a | n/a |
 
 
 ### Data model
