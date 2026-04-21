@@ -85,5 +85,5 @@ Usage: #definition
 * group[=].element[=].target[+].code = #MedicationUse
 * group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[+].code = #BEHAANWIJZING
-* group[=].element[=].target[+].code = #AdvanceDirectives
+* group[=].element[=].target[+].code = #AdvanceDirective
 * group[=].element[=].target[=].equivalence = #equivalent

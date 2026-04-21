@@ -9,11 +9,11 @@ Description: "Local code system for data categories in NL Generic Functions."
 * ^property[+].code = #fhir-resourcetype-params
 * ^property[=].description = "Primary FHIR resource type mapped to this data category, scoped to one or more parameters."
 * ^property[=].type = #string
-* #AdvanceDirectives "Advance Directives"
+* #AdvanceDirective "Advance Directive"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Wilsverklaring"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Advance Directives"
+  * ^designation[=].value = "Advance Directive"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Consent?category=http://terminology.hl7.org/CodeSystem/consentcategorycodes|acd"
 * #Alert "Alert"
@@ -80,11 +80,11 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "StructureDefinition"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "StructureMap"
-* #Devices "Devices"
+* #Device "Device"
   * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Apparaten"
+  * ^designation[=].value = "Apparaat"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Devices"
+  * ^designation[=].value = "Device"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Device"
   * ^property[+].code = #fhir-resourcetype-params
@@ -103,11 +103,11 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Encounter"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Encounter"
-* #Episodes "Episodes"
+* #Episode "Episodes of care and care plans"
   * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Zorgtrajecten"
+  * ^designation[=].value = "Zorgtrajecten en zorgplannen"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Episodes"
+  * ^designation[=].value = "Episodes of care and care plans"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "EpisodeOfCare"
   * ^property[+].code = #fhir-resourcetype-params
@@ -119,11 +119,11 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Genomics"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "MolecularSequence"
-* #Images "Images"
+* #Imaging "Imaging"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Beelden"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Images"
+  * ^designation[=].value = "Imaging"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "ImagingStudy"
 * #Logging "Logging"
@@ -236,11 +236,11 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "RelatedPerson"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "CareTeam"
-* #Practitioners "Practitioners"
+* #Practitioner "Practitioner"
   * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Zorgverleners"
+  * ^designation[=].value = "Zorgverlener"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Practitioners"
+  * ^designation[=].value = "Practitioner"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Practitioner"
   * ^property[+].code = #fhir-resourcetype-params
@@ -268,3 +268,10 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Specimen, biological material"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Specimen"
+* #Subscription "Subscription and notifications"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Abonnementen en notificaties"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Subscription and notifications"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "Subscription"
