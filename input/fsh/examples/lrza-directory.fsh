@@ -165,7 +165,7 @@ Description: "Example: Organization 1 - Endpoint"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
-* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
@@ -222,7 +222,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
-* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
@@ -242,7 +242,7 @@ Title: "Organization 2 - Endpoint DICOM-WADO-RS"
 Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
-* payloadType[+].coding = nl-gf-data-categories-cs#Images "Images"
+* payloadType[+].coding = nl-gf-data-categories-cs#Imaging "Imaging"
 * connectionType = $endpoint-connection-type#dicom-wado-rs
 * name = "DICOM-WADO-RS Endpoint"
 * managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
@@ -270,8 +270,8 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#MedicationUse "Medication Use"
 * payloadType[+].coding = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
 * payloadType[+].coding = nl-gf-data-categories-cs#Nutrition "Nutrition"
-* payloadType[+].coding = nl-gf-data-categories-cs#Images "Images"
-* payloadType[+].coding = nl-gf-data-categories-cs#Episodes "Episodes"
+* payloadType[+].coding = nl-gf-data-categories-cs#Imaging "Imaging"
+* payloadType[+].coding = nl-gf-data-categories-cs#Episode "Episodes of care and care plans"
 * payloadType[+].coding = nl-gf-data-categories-cs#Encounter "Encounter"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
@@ -477,7 +477,7 @@ Description: "Example: Organization 3 - Endpoint FHIR R4"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 
-* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirectives "Advance Directives"
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR R4 Endpoint"
@@ -506,8 +506,8 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#MedicationUse "Medication Use"
 * payloadType[+].coding = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
 * payloadType[+].coding = nl-gf-data-categories-cs#Nutrition "Nutrition"
-* payloadType[+].coding = nl-gf-data-categories-cs#Images "Images"
-* payloadType[+].coding = nl-gf-data-categories-cs#Episodes "Episodes"
+* payloadType[+].coding = nl-gf-data-categories-cs#Imaging "Imaging"
+* payloadType[+].coding = nl-gf-data-categories-cs#Episode "Episodes of care and care plans"
 * payloadType[+].coding = nl-gf-data-categories-cs#Encounter "Encounter"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"

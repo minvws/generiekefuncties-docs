@@ -51,17 +51,18 @@ Title: "NL GF Patient Information Data Categories ValueSet"
 Description: "Data categories (a.k.a. zorgcontext) that map to FHIR resource types containing patient-related clinical or personal health information."
 * ^status = #active
 * ^experimental = true
-* NlGfDataCategoriesCS#AdvanceDirectives
+* NlGfDataCategoriesCS#AdvanceDirective
 * NlGfDataCategoriesCS#Alert
 * NlGfDataCategoriesCS#AllergyIntolerance
 * NlGfDataCategoriesCS#Condition
 * NlGfDataCategoriesCS#Consent
-* NlGfDataCategoriesCS#Devices
+* NlGfDataCategoriesCS#Device
 * NlGfDataCategoriesCS#DiagnosticReport
 * NlGfDataCategoriesCS#Encounter
-* NlGfDataCategoriesCS#Episodes
+* NlGfDataCategoriesCS#Episode
 * NlGfDataCategoriesCS#Genomics
-* NlGfDataCategoriesCS#Images
+* NlGfDataCategoriesCS#Imaging
+* NlGfDataCategoriesCS#Logging
 * NlGfDataCategoriesCS#MedicationRequest
 * NlGfDataCategoriesCS#MedicationUse
 * NlGfDataCategoriesCS#Nutrition
