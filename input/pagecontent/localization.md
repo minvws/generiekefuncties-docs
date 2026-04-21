@@ -44,7 +44,16 @@ The client SHALL be able to create and register List resources (localization rec
 - Submit the Bundle to the Localization Service's transaction endpoint
 - Handle transaction responses, including success confirmations and error conditions
 
-**Pseudonymization Integration**: Before submitting localization records, the client MUST compose a pseudonymized patient identifier using the [Pseudonymization Service (PRS)](./pseudonymisation.html). The resulting patient identifier is a base64url-encoded JSON object containing the `blind_factor` and `evaluated_output`; see [GF Pseudonymisation — Combined patient identifier](./pseudonymisation.html#combined-patient-identifier) for details.
+**Pseudonymization Integration**: Before submitting localization records, the client MUST compose a pseudonymized patient identifier using the [Pseudonymization Service (PRS)](./pseudonymisation.html). When the pseudonym is forwarded to the NVI, the client packages the JWE and `blind_factor` together as a base64url-encoded JSON object:
+
+```json
+{
+  "evaluated_output": "<JWE compact serialization>",
+  "blind_factor": "<base64url-encoded blind_factor>"
+}
+```
+
+This object is used in the `subject.identifier.value` element (using the system `http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier`).
 
 **Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 

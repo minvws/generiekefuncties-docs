@@ -99,7 +99,7 @@ Content-Type: application/json
 }
 ```
 
-The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. Downstream services that consume this identifier (e.g. the NVI) typically expect it as a base64url-encoded JSON object using the naming system `http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier`; see [GF Localization](./localization.html#localization-record) for the exact representation in a `List` resource.
+The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Registration of Localization Records](./localization.html#registration-of-localization-records) for how this identifier is represented in a `List` resource.
 
 #### Endpoints
 
@@ -112,9 +112,9 @@ The pair `(evaluated_output, blind_factor)` together forms the patient identifie
 
 ### Data model
 
-#### Identifier (PID)
+#### Identifier
 
-The PID is a small JSON object that uniquely identifies the natural person being pseudonymised. For Dutch patients identified by their BSN:
+The Identifier is a small JSON object that uniquely identifies the natural person being pseudonymised. For example, a Dutch citizen identified by its BSN:
 
 ```json
 {
@@ -124,7 +124,7 @@ The PID is a small JSON object that uniquely identifies the natural person being
 }
 ```
 
-The PID is never sent to the PRS; it is the input to the local HKDF step.
+The Identifier is never sent to the PRS; it is the input to the local HKDF step.
 
 #### HKDF derivation
 
@@ -134,7 +134,7 @@ The pseudonym handed to OPRF is derived as:
 - length: 32 bytes
 - salt: none
 - info: `"{recipient_organization}|{recipient_scope}|v1"`
-- input keying material: the UTF-8 JSON serialisation of the PID.
+- input keying material: the UTF-8 JSON serialisation of the Identifier.
 
 
 #### OPRF blinding
@@ -149,19 +149,6 @@ Both values are exchanged base64url-encoded.
 #### JWE container
 
 The PRS response is a JWE compact serialization encrypted to the recipient's public key. The JWE is opaque to the client and is intended for one-time use in a single downstream transaction.
-
-#### Combined patient identifier
-
-When the pseudonym is forwarded to a downstream service, the client packages the JWE and `blind_factor` together. For the NVI this takes the form of a base64url-encoded JSON object:
-
-```json
-{
-  "evaluated_output": "<JWE compact serialization>",
-  "blind_factor": "<base64url-encoded blind_factor>"
-}
-```
-
-This object is then used in the `subject.identifier` element when interacting with, for example, the NVI (using the system `http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier`).
 
 ### Reference implementation
 
