@@ -13,7 +13,7 @@ The PRS returns the evaluation result encrypted as a JWE for the intended recipi
 
 The basic process for obtaining and using a pseudonym is:
 
-1. The Pseudonymization Client constructs an `Identifier` for the patient (e.g. `{landCode: NL, type: BSN, value: 123456789}`).
+1. The Pseudonymization Client constructs an `Identifier` for the patient in JSON Canonicalization Scheme - JCS (RFC8785) e.g. `{"landCode":"NL","type":"BSN","value":"999940003"}`.
 2. The client derives a recipient-scoped pseudonym from the `Identifier` using HKDF, using a fixed `info` string that binds the result to the intended recipient.
 3. The client applies the OPRF blinding step, producing a `blind_factor` (kept locally) and a `blinded_input` (sent to the PRS).
 4. The PRS evaluates the `blinded_input` and returns the result as a JWE (`evaluated_output`) encrypted with the public key of the intended recipient.
@@ -110,14 +110,10 @@ The pair `(evaluated_output, blind_factor)` together forms the patient identifie
 The Identifier is a small JSON object that uniquely identifies the natural person being pseudonymised. For example, a Dutch citizen identified by its BSN:
 
 ```json
-{
-  "landCode": "NL",
-  "type": "BSN",
-  "value": "999940003"
-}
+{"landCode":"NL","type":"BSN","value":"999940003"}
 ```
 
-The Identifier is never sent to the PRS; it is the input to the local HKDF step.
+The Identifier is never sent to the PRS; it is the input to the local HKDF step. This Identifier SHALL be in  JSON Canonicalization Scheme - JCS (RFC 8785).
 
 #### HKDF derivation
 
@@ -149,14 +145,14 @@ The following snippet (adapted from the reference implementation `OPRF.py`) show
 
 ```python
 import base64
-import json
+import rfc8785
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 import pyoprf
 
 def create_blinded_input(personal_identifier, recipient_organization, recipient_scope):
     info = f"{recipient_organization}|{recipient_scope}|v1".encode("utf-8")
-    pid = json.dumps(personal_identifier).encode("utf-8")
+    pid = rfc8785.dumps(personal_identifier)
 
     pseudonym = HKDF(
         algorithm=hashes.SHA256(), length=32, salt=None, info=info
