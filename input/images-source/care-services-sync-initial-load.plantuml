@@ -1,0 +1,54 @@
+@startuml care-services-sync-initial-load
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+participant QD as "Directory\n(local replica)"
+participant QUC as "Query & Update\nClient"
+participant LRZa as "LRZa\nDirectory"
+
+activate QUC
+note over QUC: Initial load — replica state: LOADING
+
+loop For each resource type, in recommended order\n(Organization -> Location -> HealthcareService ->\nPractitioner -> PractitionerRole -> Endpoint ->\nDevice -> OrganizationAffiliation)
+  QUC -> LRZa: GET /{resourceType}?_count=N
+  activate LRZa
+  LRZa -> QUC: Bundle (searchset, page 1)\nBundle.meta.lastUpdated = T0
+  note over QUC: Keep T0 as sync timestamp\n(LRZa time, from first page, once)
+  QUC -> QD: persist page (batch/upsert)\n(ref. integrity NOT enforced;\nkeep LRZa origin via meta.source / extension)
+  activate QD
+  QD -> QUC: 200 OK
+  deactivate QD
+  loop While Bundle.link[next] present
+    QUC -> LRZa: GET {next}
+    LRZa -> QUC: Bundle (searchset, next page)
+    QUC -> QD: persist page (batch/upsert)
+    activate QD
+    QD -> QUC: 200 OK
+    deactivate QD
+  end
+  deactivate LRZa
+end
+
+note over QUC,QD: Pages are streamed: each page is written before\nthe next is fetched (bounded memory, no register-wide bundle).
+
+== Catch-up for mutations during the (non-atomic) load ==
+
+loop For each resource type
+  QUC -> LRZa: GET /{resourceType}/_history?_since=T0
+  activate LRZa
+  LRZa -> QUC: Bundle (history delta)
+  deactivate LRZa
+  QUC -> QD: persist delta (batch/upsert)
+  activate QD
+  QD -> QUC: 200 OK
+  deactivate QD
+end
+
+note over QUC,QD: Initial load complete.\nReplica state: READY (may serve Query Clients).\nRetain sync timestamp for next sync.
+deactivate QUC
+
+@enduml

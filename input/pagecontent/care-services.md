@@ -42,10 +42,25 @@ The national profiles SHALL be based on NL-core where available and SHALL be ali
 The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including GF Localization and TA Notified Pull.
 
 1. LRZa Directory operational role:
-The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. 
+The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. To bound load and keep operational matching on the replicas, the LRZa Directory SHALL restrict search operations to the minimum required for replication and SHALL apply rate limiting to operational consumers.
  
 1. No deletes: 
 Addressable entities (e.g. a Location or HealthcareService) may become inactive/deprecated over time, but their identifier will be used and referred to from health records for their lifetime. Therefore, deletion of addressable entities SHALL not be supported by the LRZa Directory. The status of an addressable entity may be adjusted to `inactive`, `off`, `entered-in-error` or whatever appropriate status for the resource type.
+Status changes are propagated to local replicas through the `_history` delta (ITI-91-NL). A Local Replica SHALL apply the status change and SHALL exclude resources with status `entered-in-error` (and `inactive`/`off` where not applicable for the use case) from query results presented to Query Clients. A Local Replica MAY remove such resources locally after a retention period; the retention period is defined in the LRZa SLA. The identifier of a withdrawn entity SHALL NOT be reused.
+
+1. Paging and consistent initial load:
+For the initial load (ITI-90-NL `search-type` without search parameters), the LRZa Directory SHALL return results using paging: it SHALL support the `_count` search parameter, SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce a maximum page size (capping a client-requested `_count` that exceeds it). The maximum page size is advertised by the server and specified in the LRZa SLA. Update Clients SHALL follow `next` links until exhausted.
+To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Practitioner` → `PractitionerRole` → `Endpoint` → `Device` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
+Because the paged initial load is not atomic, the Update Client SHALL take the server time reported in `Bundle.meta.lastUpdated` of the first page as the **sync timestamp** — the LRZa server time up to which the replica is in sync — and, once the paged load completes, SHALL perform an incremental `history-type` synchronization (ITI-91-NL) with `_since` set to that sync timestamp. Using the LRZa-reported time avoids client/server clock skew, and this captures mutations made during the load without requiring a server-side point-in-time snapshot. How the Update Client retains the sync timestamp is implementation-defined (e.g. a small stored value, or derived from the replica content); because synchronization is processed idempotently, an inclusive `_since` (re-fetching the boundary resources) is safe.
+
+The replica's own `meta.lastUpdated` reflects when the replica wrote the resource, not the LRZa time. To keep the LRZa origin visible in the replica, it is RECOMMENDED to record `meta.source` (referencing the LRZa) and/or carry the LRZa `lastUpdated` in a dedicated extension; this is ordinary resource content that any FHIR store preserves, so the recommendation is easy to follow without a special import mode.
+
+A Local Replica SHALL accept resources whose references cannot (yet) be resolved and SHALL NOT enforce referential integrity on write during synchronization (a replica built on a generic FHIR store SHALL be configured accordingly). A Local Replica SHALL NOT serve Query Clients until the initial load and the subsequent `_history` catch-up have completed.
+
+Incremental synchronization (ITI-91-NL) is type-level (`{resourceType}/_history`, per mCSD ITI-91). All resource types SHALL be synchronized on a single, common interval rather than per-type intervals: differentiating the interval per resource type would let a referencing resource of a fast-syncing type point at a not-yet-replicated resource of a slow-syncing type for a prolonged period. The common interval is specified in the LRZa SLA and SHALL be short enough for the most time-critical changes. Within a synchronization run, the recommended resource-type order above still applies to keep the window of unresolved references small.
+
+1. Concurrency control on updates:
+Updates to addressable entities SHALL use optimistic locking. The LRZa Directory SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL require the `If-Match` header on `update` interactions. An update carrying a stale version SHALL be rejected with HTTP `412 Precondition Failed`; the client SHALL then re-read and re-apply. This prevents silent overwrite when the same resource is mutated through more than one channel (e.g. the portal and one or more Data Sources). Authorization — which party MAY mutate which resource — is governed separately.
 
 ### Actors
 Each actor will now be discussed in more detail.
@@ -60,7 +75,8 @@ A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the
 
 #### Update Client
 The Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) a 'lite version' of the Query Client and the Update Client. These clients are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html).
-For more information, see the [synchronization example](#use-case-2-update-client-sync-example)
+The Update Client *synchronizes* (replicates) directory content; it does *not* aggregate. Aggregation of source registers and self-registered data is performed centrally by the LRZa Directory. Incremental synchronization SHALL be processed idempotently (re-applying a delta SHALL be safe), and on transient failure the client SHALL retry from the last successfully processed `_since` watermark.
+For more information, see the [initial load](#use-case-2a-update-client-initial-load) and [incremental sync](#use-case-2b-update-client-incremental-sync) examples.
 
 #### Query Client
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
@@ -72,16 +88,19 @@ Note that the data exchange between Query Client and (local) Directory MAY use a
 Transactions between Service Providers and the LRZa are defined here. Other (local or 3rd party) transactions are not specified here. These transactions MAY reuse/adopt IHE mCSD and FHIR transactions, but are not obliged.  
 
 #### Care Services Feed: ITI-130-NL
-The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement.
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHALL use optimistic locking (`If-Match`, see "Concurrency control on updates").
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
-The Update Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters.
+The Update Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters. The initial load is paged (see National Constraint "Paging and consistent initial load").
 CapabilityStatement: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html)
 
 #### Request Care Services Updates: ITI-91-NL
 The Update Client retrieves changes from the LRZa Directory using `history-type` interactions per supported resource, optionally constrained by `_since` for incremental synchronization.
 CapabilityStatement: [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
+
+#### Error handling and resilience
+All transactions SHALL return a standard FHIR `OperationOutcome` with an appropriate HTTP status code (e.g. `400` malformed request, `412` stale version on a concurrent update, `422` profile validation failure, `5xx` server error). Clients (Data Source, Update Client) SHALL implement retry with exponential backoff for transient failures (`5xx`, network) and SHALL process synchronization idempotently. A Query Client SHALL handle potentially stale replica data on critical transactions by revalidating or triggering re-synchronization via the Update Client.
 
 
 
@@ -225,11 +244,18 @@ This sequence shows a two-step onboarding flow: first, the care provider adminis
 {% include care-services-registration-use-case.svg %}
 </div>
 
-##### Use Case #2: Update Client Sync Example
-The following sequence diagram illustrates how an Update Client synchronize data from the LRZa Directory into a local replica:
+##### Use Case #2a: Update Client Initial Load
+The following sequence diagram illustrates how an Update Client performs the paged initial load of a local replica, records the synchronization watermark, and runs a `_history` catch-up before serving Query Clients:
 
 <div>
-{% include care-services-sync-use-case.svg %}
+{% include care-services-sync-initial-load.svg %}
+</div>
+
+##### Use Case #2b: Update Client Incremental Sync
+The following sequence diagram illustrates the periodic incremental synchronization, including delta processing, status changes, retry on transient failure, and watermark advancement:
+
+<div>
+{% include care-services-sync-incremental.svg %}
 </div>
 
 #### Use Case #3: Healthcare service Query

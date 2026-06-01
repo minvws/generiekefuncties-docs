@@ -1,0 +1,36 @@
+@startuml care-services-sync-incremental
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+participant QD as "Directory\n(local replica)"
+participant QUC as "Query & Update\nClient"
+participant LRZa as "LRZa\nDirectory"
+
+note over QUC: Periodic incremental sync\n(single interval for all resource types - see SLA)\nReplica state: READY throughout
+
+activate QUC
+loop For each resource type
+  QUC -> LRZa: GET /{resourceType}/_history?_since={sync ts}
+  activate LRZa
+  alt success
+    LRZa -> QUC: Bundle (history delta)\nincl. status changes\n(inactive / off / entered-in-error)
+    note over QUC: Apply delta idempotently.\nExclude entered-in-error (and inactive/off\nwhere not applicable) from query results.\nApply retention/cleanup per SLA.
+    QUC -> QD: persist delta (batch/upsert)
+    activate QD
+    QD -> QUC: 200 OK
+    deactivate QD
+  else transient failure (5xx / network)
+    LRZa -> QUC: error
+    note over QUC: Retry with exponential backoff\nfrom the same {sync ts}\n(do not advance the timestamp)
+  end
+  deactivate LRZa
+end
+
+note over QUC,QD: Sync complete.\nAdvance sync timestamp to the latest\napplied LRZa lastUpdated.
+deactivate QUC
+
+@enduml
