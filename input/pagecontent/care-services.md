@@ -60,7 +60,7 @@ A Local Replica SHALL accept resources whose references cannot (yet) be resolved
 Incremental synchronization (ITI-91-NL) is type-level (`{resourceType}/_history`, per mCSD ITI-91). All resource types SHALL be synchronized on a single, common interval rather than per-type intervals: differentiating the interval per resource type would let a referencing resource of a fast-syncing type point at a not-yet-replicated resource of a slow-syncing type for a prolonged period. The common interval is specified in the LRZa SLA and SHALL be short enough for the most time-critical changes. Within a synchronization run, the recommended resource-type order above still applies to keep the window of unresolved references small.
 
 1. Concurrency control on updates:
-Updates to addressable entities SHALL use optimistic locking. The LRZa Directory SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL require the `If-Match` header on `update` interactions. An update carrying a stale version SHALL be rejected with HTTP `412 Precondition Failed`; the client SHALL then re-read and re-apply. This prevents silent overwrite when the same resource is mutated through more than one channel (e.g. the portal and one or more Data Sources). Authorization — which party MAY mutate which resource — is governed separately.
+The LRZa Directory SHALL support optimistic locking: it SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL honour the `If-Match` header on `update` interactions, rejecting an update that carries a stale version with HTTP `412 Precondition Failed` (the server advertises this through `versioning = versioned-update`). A Data Source SHOULD send `If-Match` on updates and, on a `412`, re-read and re-apply. Using `If-Match` is RECOMMENDED rather than required because a resource normally has a single authorized writer; it prevents silent overwrite where a resource can be mutated through more than one channel (e.g. the portal and one or more Data Sources). In a bundle, `If-Match` is carried per entry: in a `transaction` bundle a single stale entry rolls back the whole bundle (all-or-nothing), whereas in a `batch` bundle each entry is evaluated independently (only the stale entry fails). Authorization — which party MAY mutate which resource — is governed separately.
 
 ### Actors
 Each actor will now be discussed in more detail.
@@ -88,7 +88,7 @@ Note that the data exchange between Query Client and (local) Directory MAY use a
 Transactions between Service Providers and the LRZa are defined here. Other (local or 3rd party) transactions are not specified here. These transactions MAY reuse/adopt IHE mCSD and FHIR transactions, but are not obliged.  
 
 #### Care Services Feed: ITI-130-NL
-The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHALL use optimistic locking (`If-Match`, see "Concurrency control on updates").
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHOULD use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing) or `batch` (independent per entry) bundle.
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
@@ -245,17 +245,24 @@ This sequence shows a two-step onboarding flow: first, the care provider adminis
 </div>
 
 ##### Use Case #2a: Update Client Initial Load
-The following sequence diagram illustrates how an Update Client performs the paged initial load of a local replica, records the synchronization watermark, and runs a `_history` catch-up before serving Query Clients:
+The following sequence diagram illustrates how an Update Client performs the paged initial load of a local replica, records the sync timestamp, and runs a `_history` catch-up before serving Query Clients:
 
 <div>
 {% include care-services-sync-initial-load.svg %}
 </div>
 
 ##### Use Case #2b: Update Client Incremental Sync
-The following sequence diagram illustrates the periodic incremental synchronization, including delta processing, status changes, retry on transient failure, and watermark advancement:
+The following sequence diagram illustrates the periodic incremental synchronization, including delta processing, status changes, retry on transient failure, and advancing the sync timestamp:
 
 <div>
 {% include care-services-sync-incremental.svg %}
+</div>
+
+##### Use Case #2c: Optimistic Locking on Update
+The following sequence diagram illustrates the recommended optimistic-locking flow when a Data Source updates a resource: it reads the current `ETag`, sends the update with `If-Match`, and — if another writer advanced the version first — receives `412 Precondition Failed`, then re-reads and retries:
+
+<div>
+{% include care-services-optimistic-locking.svg %}
 </div>
 
 #### Use Case #3: Healthcare service Query

@@ -19,6 +19,7 @@ Usage: #definition
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -30,6 +31,7 @@ Usage: #definition
     * type = #Location
     * supportedProfile[+] = Canonical(NlGfLocation)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -41,6 +43,7 @@ Usage: #definition
     * type = #Organization
     * supportedProfile[+] = Canonical(NlGfOrganization)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -52,6 +55,7 @@ Usage: #definition
     * type = #PractitionerRole
     * supportedProfile = Canonical(NlGfPractitionerRole)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -63,6 +67,7 @@ Usage: #definition
     * type = #Practitioner
     * supportedProfile = Canonical(NlGfPractitioner)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -74,6 +79,7 @@ Usage: #definition
     * type = #Endpoint
     * supportedProfile[+] = Canonical(NlGfEndpoint)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -85,6 +91,7 @@ Usage: #definition
     * type = #OrganizationAffiliation
     * supportedProfile[+] = Canonical(NlGfOrganizationAffiliation)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -96,6 +103,7 @@ Usage: #definition
     * type = #Device
     * supportedProfile[+] = Canonical(NlGfDevice)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -105,3 +113,6 @@ Usage: #definition
   * interaction[+]
     * insert Expectation(SHALL)
     * code = #transaction
+  * interaction[+]
+    * insert Expectation(SHALL)
+    * code = #batch
