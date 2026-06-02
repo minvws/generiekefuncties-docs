@@ -139,7 +139,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (URA or KVK) | 0..* | An Organization must have a URA or KVK identifier, or be `partOf` another Organization. |
+| identifier (URA or KVK) | 0..* | An Organization SHALL have a URA or KVK identifier, or be `partOf` another Organization. |
 | type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code (extensible binding to [NL-GF Organization Types](./ValueSet-nl-gf-org-types-vs.html)). |
 | name | 1..1 | The name of the organization. |
 | alias | 0..* | Alternative names. |
@@ -201,7 +201,7 @@ The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html) 
 
 
 #### PractitionerRole
-PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations and MAY represent employment relationships. It supports scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging, but should not contain privacy-sensitive data.
+PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations and MAY represent employment relationships. It supports scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging. Because the directory is publicly queryable, a PractitionerRole SHALL NOT contain data that may not be shared publicly (e.g. personal contact details of an individual that are not intended for public addressing); only information meant to be publicly available for addressing purposes is published.
 The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations. Key attributes:
 
 | Attribute | Card. | Description |
@@ -211,7 +211,7 @@ The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrol
 | organization → Organization | 1..1 | The organization where the practitioner works. |
 | code | 1..* | The role(s) the practitioner performs. |
 | specialty | 0..* | The specialty of the practitioner in this role. |
-| telecom | 0..* | Contact details (no privacy-sensitive data). |
+| telecom | 0..* | Contact details (only information that may be shared publicly for addressing). |
 
 
 #### OrganizationAffiliation
