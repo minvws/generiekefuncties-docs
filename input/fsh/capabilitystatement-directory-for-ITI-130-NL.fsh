@@ -113,6 +113,3 @@ Usage: #definition
   * interaction[+]
     * insert Expectation(SHALL)
     * code = #transaction
-  * interaction[+]
-    * insert Expectation(SHALL)
-    * code = #batch

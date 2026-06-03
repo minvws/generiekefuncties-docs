@@ -14,11 +14,11 @@ activate QUC
 note over QUC: Initial load — replica state: LOADING
 
 loop For each resource type, in recommended order\n(Organization -> Location -> HealthcareService ->\nPractitioner -> PractitionerRole -> Endpoint ->\nDevice -> OrganizationAffiliation)
-  QUC -> LRZa: GET /{resourceType}?_count=N
+  QUC -> LRZa: GET /{resourceType}
   activate LRZa
   LRZa -> QUC: Bundle (searchset, page 1)\nBundle.meta.lastUpdated = T0
   note over QUC: Keep T0 as sync timestamp\n(LRZa time, from first page, once)
-  QUC -> QD: persist page (batch/upsert)\n(ref. integrity NOT enforced;\nkeep LRZa origin via meta.source / extension)
+  QUC -> QD: persist page (batch/upsert)
   activate QD
   QD -> QUC: 200 OK
   deactivate QD

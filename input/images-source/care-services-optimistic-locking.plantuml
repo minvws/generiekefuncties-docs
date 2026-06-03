@@ -9,7 +9,7 @@ hide footbox
 participant DS as "Data Source"
 participant LRZa as "LRZa\nDirectory"
 
-note over DS,LRZa: Optimistic locking on update (recommended)
+note over DS,LRZa: Optimistic locking on update
 
 DS -> LRZa: GET /Organization/123
 activate LRZa
