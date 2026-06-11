@@ -166,7 +166,7 @@ Description: "Example: Organization 1 - Endpoint"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
 * managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
@@ -223,7 +223,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
 * managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
@@ -276,9 +276,9 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR STU3 Endpoint"
+* name = "FHIR Endpoint 2 (health records)"
 * managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
@@ -478,9 +478,9 @@ Description: "Example: Organization 3 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR R4 Endpoint"
+* name = "FHIR Endpoint 3"
 * managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
@@ -512,9 +512,9 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR STU3 Endpoint"
+* name = "FHIR Endpoint 3 (health records)"
 * managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
