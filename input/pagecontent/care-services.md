@@ -66,6 +66,10 @@ For more information, see the [synchronization example](#use-case-2-update-clien
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
 Note that the data exchange between Query Client and (local) Directory MAY use a proprietary interface. [Use case 3](#use-case-3-healthcare-service-query) and [use case 4](#use-case-4-endpoint-discovery) illustrate how to search for healthcare services and endpoints. 
 
+When selecting an Endpoint for data exchange, the Query Client SHALL only use Endpoints that have status `active` and whose `period`, when present, includes the current time. Within that selection, the Query Client matches on `connectionType` and `payloadType` (see [use case 4](#use-case-4-endpoint-discovery)). When multiple valid Endpoints remain for the same Organization or HealthcareService and the same `connectionType`/`payloadType` combination, this indicates either intentional redundancy or a registration error; the Query Client SHALL NOT deliver the same payload to more than one Endpoint and SHOULD prefer the Endpoint with the most recent `period.start`. See [Endpoint lifecycle and transition](#endpoint-lifecycle-and-transition) for how transitions between systems are represented.
+
+Note: FHIR R4 does not define a search parameter for `Endpoint.period`, so the period is evaluated by the Query Client after retrieving candidate Endpoints from the local replica.
+
 
 ### Transactions
 
@@ -136,10 +140,24 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | Attribute | Card. | Description |
 |---|---|---|
 | status | 1..1 | The operational status of the endpoint (e.g. active, off). |
+| period | 0..1 | The interval during which the endpoint is expected to be operational. An absent `period.end` means the endpoint is operational until further notice. |
 | connectionType | 1..1 | The type of connection (extensible binding to [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html) and [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
 | payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |
+
+##### Endpoint lifecycle and transition
+
+Endpoints follow the [no-deletes constraint](#national-constraints-compared-to-ihe-mcsd): an Endpoint is never deleted. Its validity is expressed through `status` and `period`:
+
+- `status` describes the operational state of the endpoint itself (`active`, `suspended`, `off`, `entered-in-error`).
+- `period` describes the interval during which the endpoint is expected to be operational. An Endpoint without `period.end` is operational until further notice. A `period.start` in the future MAY be used to announce an endpoint ahead of its activation; no separate scheduling mechanism is provided.
+
+When a care provider migrates to another system, the Endpoints of the old and the new system may be *registered* simultaneously, but their periods SHALL be set such that at most one of them is *valid* at any moment: the superseded Endpoint receives a `period.end` at the planned cutover moment and the replacing Endpoint a `period.start` at that same moment. This removes any ambiguity about which Endpoint to use during a transition: data exchange partners select the Endpoint whose period includes the current time (see [Query Client](#query-client)). When a single Data Source is authorized for both changes, it SHOULD apply them atomically in one FHIR transaction Bundle. When two different service providers are involved, both can safely register their change ahead of the cutover moment, because Endpoint selection is driven by `period`, not by registration time.
+
+After the old system has actually been taken out of operation, its Endpoint status SHOULD be set to `off`. The status `entered-in-error` is reserved for registrations that should never have existed.
+
+[Use case 5](#use-case-5-endpoint-transition) illustrates a transition between systems.
 
 
 #### Device
@@ -250,6 +268,17 @@ Dr. West just created a referral (for patient Vera Brooks from use case #3). The
 
 <div>
 {% include care-services-endpoint-query-use-case.svg %}
+</div>
+
+#### Use Case #5: Endpoint Transition
+The general practice from use case #1 replaces its EHR system and plans a cutover moment at which the new system takes over:
+- The new service provider registers the Endpoint(s) of the new system with `period.start` set to the cutover moment.
+- The superseded Endpoint receives a `period.end` at the same cutover moment — applied by the currently authorized service provider, or combined with the previous step in one transaction Bundle when a single Data Source is authorized for both changes.
+- Update Clients synchronize both registrations to the local replicas. Query Clients keep selecting the old Endpoint until the cutover moment, and the new Endpoint thereafter; at no moment are both Endpoints valid.
+- After the old system is decommissioned, its Endpoint status is set to `off`.
+
+<div>
+{% include care-services-endpoint-transition-use-case.svg %}
 </div>
 
 
