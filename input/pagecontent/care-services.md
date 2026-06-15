@@ -141,6 +141,12 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |
 
+##### Scope of Endpoint information
+
+The purpose of an Endpoint in this directory is *discovery*: it tells a system *where* a service can be reached and *which* technical protocol and payload to use (`connectionType`, `payloadType`, `payloadMimeType`, `address`). The terms of use, authentication requirements and security requirements that apply when actually invoking an Endpoint are determined by the trust framework ("afsprakenstelsel") within which the exchange takes place, not by the directory entry. Registering Endpoints centrally is valuable precisely because it makes them discoverable across trust frameworks and use cases, independent of the framework-specific conditions that govern their use.
+
+The directory therefore does not carry per-Endpoint terms of use, authentication or security policy. Transport security for publishing to the LRZa Directory is covered under [Security](#security); the broader authentication and security requirements for invoking endpoints are addressed in the dedicated security and authentication tracks (see epics [security (#854)](https://github.com/minvws/generiekefuncties-architectuur/issues/854) and [authentication means (#855)](https://github.com/minvws/generiekefuncties-architectuur/issues/855)).
+
 
 #### Device
 Device resources are, in GF Addressing, used to represent software applications or technical systems involved in healthcare data exchange. A Device can reference one or more Endpoints that it uses/provides, enabling efficient endpoint lookup and query-routing in workflows such as GF Localization, eOverdracht, and TA Notified Pull. In this guide, Devices are also referenced from OrganizationAffiliation to indicate which technical system is authorized in the relationship between a care provider and an IT vendor.
