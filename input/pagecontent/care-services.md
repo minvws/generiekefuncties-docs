@@ -148,14 +148,14 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 
 ##### Endpoint lifecycle and transition
 
-Endpoints follow the [no-deletes constraint](#national-constraints-compared-to-ihe-mcsd): an Endpoint is never deleted. Its validity is expressed through `status` and `period`:
+An Endpoint's validity can expressed through `status` and `period`:
 
 - `status` describes the operational state of the endpoint itself (`active`, `suspended`, `off`, `entered-in-error`).
 - `period` describes the interval during which the endpoint is expected to be operational. An Endpoint without `period.end` is operational until further notice. A `period.start` in the future MAY be used to announce an endpoint ahead of its activation; no separate scheduling mechanism is provided.
 
 When a care provider migrates to another system, the Endpoints of the old and the new system may be *registered* simultaneously, but their periods SHALL be set such that at most one of them is *valid* at any moment: the superseded Endpoint receives a `period.end` at the planned cutover moment and the replacing Endpoint a `period.start` at that same moment. This removes any ambiguity about which Endpoint to use during a transition: data exchange partners select the Endpoint whose period includes the current time (see [Query Client](#query-client)). When a single Data Source is authorized for both changes, it SHOULD apply them atomically in one FHIR transaction Bundle. When two different service providers are involved, both can safely register their change ahead of the cutover moment, because Endpoint selection is driven by `period`, not by registration time.
 
-After the old system has actually been taken out of operation, its Endpoint status SHOULD be set to `off`. The status `entered-in-error` is reserved for registrations that should never have existed.
+After the old system has actually been taken out of operation, its Endpoint status SHOULD be set to `off` or deleted.
 
 [Use case 5](#use-case-5-endpoint-transition) illustrates a transition between systems.
 
