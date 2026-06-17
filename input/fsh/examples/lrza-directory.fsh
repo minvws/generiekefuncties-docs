@@ -193,7 +193,8 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * payloadMimeType[+] = #application/fhir+json
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1 (previous EHR system)"
-* period.end = "2024-01-15"
+* period.start = "2023-01-15"
+* period.end = "2024-01-14"
 * managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
 * contact[0].system = #email
 * contact[=].value = "info@cp1.example.org"
