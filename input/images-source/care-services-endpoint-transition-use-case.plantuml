@@ -1,0 +1,63 @@
+@startuml care-services-endpoint-transition-use-case
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+actor Admin as "Care provider\nadministrator"
+participant SPNew as "New EHR\n(Data Source B)"
+participant SPOld as "Old EHR\n(Data Source A)"
+participant LRZa as "LRZa\nDirectory"
+participant Replica as "Directory\n(local replica)"
+participant QC as "EHR at other\ncare provider\n(Query Client)"
+
+note over Admin, QC
+In this example the practice plans the
+cutover to the new EHR at **2024-01-15**.
+end note
+
+== Before cutover (2024-01-15) ==
+
+activate Admin
+Admin -> SPNew: Prepare migration\nto new EHR
+activate SPNew
+SPNew -> LRZa: POST /Endpoint\n(status=active,\nperiod.start=2024-01-15)
+activate LRZa
+deactivate SPNew
+Admin -> SPOld: End usage per\n2024-01-15
+activate SPOld
+SPOld -> LRZa: PUT /Endpoint/[old]\n(period.end=2024-01-15)
+deactivate SPOld
+deactivate Admin
+
+note right of LRZa
+Both Endpoints are registered, but their
+periods do not overlap: at any moment at
+most one Endpoint is valid. If one Data
+Source is authorized for both changes,
+they SHOULD be combined in a single
+transaction Bundle.
+end note
+
+Replica -> LRZa: Sync updates (ITI-91)
+activate Replica
+deactivate LRZa
+
+QC -> Replica: Find Endpoints of the practice
+activate QC
+QC -> QC: Filter: status=active and\nperiod includes now\n→ **old** Endpoint
+
+== After cutover (2024-01-15) ==
+
+QC -> Replica: Find Endpoints of the practice
+QC -> QC: Filter: status=active and\nperiod includes now\n→ **new** Endpoint
+deactivate QC
+deactivate Replica
+
+== After decommissioning the old system ==
+
+SPOld -> LRZa: PUT /Endpoint/[old]\n(status=off)
+
+@enduml
