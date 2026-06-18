@@ -178,6 +178,22 @@ Description: "Example: Organization 1 - Endpoint"
 * contact[=].use = #work
 * address = "https://cp1-test.example.org/fhirr4"
 
+Instance: a1f3c0d2-9b47-5e18-8c6a-2d4f7e1b9a03
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Organization 1 - Endpoint (STU3 and R4)"
+Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirVersion MIME parameter."
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* status = #active
+
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* connectionType = $endpoint-connection-type#hl7-fhir-rest
+* name = "FHIR Endpoint 1 (STU3 + R4)"
+* managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* address = "https://cp1-test.example.org/fhir"
+
 
 Instance: a76d130d-97eb-51b6-9e10-3810bfe0b0c5
 InstanceOf: NlGfPractitionerRole
