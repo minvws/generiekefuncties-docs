@@ -51,7 +51,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 
 
 Profile: NlGfLocation
-Parent: $NlLocation
+Parent: $EuLocation
 Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
 Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
@@ -124,7 +124,6 @@ Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http:
 Severity:    #error
 
 Profile: NlGfOrganization
-// Parent: $NlOrganization
 Parent: $EuOrganization
 Id: nl-gf-organization
 Title: "NL Generic Functions Organization Profile"
@@ -207,7 +206,7 @@ Context: Device
 
 
 Profile: NlGfPractitionerRole
-Parent: $NlPractitionerRole
+Parent: $EuPractitionerRole
 Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
 Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
@@ -227,7 +226,7 @@ Description: "PractitionerRole profile based on NL Core HealthProfessional Pract
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 
 Profile: NlGfPractitioner
-Parent: $NlPractitioner
+Parent: $EuPractitioner
 Id: nl-gf-practitioner
 Title: "NL Generic Functions Practitioner Profile"
 Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."

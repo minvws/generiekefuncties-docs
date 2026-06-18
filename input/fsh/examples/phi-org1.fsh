@@ -1,8 +1,7 @@
 Instance: 128447d2-e153-4c93-8ac6-6c357555f3db
-InstanceOf: $NlPatient
+InstanceOf: Patient
 Usage: #inline
 Title: "Patient Jaantje Merkens"
-* meta.profile = $nl-core-Patient
 * identifier[+].system = "http://fhir.nl/fhir/NamingSystem/bsn"
 * identifier[=].value = "111222333"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/patients","128447d2-e153-4c93-8ac6-6c357555f3db","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
