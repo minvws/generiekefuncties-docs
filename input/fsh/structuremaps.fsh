@@ -393,7 +393,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "https://www.cbs.nl/standaard-bedrijfsindeling"
 // Map sbiCode → coding.code
 * group[=].rule[=].rule[+].name = "sbiCode"
 * group[=].rule[=].rule[=].source[+].context = "src"
@@ -1315,7 +1315,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "https://www.cbs.nl/standaard-bedrijfsindeling"
 // Map sbiCode → coding.code
 * group[=].rule[=].rule[+].name = "sbiCode"
 * group[=].rule[=].rule[=].source[+].context = "src"

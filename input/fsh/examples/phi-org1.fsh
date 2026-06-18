@@ -39,8 +39,6 @@ Instance: 8cdd8f8d-f75b-4285-851e-ff302dad46fb
 InstanceOf: Condition
 Usage: #inline
 Title: "Condition General Weakness"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Condition"
-* meta.versionId = "1"
 * meta.lastUpdated = "2024-09-03T12:00:00Z"
 * identifier = 607bc9c7-8a3b-47e6-ac72-8a50e97d6ae2
 //* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
@@ -62,8 +60,6 @@ Instance: 73f4bffe-eac4-4863-8e4a-852c578f95dd
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Vascular medicine"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Procedure-request"
-* meta.versionId = "1"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","73f4bffe-eac4-4863-8e4a-852c578f95dd","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
@@ -82,8 +78,6 @@ Instance: d2f1d123-9bfb-485f-8b6f-2db411c4884e
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Neurological Diagnostics"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Procedure-request"
-* meta.versionId = "1"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","d2f1d123-9bfb-485f-8b6f-2db411c4884e","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
@@ -102,8 +96,6 @@ Instance: 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Orthopedic Diagnostics"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Procedure-request"
-* meta.versionId = "1"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","4e4215a2-d6ff-4e53-8737-d9810a4cc3eb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
@@ -122,8 +114,6 @@ Instance: 3cb7873f-c222-4196-b441-02b3790ec97e
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Internal medicine"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-Procedure-request"
-* meta.versionId = "1"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","3cb7873f-c222-4196-b441-02b3790ec97e","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
@@ -142,7 +132,6 @@ Instance: 98f9d4a7-d58d-4889-8e63-0cb2d4e35144
 InstanceOf: MedicationStatement
 Usage: #inline
 Title: "MedicationStatement Urokinase"
-* meta.profile = "http://nictiz.nl/fhir/StructureDefinition/nl-core-MedicationStatement"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/MedicationStatement","98f9d4a7-d58d-4889-8e63-0cb2d4e35144","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * medicationCodeableConcept = $atc#B01AD04 "urokinase"

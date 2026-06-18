@@ -22,7 +22,7 @@ Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
 Title:    "Supported ActivityDefinitions and PlanDefinitions by HealthcareServices"
 Description: "ActivityDefinitions or PlanDefinitions to specify the codeable concepts in HealthcareService.type."
-Context: HealthcareService
+Context: HealthcareService.type
 * value[x] only Canonical(ActivityDefinition or PlanDefinition)
 
 Profile: NlGfHealthcareService
@@ -44,8 +44,6 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
-* specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
-* specialty ^comment = "The referenced Nictiz/DECOR value set does not currently resolve reliably in all tooling. When needed, inspect the underlying artifact manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
 
@@ -150,7 +148,7 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 // * type contains
 //     SBI 0..*
 // * type[SBI] from NlGfOrgTypesVS (extensible)
-// * type[SBI] ^patternCodeableConcept.coding.system = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
+// * type[SBI] ^patternCodeableConcept.coding.system = "https://www.cbs.nl/standaard-bedrijfsindeling"
 // * type[SBI] ^short = "SBI"
 // * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
 // * type[SBI] ^alias = "Standaard Bedrijfsindeling"

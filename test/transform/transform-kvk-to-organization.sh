@@ -43,7 +43,7 @@ java -jar "$VALIDATOR_JAR" \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
   -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
-  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+  -ig "hl7.fhir.eu.base#2.0.0"
 
 
 # Validate the transformed outputs against their profiles
@@ -54,7 +54,7 @@ java -jar "$VALIDATOR_JAR" \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
   -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
-  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+  -ig "hl7.fhir.eu.base#2.0.0"
 
 
 
@@ -72,7 +72,7 @@ java -jar "$VALIDATOR_JAR" \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
   -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
-  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+  -ig "hl7.fhir.eu.base#2.0.0"
 
 
 # Validate the transformed outputs against their profiles
@@ -83,5 +83,5 @@ java -jar "$VALIDATOR_JAR" \
   -ig "$RESOURCES_DIR" \
   -ig "nictiz.fhir.nl.r4.zib2020#0.12.0-beta.4" \
   -ig "nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4" \
-  -ig "hl7.fhir.eu.base#2.0.0-ballot"
+  -ig "hl7.fhir.eu.base#2.0.0"
 

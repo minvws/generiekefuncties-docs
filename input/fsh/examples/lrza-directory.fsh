@@ -9,7 +9,7 @@ Description: "Example: LRZa - Organization 1 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example General Practice"
 * type[+] = $organization-type#Z3 "Huisartspraktijk (zelfstandig of groepspraktijk)"
-* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+3131599991"
 * telecom[=].use = #work
@@ -35,7 +35,7 @@ Description: "Example: LRZa - Organization 2 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
 * type[+] = $organization-type#V4 "Ziekenhuis"
-* type[+] = nl-gf-sbi-cs#8610 "Activiteiten van ziekenhuizen"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
 * type[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
@@ -63,7 +63,7 @@ Description: "Example: LRZa - Organization 3 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Care Institution"
 * type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
-* type[+] = nl-gf-sbi-cs#8710 "Verpleeghuiszorg"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
 * telecom[=].use = #work
@@ -87,7 +87,7 @@ Title: "Software Vendor - PharmaPartners"
 Description: "Example: Software Vendor - PharmaPartners"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "PharmaPartners B.V."
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: 4484c2f2-795a-54fc-8de6-e565ff0dce30
@@ -97,7 +97,7 @@ Title: "Software Vendor - Nedap"
 Description: "Example: Software Vendor - Nedap"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nedap N.V."
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: 2c5ebd34-5961-51ec-a263-cb07a76079c0
@@ -107,7 +107,7 @@ Title: "Software Vendor - Gerimedica"
 Description: "Example: Software Vendor - Gerimedica"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Gerimedica"
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: fe43d49a-4748-5c42-a731-e40d614be8f9
@@ -310,9 +310,8 @@ Description: "Example consultation healthcare service named Polikliniek 't Vaatj
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Polikliniek 't Vaatje"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0303 "Chirurgie (Heelkunde)"
-* specialty[+].coding = $uzi-rolcode#01.014 "Chirurg"
+* type = $service-type#397 "Outpatients"
+* specialty[+].coding = $sct#394609007 "Surgery-general"
 
 Instance: d5cc8cb0-9ea2-5100-bd1b-d3d60075aee2
 InstanceOf: NlGfHealthcareService
@@ -324,9 +323,8 @@ Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Neurochirurgie"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0308 "Medisch specialisten, neurochirurgie"
-* specialty[+].coding = $uzi-rolcode#01.025 "Neurochirurg"
+* type = $service-type#216 "Neurosurgery"
+* specialty[+].coding = $sct#394610002 "Surgery-Neurosurgery"
 
 Instance: 3b09ed4b-bd16-5562-b529-1ab18082cac8
 InstanceOf: NlGfHealthcareService
@@ -338,9 +336,8 @@ Description: "Example: Organization 2 - HealthcareService Orthopedie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Orthopedie"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0305 "Medisch specialisten, orthopedie"
-* specialty[+].coding = $uzi-rolcode#01.032 "Orthopedisch chirurg"
+* type = $service-type#218 "Orthopaedic Surgery"
+* specialty[+].coding = $sct#394801008 "Surgery-Trauma and orthopedics"
 
 Instance: 02b32653-f18e-5e09-bab4-f49579d4f261
 InstanceOf: NlGfHealthcareService
@@ -352,9 +349,8 @@ Description: "Example: Organization 2 - HealthcareService Interne Geneeskunde"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Interne Geneeskunde"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0313 "Interne geneeskunde"
-* specialty[+].coding = $uzi-rolcode#01.016 "Internist"
+* type = $service-type#382 "Medical Services"
+* specialty[+].coding = $sct#419192003 "Internal medicine"
 
 
 Instance: 984b07e8-9165-5c12-a4f3-770bde81ac07
@@ -367,9 +363,8 @@ Description: "Example: Organization 2 - HealthcareService Geriatrie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Geriatrie"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0335 "Medisch specialisten, geriatrie"
-* specialty[+].coding = $uzi-rolcode#01.022 "Klinisch geriater"
+* type = $service-type#171 "Geriatric Medicine"
+* specialty[+].coding = $sct#394811001 "Geriatric medicine"
 
 Instance: 9c55a4a8-dda1-59d0-bee5-eae2ca4a917b
 InstanceOf: NlGfHealthcareService
@@ -381,9 +376,8 @@ Description: "Example: Organization 2 - HealthcareService Urologie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Urologie"
-* type = $sct#11429006 "Consultation"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0306 "Medisch specialisten, urologie"
-* specialty[+].coding = $uzi-rolcode#01.045 "Uroloog"
+* type = $service-type#222 "Urology"
+* specialty[+].coding = $sct#394612005 "Urology"
 
 
 
@@ -398,7 +392,7 @@ Description: "Example: Organization 2 - PractitionerRole Cardioloog Caroline van
 * practitioner = Reference(Practitioner/c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a)
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * code.coding = $uzi-rolcode#01.010 "Cardioloog"
-* specialty.coding = $uzi-rolcode#01.010 "Cardioloog"
+* specialty.coding = $sct#394579002 "Cardiology"
 * telecom[+].system = #email
 * telecom[=].value = "c.vandijk@cp2.example.org"
 
@@ -535,10 +529,8 @@ Description: "Example: Organization 3 - HealthcareService Geriatrie"
 * providedBy = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * active = true
 * name = "Geriatrie"
-* type[+] = $sct#146521000146103 "Brief comprehensive geriatric assessment"
-* type[+] = $sct#107101000146106 "comprehensive geriatric assessment"
-* type[+] = $sct#86944008 "Visual field study"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0335 "Medisch specialisten, geriatrie"
+* type[+] = $service-type#171 "Geriatric Medicine"
+* specialty[+].coding = $sct#394811001 "Geriatric medicine"
 
 
 Instance: 4cec3d3b-5676-52aa-8c99-f4c7aecebc12
@@ -552,11 +544,13 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * name = "Verpleging"
 * location[+] = Reference(Location/f37e7fdb-21b9-54ac-bd36-70c56f2f09c7)
 * location[+] = Reference(Location/bbec4d2a-1be2-539b-817e-f85ef6e895f2)
-* type[+] = $zorgzwaartepakket##754 "VV Beschermd wonen met intensieve dementiezorg"
-* type[+] = $zorgzwaartepakket#755 "VV Beschermd wonen met intensieve verzorging en verpleging"
-* type[+] = $zorgzwaartepakket#756 "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op begeleiding"
-* type[+] = $zorgzwaartepakket#757 "VV Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
-* specialty[+].coding = urn:oid:2.16.840.1.113883.2.4.6.7#0100 "Verpleegkundige"
+* type[+] = $service-type#59 "Nursing"
+* type[=].extension[supportedActivityDefinitions].valueCanonical = Canonical(nl-gf-nursing-care-6VV)
+* type[+] = $zorgzwaartepakket#754 "5VV: Beschermd wonen met intensieve dementiezorg"
+* type[+] = $zorgzwaartepakket#755 "6VV: Beschermd wonen met intensieve verzorging en verpleging"
+* type[+] = $zorgzwaartepakket#756 "7VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met nadruk op begeleiding"
+* type[+] = $zorgzwaartepakket#757 "8VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
+
 
 
 Instance: 05817277-b885-5b0e-9bb4-46033c3f4fa5
@@ -569,7 +563,7 @@ Description: "Example: Organization 3 - PractitionerRole Klinisch Geriater John 
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * active = true
 * code.coding = $uzi-rolcode#01.022 "Klinisch geriater"
-* specialty[+].coding = $uzi-rolcode#01.022 "Klinisch geriater"
+* specialty[+].coding = $sct#394811001 "Geriatric medicine"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234568"
 * telecom[=].use = #work

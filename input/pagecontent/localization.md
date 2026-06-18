@@ -110,7 +110,7 @@ For more information on the content, see the paragraph on [Localization record](
           "coding": [
             {
               "code": "MedicationRequest",
-              "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+              "system": "http://minvws.nl/CodeSystem/nl-gf-data-categories-cs",
               "display": "Medicatie voorschrift"
             }
           ]

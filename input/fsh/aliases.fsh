@@ -45,4 +45,4 @@ Alias: $condition-clinical = http://terminology.hl7.org/CodeSystem/condition-cli
 Alias: $condition-ver-status = http://terminology.hl7.org/CodeSystem/condition-ver-status
 Alias: $data-absent-reason = http://terminology.hl7.org/CodeSystem/data-absent-reason
 Alias: $location-physical-type = http://terminology.hl7.org/CodeSystem/location-physical-type
-Alias: $zorgzwaartepakket = http://istandaarden.nl/ibieb/codelijsten/COD163
+Alias: $zorgzwaartepakket = https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163

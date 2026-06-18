@@ -2,7 +2,6 @@ CodeSystem: NlGfAuthorizationTypeCS
 Id: nl-gf-authorization-type-cs
 Title: "NL GF Authorization Type CodeSystem"
 Description: "Local code system for authorization types used in NL Generic Functions for managing authorization and access control"
-* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-authorization-type-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true

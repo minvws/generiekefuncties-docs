@@ -2,7 +2,6 @@ CodeSystem: NlGfDataCategoriesCS
 Id: nl-gf-data-categories-cs
 Title: "NL GF Data Categories CodeSystem"
 Description: "Local code system for data categories in NL Generic Functions."
-* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true
