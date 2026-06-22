@@ -123,7 +123,7 @@ Description: "Example: Affiliation between Huisartsendienstenstructuur HDS and H
 * active = true
 * organization = Reference(Organization/org-1001) "Huisartsendienstenstructuur HDS"
 * participatingOrganization = Reference(Organization/org-1002) "Huisartsenpraktijk A"
-* code = "http://hl7.org/fhir/organization-role#member" "member"
+* code = http://hl7.org/fhir/organization-role#member "Member"
 
 Instance: orgaff-1002
 InstanceOf: NlGfOrganizationAffiliation
@@ -131,11 +131,10 @@ Usage: #example
 Title: "Huisartsendienstenstructuur HDS x Huisartsenpraktijk B"
 Description: "Example: Affiliation between Huisartsendienstenstructuur HDS and Huisartsenpraktijk B"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:0000003","http://fhir.nl/fhir/NamingSystem/kvk", "50000111")
-
 * active = true
 * organization = Reference(Organization/org-1001) "Huisartsendienstenstructuur HDS"
 * participatingOrganization = Reference(Organization/org-1003) "Huisartsenpraktijk B"
-* code = "http://hl7.org/fhir/organization-role#member" "member"
+* code = http://hl7.org/fhir/organization-role#member "Member"
 
 Instance: endpoint-1002
 InstanceOf: NlGfEndpoint

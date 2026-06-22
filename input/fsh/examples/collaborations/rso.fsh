@@ -76,7 +76,7 @@ Description: "Example: Affiliation between regional cooperation organization 'RS
 * active = true
 * organization = Reference(Organization/org-0001) "RSO Zuiderzee"
 * participatingOrganization = Reference(Organization/org-0002) "Zuiderzeeziekenhuis"
-* code = "http://hl7.org/fhir/organization-role#member" "member"
+* code = http://hl7.org/fhir/organization-role#member "Member"
 
 Instance: orgaff-0002
 InstanceOf: NlGfOrganizationAffiliation
@@ -87,4 +87,4 @@ Description: "Example: Affiliation between regional cooperation organization 'RS
 * active = true
 * organization = Reference(Organization/org-0001) "RSO Zuiderzee"
 * participatingOrganization = Reference(Organization/org-0003) "Huisartspraktijk Zuiderzee"
-* code = "http://hl7.org/fhir/organization-role#member" "member"
+* code = http://hl7.org/fhir/organization-role#member "Member"
