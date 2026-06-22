@@ -3,7 +3,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Organization: RSO Zuiderzee"
 Description: "Example: Organization that represents the regional cooperation organization ('RSO') 'Zuiderzee'"
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "12345678")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","88888888","http://fhir.nl/fhir/NamingSystem/kvk", "12345678")
 * name = "RSO Zuiderzee"
 * type[+] = nl-gf-sbi-cs#94995 "Activiteiten van overkoepelende organen en samenwerkings- en adviesorganen (niet op het gebied van sport en recreatie)"
 * telecom[0].system = #phone
@@ -72,17 +72,19 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "RSO"
 Description: "Example: Affiliation between regional cooperation organization 'RSO Zuiderzee' and healthcare organization 'Zuiderzeeziekenhuis'"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:234234","http://fhir.nl/fhir/NamingSystem/kvk", "90000535")
 * active = true
 * organization = Reference(Organization/org-0001) "RSO Zuiderzee"
 * participatingOrganization = Reference(Organization/org-0002) "Zuiderzeeziekenhuis"
-* code = "http://hl7.org/fhir/organization-role|member" "member"
+* code = "http://hl7.org/fhir/organization-role#member" "member"
 
 Instance: orgaff-0002
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "RSO"
 Description: "Example: Affiliation between regional cooperation organization 'RSO Zuiderzee' and healthcare organization 'Huisartspraktijk Zuiderzee'"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:789789","http://fhir.nl/fhir/NamingSystem/kvk", "60000535")
 * active = true
 * organization = Reference(Organization/org-0001) "RSO Zuiderzee"
 * participatingOrganization = Reference(Organization/org-0003) "Huisartspraktijk Zuiderzee"
-* code = "http://hl7.org/fhir/organization-role|member" "member"
+* code = "http://hl7.org/fhir/organization-role#member" "member"

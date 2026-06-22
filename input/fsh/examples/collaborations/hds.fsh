@@ -24,6 +24,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - HAPIS vendor"
 Description: "Example: Software Vendor - HAPIS vendor"
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494750", "http://fhir.nl/fhir/NamingSystem/kvk", "50000530")
 * name = "HAPIS Vendor B.V."
 * type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
@@ -57,6 +58,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization: Huisartsendienstenstructuur HDS - Location HAP"
 Description: "Example: Organization 3 - Huisartsendienstenstructuur HDS - Location HAP"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:0001","http://fhir.nl/fhir/NamingSystem/kvk", "50000888")
 * status = #active
 * name = "Huisartsenspoedpost (HAP)"
 * type = $v3-RoleCode#GACH "Hospitals; General Acute Care Hospital"
@@ -117,20 +119,23 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Huisartsendienstenstructuur HDS x Huisartsenpraktijk A"
 Description: "Example: Affiliation between Huisartsendienstenstructuur HDS and Huisartsenpraktijk A"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:9999999","http://fhir.nl/fhir/NamingSystem/kvk", "50000222")
 * active = true
 * organization = Reference(Organization/org-1001) "Huisartsendienstenstructuur HDS"
 * participatingOrganization = Reference(Organization/org-1002) "Huisartsenpraktijk A"
-* code = "http://hl7.org/fhir/organization-role|member" "member"
+* code = "http://hl7.org/fhir/organization-role#member" "member"
 
 Instance: orgaff-1002
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Huisartsendienstenstructuur HDS x Huisartsenpraktijk B"
 Description: "Example: Affiliation between Huisartsendienstenstructuur HDS and Huisartsenpraktijk B"
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:0000003","http://fhir.nl/fhir/NamingSystem/kvk", "50000111")
+
 * active = true
 * organization = Reference(Organization/org-1001) "Huisartsendienstenstructuur HDS"
 * participatingOrganization = Reference(Organization/org-1003) "Huisartsenpraktijk B"
-* code = "http://hl7.org/fhir/organization-role|member" "member"
+* code = "http://hl7.org/fhir/organization-role#member" "member"
 
 Instance: endpoint-1002
 InstanceOf: NlGfEndpoint
@@ -158,6 +163,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - HIS vendor A"
 Description: "Example: Software Vendor - HIS vendor A"
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494755", "http://fhir.nl/fhir/NamingSystem/kvk", "50000536")
 * name = "HIS Vendor A B.V."
 * type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
@@ -188,6 +194,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Software Vendor - HIS vendor B"
 Description: "Example: Software Vendor - HIS vendor B"
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494758", "http://fhir.nl/fhir/NamingSystem/kvk", "50000538")
 * name = "HIS Vendor B B.V."
 * type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
