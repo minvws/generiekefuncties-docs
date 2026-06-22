@@ -37,13 +37,14 @@ Description: "The data exchange capabilities supported"
 * include codes from system NlGfDataCategoriesCS
 
 
-ValueSet: NlGfAuthorizationTypeVS
-Id: nl-gf-authorization-type-vs
+ValueSet: NlGfAffiliationTypeVS
+Id: nl-gf-affiliation-type-vs
 Title: "NL GF Authorization Type ValueSet"
 Description: "Authorization types supported by NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
+* include codes from valueSet http://hl7.org/fhir/organization-role
 
 ValueSet: NlGfZorgcontextVS
 Id: nl-gf-zorgcontext-vs
