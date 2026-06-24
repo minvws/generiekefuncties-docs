@@ -22,7 +22,7 @@ Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
 Title:    "Supported ActivityDefinitions and PlanDefinitions by HealthcareServices"
 Description: "ActivityDefinitions or PlanDefinitions to specify the codeable concepts in HealthcareService.type."
-Context: HealthcareService
+Context: HealthcareService.type
 * value[x] only Canonical(ActivityDefinition or PlanDefinition)
 
 Profile: NlGfHealthcareService
@@ -44,14 +44,12 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
-* specialty from http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.22--20200901000000 (required)
-* specialty ^comment = "The referenced Nictiz/DECOR value set does not currently resolve reliably in all tooling. When needed, inspect the underlying artifact manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
 * type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
 
 
 Profile: NlGfLocation
-Parent: $NlLocation
+Parent: $EuLocation
 Id: nl-gf-location
 Title: "NL Generic Functions Location Profile"
 Description: "Location profile based on NL Core Location and aligned with IHE mCSD Location constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
@@ -124,7 +122,6 @@ Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http:
 Severity:    #error
 
 Profile: NlGfOrganization
-// Parent: $NlOrganization
 Parent: $EuOrganization
 Id: nl-gf-organization
 Title: "NL Generic Functions Organization Profile"
@@ -151,7 +148,7 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 // * type contains
 //     SBI 0..*
 // * type[SBI] from NlGfOrgTypesVS (extensible)
-// * type[SBI] ^patternCodeableConcept.coding.system = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-sbi-cs"
+// * type[SBI] ^patternCodeableConcept.coding.system = "https://www.cbs.nl/standaard-bedrijfsindeling"
 // * type[SBI] ^short = "SBI"
 // * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
 // * type[SBI] ^alias = "Standaard Bedrijfsindeling"
@@ -207,7 +204,7 @@ Context: Device
 
 
 Profile: NlGfPractitionerRole
-Parent: $NlPractitionerRole
+Parent: $EuPractitionerRole
 Id: nl-gf-practitionerrole
 Title: "NL Generic Functions PractitionerRole Profile"
 Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
@@ -227,7 +224,7 @@ Description: "PractitionerRole profile based on NL Core HealthProfessional Pract
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
 
 Profile: NlGfPractitioner
-Parent: $NlPractitioner
+Parent: $EuPractitioner
 Id: nl-gf-practitioner
 Title: "NL Generic Functions Practitioner Profile"
 Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."

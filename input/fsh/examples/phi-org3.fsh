@@ -1,8 +1,7 @@
 Instance: 96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d
-InstanceOf: Patient //TODO: dependency on $nl-core-Patient if dependency-bug-nictiz is fixed
+InstanceOf: Patient
 Usage: #inline
 Title: "Patient Jaantje Merkens"
-* meta.profile = $nl-core-Patient
 * identifier[0].system = "http://organization3.example.org/EHR/patients"
 * identifier[=].value = "126"
 * identifier[+].system = "http://fhir.nl/fhir/NamingSystem/bsn"

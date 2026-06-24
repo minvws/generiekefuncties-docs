@@ -1,8 +1,7 @@
 CodeSystem: AORTADataCategoriesCS
-Id: aorta-data-categories-cs
 Title: "AORTA Data Categories CodeSystem"
 Description: "Local code system for data categories in AORTA."
-* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/aorta-data-categories-cs"
+* ^url = "urn:oid:2.16.840.1.113883.2.4.3.111.15.3"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true
@@ -37,7 +36,7 @@ Usage: #definition
 * experimental = true
 * sourceUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/aorta-data-categories-vs"
 * targetUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-zorgcontext-vs"
-* group[+].source = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/aorta-data-categories-cs"
+* group[+].source = "urn:oid:2.16.840.1.113883.2.4.3.111.15.3"
 * group[=].target = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
 * group[=].element[+].code = #LABBEPALING
 * group[=].element[=].target[+].code = #ObservationLaboratory
