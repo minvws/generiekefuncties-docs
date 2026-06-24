@@ -23,6 +23,4 @@ Description: "Data requirements for a nursing care request: the patient's covera
 * experimental = true
 * type = http://terminology.hl7.org/CodeSystem/library-type#logic-library
 * dataRequirement[+].type = #Coverage
-* dataRequirement[=].mustSupport = "beneficiary"
 * dataRequirement[+].type = #Condition
-* dataRequirement[=].mustSupport = "subject"
