@@ -243,7 +243,7 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | active | 1..1 | Whether this affiliation is currently active. |
 | organization → Organization | 1..1 | The care provider organization. |
 | participatingOrganization → Organization | 1..1 | The affiliated party (e.g. IT vendor). |
-| code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-authorization-type-vs.html)). |
+| code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-affiliation-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
 
