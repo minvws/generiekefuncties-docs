@@ -7,15 +7,6 @@ Description: "The Service Types supported by the NL Generic Functions."
 * include codes from system http://terminology.hl7.org/CodeSystem/service-type
 * include codes from system https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
 
-ValueSet: NlGfOrgTypesVS
-Id: nl-gf-org-types-vs
-Title: "NL GF Organization Types ValueSet"
-Description: "The Organization Types supported by the NL Generic Functions."
-* ^status = #active
-* ^experimental = true
-* include codes from system NlGfSBICS
-
-
 ValueSet: NlGfConnectionTypesVS
 Id: nl-gf-connection-types-vs
 Title: "NL GF Connection Types ValueSet"

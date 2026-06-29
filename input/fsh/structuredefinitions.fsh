@@ -125,7 +125,7 @@ Profile: NlGfOrganization
 Parent: $EuOrganization
 Id: nl-gf-organization
 Title: "NL Generic Functions Organization Profile"
-Description: "Organization profile based on NL Core Healthcare Provider Organization and aligned with IHE mCSD Organization constraints, extended with CBS Standaard Bedrijfsindeling (SBI) typing."
+Description: "Organization profile based on NL Core Healthcare Provider Organization and aligned with IHE mCSD Organization constraints."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization"
 * ^experimental = true
 * obeys ura-identifier-or-partof
@@ -141,17 +141,6 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type from NlGfOrgTypesVS (extensible)
-// * type ^slicing.discriminator[+].type = #value
-// * type ^slicing.discriminator[=].path = "$this"
-// * type ^slicing.rules = #open
-// * type contains
-//     SBI 0..*
-// * type[SBI] from NlGfOrgTypesVS (extensible)
-// * type[SBI] ^patternCodeableConcept.coding.system = "https://www.cbs.nl/standaard-bedrijfsindeling"
-// * type[SBI] ^short = "SBI"
-// * type[SBI] ^definition = "CBS Standaard Bedrijfsindeling code representing the primary activity of the organization."
-// * type[SBI] ^alias = "Standaard Bedrijfsindeling"
 // * partOf only Reference(NlGfOrganization)
 // * endpoint only Reference(NlGfEndpoint)
 

@@ -146,7 +146,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 | Attribute | Card. | Description |
 |---|---|---|
 | identifier (URA or KVK) | 0..* | An Organization SHALL have a URA or KVK identifier, or be `partOf` another Organization. |
-| type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code (extensible binding to [NL-GF Organization Types](./ValueSet-nl-gf-org-types-vs.html)). |
+| type | 1..* | Type of organization (mCSD/EU default binding). Searching by care offering is done via HealthcareService.type/specialty. |
 | name | 1..1 | The name of the organization. |
 | alias | 0..* | Alternative names. |
 | telecom | 0..* | Contact details. |

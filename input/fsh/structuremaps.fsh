@@ -72,7 +72,6 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Basispro
 //   naam                               → Organization.name
 //   statutaireNaam                      → Organization.alias
 //   handelsnamen[].naam                 → Organization.alias
-//   sbiActiviteiten[]                   → Organization.type (SBI CodeSystem)
 //   embedded.hoofdvestiging.adressen[]  → Organization.address
 //   embedded.hoofdvestiging.websites[]  → Organization.telecom (system: url)
 //   active                             → true (default)
@@ -274,19 +273,6 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].dependent[=].variable[+] = "hn"
 * group[=].rule[=].dependent[=].variable[+] = "tgt"
 
-// Rule: sbiActiviteiten → type (via dependent group)
-* group[=].rule[+].name = "sbiActiviteiten"
-* group[=].rule[=].source[+].context = "src"
-* group[=].rule[=].source[=].element = "sbiActiviteiten"
-* group[=].rule[=].source[=].variable = "sbi"
-* group[=].rule[=].target[+].context = "tgt"
-* group[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].target[=].element = "type"
-* group[=].rule[=].target[=].variable = "cc"
-* group[=].rule[=].dependent[+].name = "KvkSBIToCodeableConcept"
-* group[=].rule[=].dependent[=].variable[+] = "sbi"
-* group[=].rule[=].dependent[=].variable[+] = "cc"
-
 // Rule: embedded → eigenaar + hoofdvestiging (nested rules)
 * group[=].rule[+].name = "embedded"
 * group[=].rule[=].source[+].context = "src"
@@ -369,51 +355,6 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].target[=].element = "alias"
 * group[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].target[=].parameter[+].valueId = "naam"
-
-// ── Group 2: SBI Activiteit → CodeableConcept ───────────────────────────────
-* group[+].name = "KvkSBIToCodeableConcept"
-* group[=].typeMode = #none
-* group[=].input[+].name = "src"
-* group[=].input[=].mode = #source
-* group[=].input[+].name = "tgt"
-* group[=].input[=].type = "CodeableConcept"
-* group[=].input[=].mode = #target
-
-// Create coding element and populate it
-* group[=].rule[+].name = "sbiCoding"
-* group[=].rule[=].source[+].context = "src"
-* group[=].rule[=].target[+].context = "tgt"
-* group[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].target[=].element = "coding"
-* group[=].rule[=].target[=].variable = "coding"
-// Set system
-* group[=].rule[=].rule[+].name = "sbiSystem"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "system"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "https://www.cbs.nl/standaard-bedrijfsindeling"
-// Map sbiCode → coding.code
-* group[=].rule[=].rule[+].name = "sbiCode"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].source[=].element = "sbiCode"
-* group[=].rule[=].rule[=].source[=].variable = "code"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "code"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "code"
-// Map sbiOmschrijving → coding.display
-* group[=].rule[=].rule[+].name = "sbiDisplay"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].source[=].element = "sbiOmschrijving"
-* group[=].rule[=].rule[=].source[=].variable = "omschr"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "display"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "omschr"
 
 // ── Group 3: KVK Adres → FHIR Address ──────────────────────────────────────
 * group[+].name = "KvkAdresToAddress"
@@ -718,7 +659,6 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Vestigin
 //   adressen[]                      → Location.address
 //   adressen[].geoData              → Location.position (latitude/longitude)
 //   websites[]                      → Location.telecom (system: url)
-//   sbiActiviteiten[]               → Location.type (SBI CodeSystem)
 //   indHoofdvestiging/materieleReg  → Location.status (active/inactive)
 // ============================================================================
 
@@ -982,19 +922,6 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].dependent[+].name = "KvkVestWebsiteToContactPoint"
 * group[=].rule[=].dependent[=].variable[+] = "web"
 * group[=].rule[=].dependent[=].variable[+] = "tel"
-
-// Rule: sbiActiviteiten → type (via dependent group)
-* group[=].rule[+].name = "sbiActiviteiten"
-* group[=].rule[=].source[+].context = "src"
-* group[=].rule[=].source[=].element = "sbiActiviteiten"
-* group[=].rule[=].source[=].variable = "sbi"
-* group[=].rule[=].target[+].context = "tgt"
-* group[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].target[=].element = "type"
-* group[=].rule[=].target[=].variable = "cc"
-* group[=].rule[=].dependent[+].name = "KvkVestSBIToCodeableConcept"
-* group[=].rule[=].dependent[=].variable[+] = "sbi"
-* group[=].rule[=].dependent[=].variable[+] = "cc"
 
 // ── Group 1: Handelsnaam → Location.alias ───────────────────────────────────
 * group[+].name = "KvkVestHandelsnaamToAlias"
@@ -1291,51 +1218,6 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].target[=].element = "use"
 * group[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].target[=].parameter[+].valueString = "work"
-
-// ── Group 5: SBI Activiteit → CodeableConcept (vestigingsprofiel) ────────────
-* group[+].name = "KvkVestSBIToCodeableConcept"
-* group[=].typeMode = #none
-* group[=].input[+].name = "src"
-* group[=].input[=].mode = #source
-* group[=].input[+].name = "tgt"
-* group[=].input[=].type = "CodeableConcept"
-* group[=].input[=].mode = #target
-
-// Create coding element and populate it
-* group[=].rule[+].name = "sbiCoding"
-* group[=].rule[=].source[+].context = "src"
-* group[=].rule[=].target[+].context = "tgt"
-* group[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].target[=].element = "coding"
-* group[=].rule[=].target[=].variable = "coding"
-// Set system
-* group[=].rule[=].rule[+].name = "sbiSystem"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "system"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "https://www.cbs.nl/standaard-bedrijfsindeling"
-// Map sbiCode → coding.code
-* group[=].rule[=].rule[+].name = "sbiCode"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].source[=].element = "sbiCode"
-* group[=].rule[=].rule[=].source[=].variable = "code"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "code"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "code"
-// Map sbiOmschrijving → coding.display
-* group[=].rule[=].rule[+].name = "sbiDisplay"
-* group[=].rule[=].rule[=].source[+].context = "src"
-* group[=].rule[=].rule[=].source[=].element = "sbiOmschrijving"
-* group[=].rule[=].rule[=].source[=].variable = "omschr"
-* group[=].rule[=].rule[=].target[+].context = "coding"
-* group[=].rule[=].rule[=].target[=].contextType = #variable
-* group[=].rule[=].rule[=].target[=].element = "display"
-* group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueId = "omschr"
 
 
 // Instance: kvk-logicals-and-struturemaps
