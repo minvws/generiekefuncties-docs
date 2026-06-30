@@ -51,30 +51,6 @@ Usage: #definition
       * insert Expectation(SHALL)
       * code = #update
   * resource[+]
-    * insert Expectation(MAY)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * versioning = #versioned-update
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
-  * resource[+]
-    * insert Expectation(MAY)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
-    * documentation = "."
-    * versioning = #versioned-update
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
-  * resource[+]
     * insert Expectation(SHALL)
     * type = #Endpoint
     * supportedProfile[+] = Canonical(NlGfEndpoint)
