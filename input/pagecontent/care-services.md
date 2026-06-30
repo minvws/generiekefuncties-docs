@@ -28,7 +28,7 @@ Technical design: <a href="GTO adressering v0.9.0.pdf">GTO adressering v0.9.0.pd
 <img src="careservices-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization, Location and Practitioner(-Role) resources from the KvK and DEZI-registry.
+This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
 
 
 ### National Constraints Compared to IHE mCSD
@@ -50,7 +50,7 @@ Status changes are propagated to local replicas through the `_history` delta (IT
 
 1. Paging and consistent initial load:
 For the initial load (ITI-90-NL `search-type` without search parameters), the LRZa Directory SHALL return results using paging: it SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce a maximum page size. The maximum page size is advertised by the server and specified in the LRZa SLA. Update Clients SHALL follow `next` links until exhausted.
-To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Practitioner` → `PractitionerRole` → `Endpoint` → `Device` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
+To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Endpoint` → `Device` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
 Because the paged initial load is not atomic, the Update Client SHALL take the server time reported in `Bundle.meta.lastUpdated` of the first page as the **sync timestamp** — the LRZa server time up to which the replica is in sync — and, once the paged load completes, SHALL perform an incremental `history-type` synchronization (ITI-91-NL) with `_since` set to that sync timestamp. Using the LRZa-reported time avoids client/server clock skew, and this captures mutations made during the load without requiring a server-side point-in-time snapshot. How the Update Client retains the sync timestamp is implementation-defined (e.g. a small stored value, or derived from the replica content); because synchronization is processed idempotently, an inclusive `_since` (re-fetching the boundary resources) is safe.
 
 A Local Replica SHALL accept resources whose references cannot (yet) be resolved and SHALL NOT enforce referential integrity on write during the initial load; without this, replication breaks whenever a delta arrives before the resource it references. A Local Replica SHOULD NOT serve Query Clients until the initial load and the subsequent `_history` catch-up have completed.
@@ -209,31 +209,6 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 | partOf → Location | 0..1 | The parent location (e.g. building → floor → room). |
 
 
-#### Practitioner
-Practitioner resources represent healthcare professionals as persons, independent of where or in which role they are currently working. In GF Addressing, a Practitioner is used as the stable identity anchor for professional identification across organizations, and can be linked to one or more PractitionerRole resources that describe context-specific roles and specialties. Practitioner identifiers typically include a DEZI number and MAY include a BIG number for professional registration details.
-The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html) is used to represent healthcare professionals. Key attributes:
-
-| Attribute | Card. | Description |
-|---|---|---|
-| identifier (DEZI/BIG) | 0..* | Professional identifiers, typically DEZI and optionally BIG. |
-| name | 1..* | Human name of the practitioner. |
-| qualification | 0..* | Professional qualifications, licenses, or registrations relevant for care delivery. |
-
-
-#### PractitionerRole
-PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations and MAY represent employment relationships. It supports scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging. Because the directory is publicly queryable, a PractitionerRole SHALL NOT contain data that may not be shared publicly (e.g. personal contact details of an individual that are not intended for public addressing); only information meant to be publicly available for addressing purposes is published.
-The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations. Key attributes:
-
-| Attribute | Card. | Description |
-|---|---|---|
-| identifier (CustodianAssignedIdentifier) | 1..1 | Identifier for provenance and traceability; UZI/DEZI-number |
-| practitioner → Practitioner | 1..1 | The practitioner fulfilling this role, identified by its, e.g., BIG-number. |
-| organization → Organization | 1..1 | The organization where the practitioner works. |
-| code | 1..* | The role(s) the practitioner performs. |
-| specialty | 0..* | The specialty of the practitioner in this role. |
-| telecom | 0..* | Contact details (only information that may be shared publicly for addressing). |
-
-
 #### OrganizationAffiliation
 OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide. Key attributes:
@@ -246,6 +221,9 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-authorization-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
+#### Not in scope: Practitioner and PractitionerRole
+
+The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is no GDPR legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
 
 ### Security
 
@@ -321,4 +299,3 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 ### Roadmap for Care Services
 
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
-- The data profiles should be added/merged in the NL Core profiles

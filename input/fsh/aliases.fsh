@@ -1,7 +1,5 @@
 Alias: $EuOrganization = http://hl7.eu/fhir/base/StructureDefinition/organization-eu-core
 Alias: $EuLocation = http://hl7.eu/fhir/base/StructureDefinition/location-eu-core
-Alias: $EuPractitioner = http://hl7.eu/fhir/base/StructureDefinition/practitioner-eu-core
-Alias: $EuPractitionerRole = http://hl7.eu/fhir/base/StructureDefinition/practitionerRole-eu-core
 Alias: $sct = http://snomed.info/sct
 Alias: $loinc = http://loinc.org
 Alias: $task-status = http://hl7.org/fhir/task-status

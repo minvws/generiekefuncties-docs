@@ -46,36 +46,6 @@ Usage: #definition
       * code = #read
   * resource[+]
     * insert Expectation(SHALL)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
     * documentation = "."
