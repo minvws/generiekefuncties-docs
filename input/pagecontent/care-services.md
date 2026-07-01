@@ -223,7 +223,7 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 
 #### Not in scope: Practitioner and PractitionerRole
 
-The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is no GDPR legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
+The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is currently no legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
 
 ### Security
 
