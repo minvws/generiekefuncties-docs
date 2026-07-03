@@ -5,7 +5,7 @@ Title: "Organization: RSO Zuiderzee"
 Description: "Example: Organization that represents the regional cooperation organization ('RSO') 'Zuiderzee'"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","88888888","http://fhir.nl/fhir/NamingSystem/kvk", "12345678")
 * name = "RSO Zuiderzee"
-* type[+] = nl-gf-sbi-cs#94995 "Activiteiten van overkoepelende organen en samenwerkings- en adviesorganen (niet op het gebied van sport en recreatie)"
+* type[+] = NlGfSBICS#94995 "Activiteiten van overkoepelende organen en samenwerkings- en adviesorganen (niet op het gebied van sport en recreatie)"
 * telecom[0].system = #phone
 * telecom[=].value = "+31612345678"
 * telecom[=].use = #work
@@ -28,7 +28,7 @@ Description: "Example: Organization that represents the hospital 'Zuiderzeezieke
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111112","http://fhir.nl/fhir/NamingSystem/kvk", "50000539")
 * name = "Zuiderzeeziekenhuis"
 * type[+] = $organization-type#V4 "Ziekenhuis"
-* type[+] = nl-gf-sbi-cs#8610 "Activiteiten van ziekenhuizen"
+* type[+] = NlGfSBICS#8610 "Activiteiten van ziekenhuizen"
 * type[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
@@ -52,7 +52,7 @@ Description: "Example: Organization that represents the General practitioner's p
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111122","http://fhir.nl/fhir/NamingSystem/kvk", "50000599")
 * name = "example General Practice"
 * type[+] = $organization-type#Z3 "Huisartspraktijk (zelfstandig of groepspraktijk)"
-* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
+* type[+] = NlGfSBICS#8621 "Huisartsenzorg"
 * telecom[0].system = #phone
 * telecom[=].value = "+3131599991"
 * telecom[=].use = #work
