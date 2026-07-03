@@ -1,0 +1,40 @@
+@startuml care-services-optimistic-locking
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+participant DS as "Data Source"
+participant LRZa as "LRZa\nDirectory"
+
+note over DS,LRZa: Optimistic locking on update
+
+DS -> LRZa: GET /Organization/123
+activate LRZa
+LRZa -> DS: 200 OK\nETag: W/"3"
+deactivate LRZa
+
+note over DS: Prepare update based on version 3
+
+DS -> LRZa: PUT /Organization/123\nIf-Match: W/"3"
+activate LRZa
+alt current version is still 3
+  LRZa -> DS: 200 OK\nETag: W/"4"
+  note over DS: Update applied
+else another writer advanced it to 4 first
+  LRZa -> DS: 412 Precondition Failed\n(OperationOutcome)
+  deactivate LRZa
+  note over DS: Re-read, re-base the change\non the latest version, retry
+  DS -> LRZa: GET /Organization/123
+  activate LRZa
+  LRZa -> DS: 200 OK\nETag: W/"4"
+  deactivate LRZa
+  DS -> LRZa: PUT /Organization/123\nIf-Match: W/"4"
+  activate LRZa
+  LRZa -> DS: 200 OK\nETag: W/"5"
+  deactivate LRZa
+end
+
+@enduml

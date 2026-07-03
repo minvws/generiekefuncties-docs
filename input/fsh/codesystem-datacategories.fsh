@@ -2,7 +2,6 @@ CodeSystem: NlGfDataCategoriesCS
 Id: nl-gf-data-categories-cs
 Title: "NL GF Data Categories CodeSystem"
 Description: "Local code system for data categories in NL Generic Functions."
-* ^url = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true
@@ -236,15 +235,6 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "RelatedPerson"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "CareTeam"
-* #Practitioner "Practitioner"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Zorgverlener"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Practitioner"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Practitioner"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "PractitionerRole"
 * #Procedure "Procedure"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Verrichtingen"

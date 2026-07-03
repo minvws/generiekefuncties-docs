@@ -27,10 +27,10 @@ publisher:
 # package id and the value is the version (or dev/current). For advanced
 # use cases, the value can be an object with keys for id, uri, and version.
 dependencies:
-  nictiz.fhir.nl.r4.nl-core: 0.12.0-beta.4
-  nictiz.fhir.nl.r4.zib2020: 0.12.0-beta.4
+  # nictiz.fhir.nl.r4.nl-core: 0.12.0-beta.4
+  # nictiz.fhir.nl.r4.zib2020: 0.12.0-beta.4
   ihe.iti.mcsd: 4.0.0
-  hl7.fhir.eu.base: 2.0.0-ballot
+  hl7.fhir.eu.base: 2.0.0
   # hl7.fhir.eu.base: 0.1.0-ballot # Depending on discussion with Nictiz if we want to base our profiles on this or not
 #
 #
@@ -103,6 +103,11 @@ pages:
 #
 parameters:
   excludettl: true
+  special-url: 
+    - https://www.cbs.nl/standaard-bedrijfsindeling
+    - urn:oid:2.16.840.1.113883.2.4.3.111.15.3
+    - https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
+
 #   validation: [allow-any-extensions, no-broken-links]
 #
 # ╭────────────────────────────────────────────menu.xml────────────────────────────────────────────╮
