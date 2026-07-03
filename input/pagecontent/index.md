@@ -57,16 +57,16 @@ This guide is based on the [HL7 FHIR R4](https://hl7.org/fhir/R4/index.html) spe
 
 You can also download:
 
-* [this entire guide](full-ig.zip)
-* the definition resources in [json](definitions.json.zip) or [xml](definitions.xml.zip) format,
-* the example resources in [json](examples.json.zip) or [xml](examples.xml.zip) format.
+* [this entire guide](../full-ig.zip)
+* the definition resources in [json](../definitions.json.zip) or [xml](../definitions.xml.zip) format,
+* the example resources in [json](../examples.json.zip) or [xml](../examples.xml.zip) format.
 
 ### Package File
 
 The following package file includes an NPM package file used by many of the FHIR tools.  It contains all the value sets, profiles, extensions, list of pages and urls in the IG, etc defined as part of this version of the Implementation Guide. This file should be the first choice whenever generating any implementation artefacts since it contains all of the rules about what makes the profiles valid. Implementers will still need to be familiar with the content of the specification and profiles that apply in order to make a conformant implementation:
 
-- [R4 Package](package.tgz){::download="true"}
-- [R4B Package](package.r4b.tgz){::download="true"}
+- [R4 Package](../package.tgz){::download="true"}
+- [R4B Package](../package.r4b.tgz){::download="true"}
 
 See the overview on [validating FHIR profiles and resources](http://hl7.org/fhir/R4/validation.html) for more information about validating profiles and how to use these artefacts.
 
