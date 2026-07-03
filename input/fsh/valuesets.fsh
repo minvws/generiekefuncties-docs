@@ -43,7 +43,7 @@ Description: "Authorization types supported by NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
-* include codes from valueset http://hl7.org/fhir/organization-role
+* include codes from system http://hl7.org/fhir/organization-role 
 
 ValueSet: NlGfZorgcontextVS
 Id: nl-gf-zorgcontext-vs

@@ -5,8 +5,7 @@ Title: "Huisartsendienstenstructuur HDS - Endpoint"
 Description: "Example: Organization HDS - Endpoint"
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
-* payloadMimeType[+] = #application/fhir+json
-* payloadMimeType[+] = #fhirVersion-3.0
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 99"
 * period.start = "2024-01-15"
@@ -26,7 +25,7 @@ Title: "Software Vendor - HAPIS vendor"
 Description: "Example: Software Vendor - HAPIS vendor"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494750", "http://fhir.nl/fhir/NamingSystem/kvk", "50000530")
 * name = "HAPIS Vendor B.V."
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = NlGfSBICS#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: org-1001
@@ -36,8 +35,8 @@ Title: "Organization: Huisartsendienstenstructuur HDS"
 Description: "Example: Huisartsendienstenstructuur HDS that runs a huisartsenspoedpost (HAP)"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "98765432", "http://fhir.nl/fhir/NamingSystem/kvk", "10000535")
 * name = "Huisartsendienstenstructuur HDS"
-* type[+] = nl-gf-sbi-cs#94995 "Activiteiten van overkoepelende organen en samenwerkings- en adviesorganen (niet op het gebied van sport en recreatie)"
-* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
+* type[+] = NlGfSBICS#94995 "Activities of umbrella organisations, collaborative and advisory bodies (not for sports and recreation)"
+* type[+] = NlGfSBICS#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31612345678"
 * telecom[=].use = #work
@@ -64,7 +63,6 @@ Description: "Example: Organization 3 - Huisartsendienstenstructuur HDS - Locati
 * type = $v3-RoleCode#GACH "Hospitals; General Acute Care Hospital"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/org-0001)
-* partOf = Reference(Organization/org-0001)
 * address.line = "Smidsstraat 10"
 * address.city = "Zelhem"
 * address.postalCode = "7021 AC"
@@ -77,7 +75,7 @@ Title: "Organization: Huisartsenpraktijk A"
 Description: "Example: Huisartsenpraktijk A"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "98765499", "http://fhir.nl/fhir/NamingSystem/kvk", "10000522")
 * name = "Huisartsenpraktijk A"
-* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
+* type[+] = NlGfSBICS#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31612345670"
 * telecom[=].use = #work
@@ -99,7 +97,7 @@ Title: "Organization: Huisartsenpraktijk B"
 Description: "Example: Huisartsenpraktijk B"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "98765499", "http://fhir.nl/fhir/NamingSystem/kvk", "10000522")
 * name = "Huisartsenpraktijk B"
-* type[+] = nl-gf-sbi-cs#8621 "Huisartsenzorg"
+* type[+] = NlGfSBICS#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31612345679"
 * telecom[=].use = #work
@@ -143,8 +141,7 @@ Title: "Huisartsenpraktrijk A - Endpoint"
 Description: "Example: Huisartsenpraktrijk A - Endpoint"
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
-* payloadMimeType[+] = #application/fhir+json
-* payloadMimeType[+] = #fhirVersion-4.0
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint Huisartsenpraktrijk A"
 * period.start = "2024-01-15"
@@ -164,7 +161,7 @@ Title: "Software Vendor - HIS vendor A"
 Description: "Example: Software Vendor - HIS vendor A"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494755", "http://fhir.nl/fhir/NamingSystem/kvk", "50000536")
 * name = "HIS Vendor A B.V."
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = NlGfSBICS#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 
 Instance: endpoint-1003
@@ -174,8 +171,7 @@ Title: "Huisartsenpraktrijk B - Endpoint"
 Description: "Example: Huisartsenpraktrijk B - Endpoint"
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
-* payloadMimeType[+] = #application/fhir+json
-* payloadMimeType[+] = #fhirVersion-4.0
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint Huisartsenpraktrijk B"
 * period.start = "2024-01-15"
@@ -195,6 +191,6 @@ Title: "Software Vendor - HIS vendor B"
 Description: "Example: Software Vendor - HIS vendor B"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494758", "http://fhir.nl/fhir/NamingSystem/kvk", "50000538")
 * name = "HIS Vendor B B.V."
-* type[+] = nl-gf-sbi-cs#6210 "Computer programming activities"
+* type[+] = NlGfSBICS#6210 "Computer programming activities"
 * type[+].text = "IT vendor organization"
 

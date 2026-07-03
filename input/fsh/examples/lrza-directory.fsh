@@ -8,7 +8,6 @@ Title: "LRZa - Organization 1 - Organization"
 Description: "Example: LRZa - Organization 1 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example General Practice"
-* type[+] = $organization-type#Z3 "Huisartspraktijk (zelfstandig of groepspraktijk)"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+3131599991"
@@ -35,7 +34,6 @@ Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
-* type[+] = $organization-type#V4 "Ziekenhuis"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
 * type[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
@@ -63,7 +61,6 @@ Title: "LRZa - Organization 3 - Organization"
 Description: "Example: LRZa - Organization 3 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "33333333", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Care Institution"
-* type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
@@ -415,7 +412,7 @@ Title: "Organization 3 - Organization Nursing department"
 Description: "Nursing department at Organization 3"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:631cf10e-42d6-4165-9907-11e2333d4a85","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "Nursing department at Organization 3"
-* type[+] = $organization-type#X3 "Verplegings- of verzorgingsinstelling"
+* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
 * partOf = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 
 Instance: bbec4d2a-1be2-539b-817e-f85ef6e895f2

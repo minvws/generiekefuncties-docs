@@ -107,6 +107,7 @@ parameters:
     - https://www.cbs.nl/standaard-bedrijfsindeling
     - urn:oid:2.16.840.1.113883.2.4.3.111.15.3
     - https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
+    - http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type
 
 #   validation: [allow-any-extensions, no-broken-links]
 #
