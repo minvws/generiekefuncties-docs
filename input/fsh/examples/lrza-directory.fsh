@@ -167,7 +167,7 @@ Description: "Example: Organization 1 - Endpoint"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
 * period.start = "2024-01-15"
@@ -179,6 +179,22 @@ Description: "Example: Organization 1 - Endpoint"
 * contact[=].value = "info@cp1.example.org"
 * contact[=].use = #work
 * address = "https://cp1-test.example.org/fhirr4"
+
+Instance: a1f3c0d2-9b47-5e18-8c6a-2d4f7e1b9a03
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Organization 1 - Endpoint (STU3 and R4)"
+Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirVersion MIME parameter."
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* status = #active
+
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* connectionType = $endpoint-connection-type#hl7-fhir-rest
+* name = "FHIR Endpoint 1 (STU3 + R4)"
+* managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* address = "https://cp1-test.example.org/fhir"
 
 
 Instance: 53c03a2e-53e9-4994-827c-98f6b4caf897
@@ -221,7 +237,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
 * managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
@@ -274,9 +290,9 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR STU3 Endpoint"
+* name = "FHIR Endpoint 2 (health records)"
 * managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
@@ -441,9 +457,9 @@ Description: "Example: Organization 3 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR R4 Endpoint"
+* name = "FHIR Endpoint 3"
 * managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
@@ -475,9 +491,9 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #application/fhir+json
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
-* name = "FHIR STU3 Endpoint"
+* name = "FHIR Endpoint 3 (health records)"
 * managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
