@@ -13,7 +13,7 @@ participant LRZa as "LRZa\nDirectory"
 activate QUC
 note over QUC: Initial load — replica state: LOADING
 
-loop For each resource type, in recommended order\n(Organization -> Location -> HealthcareService ->\nPractitioner -> PractitionerRole -> Endpoint ->\nDevice -> OrganizationAffiliation)
+loop For each resource type, in recommended order\n(Organization -> Location -> HealthcareService ->\n Endpoint -> Device -> OrganizationAffiliation)
   QUC -> LRZa: GET /{resourceType}
   activate LRZa
   LRZa -> QUC: Bundle (searchset, page 1)\nBundle.meta.lastUpdated = T0

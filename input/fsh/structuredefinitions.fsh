@@ -202,47 +202,6 @@ Description: "A reference to an endpoint associated with this device."
 Context: Device
 * value[x] only Reference(NlGfEndpoint)
 
-
-Profile: NlGfPractitionerRole
-Parent: $EuPractitionerRole
-Id: nl-gf-practitionerrole
-Title: "NL Generic Functions PractitionerRole Profile"
-Description: "PractitionerRole profile based on NL Core HealthProfessional PractitionerRole and aligned with IHE mCSD PractitionerRole constraints, with a required custodian-assigned identifier. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
-* ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole"
-* ^experimental = true
-* identifier ^slicing.discriminator.type = #profile
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId] only CustodianAssignedIdentifier
-* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
-* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
-* practitioner 1..
-* organization 1..
-// * organization only Reference(NlGfOrganization)
-* code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PractitionerRole
-
-Profile: NlGfPractitioner
-Parent: $EuPractitioner
-Id: nl-gf-practitioner
-Title: "NL Generic Functions Practitioner Profile"
-Description: "Practitioner profile based on NL Core HealthProfessional Practitioner and aligned with IHE mCSD Practitioner constraints. The parent Nictiz NL Core profile does not currently resolve reliably in all tooling; when needed, inspect it manually via Simplifier, for example through https://simplifier.net/nictiz-r4-zib2020."
-* ^experimental = true
-* identifier ^slicing.discriminator[0].type = #value
-* identifier ^slicing.discriminator[=].path = "$this"
-* identifier ^slicing.discriminator[+].type = #profile
-* identifier ^slicing.discriminator[=].path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId] only CustodianAssignedIdentifier
-* ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner"
-* implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-* name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Practitioner
-
-
 Extension: TaskSTU3Location
 Id:        task-stu3-location
 Title:    "Location for Task in STU3"

@@ -40,30 +40,6 @@ Usage: #definition
       * type = #date
   * resource[+]
     * insert Expectation(SHALL)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
-  * resource[+]
-    * insert Expectation(SHALL)
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
     * documentation = "."

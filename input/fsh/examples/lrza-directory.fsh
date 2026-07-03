@@ -201,31 +201,6 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * contact[=].use = #work
 * address = "https://cp1-old.example.org/fhir"
 
-
-Instance: a76d130d-97eb-51b6-9e10-3810bfe0b0c5
-InstanceOf: NlGfPractitionerRole
-Usage: #example
-Title: "Organization 1 - PractitionerRole Harry Arts"
-Description: "Example: Organization 1 - PractitionerRole Harry Arts"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner = Reference(Practitioner/4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4)
-* organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
-* code.coding = $uzi-rolcode#01.015 "Huisarts"
-* telecom[+].system = #email
-* telecom[=].value = "h.arts@cp1.example.org"
-
-Instance: 4f98d2fd-46e9-42b8-b4ec-5e5f2ad8f1b4
-InstanceOf: NlGfPractitioner
-Usage: #example
-Title: "Practitioner Harry Arts at Organization 1"
-Description: "Example practitioner for Organization 1"
-* meta.profile = Canonical(NlGfPractitioner)
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/dezi","DEZI-01111111","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/big"
-* identifier[=].value = "19011111101"
-* name.given[0] = "Harry"
-* name.family = "Arts"
-
 Instance: 2de07561-6786-5c93-bf39-a86469423497
 InstanceOf: NlGfDevice
 Usage: #example
@@ -402,35 +377,6 @@ Description: "Example: Organization 2 - HealthcareService Urologie"
 * type = $service-type#222 "Urology"
 * specialty[+].coding = $sct#394612005 "Urology"
 
-
-
-Instance: 85a3cfc1-8eb4-5b32-b966-662e1b146a56
-InstanceOf: NlGfPractitionerRole
-Usage: #example
-Title: "Organization 2 - PractitionerRole Cardioloog Caroline van Dijk at Organization 2"
-Description: "Example: Organization 2 - PractitionerRole Cardioloog Caroline van Dijk at Organization 2"
-* identifier[+].system = "http://cp2.example.org/HRM/assignments"
-* identifier[=].value = "123456"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner = Reference(Practitioner/c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a)
-* organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
-* code.coding = $uzi-rolcode#01.010 "Cardioloog"
-* specialty.coding = $sct#394579002 "Cardiology"
-* telecom[+].system = #email
-* telecom[=].value = "c.vandijk@cp2.example.org"
-
-Instance: c53cf5fc-6d90-48c8-aaef-1c88ed3ded2a
-InstanceOf: NlGfPractitioner
-Usage: #example
-Title: "Practitioner Caroline van Dijk at Organization 2"
-Description: "Example practitioner for Organization 2"
-* meta.profile = Canonical(NlGfPractitioner)
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/dezi","DEZI-02222222","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/big"
-* identifier[=].value = "19022222201"
-* name.given[0] = "Caroline"
-* name.family = "van Dijk"
-
 Instance: a366c48c-2a15-5e59-bf3a-10f03cfdbc34
 InstanceOf: NlGfDevice
 Usage: #example
@@ -574,39 +520,6 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * type[+] = $zorgzwaartepakket#756 "7VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met nadruk op begeleiding"
 * type[+] = $zorgzwaartepakket#757 "8VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
 
-
-
-Instance: 05817277-b885-5b0e-9bb4-46033c3f4fa5
-InstanceOf: NlGfPractitionerRole
-Usage: #example
-Title: "Organization 3 - PractitionerRole Klinisch Geriater John Doe"
-Description: "Example: Organization 3 - PractitionerRole Klinisch Geriater John Doe"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* practitioner = Reference(Practitioner/3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8)
-* organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
-* active = true
-* code.coding = $uzi-rolcode#01.022 "Klinisch geriater"
-* specialty[+].coding = $sct#394811001 "Geriatric medicine"
-* telecom[0].system = #phone
-* telecom[=].value = "+31301234568"
-* telecom[=].use = #work
-* telecom[+].system = #email
-* telecom[=].value = "john.doe@cp3.example.org"
-* telecom[=].use = #work
-* telecom[+].system = #url
-* telecom[=].value = "https://matrix.to/#doctorno:cp3.example.org"
-* telecom[=].use = #work
-
-Instance: 3cb101c7-c2fc-4f91-acbe-c3b61c0f9db8
-InstanceOf: NlGfPractitioner
-Usage: #example
-Title: "Practitioner John Doe at Organization 3"
-Description: "Example practitioner for Organization 3"
-* meta.profile = Canonical(NlGfPractitioner)
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/dezi","DEZI-03333333","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* name.given[0] = "John"
-* name.family = "Doe"
-
 Instance: 34e4d0cb-eb5a-548c-a9da-4b094ccbc373
 InstanceOf: NlGfDevice
 Usage: #example
@@ -636,7 +549,6 @@ Description: "Example: Gerimedica Device for Organization 3"
 
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, d6a4678b-755e-5ae3-bd36-67db6ae3d8c4)
 // * insert BundleEntryPUT(urn:uuid:,Device, 2de07561-6786-5c93-bf39-a86469423497)
-// * insert BundleEntryPUT(urn:uuid:,PractitionerRole, a76d130d-97eb-51b6-9e10-3810bfe0b0c5)
 // * insert BundleEntryPUT(urn:uuid:,OrganizationAffiliation, fe43d49a-4748-5c42-a731-e40d614be8f9)
 
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, 1034376c-cc6e-5518-b292-e6dc24a68826)
@@ -649,7 +561,6 @@ Description: "Example: Gerimedica Device for Organization 3"
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 02b32653-f18e-5e09-bab4-f49579d4f261)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 984b07e8-9165-5c12-a4f3-770bde81ac07)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 9c55a4a8-dda1-59d0-bee5-eae2ca4a917b)
-// * insert BundleEntryPUT(urn:uuid:,PractitionerRole, 85a3cfc1-8eb4-5b32-b966-662e1b146a56)
 // * insert BundleEntryPUT(urn:uuid:,OrganizationAffiliation, c5d6c9d6-7562-589e-9b34-c20a3488daa1)
 
 // * insert BundleEntryPUT(urn:uuid:,Organization, e1ce0872-8a80-5fdd-8b30-a3b2203ef46b)
@@ -660,5 +571,4 @@ Description: "Example: Gerimedica Device for Organization 3"
 // * insert BundleEntryPUT(urn:uuid:,Device, 34e4d0cb-eb5a-548c-a9da-4b094ccbc373)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 96ab9671-f048-55b7-9dcd-dc2596a0a3e9)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 4cec3d3b-5676-52aa-8c99-f4c7aecebc12)
-// * insert BundleEntryPUT(urn:uuid:,PractitionerRole, 05817277-b885-5b0e-9bb4-46033c3f4fa5)
 // * insert BundleEntryPUT(urn:uuid:,OrganizationAffiliation, 8ee51b54-bafb-562d-87d1-9429f8bbfc1b)
