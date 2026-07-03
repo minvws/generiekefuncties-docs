@@ -164,6 +164,7 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | period | 0..1 | The interval during which the endpoint is expected to be operational. An absent `period.end` means the endpoint is operational until further notice. |
 | connectionType | 1..1 | The type of connection (extensible binding to [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html) and [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
 | payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
+| payloadMimeType | 0..* | The mime type(s) of the payload, including the standard version for FHIR endpoints (e.g. `application/fhir+json; fhirVersion=4.0`). |
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |
 
@@ -172,6 +173,20 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 The purpose of an Endpoint in this directory is *discovery*: it tells a system *where* a service can be reached and *which* technical protocol and payload to use (`connectionType`, `payloadType`, `payloadMimeType`, `address`). The terms of use, authentication requirements and security requirements that apply when actually invoking an Endpoint are determined by the trust framework ("afsprakenstelsel") within which the exchange takes place, not by the directory entry. Registering Endpoints centrally is valuable precisely because it makes them discoverable across trust frameworks and use cases, independent of conditions that govern their use.
 
 The directory therefore does not carry per-Endpoint terms of use, authentication or security policy. Transport security for publishing to the LRZa Directory is covered under [Security](#security); the broader authentication and security requirements for invoking endpoints are addressed in the dedicated security and authentication tracks (see epics [security (#854)](https://github.com/minvws/generiekefuncties-architectuur/issues/854) and [authentication means (#855)](https://github.com/minvws/generiekefuncties-architectuur/issues/855)).
+##### Versioning and conformance
+
+Systems may support multiple versions of a standard at the same time, for instance during the transition from FHIR STU3 to FHIR R4 (zib2017 to zib2020). The version of the standard is therefore part of the selection criteria for an Endpoint and is expressed machine-readably in `payloadMimeType`:
+
+- An Endpoint with a FHIR-based `connectionType` (e.g. `hl7-fhir-rest`) SHALL include the FHIR version in its `payloadMimeType` values, using the standard [`fhirVersion` MIME-type parameter](https://hl7.org/fhir/R4/http.html#version-parameter): `application/fhir+json; fhirVersion=4.0` (R4) or `application/fhir+json; fhirVersion=3.0` (STU3).
+- A system that serves multiple FHIR versions on the same address lists multiple `payloadMimeType` values on a single Endpoint. A future payload version migration therefore does not require registering a new Endpoint; separate Endpoints are only needed when the versions are served on different addresses.
+- When selecting an Endpoint, a Query Client matches on `connectionType`, `payloadType` and — when the payload version matters for the exchange — `payloadMimeType` including its `fhirVersion` parameter.
+- Free-text fields such as `Endpoint.name` MAY mention a version for readability, but systems SHALL NOT rely on free-text fields for version selection; `payloadMimeType` is the normative source.
+
+The Directory only carries the metadata needed for *selecting* an Endpoint (`connectionType`, `payloadType`, `payloadMimeType`). How detailed conformance information is obtained depends on the connection type:
+
+- FHIR endpoints: the CapabilityStatement of the system itself, available at runtime via `[address]/metadata`.
+- IHE SOAP-based profiles (e.g. XDS, XCA): these have no runtime conformance interface; conformance is established out-of-band through IHE Integration Statements and the qualification/admission within the applicable trust framework ("afsprakenstelsel"). What a receiving system can process is declared per document (e.g. `formatCode` in the document metadata), not per Endpoint.
+- DICOM(web) endpoints: the vendor's DICOM Conformance Statement.
 
 ##### Endpoint lifecycle and transition
 
@@ -224,7 +239,7 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | active | 1..1 | Whether this affiliation is currently active. |
 | organization → Organization | 1..1 | The care provider organization. |
 | participatingOrganization → Organization | 1..1 | The affiliated party (e.g. IT vendor). |
-| code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-authorization-type-vs.html)). |
+| code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-affiliation-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
 #### Not in scope: Practitioner and PractitionerRole
@@ -305,3 +320,4 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 ### Roadmap for Care Services
 
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
+- Versioning of information standards / implementation guides per Endpoint (e.g. which zib release or IG package) is to be elaborated in alignment with the national choice of standards ([epic standaardenkeuze](https://github.com/minvws/generiekefuncties-architectuur/issues/876)); the NDH [fhir-ig extension](https://hl7.org/fhir/us/ndh/StructureDefinition-base-ext-fhir-ig.html) is a candidate mechanism.
