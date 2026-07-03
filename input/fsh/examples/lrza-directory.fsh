@@ -121,9 +121,9 @@ Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
 * organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
 * participatingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-* extension[device][+].valueReference = Reference(Device/2de07561-6786-5c93-bf39-a86469423497)
-* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-* extension[device][=].valueReference.identifier.value = "urn:uuid:3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1"
+//* extension[device][+].valueReference = Reference(Device/2de07561-6786-5c93-bf39-a86469423497)
+//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
+//* extension[device][=].valueReference.identifier.value = "urn:uuid:3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1"
 
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
 InstanceOf: NlGfOrganizationAffiliation
@@ -135,9 +135,9 @@ Description: "Example: Authorization: Organization 2 authorizes Nedap"
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * participatingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-* extension[device][+].valueReference = Reference(Device/a366c48c-2a15-5e59-bf3a-10f03cfdbc34)
-* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-* extension[device][=].valueReference.identifier.value = "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
+//* extension[device][+].valueReference = Reference(Device/a366c48c-2a15-5e59-bf3a-10f03cfdbc34)
+//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
+//* extension[device][=].valueReference.identifier.value = "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
 
 Instance: 8ee51b54-bafb-562d-87d1-9429f8bbfc1b
 InstanceOf: NlGfOrganizationAffiliation
@@ -149,9 +149,9 @@ Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * participatingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-* extension[device][+].valueReference = Reference(Device/34e4d0cb-eb5a-548c-a9da-4b094ccbc373)
-* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-* extension[device][=].valueReference.identifier.value = "urn:uuid:6c627191-6c6a-4b64-b2a1-049ac8fd6b4b"
+//* extension[device][+].valueReference = Reference(Device/34e4d0cb-eb5a-548c-a9da-4b094ccbc373)
+//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
+//* extension[device][=].valueReference.identifier.value = "urn:uuid:6c627191-6c6a-4b64-b2a1-049ac8fd6b4b"
 
 
 // // ----------------------------------------------------------------
