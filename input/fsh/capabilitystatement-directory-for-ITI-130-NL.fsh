@@ -19,6 +19,7 @@ Usage: #definition
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -30,6 +31,7 @@ Usage: #definition
     * type = #Location
     * supportedProfile[+] = Canonical(NlGfLocation)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -41,28 +43,7 @@ Usage: #definition
     * type = #Organization
     * supportedProfile[+] = Canonical(NlGfOrganization)
     * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
-  * resource[+]
-    * insert Expectation(MAY)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
-  * resource[+]
-    * insert Expectation(MAY)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
-    * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -74,6 +55,7 @@ Usage: #definition
     * type = #Endpoint
     * supportedProfile[+] = Canonical(NlGfEndpoint)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -85,6 +67,7 @@ Usage: #definition
     * type = #OrganizationAffiliation
     * supportedProfile[+] = Canonical(NlGfOrganizationAffiliation)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
@@ -96,6 +79,7 @@ Usage: #definition
     * type = #Device
     * supportedProfile[+] = Canonical(NlGfDevice)
     * documentation = "."
+    * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create

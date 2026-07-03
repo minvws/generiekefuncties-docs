@@ -3,3 +3,11 @@
 # Add warning and/or information messages here after you've confirmed that they aren't really a problem
 # (And include comments like this justifying why)
 # See https://github.com/FHIR/sample-ig/blob/master/input/ignoreWarnings.txt for examples
+
+# The Netherlands jurisdiction flag (derived from `jurisdiction: urn:iso:std:iso:3166#NL`)
+# is rendered in the IG-status header on every page. The IG Publisher writes this flag only
+# to the root `assets/images/nld.svg` and references it with a page-relative path. On pages
+# inside the generated language subfolder (e.g. `en/`) that relative path resolves to
+# `en/assets/images/nld.svg`, which the publisher does not create, producing a false-positive
+# broken-link error on every page. The flag exists and renders correctly on the root pages.
+The image source 'assets/images/nld.svg' cannot be resolved

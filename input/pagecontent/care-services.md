@@ -28,7 +28,7 @@ Technical design: <a href="GTO adressering v0.9.0.pdf">GTO adressering v0.9.0.pd
 <img src="careservices-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
-This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization, Location and Practitioner(-Role) resources from the KvK and DEZI-registry.
+This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
 
 
 ### National Constraints Compared to IHE mCSD
@@ -42,10 +42,27 @@ The national profiles SHALL be based on NL-core where available and SHALL be ali
 The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including GF Localization and TA Notified Pull.
 
 1. LRZa Directory operational role:
-The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as single source of truth and distribution point, and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. 
+The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as the central consolidation and distribution point for the directory (a single consolidated view), and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. To bound load and keep operational matching on the replicas, the LRZa Directory SHALL restrict search operations to the minimum required for replication and SHALL apply rate limiting to operational consumers.
  
 1. No deletes: 
 Addressable entities (e.g. a Location or HealthcareService) may become inactive/deprecated over time, but their identifier will be used and referred to from health records for their lifetime. Therefore, deletion of addressable entities SHALL not be supported by the LRZa Directory. The status of an addressable entity may be adjusted to `inactive`, `off`, `entered-in-error` or whatever appropriate status for the resource type.
+Status changes are propagated to local replicas through the `_history` delta (ITI-91-NL). A Local Replica SHOULD apply the status change and exclude resources with status `entered-in-error` (and `inactive`/`off` where not applicable for the use case) from query results presented to Query Clients. A Local Replica MAY remove such resources locally after a retention period; the retention period is at the discretion of the replica operator. The identifier of a withdrawn entity SHALL NOT be reused.
+
+1. Paging and consistent initial load:
+For the initial load (ITI-90-NL `search-type` without search parameters), the LRZa Directory SHALL return results using paging: it SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce a maximum page size. The maximum page size is advertised by the server and specified in the LRZa SLA. Update Clients SHALL follow `next` links until exhausted.
+To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Endpoint` → `Device` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
+Because the paged initial load is not atomic, the Update Client SHALL take the server time reported in `Bundle.meta.lastUpdated` of the first page as the **sync timestamp** — the LRZa server time up to which the replica is in sync — and, once the paged load completes, SHALL perform an incremental `history-type` synchronization (ITI-91-NL) with `_since` set to that sync timestamp. Using the LRZa-reported time avoids client/server clock skew, and this captures mutations made during the load without requiring a server-side point-in-time snapshot. How the Update Client retains the sync timestamp is implementation-defined (e.g. a small stored value, or derived from the replica content); because synchronization is processed idempotently, an inclusive `_since` (re-fetching the boundary resources) is safe.
+
+A Local Replica SHALL accept resources whose references cannot (yet) be resolved and SHALL NOT enforce referential integrity on write during the initial load; without this, replication breaks whenever a delta arrives before the resource it references. A Local Replica SHOULD NOT serve Query Clients until the initial load and the subsequent `_history` catch-up have completed.
+
+Incremental synchronization (ITI-91-NL) is type-level (`{resourceType}/_history`, per mCSD ITI-91). Resource types SHOULD be synchronized on a single, common interval rather than per-type intervals: differentiating the interval per resource type would let a referencing resource of a fast-syncing type point at a not-yet-replicated resource of a slow-syncing type for a prolonged period. The LRZa SLA specifies the *most frequent* interval the Directory accepts (the rate limit), not how often a replica must synchronize; a replica chooses its own interval within that bound, short enough for the timeliness its use case needs. As a non-binding guideline, a synchronization interval of about 15 minutes is advised, which keeps endpoint and routing changes sufficiently fresh for referral and exchange workflows. Because synchronization can run in many decentralized instances, an Update Client SHOULD spread its synchronization moment across the interval (for example by applying a random offset) rather than synchronizing on fixed clock boundaries; this avoids a self-inflicted concurrency peak at the LRZa Directory. Synchronization is delta-based (`_history`), so a typical round returns a small or empty result and the average load per client is low; the peak driven by simultaneous requests is the relevant concern, which spreading mitigates.
+
+The Update Client SHALL process incremental synchronization strictly sequentially rather than issuing `_history` requests in parallel: history entries SHALL be applied in chronological order (an older version SHALL NOT overwrite a newer one), and each `history-type` request (and each page of its response) SHALL complete and be applied before the next is issued. Sequential processing keeps the replica internally consistent, preserves the monotonic `_since` watermark on which retry depends, and bounds the request rate a single replica places on the LRZa Directory.
+
+In steady state the Update Client therefore runs a simple loop: pull the incremental updates sequentially (advancing the `_since` watermark), wait for the synchronization interval (about 15 minutes, spread as described above), and repeat.
+
+1. Concurrency control on updates:
+The LRZa Directory SHALL support optimistic locking: it SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL honour the `If-Match` header on `update` interactions, rejecting an update that carries a stale version with HTTP `412 Precondition Failed` (the server advertises this through `versioning = versioned-update`). A Data Source SHALL send `If-Match` on updates and, on a `412`, re-read and re-apply. It prevents silent overwrite where a resource can be mutated through more than one channel (e.g. from CIBG as Data Source with update records from KvK/DEZI and one or more Data Sources). For more info on this topic, see [FHIR transactional integrity](http://hl7.org/fhir/R4/http.html#transactional-integrity) and [FHIR concurrency](https://hl7.org/fhir/R4/http.html#concurrency)
 
 ### Actors
 Each actor will now be discussed in more detail.
@@ -60,11 +77,16 @@ A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the
 
 #### Update Client
 The Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) a 'lite version' of the Query Client and the Update Client. These clients are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html).
-For more information, see the [synchronization example](#use-case-2-update-client-sync-example)
+The Update Client *synchronizes* (replicates) directory content; it does *not* aggregate. Aggregation of source registers and self-registered data is performed centrally by the LRZa Directory. Incremental synchronization SHALL be processed idempotently (re-applying a delta SHALL be safe), and on transient failure the client SHALL retry from the last successfully processed `_since` watermark.
+For more information, see the [initial load](#use-case-2a-update-client-initial-load) and [incremental sync](#use-case-2b-update-client-incremental-sync) examples.
 
 #### Query Client
 The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
 Note that the data exchange between Query Client and (local) Directory MAY use a proprietary interface. [Use case 3](#use-case-3-healthcare-service-query) and [use case 4](#use-case-4-endpoint-discovery) illustrate how to search for healthcare services and endpoints. 
+
+When selecting an Endpoint for data exchange, the Query Client SHALL only use Endpoints that have status `active` and whose `period`, when present, includes the current time. Within that selection, the Query Client matches on `connectionType` and `payloadType` (see [use case 4](#use-case-4-endpoint-discovery)). When multiple valid Endpoints remain for the same Organization or HealthcareService and the same `connectionType`/`payloadType` combination, this indicates either intentional redundancy (multiple endpoints due to different software systems) or a registration error.
+
+Note: FHIR R4 does not define a search parameter for `Endpoint.period`, so the period is evaluated by the Query Client after retrieving candidate Endpoints from the local replica.
 
 
 ### Transactions
@@ -72,16 +94,19 @@ Note that the data exchange between Query Client and (local) Directory MAY use a
 Transactions between Service Providers and the LRZa are defined here. Other (local or 3rd party) transactions are not specified here. These transactions MAY reuse/adopt IHE mCSD and FHIR transactions, but are not obliged.  
 
 #### Care Services Feed: ITI-130-NL
-The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement.
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHALL use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing).
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
-The Update Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters.
+The Update Client loads/queries directory data for initial population of the local replication using `search-type` interactions without search parameters. The initial load is paged (see National Constraint "Paging and consistent initial load").
 CapabilityStatement: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html)
 
 #### Request Care Services Updates: ITI-91-NL
 The Update Client retrieves changes from the LRZa Directory using `history-type` interactions per supported resource, optionally constrained by `_since` for incremental synchronization.
 CapabilityStatement: [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
+
+#### Error handling and resilience
+All transactions SHALL return a standard FHIR `OperationOutcome` with an appropriate HTTP status code (e.g. `400` malformed request, `412` stale version on a concurrent update, `422` profile validation failure, `429` too many requests when rate limiting applies, `5xx` server error). Clients (Data Source, Update Client) SHALL implement retry with exponential backoff for transient failures (`5xx`, network) and SHALL process synchronization idempotently. When the LRZa Directory applies rate limiting and responds with `429 Too Many Requests`, the client SHALL honor the `Retry-After` header where present and back off before retrying, rather than retrying immediately. A Query Client reads whatever the local replica currently holds; it cannot itself resolve staleness and relies on the Update Client's next synchronization to bring in newer data. Where a workflow cannot tolerate the replica's bounded staleness for a critical decision, the consuming application verifies the relevant information out of band (e.g. directly against the addressed party) rather than treating the directory as authoritative for that decision.
 
 
 
@@ -120,7 +145,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (URA or KVK) | 0..* | An Organization must have a URA or KVK identifier, or be `partOf` another Organization. |
+| identifier (URA or KVK) | 0..* | An Organization SHALL have a URA or KVK identifier, or be `partOf` another Organization. |
 | type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code (extensible binding to [NL-GF Organization Types](./ValueSet-nl-gf-org-types-vs.html)). |
 | name | 1..1 | The name of the organization. |
 | alias | 0..* | Alternative names. |
@@ -136,6 +161,7 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 | Attribute | Card. | Description |
 |---|---|---|
 | status | 1..1 | The operational status of the endpoint (e.g. active, off). |
+| period | 0..1 | The interval during which the endpoint is expected to be operational. An absent `period.end` means the endpoint is operational until further notice. |
 | connectionType | 1..1 | The type of connection (extensible binding to [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html) and [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
 | payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
 | payloadMimeType | 0..* | The mime type(s) of the payload, including the standard version for FHIR endpoints (e.g. `application/fhir+json; fhirVersion=4.0`). |
@@ -156,6 +182,19 @@ The Directory only carries the metadata needed for *selecting* an Endpoint (`con
 - FHIR endpoints: the CapabilityStatement of the system itself, available at runtime via `[address]/metadata`.
 - IHE SOAP-based profiles (e.g. XDS, XCA): these have no runtime conformance interface; conformance is established out-of-band through IHE Integration Statements and the qualification/admission within the applicable trust framework ("afsprakenstelsel"). What a receiving system can process is declared per document (e.g. `formatCode` in the document metadata), not per Endpoint.
 - DICOM(web) endpoints: the vendor's DICOM Conformance Statement.
+
+##### Endpoint lifecycle and transition
+
+An Endpoint's validity can expressed through `status` and `period`:
+
+- `status` describes the operational state of the endpoint itself (`active`, `suspended`, `off`, `entered-in-error`).
+- `period` describes the interval during which the endpoint is expected to be operational. An Endpoint without `period.end` is operational until further notice. A `period.start` in the future MAY be used to announce an endpoint ahead of its activation; no separate scheduling mechanism is provided.
+
+When a care provider migrates to another system, the Endpoints of the old and the new system may be *registered* simultaneously, but their periods SHALL be set such that at most one of them is *valid* at any moment: the superseded Endpoint receives a `period.end` at the planned cutover moment and the replacing Endpoint a `period.start` at that same moment. This removes any ambiguity about which Endpoint to use during a transition: data exchange partners select the Endpoint whose period includes the current time (see [Query Client](#query-client)). When a single Data Source is authorized for both changes, it SHOULD apply them atomically in one FHIR transaction Bundle. When two different service providers are involved, both can safely register their change ahead of the cutover moment, because Endpoint selection is driven by `period`, not by registration time.
+
+After the old system has actually been taken out of operation, its Endpoint status SHOULD be set to `off` or deleted.
+
+[Use case 5](#use-case-5-endpoint-transition) illustrates a transition between systems.
 
 
 #### Device
@@ -186,31 +225,6 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 | partOf → Location | 0..1 | The parent location (e.g. building → floor → room). |
 
 
-#### Practitioner
-Practitioner resources represent healthcare professionals as persons, independent of where or in which role they are currently working. In GF Addressing, a Practitioner is used as the stable identity anchor for professional identification across organizations, and can be linked to one or more PractitionerRole resources that describe context-specific roles and specialties. Practitioner identifiers typically include a DEZI number and MAY include a BIG number for professional registration details.
-The [NL-GF-Practitioner profile](./StructureDefinition-nl-gf-practitioner.html) is used to represent healthcare professionals. Key attributes:
-
-| Attribute | Card. | Description |
-|---|---|---|
-| identifier (DEZI/BIG) | 0..* | Professional identifiers, typically DEZI and optionally BIG. |
-| name | 1..* | Human name of the practitioner. |
-| qualification | 0..* | Professional qualifications, licenses, or registrations relevant for care delivery. |
-
-
-#### PractitionerRole
-PractitionerRole resources are used to define the specific roles, specialties, and responsibilities that a Practitioner holds within an Organization. PractitionerRole enables precise modeling of relationships between practitioners and organizations and MAY represent employment relationships. It supports scenarios like assigning practitioners to departments, specifying their roles (e.g., surgeon, nurse), and linking them to particular healthcare services or locations. A PractitionerRole may have contact details for phone, mail, or direct messaging, but should not contain privacy-sensitive data.
-The [NL-GF-PractitionerRole profile](./StructureDefinition-nl-gf-practitionerrole.html) is used to represent practitioner roles and responsibilities within organizations. Key attributes:
-
-| Attribute | Card. | Description |
-|---|---|---|
-| identifier (CustodianAssignedIdentifier) | 1..1 | Identifier for provenance and traceability; UZI/DEZI-number |
-| practitioner → Practitioner | 1..1 | The practitioner fulfilling this role, identified by its, e.g., BIG-number. |
-| organization → Organization | 1..1 | The organization where the practitioner works. |
-| code | 1..* | The role(s) the practitioner performs. |
-| specialty | 0..* | The specialty of the practitioner in this role. |
-| telecom | 0..* | Contact details (no privacy-sensitive data). |
-
-
 #### OrganizationAffiliation
 OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide. Key attributes:
@@ -223,6 +237,9 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-authorization-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
+#### Not in scope: Practitioner and PractitionerRole
+
+The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is currently no legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
 
 ### Security
 
@@ -241,11 +258,25 @@ This sequence shows a two-step onboarding flow: first, the care provider adminis
 {% include care-services-registration-use-case.svg %}
 </div>
 
-##### Use Case #2: Update Client Sync Example
-The following sequence diagram illustrates how an Update Client synchronize data from the LRZa Directory into a local replica:
+##### Use Case #2a: Update Client Initial Load
+The following sequence diagram illustrates how an Update Client performs the paged initial load of a local replica, records the sync timestamp, and runs a `_history` catch-up before serving Query Clients:
 
 <div>
-{% include care-services-sync-use-case.svg %}
+{% include care-services-sync-initial-load.svg %}
+</div>
+
+##### Use Case #2b: Update Client Incremental Sync
+The following sequence diagram illustrates the periodic incremental synchronization, including delta processing, status changes, retry on transient failure, and advancing the sync timestamp:
+
+<div>
+{% include care-services-sync-incremental.svg %}
+</div>
+
+##### Use Case #2c: Optimistic Locking on Update
+The following sequence diagram illustrates the recommended optimistic-locking flow when a Data Source updates a resource: it reads the current `ETag`, sends the update with `If-Match`, and — if another writer advanced the version first — receives `412 Precondition Failed`, then re-reads and retries:
+
+<div>
+{% include care-services-optimistic-locking.svg %}
 </div>
 
 #### Use Case #3: Healthcare service Query
@@ -268,10 +299,20 @@ Dr. West just created a referral (for patient Vera Brooks from use case #3). The
 {% include care-services-endpoint-query-use-case.svg %}
 </div>
 
+#### Use Case #5: Endpoint Transition
+The general practice from use case #1 replaces its EHR system and plans a cutover moment at which the new system takes over:
+- The new service provider registers the Endpoint(s) of the new system with `period.start` set to the cutover moment.
+- The superseded Endpoint receives a `period.end` at the same cutover moment — applied by the currently authorized service provider, or combined with the previous step in one transaction Bundle when a single Data Source is authorized for both changes.
+- Update Clients synchronize both registrations to the local replicas. Query Clients keep selecting the old Endpoint until the cutover moment, and the new Endpoint thereafter; at no moment are both Endpoints valid.
+- After the old system is decommissioned, its Endpoint status is set to `off`.
+
+<div>
+{% include care-services-endpoint-transition-use-case.svg %}
+</div>
+
 
 
 ### Roadmap for Care Services
 
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
-- The data profiles should be added/merged in the NL Core profiles
 - Versioning of information standards / implementation guides per Endpoint (e.g. which zib release or IG package) is to be elaborated in alignment with the national choice of standards ([epic standaardenkeuze](https://github.com/minvws/generiekefuncties-architectuur/issues/876)); the NDH [fhir-ig extension](https://hl7.org/fhir/us/ndh/StructureDefinition-base-ext-fhir-ig.html) is a candidate mechanism.

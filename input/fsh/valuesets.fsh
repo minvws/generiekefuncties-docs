@@ -4,8 +4,8 @@ Title: "NL GF Service Types ValueSet"
 Description: "The Service Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
-* include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.121.11.19--20200901000000
-* include codes from system http://istandaarden.nl/ibieb/codelijsten/COD163
+* include codes from system http://terminology.hl7.org/CodeSystem/service-type
+* include codes from system https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
 
 ValueSet: NlGfOrgTypesVS
 Id: nl-gf-org-types-vs
@@ -13,7 +13,6 @@ Title: "NL GF Organization Types ValueSet"
 Description: "The Organization Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
-* include codes from valueset http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.4--20200901000000
 * include codes from system NlGfSBICS
 
 

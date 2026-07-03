@@ -43,7 +43,7 @@ For publication details, see [History](history.html) for release and change info
 
 ### Conformance Expectations
 
-NL Generic Functions IG uses the normative words: Shall, Should, and May according to standards conventions. 
+The NL Generic Functions IG uses the normative keywords **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT** and **MAY** as defined in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and the [IHE conformance conventions](https://profiles.ihe.net/GeneralIntro/ch-E.html). In short: **SHALL** is an absolute requirement, **SHALL NOT** an absolute prohibition, **SHOULD**/**SHOULD NOT** a recommendation that may be deviated from with the implications understood and weighed, and **MAY** is truly optional. Consistent with IHE, this guide uses **SHALL** rather than "MUST". Keywords carry this meaning only when written in upper case; the same words in lower case are descriptive, not normative.
 
 
 ### Dependencies

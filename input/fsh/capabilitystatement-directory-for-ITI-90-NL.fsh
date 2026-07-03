@@ -6,7 +6,7 @@ Usage: #definition
 * status = #active
 * experimental = false
 * date = "2025-08-28"
-* description = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes nearly all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type."
+* description = "ITI-90-NL; Dutch profile of the IHE ITI mCSD ITI-90 endpoint. Note that this CapabilityStatement excludes nearly all search parameters. This search interaction SHOULD only be used to retrieve the latest state of all resources of a specific type. For the initial load the server SHALL page results: it SHALL include `Bundle.link` with relation `next` until all results are returned, enforcing a maximum page size (advertised by the server; value in the LRZa SLA)."
 * kind = #requirements
 * fhirVersion = #4.0.1
 * format[+] = #application/fhir+xml
@@ -33,36 +33,6 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #Location
     * supportedProfile[+] = Canonical(NlGfLocation)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #PractitionerRole
-    * supportedProfile = Canonical(NlGfPractitionerRole)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Practitioner
-    * supportedProfile = Canonical(NlGfPractitioner)
     * documentation = "."
     * interaction[+]
       * insert Expectation(SHALL)
