@@ -8,7 +8,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * managingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
-* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
+//* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
 * connectionType ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
 * connectionType ^binding.extension[=].extension[+].url = "key"
 * connectionType ^binding.extension[=].extension[=].valueId = "nl-gf-connection-types"
@@ -16,7 +16,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * connectionType ^binding.extension[=].extension[=].valueCode = #extensible
 * connectionType ^binding.extension[=].extension[+].url = "valueSet"
 * connectionType ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs"
-* payloadType from NlGfPayloadTypeVS (extensible)
+* payloadType from NlGfPayloadTypeVS (required)
 
 Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
@@ -65,6 +65,14 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
+* type ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
+* type ^binding.extension[=].extension[+].url = "key"
+* type ^binding.extension[=].extension[=].valueId = "nl-gf-location-types"
+* type ^binding.extension[=].extension[+].url = "purpose"
+* type ^binding.extension[=].extension[=].valueCode = #extensible
+* type ^binding.extension[=].extension[+].url = "valueSet"
+* type ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs"
+
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
 // * managingOrganization only Reference(NlGfOrganization)

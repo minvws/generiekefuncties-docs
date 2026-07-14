@@ -13,6 +13,15 @@ Title: "NL GF Organization Types ValueSet"
 Description: "The Organization Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
+* include codes from system http://terminology.hl7.org/CodeSystem/organization-type
+* include codes from system NlGfSBICS
+
+ValueSet: NlGfLocationTypeVS
+Id: nl-gf-location-type-vs
+Title: "NL GF Location Types ValueSet"
+Description: "The Location Types supported by the NL Generic Functions."
+* ^status = #active
+* ^experimental = true
 * include codes from system NlGfSBICS
 
 
