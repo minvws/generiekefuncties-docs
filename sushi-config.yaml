@@ -56,6 +56,12 @@ pages:
         - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
           valueCode: draft
 
+  signing.md:
+    title: Resource signing
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
+
   localization.md:
     title: Localization
     extension:
@@ -122,6 +128,7 @@ parameters:
 menu:
   Home: index.html
   Care Services Directory: care-services.html
+  Resource signing: signing.html
   Localization: localization.html
   Pseudonymisation: pseudonymisation.html
   # Identification: identification.html

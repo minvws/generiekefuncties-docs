@@ -86,3 +86,14 @@ Usage: #definition
       * insert Expectation(SHALL)
       * name = "_since"
       * type = #date
+  * resource[+]
+    * insert Expectation(SHALL)
+    * type = #Provenance
+    * documentation = "Provenance records are only present when a Data Source has OPTIONALLY signed its mutations (see ITI-130-NL). When present, they are delivered through the incremental `_history` delta together with the resources they reference, so that replica operators, auditors or supervisors that wish to MAY verify the origin and integrity of accepted mutations. Signing is not mandatory; as a growth path it MAY become mandatory at some point"
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #history-type
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "_since"
+      * type = #date

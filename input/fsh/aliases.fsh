@@ -24,6 +24,7 @@ Alias: $launchContext = http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext
 Alias: $questionnaire-item-control = http://hl7.org/fhir/questionnaire-item-control
 Alias: $uuid = urn:ietf:rfc:3986
 Alias: $provenance-participant-type = http://terminology.hl7.org/CodeSystem/provenance-participant-type
+Alias: $signature-type = urn:iso-astm:E1762-95:2013
 Alias: $unitsofmeasure = http://unitsofmeasure.org
 Alias: $audit-event-type = http://terminology.hl7.org/CodeSystem/audit-event-type
 Alias: $restful-interaction = http://hl7.org/fhir/restful-interaction

@@ -118,9 +118,7 @@ Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
 * organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
 * participatingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-//* extension[device][+].valueReference = Reference(Device/2de07561-6786-5c93-bf39-a86469423497)
-//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-//* extension[device][=].valueReference.identifier.value = "urn:uuid:3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1"
+
 
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
 InstanceOf: NlGfOrganizationAffiliation
@@ -132,9 +130,31 @@ Description: "Example: Authorization: Organization 2 authorizes Nedap"
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * participatingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-//* extension[device][+].valueReference = Reference(Device/a366c48c-2a15-5e59-bf3a-10f03cfdbc34)
-//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-//* extension[device][=].valueReference.identifier.value = "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
+
+
+// Optional digital signature (Provenance) over the OrganizationAffiliation mandate above.
+// Signing is optional (see National Constraint "Mutation signing (optional)"); when present the LRZa
+// Directory verifies it and it is synchronized to replicas so any party may verify it independently.
+Instance: b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e
+InstanceOf: Provenance
+Usage: #example
+Title: "Signed Provenance for OrganizationAffiliation mandate (Organization 2 authorizes Nedap)"
+Description: "Example: optional digital signature over the OrganizationAffiliation mandate 'Organization 2 authorizes Nedap'. The care provider (Organization 2) signs the stored resource version with a UZI or PKIoverheid certificate. The detached JWS in signature.data is computed over the canonical JSON form of the OrganizationAffiliation using canonicalization type http://hl7.org/fhir/canonicalization/json#static (Resource.meta and narrative removed, then RFC 8785 JCS). See the [Mutation signing](signing.html) page for the step-by-step derivation of this value."
+* target = Reference(OrganizationAffiliation/c5d6c9d6-7562-589e-9b34-c20a3488daa1)
+* recorded = "2026-07-14T10:15:00Z"
+* agent[+].type = $provenance-participant-type#author
+* agent[=].who = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8) // care provider (Organization 2), responsible for the mandate
+* agent[=].who.identifier.system = "urn:oid:2.16.528.1.1007.3.3" // URA register OID; the OID-URN form urn:oid:2.16.528.1.1007.3.3.22222222 is the certificate SAN
+* agent[=].who.identifier.value = "22222222" // URA of Organization 2 (matches the certificate Subject Alternative Name)
+* signature[+].type = $signature-type#1.2.840.10065.1.12.1.1 "Author's Signature"
+* signature[=].when = "2026-07-14T10:15:00Z"
+* signature[=].who = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8) // care provider signs with its certificate
+* signature[=].who.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* signature[=].who.identifier.value = "22222222"
+* signature[=].targetFormat = #"application/fhir+json;canonicalization=http://hl7.org/fhir/canonicalization/json#static"
+* signature[=].sigFormat = #"application/jose"
+* signature[=].data = "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFBVMFVpTENKallXNXZiaUk2SW1oMGRIQTZMeTlvYkRjdWIzSm5MMlpvYVhJdlkyRnViMjVwWTJGc2FYcGhkR2x2Ymk5cWMyOXVJM04wWVhScFl5SXNJbk5wWjFRaU9pSXlNREkyTFRBM0xURTBWREV3T2pFMU9qQXdXaUlzSW5OeVEyMXpJanBiZXlKamIyMXRTV1FpT25zaWFXUWlPaUoxY200NmIybGtPakV1TWk0NE5EQXVNVEF3TmpVdU1TNHhNaTR4TGpFaUxDSmtaWE5qSWpvaVFYVjBhRzl5SjNNZ1UybG5ibUYwZFhKbEluMTlYU3dpZURWaklqcGJJazFKU1VSa2FrTkRRV3cyWjBGM1NVSkJaMGxIUVZoUmRsTnVjamhOUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVUxRVozaE9ha0V3UW1kT1ZrSkJUVTFNVmxKc1l6TlJaMWt5Vm5sa1IyeHRZVmRPYUdSSFZXZGlWMFl3V1RKb2NHSnRZMmRqYWtsM1RrUm9kMk50YkRKWldGSnNZVEpXTlV4dVFteGlWRUZsUm5jd2VVNXFRVE5OVkZGNFRYcEJNVTFxU21GR2R6QjZUbnBCTTAxVVVYaE5la0V4VFdwS1lVMUVaM2hPYWtFd1FtZE9Wa0pCVFUxTVZsSnNZek5SWjFreVZubGtSMnh0WVZkT2FHUkhWV2RpVjBZd1dUSm9jR0p0WTJkamFrbDNUa1JvZDJOdGJESlpXRkpzWVRKV05VeHVRbXhpVkVORFFWTkpkMFJSV1VwTGIxcEphSFpqVGtGUlJVSkNVVUZFWjJkRlVFRkVRME5CVVc5RFoyZEZRa0ZMWWxOdFkyaFVNSEppTldwd1Z6bEdiMjlVWjFsYVVqRkxLM05DVVhoM2RuSldkVFJUVVV4dVdEQXdUMXBvTWxWTFVXWkVOa1JOT1U4M2JsZFJVRzVTZGtoWlZrTkVOVXBzTldGa1ZUUkZVa2h0UlhneldXTlpZbTQ1VFhaNGIxYzJWMklyVTFReVFqaGtPRWR5Vkhab01XcDBjVzFLU1RCVVFraExNVzlVZWtoWGJGcEZkakV6ZGpWWmJXcElTMDFQU1RKTFJtMW9XblpHWVVjemJVeE5iRkU1YlRGc2JtTndaVWsyUlhoQ1JUVjBWMlZQTUZvMU16QmtaVnBHV1ZaaWJsWmhkemg0UWxwcVQwb3hNV1lyYmxwcFNVNW1UMFZUVWs5SlltSmpRVkpqVldaTGJWRnJRWE5GTkdsYWNrdE5hV05ZTVVWa1FuSlBTR3A1Yms5aVFXUkVWVFZLYUZkWVQxcEtWVVZ2Y2xobGRUQlRXamx3V0ZsWE5taFBlRXRSTldWR05WTk1abXhOYVhsYWRGbE1aMmRhWWxsdGRrRkpTa2gxTTFZM2IyRlJaVFJWVDJsNVkwZFBRa2s0TjFsYVEyWkRSRGhEUVhkRlFVRmhUMEpvVkVOQ1oycEJaRUpuVGxaSVVUUkZSbWRSVlRZNGRXNUpOWFZLVFd0dk9WVlROQzh2VDI5eGRHMU1SRTVRTkhkSWQxbEVWbEl3YWtKQ1ozZEdiMEZWTmpoMWJrazFkVXBOYTI4NVZWTTBMeTlQYjNGMGJVeEVUbEEwZDBSM1dVUldVakJVUVZGSUwwSkJWWGRCZDBWQ0wzcEJka0puVGxaSVVrVkZTMFJCYldocFVqRmpiVFEyWWpKc2EwOXFTWFZOVkZsMVRsUkpORXhxUlhWTlZFRjNUbmswZWt4cVRYVk5ha2w1VFdwSmVVMXFTWGRFVVZsS1MyOWFTV2gyWTA1QlVVVk1RbEZCUkdkblJVSkJRbmhxZVVORFdtSkNXRnBXVlZCQ1ZrcFZZelZSTm0xSU1saHpTREZ4VnpaMmNVNUJkVlJIU21JMFlXbFdNU3RFTUV4cWR6TnFiWGh5Y1Rka2VrOHJRMUJ3UVhoaFRGbHlkaThyWkRKNVZEWndkV1pPVVhncldXWjRNakV5T1d3d2RHWklZamxoWkcxNmNYWkxaR3BMY3pGVmFrUkdRV2R4ZVVGUk0ySk5VblJ1TVcxMU1UTjBXbkZPUlc1SVdtZFFSWGxsWmxnM1QzQnVSR2RFVEc1NmIwZHBOM00zTkZBNU5saHBkVVI0ZVRCQ2NYUkRVSHBwTkV4Tk4xVklkelJGV1U5dGIwRXZjbmRJTnpaS1prcFRVR0UxV2tFMGVEaDZPV3BpWVRrdlV5dE5VSGt4UnpGMVVHMUlRVlpEV2xSdlEyMU5lWE5pU0V0NllTOVZkQzlyV0ZSU1oxSlRlbXhzYnpjdkt6UllTVFJMTWxCU2QxVmtSMU51WW5KT2JXRmlkbVExYXpKcWEzVm1WSFJ5ZUZOUldrVkphRlpQU0ZRNFJUVmxSR3N4U3paR05VbE1XRTQ1VG1kNmJVMDRZV04zTWtWNVNGbG5QU0pkZlEuLmpCZ1oyMG5vYTlsUmh4bVFDRUJxLTNxdlBZZEc1ekpWSTh2bEdMd0s3WHBMS3NGMDM0TzZ2Vzl2aEdEano5Wl9uaVNFekljbnVvQmJiZzdNTkE5NkYtMlFjTXFhV3BacVZWbDF4ZkJTUGU2bW5YLVlHQVZsZkZGbVdZQnMtZ0ItLVFnNE0zb29SX0UwelpXaVdhV010Z0ZtUjdIaHdDbkdYNERBNGJWMDZnZ1VxaTRTXzEtRDFRNnlxSHoxbVhUWGhoS3NocTJFNmlfZGpVRHZ0ZC1LNnhjLWMxOHF0RmlqV0JCeks3Wnh0MDBsendUOGFPRkVMb2RNai1jdnBqZFZsSktncE1RbG0taG40SDJvYlcxc2Vta21qcXp5dG00XzV5TnljVVROZmVEbTJDSUctdTl2aFNWakNhUkozRVNPaVh3S0ludzJEZDZKY3o5Wno0QmhLZw=="
+
 
 Instance: 8ee51b54-bafb-562d-87d1-9429f8bbfc1b
 InstanceOf: NlGfOrganizationAffiliation
@@ -146,9 +166,7 @@ Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * participatingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-//* extension[device][+].valueReference = Reference(Device/34e4d0cb-eb5a-548c-a9da-4b094ccbc373)
-//* extension[device][=].valueReference.identifier.system = "urn:ietf:rfc:3986"
-//* extension[device][=].valueReference.identifier.value = "urn:uuid:6c627191-6c6a-4b64-b2a1-049ac8fd6b4b"
+
 
 
 // // ----------------------------------------------------------------

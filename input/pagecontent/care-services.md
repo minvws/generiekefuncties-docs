@@ -64,6 +64,9 @@ In steady state the Update Client therefore runs a simple loop: pull the increme
 1. Concurrency control on updates:
 The LRZa Directory SHALL support optimistic locking: it SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL honour the `If-Match` header on `update` interactions, rejecting an update that carries a stale version with HTTP `412 Precondition Failed` (the server advertises this through `versioning = versioned-update`). A Data Source SHALL send `If-Match` on updates and, on a `412`, re-read and re-apply. It prevents silent overwrite where a resource can be mutated through more than one channel (e.g. from CIBG as Data Source with update records from KvK/DEZI and one or more Data Sources). For more info on this topic, see [FHIR transactional integrity](http://hl7.org/fhir/R4/http.html#transactional-integrity) and [FHIR concurrency](https://hl7.org/fhir/R4/http.html#concurrency)
 
+1. Mutation signing (optional):
+Digitally signing mutations with a FHIR `Provenance` resource is currently OPTIONAL. The LRZa Directory SHALL NOT require a digital signature to accept a mutation, and the absence of a `Provenance` SHALL NOT be a reason for rejection. A Data Source MAY accompany a mutation with a signed `Provenance` resource that references the stored resource. When a `Provenance` is present, the LRZa Directory SHALL verify its signature against the relevant trust chain (a `Provenance` is signed with a PKIoverheid certificate of the organization; a UZI certificate is provisionally allowed on the `OrganizationAffiliation` mandate) and SHALL reject an invalid signature with an `OperationOutcome`. Provenance records are stored in the LRZa Directory and synchronized to local replicas (see ITI-90-NL/ITI-91-NL), so that any party that wishes to — replica operators, auditors or supervisors — MAY independently verify the origin and integrity of an accepted mutation without having to trust the LRZa on its word. As a growth path, use of digital signatures may be made mandatory later; see [Roadmap](#roadmap-for-care-services). For a worked, step-by-step example of creating and verifying a signature, see [Resource signing](signing.html).
+
 ### Actors
 Each actor will now be discussed in more detail.
 
@@ -94,7 +97,7 @@ Note: FHIR R4 does not define a search parameter for `Endpoint.period`, so the p
 Transactions between Service Providers and the LRZa are defined here. Other (local or 3rd party) transactions are not specified here. These transactions MAY reuse/adopt IHE mCSD and FHIR transactions, but are not obliged.  
 
 #### Care Services Feed: ITI-130-NL
-The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHALL use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing).
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Deletion is not supported (see National Constraint "No deletes"); withdrawal is expressed through a status change. Updates SHALL use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing). A Data Source MAY additionally submit a signed `Provenance` referencing the stored resource; this is optional, see [Resource signing](signing.html).
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
@@ -242,6 +245,24 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-affiliation-type-vs.html)). |
 | device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
+#### Provenance
+A `Provenance` resource records the origin and (optionally) a digital signature of a mutation submitted to the LRZa Directory. Signing is optional; when present, a `Provenance` makes the origin and integrity of an accepted mutation independently verifiable by the LRZa Directory, local replicas, auditors and supervisors. A `Provenance` references the stored version of the mutated resource and carries a signature computed over the canonical JSON form of that resource. See the [signed Provenance example](./Provenance-b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e.html) for an `OrganizationAffiliation` mandate, and the [Resource signing](signing.html) page for the step-by-step derivation of its signature. Key attributes:
+
+| Attribute | Card. | Description |
+|---|---|---|
+| target → (mutated resource) | 1..* | A reference(s) to the stored resource this Provenance covers (e.g. `OrganizationAffiliation/{id}`). |
+| recorded | 1..1 | The instant the Provenance record was created. |
+| agent.type | 0..1 | Role of the agent, e.g. `author` from the [provenance participant type](http://terminology.hl7.org/CodeSystem/provenance-participant-type) code system. |
+| agent.who → Organization | 1..1 | The organization responsible for the mutation (the care provider for an `OrganizationAffiliation` mandate, or the authorized Data Source for other mutations). |
+| signature.type | 1..* | The signature purpose, from [`urn:iso-astm:E1762-95:2013`](https://hl7.org/fhir/R4/valueset-signature-type.html) (e.g. `1.2.840.10065.1.12.1.1` "Author's Signature"). |
+| signature.when | 1..1 | The instant the signature was created. |
+| signature.who → Organization | 1..1 | The signer. For an `OrganizationAffiliation` mandate this is the care provider (certificate: UZI or PKIoverheid); for other mutations the authorized Data Source (PKIoverheid). |
+| signature.targetFormat | 0..1 | The mime type of the signed content: `application/fhir+json;canonicalization=http://hl7.org/fhir/canonicalization/json#static`. |
+| signature.sigFormat | 0..1 | The mime type of the signature itself: `application/jose` (a detached JWS). |
+| signature.data | 1..1 | The base64-encoded detached JWS signature. |
+
+The signature is computed over the **canonical JSON** form of the referenced resource, using canonicalization type `http://hl7.org/fhir/canonicalization/json#static`. This is the FHIR *static* JSON canonicalization: it fixes element ordering to the order defined by the specification and removes insignificant whitespace, so that a replica, auditor or supervisor can reproduce the exact byte sequence that was signed and verify the signature independently. Fixing the canonicalization method is what makes the signature verifiable across parties; both signer and verifier SHALL apply `http://hl7.org/fhir/canonicalization/json#static` before, respectively, computing and checking the detached JWS carried in `signature.data`.
+
 #### Not in scope: Practitioner and PractitionerRole
 
 The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is currently no legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
@@ -250,6 +271,10 @@ The data model of the IHE mCSD contains resourcetypes/profiles for Practioner an
 
 A Data Source actor SHALL use mTLS for transport layer security. Qualified certificates from Qualified Trusted Service Providers (like PKIoverheid) should be trusted. ([GF-Adressering, ADR#178](https://github.com/minvws/generiekefuncties-adressering/issues/178)).
 The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliations by Care Providers, not by the parties that are being authorized (the `.participatingOrganization`).
+
+#### Mutation signing (optional)
+
+Beyond transport security, mutations MAY be signed at record level with a FHIR `Provenance` resource (see National Constraint "Mutation signing (optional)"). Signing is currently *not* mandatory: the LRZa Directory accepts mutations without a `Provenance`. When a `Provenance` is present, the LRZa Directory SHALL verify its signature, and parties that wish to (replica operators, auditors, supervisors) MAY verify it as well. A `Provenance` is signed with a PKIoverheid certificate of the organization; because not every care provider holds a PKIoverheid certificate, a UZI certificate is provisionally allowed for signing the `Provenance` on the `OrganizationAffiliation` (the mandate expressing which Data Source may mutate on behalf of which care provider). This makes the provenance chain of each accepted record independently verifiable and detectable across the whole system, without introducing a new certificate chain. The [Resource signing](signing.html) page gives a worked example of how such a signature is created and verified.
 
 
 ### Example use cases
@@ -320,4 +345,5 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 ### Roadmap for Care Services
 
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
+- Digital signing of mutations (FHIR `Provenance`) is currently optional; making it mandatory will hardening security and trustworthiness of the data 
 - Versioning of information standards / implementation guides per Endpoint (e.g. which zib release or IG package) is to be elaborated in alignment with the national choice of standards ([epic standaardenkeuze](https://github.com/minvws/generiekefuncties-architectuur/issues/876)); the NDH [fhir-ig extension](https://hl7.org/fhir/us/ndh/StructureDefinition-base-ext-fhir-ig.html) is a candidate mechanism.
