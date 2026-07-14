@@ -99,12 +99,12 @@ can be accessed for localization purposes."""
 * extension contains NlGfLocalizationCustodian named custodian 1..1
 * extension[custodian] ^short = "The Organization which published the data"
 * source 1..1
-* source.identifier.system = "urn:ietf:rfc:3986"
+* source ^short = "The OAuth client (application/system) that registered this record, identified by its OAuth client_id."
+* source.identifier 1..1
+* source.identifier.system 1..1
+* source.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id"
 * source.identifier.value 1..1
-* source.identifier.value obeys identifier-is-a-urn
-* source only Reference(Device)
 * source.reference ..0
-* source.type = $resource-types#Device
 * entry ..0
 * note ..0
 * emptyReason 1..1
@@ -160,7 +160,7 @@ Profile: NlGfOrganizationAffiliation
 Parent: OrganizationAffiliation
 Id: nl-gf-organizationaffiliation
 Title: "NL Generic Functions OrganizationAffiliation Profile"
-Description: "OrganizationAffiliation profile aligned with IHE mCSD OrganizationAffiliation constraints, with a required custodian-assigned identifier and extended with a value set constraint on code and support for device identifiers in extensions."
+Description: "OrganizationAffiliation profile aligned with IHE mCSD OrganizationAffiliation constraints, with a required custodian-assigned identifier and extended with a value set constraint on code."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation"
 * ^experimental = true
 * identifier ^slicing.discriminator.type = #profile
@@ -177,30 +177,6 @@ Description: "OrganizationAffiliation profile aligned with IHE mCSD Organization
 * network 0..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code from NlGfAffiliationTypeVS (required)
-* extension contains NlGfDeviceIdentifier named device 0..*
-* extension[device] ^short = "An identifier for a device, such as a software application, that is used in the context of an affiliation between two organizations."
-
-Profile: NlGfDevice
-Parent: Device
-Id: nl-gf-device
-Title: "NL Generic Functions Device Profile"
-Description: "The details of a device, such as a software application, used in the context of healthcare data exchange."
-* ^experimental = true
-* identifier ^slicing.discriminator.type = #profile
-* identifier ^slicing.discriminator.path = "$this"
-* identifier ^slicing.rules = #open
-* identifier contains
-    AssignedId 1..1
-* identifier[AssignedId] only CustodianAssignedUrnIdentifier
-* extension contains NlGfDeviceEndpoint named endpoint 0..*
-// * extension[endpoint].value[x] only Reference(NlGfEndpoint)
-
-Extension: NlGfDeviceEndpoint
-Id: nl-gf-device-endpoint
-Title: "NL Generic Functions Device Endpoint"
-Description: "A reference to an endpoint associated with this device."
-Context: Device
-* value[x] only Reference(NlGfEndpoint)
 
 Extension: TaskSTU3Location
 Id:        task-stu3-location
@@ -241,27 +217,6 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 * assigner.identifier.type.coding.system = $provenance-participant-type
 * assigner.identifier.type.coding.code = #custodian
 
-Profile: CustodianAssignedUrnIdentifier
-Parent: Identifier
-Id: nl-gf-custodianassignedurnidentifier
-Title: "Custodian Assigned URN Identifier"
-Description: """An (unique) ***OID or UUID*** identifier ***that was assigned by the original custodian***. The custodian is 'The entity that is accountable for maintaining a true an accurate copy of the ***original*** record'. I.e. this custodian is responsible for the 'single source of truth' for this data object. The 'custodian-assigned-identifier' is the unambiguous and persistent identifier for both the data object and the custodian."""
-* use 1..
-* use = #official
-* system 1..
-* system = "urn:ietf:rfc:3986"
-* value 1..
-* value obeys identifier-is-a-urn
-* assigner 1..1
-* assigner.identifier 1..1
-* assigner.identifier obeys assigner-identifier-system
-* assigner.identifier.system 1..1
-* assigner.identifier.value 1..1
-* assigner.identifier.type 1..1
-* assigner.identifier.type.coding 1..1
-* assigner.identifier.type.coding.system = $provenance-participant-type
-* assigner.identifier.type.coding.code = #custodian
-
 Profile: NviIdentifier
 Parent: Identifier
 Id: nl-gf-nvi-identifier
@@ -283,20 +238,3 @@ Context: List
 * valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * valueReference.identifier.value 1..1
 * valueReference.reference 0..0
-
-Extension: NlGfDeviceIdentifier
-Id: nl-gf-device-identifier
-Title: "NL Generic Functions Device Identifier"
-Description: "An identifier for a device, such as a software application."
-Context: OrganizationAffiliation
-* value[x] only Reference(NlGfDevice)
-* valueReference.identifier 1..1
-* valueReference.identifier.system = "urn:ietf:rfc:3986"
-* valueReference.identifier.value 1..1
-* valueReference.identifier.value obeys identifier-is-a-urn
-
-Invariant:   identifier-is-a-urn
-Description: "The identifier must be a URN with a valid UUID or OID."
-Expression:  "startsWith('urn:uuid:') or startsWith('urn:oid:')"
-Severity:    #error
-

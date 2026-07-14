@@ -38,9 +38,6 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 1. Data model profiling:
 The national profiles SHALL be based on NL-core where available and SHALL be aligned with relevant IHE mCSD profile constraints.
 
-1. Device resource addition:
-The Device resource is added as a national extension to support efficient endpoint lookup and query-routing. Device usage SHALL support national workflows including GF Localization and TA Notified Pull.
-
 1. LRZa Directory operational role:
 The LRZa Directory SHALL NOT support matching of care service entities (e.g. query for a specific type of HealthcareService or Endpoint). Matching SHALL be performed on a local Directory (LRZa replica). The LRZa Directory SHALL act as the central consolidation and distribution point for the directory (a single consolidated view), and SHALL NOT have a direct operational role in healthcare data exchange transactions. For replication purposes, LRZa SHALL support `search-type` interactions from the mCSD ITI-90 transaction without search parameters for the initial load of the local replica. To bound load and keep operational matching on the replicas, the LRZa Directory SHALL restrict search operations to the minimum required for replication and SHALL apply rate limiting to operational consumers.
  
@@ -50,7 +47,7 @@ Status changes are propagated to local replicas through the `_history` delta (IT
 
 1. Paging and consistent initial load:
 For the initial load (ITI-90-NL `search-type` without search parameters), the LRZa Directory SHALL return results using paging: it SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce a maximum page size. The maximum page size is advertised by the server and specified in the LRZa SLA. Update Clients SHALL follow `next` links until exhausted.
-To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Endpoint` → `Device` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
+To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Endpoint` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
 Because the paged initial load is not atomic, the Update Client SHALL take the server time reported in `Bundle.meta.lastUpdated` of the first page as the **sync timestamp** — the LRZa server time up to which the replica is in sync — and, once the paged load completes, SHALL perform an incremental `history-type` synchronization (ITI-91-NL) with `_since` set to that sync timestamp. Using the LRZa-reported time avoids client/server clock skew, and this captures mutations made during the load without requiring a server-side point-in-time snapshot. How the Update Client retains the sync timestamp is implementation-defined (e.g. a small stored value, or derived from the replica content); because synchronization is processed idempotently, an inclusive `_since` (re-fetching the boundary resources) is safe.
 
 A Local Replica SHALL accept resources whose references cannot (yet) be resolved and SHALL NOT enforce referential integrity on write during the initial load; without this, replication breaks whenever a delta arrives before the resource it references. A Local Replica SHOULD NOT serve Query Clients until the initial load and the subsequent `_history` catch-up have completed.
@@ -73,7 +70,7 @@ The LRZa Directory is the central national directory for publishing and distribu
 - for Update Clients: [ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
 
 #### Data Source
-A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [CapabilityStatement ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html), including create/update for Organization, Location, HealthcareService, Endpoint, and Device.
+A Data Source is a client/actor of an authorized party (e.g. an IT vendor or the care provider itself) that publishes and maintains directory entities on behalf of care providers. The Data Source actor SHALL use interactions conforming to [CapabilityStatement ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html), including create/update for Organization, Location, HealthcareService, and Endpoint.
 
 #### Update Client
 The Update Client refers to two separate actors defined in [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) a 'lite version' of the Query Client and the Update Client. These clients are grouped for the Dutch national context. This actor uses the `search-type` interaction (without search parameters) for the initial load of the local Directory (replica). It also periodically synchronizes from the LRZa Directory to a local replica using `history-type` interactions and `_since` parameter to request incremental updates. It consumes search interactions conforming to [CapabilityStatement ITI-90-NL](./CapabilityStatement-nl-gf-directory-for-ITI-90-NL.html) and update-oriented interactions defined in [CapabilityStatement ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html).
@@ -81,7 +78,7 @@ The Update Client *synchronizes* (replicates) directory content; it does *not* a
 For more information, see the [initial load](#use-case-2a-update-client-initial-load) and [incremental sync](#use-case-2b-update-client-incremental-sync) examples.
 
 #### Query Client
-The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, devices, and organizational relationships for routing and discovery. 
+The Query Client uses the local replica to find organizations, healthcare services, locations, endpoints, and organizational relationships for routing and discovery. 
 Note that the data exchange between Query Client and (local) Directory MAY use a proprietary interface. [Use case 3](#use-case-3-healthcare-service-query) and [use case 4](#use-case-4-endpoint-discovery) illustrate how to search for healthcare services and endpoints. 
 
 When selecting an Endpoint for data exchange, the Query Client SHALL only use Endpoints that have status `active` and whose `period`, when present, includes the current time. Within that selection, the Query Client matches on `connectionType` and `payloadType` (see [use case 4](#use-case-4-endpoint-discovery)). When multiple valid Endpoints remain for the same Organization or HealthcareService and the same `connectionType`/`payloadType` combination, this indicates either intentional redundancy (multiple endpoints due to different software systems) or a registration error.
@@ -155,7 +152,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 
 
 #### Endpoint
-An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, a DICOM web service, OAuth token endpoint, or some other mechanism. Typically, Organizations, Devices and HealthcareServices refer to Endpoints. This relationship is meant to indicate that, e.g., a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization that manages the Endpoint (e.g. IT vendor); this is not the organization ***using*** the endpoint.
+An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, a DICOM web service, OAuth token endpoint, or some other mechanism. Typically, Organizations and HealthcareServices refer to Endpoints. This relationship is meant to indicate that, e.g., a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization that manages the Endpoint (e.g. IT vendor); this is not the organization ***using*** the endpoint.
 The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used to represent electronic access points for data exchange. Key attributes:
 
 | Attribute | Card. | Description |
@@ -202,19 +199,6 @@ After the old system has actually been taken out of operation, its Endpoint stat
 [Use case 5](#use-case-5-endpoint-transition) illustrates a transition between systems.
 
 
-#### Device
-Device resources are, in GF Addressing, used to represent software applications or technical systems involved in healthcare data exchange. A Device can reference one or more Endpoints that it uses/provides, enabling efficient endpoint lookup and query-routing in workflows such as GF Localization, eOverdracht, and TA Notified Pull. In this guide, Devices are also referenced from OrganizationAffiliation to indicate which technical system is authorized in the relationship between a care provider and an IT vendor.
-The [NL-GF-Device profile](./StructureDefinition-nl-gf-device.html) is used to represent these technical systems and their endpoint references. Key attributes:
-
-| Attribute | Card. | Description |
-|---|---|---|
-| identifier (DeviceUrn) | 1..1 | A globally unique URN identifier for the device/application. |
-| udiCarrier | 0..* | UDI carrier information from e.g. EUDAMED or GS1 register (if applicable). |
-| owner → Organization | 1..1 | The organization that owns/manages this device. |
-| endpoint → Endpoint (extension) | 0..* | Endpoints associated with this device. |
-
-
-
 #### Location
 Locations are physical places where care can be delivered such as buildings (NL: Vestiging), wards, rooms, or vehicles. A Location may have geographic attributes (address, geocode), attributes regarding its hours of operation, etc. Each Location is related to one Organization. A location may have a hierarchical relationship with other locations (e.g. building > floor > room).
 The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used to represent physical care-delivery locations. Key attributes:
@@ -240,7 +224,6 @@ The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organiza
 | organization → Organization | 1..1 | The care provider organization. |
 | participatingOrganization → Organization | 1..1 | The affiliated party (e.g. IT vendor). |
 | code | 1..* | The type of affiliation (required binding to [NL-GF Authorization Types](./ValueSet-nl-gf-affiliation-type-vs.html)). |
-| device (extension) | 0..* | Device identifier(s) authorized in this affiliation. |
 
 #### Not in scope: Practitioner and PractitionerRole
 
@@ -257,7 +240,7 @@ The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliatio
 
 
 ##### Use Case #1: Admin Registers Affiliation, Service Provider Publishes Resources
-This sequence shows a two-step onboarding flow: first, the care provider administrator creates an OrganizationAffiliation that authorizes the service provider (and optionally a Device). After this authorization exists, the service provider is able to register their Endpoints and Devices (if not already registered). Finally, the care provider administrator is able to register and update the remaining mCSD resource types in the application of the service provider (e.g. the EHR).
+This sequence shows a two-step onboarding flow: first, the care provider administrator creates an OrganizationAffiliation that authorizes the service provider. After this authorization exists, the service provider is able to register their Endpoints (if not already registered). Finally, the care provider administrator is able to register and update the remaining mCSD resource types in the application of the service provider (e.g. the EHR).
 
 <div>
 {% include care-services-registration-use-case.svg %}
