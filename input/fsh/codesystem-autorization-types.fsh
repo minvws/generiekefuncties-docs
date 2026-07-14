@@ -17,10 +17,6 @@ Description: "Local code system for authorization types used in NL Generic Funct
   * ^property[=].valueString = "system/HealthcareService.crus"
   * ^property[+].code = #smart-on-fhir-scope
   * ^property[=].valueString = "system/Endpoint.crus"
-  * ^property[+].code = #smart-on-fhir-scope
-  * ^property[=].valueString = "system/Device.crus"
 * #lrza-endpoint-admin "LRZa Care Provider Endpoint Administration" "Authorization to manage references to (owned) Endpoint at care provider entities."
   * ^property[+].code = #smart-on-fhir-scope
   * ^property[=].valueString = "system/Endpoint.crus"
-  * ^property[+].code = #smart-on-fhir-scope
-  * ^property[=].valueString = "system/Device.crus"

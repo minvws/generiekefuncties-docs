@@ -89,18 +89,3 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Device
-    * supportedProfile[+] = Canonical(NlGfDevice)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read

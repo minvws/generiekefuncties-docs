@@ -74,18 +74,6 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Device
-    * supportedProfile[+] = Canonical(NlGfDevice)
-    * documentation = "."
-    * versioning = #versioned-update
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #create
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #update
   * interaction[+]
     * insert Expectation(SHALL)
     * code = #transaction

@@ -91,10 +91,9 @@ For more information on the content, see the paragraph on [Localization record](
         },
         "source": {
           "identifier": {
-            "system": "urn:ietf:rfc:3986",
-            "value": "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
-          },
-          "type": "Device"
+            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id",
+            "value": "ehr-client-org2"
+          }
         },
         "status": "current",
         "mode": "working",
@@ -155,7 +154,7 @@ This data model basically states ***"Care provider X has data of type Y for Pati
 - **Custodian identifier**: The care provider identifier (URA) representing the data holder/custodian.
 - **Patient identifier**: The NVI identifier to identify the patient in the NVI.
 - **Code**: Represents type of data stored at the data holder/custodian (required binding to [NL-GF Zorgcontext Types](./ValueSet-nl-gf-zorgcontext-vs.html).
-- **Source identifier**: The identifier of the specific software installation (e.g., EHR deployment) that registered this localization record, using a `Device` reference with an identifier. 
+- **Source identifier**: The OAuth client identifier (`client_id`) of the specific software installation (e.g., EHR deployment) that registered this localization record. 
 - **emptyReason**: The `emptyReason` is set to withheld because this List signals the existence of data at a custodian, without enumerating the actual records. The List resource is used as a localization pointer, not as a container for document references
 
 A [Location record example](./List-a1b2c3d4-e5f6-7890-abcd-ef1234567890.html) is in the IG artifacts.
@@ -188,13 +187,13 @@ The following diagram illustrates the registration workflow, including interacti
 
 #### Use Case: Localization Client retrieving all registered localization records
 
-**Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific device/system (the Localization Client)
+**Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific client/system (the Localization Client)
 
 ```
-GET [base]/List?source:identifier=urn:ietf:rfc:3986|urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7
+GET [base]/List?source:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id|ehr-client-org2
 ```
 
-**Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or device.
+**Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or client.
 
 
 ### Roadmap for GF Localization

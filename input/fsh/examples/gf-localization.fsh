@@ -10,9 +10,8 @@ Description: "Example instance of the NlGfLocalizationList profile. It expresses
 * code = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
 * subject.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
-* source.identifier.system = "urn:ietf:rfc:3986"
-* source.identifier.value = "urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7"
-* source.type = $resource-types#Device
+* source.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id"
+* source.identifier.value = "ehr-client-org2"
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 
 // Instance: nvi-org1

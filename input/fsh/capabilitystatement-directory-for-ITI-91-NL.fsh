@@ -74,15 +74,3 @@ Usage: #definition
       * insert Expectation(SHALL)
       * name = "_since"
       * type = #date
-  * resource[+]
-    * insert Expectation(SHALL)
-    * type = #Device
-    * supportedProfile[+] = Canonical(NlGfDevice)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #history-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "_since"
-      * type = #date
