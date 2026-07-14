@@ -40,9 +40,11 @@ Usage: #definition
 * group[=].element[=].target[+].code = #BRA
 * group[=].element[=].target[=].display = "Brandwondencentrum"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Brandwondencentrum is a specific subtype within the broader SBI category 'Other hospital care'."
 * group[=].element[=].target[+].code = #K9
 * group[=].element[=].target[=].display = "Zelfstandig opererende ziekenhuisapotheek"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Zelfstandig opererende ziekenhuisapotheek covers only part of the broader SBI category 'Other hospital care'."
 
 // Curative mental health care with overnight stay -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86104
@@ -63,9 +65,11 @@ Usage: #definition
 * group[=].element[=].target[+].code = #K3
 * group[=].element[=].target[=].display = "Apotheekhoudende huisartspraktijk"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Apotheekhoudende huisartspraktijk is a specialized subset of general medical practice activities."
 * group[=].element[=].target[+].code = #N6
 * group[=].element[=].target[=].display = "Huisartsenpost (t.b.v. dienstwaarneming)"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Huisartsenpost represents out-of-hours service delivery and is narrower than the full SBI category for general practice."
 
 // Specialised medical care without overnight stay -> Zelfstandig behandelcentrum
 * group[=].element[+].code = #86221
@@ -76,9 +80,11 @@ Usage: #definition
 * group[=].element[=].target[+].code = #P4
 * group[=].element[=].target[=].display = "Polikliniek (als onderdeel van een ziekenhuis)"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Polikliniek as part of a hospital is one organizational form within broader specialised outpatient medical care."
 * group[=].element[=].target[+].code = #DIA
 * group[=].element[=].target[=].display = "Dialysecentrum"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Dialysecentrum covers a specific clinical service and is narrower than the full SBI class for specialised outpatient care."
 
 // Psychiatric care -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86222
@@ -96,9 +102,11 @@ Usage: #definition
 * group[=].element[=].target[+].code = #L1
 * group[=].element[=].target[=].display = "Laboratorium"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Laboratorium represents one specific service type within the broader SBI category that also includes diagnostic imaging."
 * group[=].element[=].target[+].code = #B2
 * group[=].element[=].target[=].display = "Echocentrum"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Echocentrum is a specific diagnostic service and therefore narrower than the combined SBI category."
 
 // Activities of psychologists and psychotherapists -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86930
@@ -123,6 +131,7 @@ Usage: #definition
 * group[=].element[=].target[+].code = #K4
 * group[=].element[=].target[=].display = "Kraamzorg"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Kraamzorg is one component of this SBI category, which also includes broader home nursing and personal care."
 
 // Preventive care -> Preventieve gezondheidszorg
 * group[=].element[+].code = #86992
@@ -133,6 +142,7 @@ Usage: #definition
 * group[=].element[=].target[+].code = #JGZ
 * group[=].element[=].target[=].display = "Jeugdgezondheidszorg"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Jeugdgezondheidszorg is a specific subdomain of preventive care and does not cover all preventive activities in SBI 86992."
 
 // Other health care without overnight stay n.e.c. -> Revalidatiecentrum
 * group[=].element[+].code = #86999
@@ -140,6 +150,7 @@ Usage: #definition
 * group[=].element[=].target[+].code = #R8
 * group[=].element[=].target[=].display = "Revalidatiecentrum"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Revalidatiecentrum is a specific organization type within the broader residual SBI category for other outpatient health care."
 
 // Residential nursing care activities -> Verpleeghuis
 * group[=].element[+].code = #8710
@@ -150,6 +161,7 @@ Usage: #definition
 * group[=].element[=].target[+].code = #H2
 * group[=].element[=].target[=].display = "Hospice"
 * group[=].element[=].target[=].equivalence = #narrower
+* group[=].element[=].target[=].comment = "Hospice is a specialized care setting and therefore narrower than the full SBI category for residential nursing care."
 
 // Residential care for persons with intellectual disabilities -> Verstandelijk gehandicaptenzorg
 * group[=].element[+].code = #87201
