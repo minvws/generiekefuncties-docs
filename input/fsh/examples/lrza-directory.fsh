@@ -140,7 +140,7 @@ Instance: b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e
 InstanceOf: Provenance
 Usage: #example
 Title: "Signed Provenance for OrganizationAffiliation mandate (Organization 2 authorizes Nedap)"
-Description: "Example: optional digital signature over the OrganizationAffiliation mandate 'Organization 2 authorizes Nedap'. The care provider (Organization 2) signs the stored resource version with a UZI or PKIoverheid certificate. The detached JWS in signature.data is computed over the canonical JSON form of the OrganizationAffiliation using canonicalization type http://hl7.org/fhir/canonicalization/json#static (Resource.meta and narrative removed, then RFC 8785 JCS). See the [Mutation signing](signing.html) page for the step-by-step derivation of this value."
+Description: "Example: digital signature over the OrganizationAffiliation mandate 'Organization 2 authorizes Nedap'. The care provider (Organization 2) signs the stored resource version with a UZI or PKIoverheid certificate. The detached JWS in signature.data is computed over the canonical JSON form of the OrganizationAffiliation using canonicalization type http://hl7.org/fhir/canonicalization/json#static (Resource.meta and narrative removed, then RFC 8785 JCS). See the [Mutation signing](signing.html) page for the step-by-step derivation of this value."
 * target = Reference(OrganizationAffiliation/c5d6c9d6-7562-589e-9b34-c20a3488daa1)
 * recorded = "2026-07-14T10:15:00Z"
 * agent[+].type = $provenance-participant-type#author
