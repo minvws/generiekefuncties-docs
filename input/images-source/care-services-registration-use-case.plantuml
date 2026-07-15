@@ -17,7 +17,7 @@ activate Admin
 activate DSAdmin
 Admin -> DSAdmin: Register authorization for IT vendor
 activate LRZa
-DSAdmin -> LRZa: POST /OrganizationAffiliation\n(organization, participatingOrganization,\ncode, device identifier)
+DSAdmin -> LRZa: POST /OrganizationAffiliation\n(organization, participatingOrganization,\ncode)
 LRZa -> DSAdmin: 201 Created
 DSAdmin -> Admin: Authorization active
 deactivate DSAdmin
@@ -26,19 +26,17 @@ deactivate DSAdmin
 == After affiliation is active ==
 activate SPAdmin
 activate SP
-SPAdmin -> SP: Register new EHR system
-SP -> LRZa: POST /Device
+SPAdmin -> SP: Register new endpoints for EHR system
+SP -> LRZa: POST /Endpoint
 
 
 note right of SP
-If the endpoint or device were already
+If the endpoints were already
 registered for other care providers,
-these Device and Endpoint updates 
+these Endpoint updates 
 can be skipped.
 end note
 
-SPAdmin -> SP: Register new endpoints for EHR system
-SP -> LRZa: POST /Endpoint
 deactivate SPAdmin
 
 

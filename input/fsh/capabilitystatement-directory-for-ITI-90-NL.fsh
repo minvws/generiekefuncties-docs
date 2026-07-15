@@ -91,21 +91,6 @@ Usage: #definition
       * code = #read
   * resource[+]
     * insert Expectation(SHALL)
-    * type = #Device
-    * supportedProfile[+] = Canonical(NlGfDevice)
-    * documentation = "."
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #search-type
-    * searchParam[+]
-      * insert Expectation(SHALL)
-      * name = "identifier"
-      * type = #token
-    * interaction[+]
-      * insert Expectation(SHALL)
-      * code = #read
-  * resource[+]
-    * insert Expectation(SHALL)
     * type = #Provenance
     * documentation = "Provenance records are only present when a Data Source has signed its mutations (see ITI-130-NL). When present, they are synchronized to the local replica during the initial load so that replica operators, auditors or supervisors that wish to verify the origin and integrity of accepted mutations. Signing is not mandatory; as a growth path it may become mandatory."
     * interaction[+]

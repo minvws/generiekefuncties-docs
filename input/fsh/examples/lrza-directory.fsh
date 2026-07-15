@@ -119,7 +119,6 @@ Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
 * participatingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
-
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
@@ -166,7 +165,6 @@ Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * participatingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
-
 
 
 // // ----------------------------------------------------------------
@@ -231,14 +229,6 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * contact[=].value = "info@cp1.example.org"
 * contact[=].use = #work
 * address = "https://cp1-old.example.org/fhir"
-
-Instance: 2de07561-6786-5c93-bf39-a86469423497
-InstanceOf: NlGfDevice
-Usage: #example
-Title: "PharmaPartners Device for Organization 1"
-Description: "Example: PharmaPartners Device for Organization 1"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:3f0bb8cf-9d17-4925-9c9d-6e0f8fe7b8e1","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* extension[endpoint][+].valueReference = Reference(Endpoint/d6a4678b-755e-5ae3-bd36-67db6ae3d8c4)
 
 // // ----------------------------------------------------------------
 // // Resource from Data Source Organization 2
@@ -408,16 +398,6 @@ Description: "Example: Organization 2 - HealthcareService Urologie"
 * type = $service-type#222 "Urology"
 * specialty[+].coding = $sct#394612005 "Urology"
 
-Instance: a366c48c-2a15-5e59-bf3a-10f03cfdbc34
-InstanceOf: NlGfDevice
-Usage: #example
-Title: "Nedap Device for Organization 2"
-Description: "Example: Nedap Device for Organization 2"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:90f95f4c-3360-4f97-8c2a-77831e9e1cc7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* extension[endpoint][+].valueReference = Reference(Endpoint/1034376c-cc6e-5518-b292-e6dc24a68826)
-* extension[endpoint][+].valueReference = Reference(Endpoint/30d6d76b-389f-58b8-9d40-4311a52bdf57)
-* extension[endpoint][+].valueReference = Reference(Endpoint/7f702f1f-a5c9-5fbe-90df-82b58914f8e1)
-
 
 
 // // ----------------------------------------------------------------
@@ -551,15 +531,6 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * type[+] = $zorgzwaartepakket#756 "7VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met nadruk op begeleiding"
 * type[+] = $zorgzwaartepakket#757 "8VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
 
-Instance: 34e4d0cb-eb5a-548c-a9da-4b094ccbc373
-InstanceOf: NlGfDevice
-Usage: #example
-Title: "Gerimedica Device for Organization 3"
-Description: "Example: Gerimedica Device for Organization 3"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6c627191-6c6a-4b64-b2a1-049ac8fd6b4b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* extension[endpoint][+].valueReference = Reference(Endpoint/588f74a0-16f1-5a8e-8d75-285dafe44bcf)
-* extension[endpoint][+].valueReference = Reference(Endpoint/fae7d741-08e7-5335-a0a6-8a279b64acac)
-
 
 // // ----------------------------------------------------------------
 // // Resulting Bundle for Query Directory
@@ -579,13 +550,11 @@ Description: "Example: Gerimedica Device for Organization 3"
 
 
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, d6a4678b-755e-5ae3-bd36-67db6ae3d8c4)
-// * insert BundleEntryPUT(urn:uuid:,Device, 2de07561-6786-5c93-bf39-a86469423497)
 // * insert BundleEntryPUT(urn:uuid:,OrganizationAffiliation, fe43d49a-4748-5c42-a731-e40d614be8f9)
 
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, 1034376c-cc6e-5518-b292-e6dc24a68826)
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, 30d6d76b-389f-58b8-9d40-4311a52bdf57)
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, 7f702f1f-a5c9-5fbe-90df-82b58914f8e1)
-// * insert BundleEntryPUT(urn:uuid:,Device, a366c48c-2a15-5e59-bf3a-10f03cfdbc34)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 11d46e82-1566-5772-8404-563aa31c3846)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, d5cc8cb0-9ea2-5100-bd1b-d3d60075aee2)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 3b09ed4b-bd16-5562-b529-1ab18082cac8)
@@ -599,7 +568,6 @@ Description: "Example: Gerimedica Device for Organization 3"
 // * insert BundleEntryPUT(urn:uuid:,Location, f37e7fdb-21b9-54ac-bd36-70c56f2f09c7)
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, 588f74a0-16f1-5a8e-8d75-285dafe44bcf)
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, fae7d741-08e7-5335-a0a6-8a279b64acac)
-// * insert BundleEntryPUT(urn:uuid:,Device, 34e4d0cb-eb5a-548c-a9da-4b094ccbc373)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 96ab9671-f048-55b7-9dcd-dc2596a0a3e9)
 // * insert BundleEntryPUT(urn:uuid:,HealthcareService, 4cec3d3b-5676-52aa-8c99-f4c7aecebc12)
 // * insert BundleEntryPUT(urn:uuid:,OrganizationAffiliation, 8ee51b54-bafb-562d-87d1-9429f8bbfc1b)
