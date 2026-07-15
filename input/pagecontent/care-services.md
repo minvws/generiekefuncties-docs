@@ -145,7 +145,7 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 
 | Attribute | Card. | Description |
 |---|---|---|
-| identifier (URA or KVK) | 0..* | An Organization SHALL have a URA or KVK identifier, or be `partOf` another Organization. |
+| identifier (URA or KVK) | 0..* | An Organization SHALL have a URA identifier, or be `partOf` another Organization. |
 | type | 1..* | Type of organization, including an SBI (Standaard Bedrijfsindeling) code (extensible binding to [NL-GF Organization Types](./ValueSet-nl-gf-org-types-vs.html)). |
 | name | 1..1 | The name of the organization. |
 | alias | 0..* | Alternative names. |
@@ -218,7 +218,7 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 
 
 #### OrganizationAffiliation
-OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
+OrganizationAffiliation resources are used to represent relationships between organizations, primarily a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide. Key attributes:
 
 | Attribute | Card. | Description |

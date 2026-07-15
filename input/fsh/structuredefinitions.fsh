@@ -8,7 +8,8 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * managingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
-* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
+//* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
+* connectionType obeys nl-gf-connectiontype-req
 * connectionType ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
 * connectionType ^binding.extension[=].extension[+].url = "key"
 * connectionType ^binding.extension[=].extension[=].valueId = "nl-gf-connection-types"
@@ -17,6 +18,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * connectionType ^binding.extension[=].extension[+].url = "valueSet"
 * connectionType ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs"
 * payloadType from NlGfPayloadTypeVS (extensible)
+* payloadType obeys nl-gf-payloadtype-req
 
 Extension: SupportedActivityDefinitions
 Id:        supported-activity-definitions
@@ -44,8 +46,17 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService
 * providedBy 1.. 
 * providedBy only Reference(NlGfOrganization)
-* type from NlGfServiceTypeVS (required)
+* type from NlGfServiceTypeVS (extensible)
+* type obeys nl-gf-servicetype-req
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
+* specialty obeys nl-gf-specialty-req
+* specialty ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
+* specialty ^binding.extension[=].extension[+].url = "key"
+* specialty ^binding.extension[=].extension[=].valueId = "nl-gf-healthcare-specialty"
+* specialty ^binding.extension[=].extension[+].url = "purpose"
+* specialty ^binding.extension[=].extension[=].valueCode = #extensible
+* specialty ^binding.extension[=].extension[+].url = "valueSet"
+* specialty ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-healthcare-specialty-vs"
 
 
 Profile: NlGfLocation
@@ -65,6 +76,15 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
+* type obeys nl-gf-locationtype-req
+* type ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
+* type ^binding.extension[=].extension[+].url = "key"
+* type ^binding.extension[=].extension[=].valueId = "nl-gf-location-types"
+* type ^binding.extension[=].extension[+].url = "purpose"
+* type ^binding.extension[=].extension[=].valueCode = #extensible
+* type ^binding.extension[=].extension[+].url = "valueSet"
+* type ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs"
+
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
 // * managingOrganization only Reference(NlGfOrganization)
@@ -142,6 +162,7 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type from NlGfOrgTypesVS (extensible)
+* type obeys nl-gf-orgtype-req
 // * type ^slicing.discriminator[+].type = #value
 // * type ^slicing.discriminator[=].path = "$this"
 // * type ^slicing.rules = #open
@@ -176,27 +197,8 @@ Description: "OrganizationAffiliation profile aligned with IHE mCSD Organization
 * participatingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * network 0..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
 * code 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.OrganizationAffiliation
-* code from NlGfAffiliationTypeVS (required)
-
-Extension: TaskSTU3Location
-Id:        task-stu3-location
-Title:    "Location for Task in STU3"
-Description: "The location where the task is performed."
-* value[x] only Reference(NlGfLocation)
-
-Extension: TaskSTU3HealthcareService
-Id:        task-stu3-healthcareservice
-Title:    "HealthcareService for Task in STU3"
-Description: "The healthcare service where the task is performed."
-* value[x] only Reference(NlGfHealthcareService)
-
-Profile: NlGfTaskSTU3
-Parent: Task
-Id: nl-gf-task-stu3
-Title: "NL Generic Functions Task Profile for FHIR STU3"
-Description: "A task to be performed, such as a referral or order, with additional details specific to FHIR STU3."
-* extension contains TaskSTU3Location named taskLocation 0..1
-* extension contains TaskSTU3HealthcareService named healthcareservice 0..1
+* code from NlGfAffiliationTypeVS (extensible)
+* code obeys nl-gf-affiliationcode-req
 
 Profile: CustodianAssignedIdentifier
 Parent: Identifier
@@ -238,3 +240,38 @@ Context: List
 * valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * valueReference.identifier.value 1..1
 * valueReference.reference 0..0
+
+Invariant: nl-gf-connectiontype-req
+Description: "At least one coding SHALL be from the NL GF Connection Types value set; additional codes from other code systems are also allowed."
+Expression:  "memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs')"
+Severity:    #error
+
+Invariant: nl-gf-payloadtype-req
+Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-payload-type-vs')).exists()"
+Severity:    #error
+
+Invariant: nl-gf-servicetype-req
+Description: "At least one type coding SHALL be from the NL GF Service Types value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-service-types-vs')).exists()"
+Severity:    #error
+
+Invariant: nl-gf-specialty-req
+Description: "At least one specialty coding SHALL be from the NL GF HealthcareService Specialty value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
+Severity:    #error
+
+Invariant: nl-gf-locationtype-req
+Description: "At least one type coding SHALL be from the NL GF Location Types value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs')).exists()"
+Severity:    #error
+
+Invariant: nl-gf-orgtype-req
+Description: "At least one type coding SHALL be from the NL GF Organization Types value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-org-types-vs')).exists()"
+Severity:    #error
+
+Invariant: nl-gf-affiliationcode-req
+Description: "At least one code coding SHALL be from the NL GF Affiliation Type value set; additional codes from other code systems are also allowed."
+Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-affiliation-type-vs')).exists()"
+Severity:    #error

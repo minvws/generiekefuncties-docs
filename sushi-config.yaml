@@ -114,6 +114,8 @@ parameters:
     - urn:oid:2.16.840.1.113883.2.4.3.111.15.3
     - https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
     - http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type
+    - http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000
+    - http://ei.vektis.nl/codelijsten/COD016-VEKT
 
 #   validation: [allow-any-extensions, no-broken-links]
 #
