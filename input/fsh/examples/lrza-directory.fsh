@@ -34,8 +34,8 @@ Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
-* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
-* type[+] = $sct#22232009 "Hospital"
+* type[+].coding[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
+* type[=].coding[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
 * telecom[=].use = #work
@@ -78,45 +78,17 @@ Description: "Example: LRZa - Organization 3 - Organization"
 * endpoint[+] = Reference(Endpoint/588f74a0-16f1-5a8e-8d75-285dafe44bcf)
 * endpoint[+] = Reference(Endpoint/fae7d741-08e7-5335-a0a6-8a279b64acac)
 
-Instance: 4f95356e-77a8-56a6-9429-f32538d157f2
-InstanceOf: NlGfOrganization
-Usage: #example
-Title: "Software Vendor - PharmaPartners"
-Description: "Example: Software Vendor - PharmaPartners"
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494752", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* name = "PharmaPartners B.V."
-* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
-
-Instance: 4484c2f2-795a-54fc-8de6-e565ff0dce30
-InstanceOf: NlGfOrganization
-Usage: #example
-Title: "Software Vendor - Nedap"
-Description: "Example: Software Vendor - Nedap"
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "08013836", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* name = "Nedap N.V."
-* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
-
-Instance: 2c5ebd34-5961-51ec-a263-cb07a76079c0
-InstanceOf: NlGfOrganization
-Usage: #example
-Title: "Software Vendor - Gerimedica"
-Description: "Example: Software Vendor - Gerimedica"
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "34270859", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
-* name = "Gerimedica"
-* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
-
 Instance: fe43d49a-4748-5c42-a731-e40d614be8f9
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 1 authorizes PharmaPartners"
 Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * active = true
 * organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
-* participatingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* participatingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participatingOrganization.identifier.value = "51494752"
+* participatingOrganization.display = "PharmaPartners B.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
@@ -124,10 +96,12 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 2 authorizes Nedap"
 Description: "Example: Authorization: Organization 2 authorizes Nedap"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
-* participatingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
+* participatingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participatingOrganization.identifier.value = "08013836"
+* participatingOrganization.display = "Nedap N.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 Instance: 8ee51b54-bafb-562d-87d1-9429f8bbfc1b
@@ -135,10 +109,12 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 3 authorizes Gerimedica"
 Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * active = true
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
-* participatingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
+* participatingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participatingOrganization.identifier.value = "34270859"
+* participatingOrganization.display = "Gerimedica"
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 
@@ -151,7 +127,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint"
 Description: "Example: Organization 1 - Endpoint"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:59654248-477c-4694-b156-e0042f0765a6","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
@@ -159,7 +135,9 @@ Description: "Example: Organization 1 - Endpoint"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
 * period.start = "2024-01-15"
-* managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "51494752"
+* managingOrganization.display = "PharmaPartners B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -173,7 +151,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (STU3 and R4)"
 Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirVersion MIME parameter."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
@@ -181,7 +159,9 @@ Description: "Example: a single FHIR endpoint that advertises support for both F
 * payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1 (STU3 + R4)"
-* managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "51494752"
+* managingOrganization.display = "PharmaPartners B.V."
 * address = "https://cp1-test.example.org/fhir"
 
 
@@ -190,7 +170,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (superseded)"
 Description: "Example: superseded Endpoint of the previous EHR system of Organization 1. In line with the no-deletes constraint it remains registered: period.end marks the cutover to the replacing Endpoint and the status was set to off after the old system was decommissioned."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:88037f33-3bc5-4e93-8735-091f0f3d1b76","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:88037f33-3bc5-4e93-8735-091f0f3d1b76","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #off
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
@@ -199,7 +179,9 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * name = "FHIR Endpoint 1 (previous EHR system)"
 * period.start = "2023-01-15"
 * period.end = "2024-01-14"
-* managingOrganization = Reference(Organization/4f95356e-77a8-56a6-9429-f32538d157f2)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "51494752"
+* managingOrganization.display = "PharmaPartners B.V."
 * contact[0].system = #email
 * contact[=].value = "info@cp1.example.org"
 * contact[=].use = #work
@@ -213,14 +195,16 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR R4"
 Description: "Example: Organization 2 - Endpoint FHIR R4"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:430f7379-8ec2-4e55-b096-919995da61e2","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
 * payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
-* managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "08013836"
+* managingOrganization.display = "Nedap N.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -234,12 +218,14 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint DICOM-WADO-RS"
 Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:d4c1d657-67a9-471c-9732-9c042e9a6d43","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Imaging "Imaging"
 * connectionType = $endpoint-connection-type#dicom-wado-rs
 * name = "DICOM-WADO-RS Endpoint"
-* managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "08013836"
+* managingOrganization.display = "Nedap N.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -253,7 +239,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR STU3"
 Description: "Example: Organization 2 - Endpoint FHIR STU3"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:2427ca0c-8a29-4a6a-aabd-50cf02f587a7","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:2427ca0c-8a29-4a6a-aabd-50cf02f587a7","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
@@ -273,7 +259,9 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2 (health records)"
-* managingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "08013836"
+* managingOrganization.display = "Nedap N.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -289,8 +277,8 @@ Title: "CustodianAssignedIdentifier for a HealthcareService registered at CiBG (
 * system = "urn:ietf:rfc:3986"
 * value = "urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274"
 * use = #official
-* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
-* assigner.identifier.value = "50000535"
+* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* assigner.identifier.value = "22222222"
 * assigner.identifier.type = $provenance-participant-type#custodian
 
 Instance: 11d46e82-1566-5772-8404-563aa31c3846
@@ -299,7 +287,7 @@ Usage: #example
 Title: "Organization 2 - HealthcareService Polikliniek 't Vaatje"
 Description: "Example consultation healthcare service named Polikliniek 't Vaatje at Organization 2."
 * identifier = 01b4a250-f331-477e-8762-1ad392473c63
-// * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+// * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -312,7 +300,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Neurochirurgie"
 Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:c79125e5-739f-4238-959c-cd5872518c1f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:c79125e5-739f-4238-959c-cd5872518c1f","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -325,7 +313,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Orthopedie"
 Description: "Example: Organization 2 - HealthcareService Orthopedie"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:9d47ca45-4166-4531-a23d-ef5fa613ece4","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:9d47ca45-4166-4531-a23d-ef5fa613ece4","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -338,7 +326,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Interne Geneeskunde"
 Description: "Example: Organization 2 - HealthcareService Interne Geneeskunde"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:f6a508bd-9455-4afa-aad0-baec0833602d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:f6a508bd-9455-4afa-aad0-baec0833602d","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -352,7 +340,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Geriatrie"
 Description: "Example: Organization 2 - HealthcareService Geriatrie"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:120325af-083c-40ee-b16e-01230fe65655","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:120325af-083c-40ee-b16e-01230fe65655","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -365,7 +353,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Urologie"
 Description: "Example: Organization 2 - HealthcareService Urologie"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:08013141-16b2-42a0-8c9a-af57cee5511b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:08013141-16b2-42a0-8c9a-af57cee5511b","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
@@ -383,7 +371,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Organization 3 - Organization Nursing department"
 Description: "Nursing department at Organization 3"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:631cf10e-42d6-4165-9907-11e2333d4a85","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:631cf10e-42d6-4165-9907-11e2333d4a85","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * name = "Nursing department at Organization 3"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
 * partOf = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
@@ -393,7 +381,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Main Building"
 Description: "Example: Organization 3 - Location Main Building"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7c5e3d2a-1f9e-4b8c-9d6a-8e2f5c3b1a4d","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer","990064773193","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 * name = "Main Building"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
@@ -409,7 +397,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Verpleeghuis Weltevree"
 Description: "Example location Verpleeghuis Weltevree managed by the nursing department of Organization 3."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:9a2b8f1c-4e7d-42a1-b3c9-2d5e8f7a6c1b","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer","990064773194","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * status = #active
 * name = "Verpleeghuis Weltevree"
 * type = $v3-RoleCode#SNF "Skilled nursing facility"
@@ -423,14 +411,16 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR R4"
 Description: "Example: Organization 3 - Endpoint FHIR R4"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:8f224548-6d50-44b6-82c5-75826ee0900f","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
 * payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3"
-* managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "34270859"
+* managingOrganization.display = "Gerimedica"
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -444,7 +434,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR STU3"
 Description: "Example: Organization 3 - Endpoint FHIR STU3"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:72a349cc-7336-4a91-873d-fc9349769e1a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:72a349cc-7336-4a91-873d-fc9349769e1a","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
@@ -464,7 +454,9 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3 (health records)"
-* managingOrganization = Reference(Organization/2c5ebd34-5961-51ec-a263-cb07a76079c0)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.value = "34270859"
+* managingOrganization.display = "Gerimedica"
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -479,7 +471,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Geriatrie"
 Description: "Example: Organization 3 - HealthcareService Geriatrie"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:4fcf98c7-b198-4d61-8b3e-5ea39e33c405","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:4fcf98c7-b198-4d61-8b3e-5ea39e33c405","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * active = true
 * providedBy = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * active = true
@@ -493,7 +485,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Verpleging"
 Description: "Example: Organization 3 - HealthcareService Verpleging"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:b48826dc-2d58-479a-bfd3-80b7a9d69757","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:b48826dc-2d58-479a-bfd3-80b7a9d69757","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
 * active = true
 * providedBy = Reference(Organization/e1ce0872-8a80-5fdd-8b30-a3b2203ef46b)
 * name = "Verpleging"
@@ -519,9 +511,6 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 // * insert BundleEntryPUT(urn:uuid:,Organization, 8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
 // * insert BundleEntryPUT(urn:uuid:,Organization, ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 // * insert BundleEntryPUT(urn:uuid:,Organization, 7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
-// * insert BundleEntryPUT(urn:uuid:,Organization, 4f95356e-77a8-56a6-9429-f32538d157f2)
-// * insert BundleEntryPUT(urn:uuid:,Organization, 4484c2f2-795a-54fc-8de6-e565ff0dce30)
-// * insert BundleEntryPUT(urn:uuid:,Organization, 2c5ebd34-5961-51ec-a263-cb07a76079c0)
 
 
 // * insert BundleEntryPUT(urn:uuid:,Endpoint, d6a4678b-755e-5ae3-bd36-67db6ae3d8c4)
