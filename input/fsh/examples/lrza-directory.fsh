@@ -94,15 +94,40 @@ Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
-Title: "Authorization: Organization 2 authorizes Nedap"
-Description: "Example: Authorization: Organization 2 authorizes Nedap"
+Title: "Authorization: Organization 2 authorizes ExampleSoft"
+Description: "Example: Authorization: Organization 2 authorizes ExampleSoft"
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * participatingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
-* participatingOrganization.identifier.value = "08013836"
-* participatingOrganization.display = "Nedap N.V."
+* participatingOrganization.identifier.value = "90001234"
+* participatingOrganization.display = "ExampleSoft B.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
+
+
+// Optional digital signature (Provenance) over the OrganizationAffiliation mandate above.
+// Signing is optional (see National Constraint "Mutation signing (optional)"); when present the LRZa
+// Directory verifies it and it is synchronized to replicas so any party may verify it independently.
+Instance: b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e
+InstanceOf: Provenance
+Usage: #example
+Title: "Signed Provenance for OrganizationAffiliation mandate (Organization 2 authorizes ExampleSoft)"
+Description: "Example: digital signature over the OrganizationAffiliation mandate 'Organization 2 authorizes ExampleSoft'. The care provider (Organization 2) signs the stored resource version with a UZI or PKIoverheid certificate. The detached JWS in signature.data is computed over the canonical JSON form of the OrganizationAffiliation using canonicalization type http://hl7.org/fhir/canonicalization/json#static (Resource.meta and narrative removed, then RFC 8785 JCS). See the [Mutation signing](signing.html) page for the step-by-step derivation of this value."
+* target = Reference(OrganizationAffiliation/c5d6c9d6-7562-589e-9b34-c20a3488daa1)
+* recorded = "2026-07-14T10:15:00Z"
+* agent[+].type = $provenance-participant-type#author
+* agent[=].who = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8) // care provider (Organization 2), responsible for the mandate
+* agent[=].who.identifier.system = "urn:oid:2.16.528.1.1007.3.3" // URA register OID; the OID-URN form urn:oid:2.16.528.1.1007.3.3.22222222 is the certificate SAN
+* agent[=].who.identifier.value = "22222222" // URA of Organization 2 (matches the certificate Subject Alternative Name)
+* signature[+].type = $signature-type#1.2.840.10065.1.12.1.1 "Author's Signature"
+* signature[=].when = "2026-07-14T10:15:00Z"
+* signature[=].who = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8) // care provider signs with its certificate
+* signature[=].who.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* signature[=].who.identifier.value = "22222222"
+* signature[=].targetFormat = #"application/fhir+json;canonicalization=http://hl7.org/fhir/canonicalization/json#static"
+* signature[=].sigFormat = #"application/jose"
+* signature[=].data = "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFBVMFVpTENKallXNXZiaUk2SW1oMGRIQTZMeTlvYkRjdWIzSm5MMlpvYVhJdlkyRnViMjVwWTJGc2FYcGhkR2x2Ymk5cWMyOXVJM04wWVhScFl5SXNJbk5wWjFRaU9pSXlNREkyTFRBM0xURTBWREV3T2pFMU9qQXdXaUlzSW5OeVEyMXpJanBiZXlKamIyMXRTV1FpT25zaWFXUWlPaUoxY200NmIybGtPakV1TWk0NE5EQXVNVEF3TmpVdU1TNHhNaTR4TGpFaUxDSmtaWE5qSWpvaVFYVjBhRzl5SjNNZ1UybG5ibUYwZFhKbEluMTlYU3dpZURWaklqcGJJazFKU1VSa2FrTkRRV3cyWjBGM1NVSkJaMGxIUVZoUmRsTnVjamhOUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVUxRVozaE9ha0V3UW1kT1ZrSkJUVTFNVmxKc1l6TlJaMWt5Vm5sa1IyeHRZVmRPYUdSSFZXZGlWMFl3V1RKb2NHSnRZMmRqYWtsM1RrUm9kMk50YkRKWldGSnNZVEpXTlV4dVFteGlWRUZsUm5jd2VVNXFRVE5OVkZGNFRYcEJNVTFxU21GR2R6QjZUbnBCTTAxVVVYaE5la0V4VFdwS1lVMUVaM2hPYWtFd1FtZE9Wa0pCVFUxTVZsSnNZek5SWjFreVZubGtSMnh0WVZkT2FHUkhWV2RpVjBZd1dUSm9jR0p0WTJkamFrbDNUa1JvZDJOdGJESlpXRkpzWVRKV05VeHVRbXhpVkVORFFWTkpkMFJSV1VwTGIxcEphSFpqVGtGUlJVSkNVVUZFWjJkRlVFRkVRME5CVVc5RFoyZEZRa0ZMWWxOdFkyaFVNSEppTldwd1Z6bEdiMjlVWjFsYVVqRkxLM05DVVhoM2RuSldkVFJUVVV4dVdEQXdUMXBvTWxWTFVXWkVOa1JOT1U4M2JsZFJVRzVTZGtoWlZrTkVOVXBzTldGa1ZUUkZVa2h0UlhneldXTlpZbTQ1VFhaNGIxYzJWMklyVTFReVFqaGtPRWR5Vkhab01XcDBjVzFLU1RCVVFraExNVzlVZWtoWGJGcEZkakV6ZGpWWmJXcElTMDFQU1RKTFJtMW9XblpHWVVjemJVeE5iRkU1YlRGc2JtTndaVWsyUlhoQ1JUVjBWMlZQTUZvMU16QmtaVnBHV1ZaaWJsWmhkemg0UWxwcVQwb3hNV1lyYmxwcFNVNW1UMFZUVWs5SlltSmpRVkpqVldaTGJWRnJRWE5GTkdsYWNrdE5hV05ZTVVWa1FuSlBTR3A1Yms5aVFXUkVWVFZLYUZkWVQxcEtWVVZ2Y2xobGRUQlRXamx3V0ZsWE5taFBlRXRSTldWR05WTk1abXhOYVhsYWRGbE1aMmRhWWxsdGRrRkpTa2gxTTFZM2IyRlJaVFJWVDJsNVkwZFBRa2s0TjFsYVEyWkRSRGhEUVhkRlFVRmhUMEpvVkVOQ1oycEJaRUpuVGxaSVVUUkZSbWRSVlRZNGRXNUpOWFZLVFd0dk9WVlROQzh2VDI5eGRHMU1SRTVRTkhkSWQxbEVWbEl3YWtKQ1ozZEdiMEZWTmpoMWJrazFkVXBOYTI4NVZWTTBMeTlQYjNGMGJVeEVUbEEwZDBSM1dVUldVakJVUVZGSUwwSkJWWGRCZDBWQ0wzcEJka0puVGxaSVVrVkZTMFJCYldocFVqRmpiVFEyWWpKc2EwOXFTWFZOVkZsMVRsUkpORXhxUlhWTlZFRjNUbmswZWt4cVRYVk5ha2w1VFdwSmVVMXFTWGRFVVZsS1MyOWFTV2gyWTA1QlVVVk1RbEZCUkdkblJVSkJRbmhxZVVORFdtSkNXRnBXVlZCQ1ZrcFZZelZSTm0xSU1saHpTREZ4VnpaMmNVNUJkVlJIU21JMFlXbFdNU3RFTUV4cWR6TnFiWGh5Y1Rka2VrOHJRMUJ3UVhoaFRGbHlkaThyWkRKNVZEWndkV1pPVVhncldXWjRNakV5T1d3d2RHWklZamxoWkcxNmNYWkxaR3BMY3pGVmFrUkdRV2R4ZVVGUk0ySk5VblJ1TVcxMU1UTjBXbkZPUlc1SVdtZFFSWGxsWmxnM1QzQnVSR2RFVEc1NmIwZHBOM00zTkZBNU5saHBkVVI0ZVRCQ2NYUkRVSHBwTkV4Tk4xVklkelJGV1U5dGIwRXZjbmRJTnpaS1prcFRVR0UxV2tFMGVEaDZPV3BpWVRrdlV5dE5VSGt4UnpGMVVHMUlRVlpEV2xSdlEyMU5lWE5pU0V0NllTOVZkQzlyV0ZSU1oxSlRlbXhzYnpjdkt6UllTVFJMTWxCU2QxVmtSMU51WW5KT2JXRmlkbVExYXpKcWEzVm1WSFJ5ZUZOUldrVkphRlpQU0ZRNFJUVmxSR3N4U3paR05VbE1XRTQ1VG1kNmJVMDRZV04zTWtWNVNGbG5QU0pkZlEuLkVaRXNuYUo0QlAtUFpOMVNaUE5iZHdXUHMybGxuQVhkeW5JRE5PUVFHOXgzTGJ4d1ItcUR1SFBjTWRVclU1aWtEVVpKbFB5eEVjODNKdW9keGo4S1JoRVBScDVlSkVCaVh1NU5lZlFEb25YZjdzdWUzV29RVXVNdS1sQmhIbkYwQzNvQ2cyUnkyVUZ3SVZlbnhFLU05eGtiVXRZUTFVaTRjblJRRnRSM3N3VnlVa3A3WFBxakd2dUpnXzJBVWpuNVU0amVjTjV6VkM5SVE1MXJ0YVJVR0hpU0V5elRSa3pxeUpjc2Vha0szRVpNYmN1YnJTMDZKZl8xS2IxbXhsOXZPQkxkYVRVWHFfaWRROUd2TnVjWTZBank2aENLak1jMGE5TjJvQmxGc0dkdDlzWVh0dkNhV2VndW9MOEFwRUZMVHo0dVBtUlBBbWp0V0U3Nmd6OWVhQQ=="
+
 
 Instance: 8ee51b54-bafb-562d-87d1-9429f8bbfc1b
 InstanceOf: NlGfOrganizationAffiliation
@@ -209,7 +234,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
 * contact[+].system = #email
-* contact[=].value = "info@nedap.example.org"
+* contact[=].value = "info@examplesoft.example.org"
 * contact[=].use = #work
 * address = "https://cp2-test.example.org/fhirr4"
 
@@ -230,7 +255,7 @@ Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
 * contact[+].system = #email
-* contact[=].value = "info@nedap.example.org"
+* contact[=].value = "info@examplesoft.example.org"
 * contact[=].use = #work
 * address = "https://cp2-test.example.org/dicom-wado-rs"
 
@@ -266,7 +291,7 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
 * contact[+].system = #email
-* contact[=].value = "info@nedap.example.org"
+* contact[=].value = "info@examplesoft.example.org"
 * contact[=].use = #work
 * address = "https://cp2-test.example.org/fhirstu3"
 

@@ -74,6 +74,13 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+  * resource[+]
+    * insert Expectation(SHALL)
+    * type = #Provenance
+    * documentation = "A Data Source MAY submit a signed Provenance that references the stored resource version(s). When submitted, the LRZa Directory SHALL verify the signature against the relevant trust chain (e.g. an UZI/PKIo-certificate) and reject an invalid signature with an OperationOutcome. Provenance records are stored and synchronized to local replicas (ITI-90-NL/ITI-91-NL). The LRZa Directory SHALL NOT require a signature to accept a mutation."
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #create
   * interaction[+]
     * insert Expectation(SHALL)
     * code = #transaction
