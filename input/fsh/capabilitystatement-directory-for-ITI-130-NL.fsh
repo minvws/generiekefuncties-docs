@@ -77,7 +77,7 @@ Usage: #definition
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Provenance
-    * documentation = "Digitally signing mutations with a FHIR Provenance resource is OPTIONAL. The LRZa Directory SHALL NOT require a signature to accept a mutation. A Data Source MAY submit a signed Provenance that references the stored resource version(s); when present, the LRZa Directory SHALL verify the signature against the relevant trust chain (e.g. an UZI/PKIo-certificate) and reject an invalid signature with an OperationOutcome. Provenance records are stored and synchronized to local replicas (ITI-90-NL/ITI-91-NL). As a growth path, mandatory signing may be introduced later."
+    * documentation = "A Data Source MAY submit a signed Provenance that references the stored resource version(s). When submitted, the LRZa Directory SHALL verify the signature against the relevant trust chain (e.g. an UZI/PKIo-certificate) and reject an invalid signature with an OperationOutcome. Provenance records are stored and synchronized to local replicas (ITI-90-NL/ITI-91-NL). The LRZa Directory SHALL NOT require a signature to accept a mutation."
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
