@@ -13,7 +13,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * connectionType ^binding.extension[=].extension[+].url = "key"
 * connectionType ^binding.extension[=].extension[=].valueId = "nl-gf-connection-types"
 * connectionType ^binding.extension[=].extension[+].url = "purpose"
-* connectionType ^binding.extension[=].extension[=].valueCode = #extensible
+* connectionType ^binding.extension[=].extension[=].valueCode = #required
 * connectionType ^binding.extension[=].extension[+].url = "valueSet"
 * connectionType ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs"
 * payloadType from NlGfPayloadTypeVS (required)
@@ -46,6 +46,13 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * providedBy only Reference(NlGfOrganization)
 * type from NlGfServiceTypeVS (required)
 * type.extension contains SupportedActivityDefinitions named supportedActivityDefinitions 0..*
+* specialty ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
+* specialty ^binding.extension[=].extension[+].url = "key"
+* specialty ^binding.extension[=].extension[=].valueId = "nl-gf-healthcare-specialty"
+* specialty ^binding.extension[=].extension[+].url = "purpose"
+* specialty ^binding.extension[=].extension[=].valueCode = #required
+* specialty ^binding.extension[=].extension[+].url = "valueSet"
+* specialty ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-healthcare-specialty-vs"
 
 
 Profile: NlGfLocation
@@ -69,7 +76,7 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * type ^binding.extension[=].extension[+].url = "key"
 * type ^binding.extension[=].extension[=].valueId = "nl-gf-location-types"
 * type ^binding.extension[=].extension[+].url = "purpose"
-* type ^binding.extension[=].extension[=].valueCode = #extensible
+* type ^binding.extension[=].extension[=].valueCode = #required
 * type ^binding.extension[=].extension[+].url = "valueSet"
 * type ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs"
 
@@ -149,7 +156,7 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * name 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
 * type 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization
-* type from NlGfOrgTypesVS (extensible)
+* type from NlGfOrgTypesVS (required)
 // * type ^slicing.discriminator[+].type = #value
 // * type ^slicing.discriminator[=].path = "$this"
 // * type ^slicing.rules = #open

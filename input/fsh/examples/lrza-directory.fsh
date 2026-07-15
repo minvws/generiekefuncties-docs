@@ -34,8 +34,8 @@ Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "22222222", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
 * name = "example Hospital"
-* type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
-* type[+] = $sct#22232009 "Hospital"
+* type[+].coding[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
+* type[=].coding[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
 * telecom[=].use = #work

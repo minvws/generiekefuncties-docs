@@ -23,6 +23,17 @@ Description: "The Location Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfSBICS
+* include codes from valueset http://terminology.hl7.org/ValueSet/v3-ServiceDeliveryLocationRoleType
+
+
+ValueSet: NlGfHealthcareSpecialtyVS
+Id: nl-gf-healthcare-specialty-vs
+Title: "NL GF HealthcareService Specialty ValueSet"
+Description: "Specialty codes for HealthcareService, combining the core practice/specialty codes with the Vektis COD016-VEKT 'Zorgverlenersspecificatie (subberoepsgroep)' codes."
+* ^status = #active
+* ^experimental = true
+* include codes from valueset http://hl7.org/fhir/ValueSet/c80-practice-codes
+* include codes from system http://ei.vektis.nl/codelijsten/COD016-VEKT
 
 
 ValueSet: NlGfConnectionTypesVS
@@ -33,6 +44,7 @@ Description: "Authorization and endpoint connection type codes supported by NL G
 * ^experimental = true
 * include codes from system NlGfAuthorizationServerCS
 * http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type#hti-smart-on-fhir
+* include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-connection-type
 
 
 ValueSet: NlGfPayloadTypeVS

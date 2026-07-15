@@ -27,8 +27,8 @@ Title: "Organization: Zuiderzeeziekenhuis"
 Description: "Example: Organization that represents the hospital 'Zuiderzeeziekenhuis'"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura","11111112","http://fhir.nl/fhir/NamingSystem/kvk", "50000539")
 * name = "Zuiderzeeziekenhuis"
-* type[+] = NlGfSBICS#8610 "Hospital activities"
-* type[+] = $sct#22232009 "Hospital"
+* type[+].coding[+] = NlGfSBICS#8610 "Hospital activities"
+* type[=].coding[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
 * telecom[=].use = #work

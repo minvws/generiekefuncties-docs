@@ -26,7 +26,7 @@ Description: "Example: Software Vendor - HAPIS vendor"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494750", "http://fhir.nl/fhir/NamingSystem/kvk", "50000530")
 * name = "HAPIS Vendor B.V."
 * type[+] = NlGfSBICS#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
+* type[=].text = "IT vendor organization"
 
 Instance: org-1001
 InstanceOf: NlGfOrganization
@@ -162,7 +162,7 @@ Description: "Example: Software Vendor - HIS vendor A"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494755", "http://fhir.nl/fhir/NamingSystem/kvk", "50000536")
 * name = "HIS Vendor A B.V."
 * type[+] = NlGfSBICS#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
+* type[=].text = "IT vendor organization"
 
 Instance: endpoint-1003
 InstanceOf: NlGfEndpoint
@@ -192,5 +192,5 @@ Description: "Example: Software Vendor - HIS vendor B"
 * insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "51494758", "http://fhir.nl/fhir/NamingSystem/kvk", "50000538")
 * name = "HIS Vendor B B.V."
 * type[+] = NlGfSBICS#6210 "Computer programming activities"
-* type[+].text = "IT vendor organization"
+* type[=].text = "IT vendor organization"
 

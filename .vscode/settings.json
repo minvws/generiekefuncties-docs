@@ -1,0 +1,7 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "sushi": true,
+        "./_genonce.sh": true,
+        "tee": true
+    }
+}
