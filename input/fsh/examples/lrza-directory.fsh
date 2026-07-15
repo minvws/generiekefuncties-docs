@@ -124,10 +124,12 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 2 authorizes Nedap"
 Description: "Example: Authorization: Organization 2 authorizes Nedap"
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","http://fhir.nl/fhir/NamingSystem/ura", "22222222")
 * active = true
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
-* participatingOrganization = Reference(Organization/4484c2f2-795a-54fc-8de6-e565ff0dce30)
+* participatingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participatingOrganization.identifier.value = "08013836"
+* participatingOrganization.display = "Nedap N.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 
