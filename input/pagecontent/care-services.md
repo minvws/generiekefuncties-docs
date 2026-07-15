@@ -215,7 +215,7 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 
 
 #### OrganizationAffiliation
-OrganizationAffiliation resources are used to represent relationships between organizations, such as a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
+OrganizationAffiliation resources are used to represent relationships between organizations, primarily a software vendor managing the Endpoint that is used by a care provider. The LRZa Directory uses OrganizationAffiliations to authorize incoming create and update interactions of service providers. It could also be used to represent multiple care providers working together under some agreement (e.g. in a region).
 The [NL-GF-OrganizationAffiliation profile](./StructureDefinition-nl-gf-organizationaffiliation.html) is used to represent organizational relationships in this guide. Key attributes:
 
 | Attribute | Card. | Description |
