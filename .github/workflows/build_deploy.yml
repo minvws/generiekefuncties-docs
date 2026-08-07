@@ -59,6 +59,16 @@ jobs:
             -v ${{ github.workspace }}/ig.ini:/app/ig.ini \
             -v ${{ github.workspace }}/sushi-config.yaml:/app/sushi-config.yaml \
             localhost:5000/nuts-foundation/publisher:latest
+      - name: Fix language redirect
+        # The fhir2.base.template ships a buggy lang-redirects.js: the `return`
+        # sits inside the for-loop, so only en-* browsers get redirected to /en/
+        # and everyone else (e.g. nl-NL) lands on the blank root index.html.
+        # Overwrite every generated copy with the corrected version from the repo.
+        run: |
+          find ./output -name lang-redirects.js -print | while read -r f; do
+            cp .github/fixes/lang-redirects.js "$f"
+            echo "patched $f"
+          done
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
