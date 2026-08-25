@@ -1,0 +1,47 @@
+@startuml care-services-supplementary-register-lookup
+
+skinparam roundcorner 20
+skinparam defaultFontName Arial
+hide footbox
+
+!pragma teoz true
+
+participant QC as "Query Client\n(e.g. EHR)"
+participant SR as "Supplementary Directory\nreplica"
+participant LR as "LRZa replica"
+participant EP as "Endpoint\n@care provider"
+
+activate QC
+
+group Phase 1: resolve register-local identifier to national identifier
+ QC -> SR: GET /Organization?identifier=\n  http://register.example.nl/fhir/NamingSystem/rsr-id|RSR-4711
+ activate SR
+ SR -> QC: Organization (register-local id + URA/KvK)
+ deactivate SR
+ QC -> QC: If the Organization has no national identifier,\nfollow partOf up to the top-level Organization
+end
+
+note over QC
+  The two replicas are never merged.
+  The join is on the **identifier value**
+  (URA/KvK), not on a FHIR Reference.
+end note
+
+group Phase 2: national identifier to Endpoint
+ QC -> LR: GET /Organization?identifier=\n  http://fhir.nl/fhir/NamingSystem/ura|12345678
+ activate LR
+ LR -> QC: Organization (LRZa content)
+ QC -> LR: GET /Endpoint/[id] for the Organization
+ LR -> QC: Endpoint(s)
+ deactivate LR
+ QC -> QC: Select Endpoint: status active, period current,\nmatching connectionType / payloadType
+ QC -> QC: If the Organization is inactive or not found\nin the LRZa replica: no result
+end
+
+activate EP
+QC -> EP: Exchange using the selected Endpoint
+deactivate EP
+
+deactivate QC
+
+@enduml
