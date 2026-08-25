@@ -5,7 +5,7 @@ Description: "The Service Types supported by the NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from system http://terminology.hl7.org/CodeSystem/service-type
-* include codes from system https://informatiemodel.istandaarden.nl/informatiemodel/iwlz/estafette/2.4/codelijsten/cod163
+* include codes from system NlGfZorgvragenCS
 
 ValueSet: NlGfOrgTypesVS
 Id: nl-gf-org-types-vs
@@ -34,7 +34,6 @@ Description: "Specialty codes for HealthcareService, combining the core practice
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/c80-practice-codes
 * include codes from system http://ei.vektis.nl/codelijsten/COD016-VEKT
-
 
 ValueSet: NlGfConnectionTypesVS
 Id: nl-gf-connection-types-vs
