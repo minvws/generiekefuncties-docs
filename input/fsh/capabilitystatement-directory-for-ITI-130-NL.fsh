@@ -26,6 +26,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #delete
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Location
@@ -38,6 +41,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #delete
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Organization
@@ -50,6 +56,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #delete
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Endpoint
@@ -62,6 +71,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #delete
   * resource[+]
     * insert Expectation(MAY)
     * type = #OrganizationAffiliation
@@ -74,6 +86,9 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #update
+    * interaction[+]
+      * insert Expectation(SHALL)
+      * code = #delete
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Provenance

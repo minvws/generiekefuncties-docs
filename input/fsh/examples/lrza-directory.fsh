@@ -23,7 +23,7 @@ Description: "Example: LRZa - Organization 1 - Organization"
 * address.city = "Ulft"
 * address.postalCode = "7071 PT"
 * endpoint[+] = Reference(Endpoint/d6a4678b-755e-5ae3-bd36-67db6ae3d8c4) // Endpoint of this organization (Organization 1) from Data Source 1
-* endpoint[+] = Reference(Endpoint/53c03a2e-53e9-4994-827c-98f6b4caf897) // Superseded Endpoint of the previous EHR system (kept, see no-deletes constraint)
+* endpoint[+] = Reference(Endpoint/53c03a2e-53e9-4994-827c-98f6b4caf897) // Superseded Endpoint of the previous EHR system
 
 
 
@@ -194,7 +194,7 @@ Instance: 53c03a2e-53e9-4994-827c-98f6b4caf897
 InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (superseded)"
-Description: "Example: superseded Endpoint of the previous EHR system of Organization 1. In line with the no-deletes constraint it remains registered: period.end marks the cutover to the replacing Endpoint and the status was set to off after the old system was decommissioned."
+Description: "Example: superseded Endpoint of the previous EHR system of Organization. Period.end marks the cutover to the replacing Endpoint and the status was set to off after the old system was decommissioned."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:88037f33-3bc5-4e93-8735-091f0f3d1b76","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #off
 
