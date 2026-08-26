@@ -352,7 +352,7 @@ Description: "Example: Organization 2 - HealthcareService Orthopedie"
 * type.coding[+] = NlGfZorgvragenCS#msz.orthopedie "Orthopaedics"
 * type.coding[+] = $service-type#218 "Orthopaedic Surgery"
 * type.coding[+] = NlGfZorgvragenCS#msz.orthopedie.gewrichtsaandoeningen "Joint conditions"
-* type[+] = NlGfZorgvragenCS#msz.orthopedie.traumatologie "Traumatology"
+* type.coding[+] = NlGfZorgvragenCS#msz.orthopedie.traumatologie "Traumatology"
 * specialty[+].coding = $sct#394801008 "Surgery-Trauma and orthopedics"
 
 Instance: 02b32653-f18e-5e09-bab4-f49579d4f261
