@@ -35,6 +35,7 @@ Description: "Example: care provider Stichting Rivas Zorggroep, mapped from its 
 * telecom[+].system = #url
 * telecom[=].value = "https://www.rivas.nl"
 * telecom[=].use = #work
+* endpoint[+] = Reference(Endpoint/6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b)
 * address.text = "Banneweg 57, 4204 AA Gorinchem"
 * address.line = "Banneweg 57"
 * address.line.extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName"
@@ -392,6 +393,8 @@ Description: "Example: combined gynaecology and obstetrics outpatient clinic at 
 * name = "Gynaecologie / verloskunde"
 * providedBy = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
 * location[+] = Reference(Location/e4c09d6e-bf14-49f5-a14b-ff7514f9c6fc)
+* endpoint[+] = Reference(Endpoint/c40c117e-c6d9-4724-97af-1b6b6b788c9d)
+* endpoint[+] = Reference(Endpoint/93b44d3e-e358-4f39-b9b6-6f97ac21e891)
 * specialty[+].coding = $sct#394585009 "Obstetrics and gynecology"
 // Allowed referrers (Zorgverleners that may use / refer to this service)
 * eligibility[+].code.text = "Physician Assistant"
@@ -455,6 +458,8 @@ Description: "Example: district nursing / home care (wijkverpleging) service of 
 * providedBy = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
 * location[+] = Reference(Location/5cc69e99-b69b-4536-abd8-5d0c0701df44)
 * location[+] = Reference(Location/adb8ac46-cb8b-4e99-ab68-4e641549cda9)
+* endpoint[+] = Reference(Endpoint/c40c117e-c6d9-4724-97af-1b6b6b788c9d)
+* endpoint[+] = Reference(Endpoint/93b44d3e-e358-4f39-b9b6-6f97ac21e891)
 // Allowed referrers (Zorgverleners that may use / refer to this service)
 * eligibility[+].code.text = "Basisarts"
 * eligibility[+].code.text = "Arts Maatschappij en Gezondheid"
@@ -483,5 +488,62 @@ Description: "Example: district nursing / home care (wijkverpleging) service of 
 * type[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.palliatieve-zorg "Palliative care"
 * type[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.overige-zorgvragen-verpleging-en-verzorging "Other care questions Nursing & personal care"
 * type[+] = NlGfZorgvragenCS#hulpmiddelen.overige-hulpmiddelen "Other assistive devices"
+
+// // ----------------------------------------------------------------
+// // Endpoints (managed by Rivas)
+
+Instance: c40c117e-c6d9-4724-97af-1b6b6b788c9d
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Rivas - HL7 v2 Endpoint (requests)"
+Description: "Example: HL7 v2 (MLLP) endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d5481a9e-c6d9-49a7-b09c-e3624bac136c", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* status = #active
+* payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
+* payloadMimeType[+] = #"application/hl7-v2"
+* connectionType = $endpoint-connection-type#hl7v2-mllp "HL7 v2 MLLP"
+* name = "Rivas HL7 v2 requests endpoint"
+* managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
+* address = "mllp://hl7v2.rivas.example.org:2575"
+
+Instance: 93b44d3e-e358-4f39-b9b6-6f97ac21e891
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Rivas - FHIR STU3 Endpoint (requests)"
+Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:8cd9c162-cac5-4445-a097-d0c337fe1fc1", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* status = #active
+* payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* connectionType = $endpoint-connection-type#hl7-fhir-rest "HL7 FHIR"
+* name = "Rivas FHIR STU3 requests endpoint"
+* managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
+* address = "https://fhir-stu3.rivas.example.org/requests"
+
+Instance: 6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Rivas - FHIR STU3 Endpoint (BGZ)"
+Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep that offers the Basisgegevensset Zorg (BGZ) across multiple data categories. Referenced from the Rivas Organization."
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:650bf86c-a21f-450c-a4e9-5fcb02ab2ca4", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* status = #active
+* payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
+* payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
+* payloadType[+].coding = nl-gf-data-categories-cs#Alert "Alert"
+* payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
+* payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
+* payloadType[+].coding = nl-gf-data-categories-cs#MedicationUse "Medication Use"
+* payloadType[+].coding = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
+* payloadType[+].coding = nl-gf-data-categories-cs#Device "Device"
+* payloadType[+].coding = nl-gf-data-categories-cs#Procedure "Procedure"
+* payloadType[+].coding = nl-gf-data-categories-cs#Encounter "Encounter"
+* payloadType[+].coding = nl-gf-data-categories-cs#ObservationVitalSigns "Observation (category: Vital Signs)"
+* payloadType[+].coding = nl-gf-data-categories-cs#ObservationLaboratory "Observation (category: Laboratory)"
+* payloadType[+].coding = nl-gf-data-categories-cs#Nutrition "Nutrition"
+* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* connectionType = $endpoint-connection-type#hl7-fhir-rest "HL7 FHIR"
+* name = "Rivas BGZ FHIR STU3 endpoint"
+* managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
+* address = "https://fhir-stu3.rivas.example.org/bgz"
 
 
