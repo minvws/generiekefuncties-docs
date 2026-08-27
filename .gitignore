@@ -6,6 +6,7 @@ output
 fsh-generated
 input-cache
 build-cache
+rivas
 
 # Windows generated files #
 ###########################
