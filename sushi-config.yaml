@@ -86,6 +86,12 @@ pages:
         - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
           valueCode: draft
 
+  authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
+    title: "Memo: Harmonisatie authenticatie en autorisatie BgZ en eOverdracht"
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: informative
+
   # authorization.md:
   #   title: Authorization
   #   extension:

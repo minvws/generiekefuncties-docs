@@ -20,6 +20,7 @@ Concept
 | Versie | Status | Datum | Auteur | Wijziging |
 |--------|--------|-------|--------|-----------|
 | 0.9 | Concept | Juli 2026 | VWS / Review | Aanpassingen verwerkt |
+| 0.95 | Geaccordeerd | 18 augustus 2026 | VWS / MT DICIO | Geaccordeerd door MT DICIO |
 
 ## 2. Inleiding
 In de Nederlandse zorg moeten steeds meer medische gegevens digitaal uitgewisseld worden tussen zorgaanbieders. Twee belangrijke uitwisselingen zijn de Basisgegevensset Zorg (BgZ), waarmee medisch specialisten patiëntgegevens gericht delen, en eOverdracht, de verpleegkundige overdracht. Beide zijn wettelijk verplicht onder de Wegiz en verlopen in toenemende mate over onderling verbonden technische infrastructuren.  

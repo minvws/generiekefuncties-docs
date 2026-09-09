@@ -1,8 +1,10 @@
 ### Introduction
 
-This FHIR Implementation Guide specifies the technical components of the Generic Function Authentication, a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS). GF Authentication describes a harmonized approach to authentication and authorization for the healthcare data exchanges *Basisgegevensset Zorg* (BgZ) and *eOverdracht* (nursing handover), both mandatory under the Wegiz.
+This FHIR Implementation Guide specifies the technical components of the Generic Function Authentication, a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS). GF Authentication describes a harmonized approach to authentication and authorization for the healthcare data exchanges *Basisgegevensset Zorg* (BgZ) and *eOverdracht* (nursing handover), both mandatory under the Wegiz. 
 
 The goal is a single, interoperable method for reliably establishing the identity of the exchanging healthcare organizations (authentication) and determining what an established identity is allowed to do (authorization). Harmonization avoids the situation where healthcare providers must operate two comparable facilities and decide per exchange which method applies, which is more expensive and error-prone.
+
+This Implementation Guide is based on this memo [*Harmonisatie van authenticatie en autorisatie voor de gegevensuitwisselingen BgZ en eOverdracht*](./authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html).
 
 Key design principles include:
 
