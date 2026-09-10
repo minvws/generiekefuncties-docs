@@ -334,7 +334,8 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 A consuming system knows an organization only by an identifier assigned by a supplementary register (see [Supplementary Registers](#supplementary-registers)), and needs to reach that organization's Endpoint:
 - The Query Client searches the replica of the supplementary register for an `Organization` with the register-local identifier. If the resulting `Organization` carries no national identifier, it is a child organization and the Query Client follows `partOf` up to the top-level `Organization`.
 - The Query Client takes the national identifier **value** (URA or KvK) from that `Organization`.
-- The Query Client searches the LRZa replica for the `Organization` with that national identifier, and continues with endpoint discovery as in [use case 4](#use-case-4-endpoint-discovery).  
+- The Query Client searches the LRZa replica for the `Organization` with that national identifier, and continues with endpoint discovery as in [use case 4](#use-case-4-endpoint-discovery).
+
 If the `Organization` is absent or inactive in the LRZa replica, the lookup yields no result: the LRZa replica is authoritative for the validity of the national identifier.
 
 <div>
