@@ -48,6 +48,25 @@ De opvragende kant gebruikt het UZI-certificaat (URA) van de zorgaanbieder zelf.
 
 In beide varianten moet de opvragende kant over de URA-sleutel beschikken. Dat kan doordat de zorgaanbieder zelf een ondertekendienst draait, of — in SaaS-situaties gangbaar — doordat de zorgaanbieder de leverancier **machtigt** om het certificaat namens haar aan te vragen en te beheren, waarbij de private sleutel op de infrastructuur van de leverancier staat (de zorgaanbieder blijft juridisch de abonnee).
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SP as Service provider (URA-sleutel of gemachtigd)
+    participant AS as Authorization Server (bronhouder-zijde)
+    participant RS as Resource Server FHIR
+    participant CA as UZI-register (OCSP/CRL)
+    SP->>SP: Onderteken client_assertion met URA-sleutel van de zorgaanbieder<br/>(variant a, variant b: mTLS met URA-clientcertificaat)
+    SP->>AS: POST /token (mTLS)<br/>grant_type=client_credentials<br/>client_assertion=private_key_jwt (URA)
+    AS->>AS: Valideer client_assertion<br/>(handtekening via JWKS / UZI-certificaat)
+    AS->>CA: Intrekkingscontrole URA-certificaat (OCSP/CRL)
+    CA-->>AS: Certificaatstatus (good / revoked)
+    AS-->>SP: access_token
+    SP->>RS: FHIR-verzoek (mTLS) + Bearer access_token
+    RS->>CA: Intrekkingscontrole URA-certificaat (OCSP/CRL)
+    CA-->>RS: Certificaatstatus (good / revoked)
+    RS-->>SP: 200 OK, FHIR-resource
+```
+
 - **Beveiliging — Laag.** Door de SP ondertekende of aangeboden verklaringen zijn cryptografisch niet te onderscheiden van die van de zorgaanbieder zelf; er is geen aparte, herleidbare systeemidentiteit (spanning met NEN 7513). Variant (a) ondertekent access tokens per zorgaanbieder, wat afwijkt van gangbaar OAuth-gebruik (het token is normaliter *opaque* voor de client). Naarmate één leverancier meer zorgaanbieders bedient, stapelt het bezit van URA-sleutels van derden zich op — precies wat leveranciers onwenselijk noemen.
 - **Implementatie-inspanning — Laag (losse koppeling) / Hoog (bij opschaling).** Voor één koppeling eenvoudig, maar elke zorgaanbieder heeft een URA-certificaat nodig en een zorgaanbieder met meerdere leveranciers mogelijk meerdere (kostbare) certificaten; variant (a) vergt daarnaast niet-standaard sleutelkeuze en client-side tokenvalidatie.
 - **Duurzaamheid — Laag/Midden.** Sleutel- en certificaatbeheer verspreid over veel partijen; certificaatrotatie of -intrekking raakt alle betrokken koppelingen tegelijk.
@@ -70,10 +89,13 @@ sequenceDiagram
     participant SP as Service provider (eigen PKIo-sleutel)
     participant AS as Authorization Server (bronhouder-zijde)
     participant RS as Resource Server FHIR
+    participant CA as UZI-register (OCSP/CRL) + statuslijst
 
     SP->>SP: Bouw mandaat (subject_token)<br/>ondertekend door zorgaanbieder (URA, x5c)<br/>may_act = SP-identiteit
     SP->>AS: POST /token (mTLS)<br/>grant_type=token-exchange<br/>subject_token=mandaat<br/>client_assertion=SP (private_key_jwt)
     AS->>AS: Valideer SP-authenticatie én mandaat <br/>(handtekening URA via JWKS: may_act matcht SP) 
+    AS->>CA: Intrekkingscontrole: URA-certificaat (OCSP/CRL)<br/>en mandaatstatus (Token Status List, B4)
+    CA-->>AS: Status (good / revoked)
     AS-->>SP: access_token (sub=zorgaanbieder, act=SP)
     SP->>RS: FHIR-verzoek (mTLS) + Bearer access_token
     RS-->>SP: 200 OK, FHIR-resource
@@ -96,8 +118,8 @@ sequenceDiagram
     participant DIR as Lokale LRZa-replica
     SP->>AS: POST /token (mTLS)<br/>client-authenticatie (private_key_jwt/mTLS)<br/>gevraagde zorgaanbieder = URA
     AS->>DIR: Zoek OrganizationAffiliation<br/>organization=URA, participatingOrganization=SP
-    DIR-->>AS: Actieve affiliatie (+ optionele getekende Provenance)
-    AS->>AS: Verifieer mandaat, handtekening en beleid
+    DIR-->>AS: Affiliatie (active, code + optionele getekende Provenance)
+    AS->>AS: Intrekkingscontrole = OrganizationAffiliation.active == true<br/>(intrekking = active=false, gepropageerd via ITI-91-NL)<br/>+ verifieer handtekening en beleid
     AS-->>SP: access_token
 ```
 
@@ -128,6 +150,8 @@ sequenceDiagram
     AS->>TA: Haal Subordinate Statements op tot Trust Anchor
     TA-->>AS: Entity statements (trust chain)
     AS->>AS: Valideer trust chain + metadata policy<br/>(evt. trust mark 'mag namens zorgaanbieder')
+    AS->>TA: Intrekkingscontrole: geldigheid entity statements (exp/iat)<br/>en trust-mark-status (revoked?)
+    TA-->>AS: Statements/trust mark actief (of ingetrokken)
     AS-->>SP: access_token
 ```
 
