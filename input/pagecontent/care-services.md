@@ -256,6 +256,12 @@ The LRZa-Directory SHALL only support creation/updates of OrganizationAffiliatio
 Beyond transport security, mutations MAY be signed at record level with a FHIR `Provenance` resource (see National Constraint "Mutation signing (optional)"). Signing is currently *not* mandatory: the LRZa Directory accepts mutations without a `Provenance`. When a `Provenance` is present, the LRZa Directory SHALL verify its signature, and parties that wish to (replica operators, auditors, supervisors) MAY verify it as well. A `Provenance` is signed with a PKIoverheid certificate of the organization; because not every care provider holds a PKIoverheid certificate, a UZI certificate is provisionally allowed for signing the `Provenance` on the `OrganizationAffiliation` (the mandate expressing which Data Source may mutate on behalf of which care provider). This makes the provenance chain of each accepted record independently verifiable and detectable across the whole system, without introducing a new certificate chain. The [Resource signing](signing.html) page gives a worked example of how such a signature is created and verified.
 
 
+### Supplementary Registers
+
+Other registers already exist alongside the LRZa that may hold organization information that is relevant for addressing. It would be efficient for users (service providers) if those registers were to offer the same API as specified here, using the same ITI-90-NL and ITI-91-NL interactions described in the relevant CapabilityStatements. In that model, the [Update Client](#update-client) can replicate each register into its own local replica, and the [Query Client](#query-client) can integrate the results from multiple replicas using the business identifiers that are present in each register, such as KvK number, URA, or a custodian-assigned identifier.
+
+The source register remains the authority for its own data, while the consumer combines information across local replicas by matching identifier values. This avoids requiring a central merge while still enabling cross-register lookup and endpoint resolution. See [Use case 6](#use-case-6-two-phase-lookup-via-a-supplementary-register) for an example.
+
 ### Example use cases
 
 
@@ -317,6 +323,19 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 
 <div>
 {% include care-services-endpoint-transition-use-case.svg %}
+</div>
+
+
+#### Use Case #6: Two-phase lookup via a Supplementary Register
+A consuming system knows an organization only by an identifier assigned by a supplementary register (see [Supplementary Registers](#supplementary-registers)), and needs to reach that organization's Endpoint:
+- The Query Client searches the replica of the supplementary register for an `Organization` with the register-local identifier. If the resulting `Organization` carries no national identifier, it is a child organization and the Query Client follows `partOf` up to the top-level `Organization`.
+- The Query Client takes the national identifier **value** (URA or KvK) from that `Organization`.
+- The Query Client searches the LRZa replica for the `Organization` with that national identifier, and continues with endpoint discovery as in [use case 4](#use-case-4-endpoint-discovery).
+
+If the `Organization` is absent or inactive in the LRZa replica, the lookup yields no result: the LRZa replica is authoritative for the validity of the national identifier.
+
+<div>
+{% include care-services-supplementary-register-lookup.svg %}
 </div>
 
 
