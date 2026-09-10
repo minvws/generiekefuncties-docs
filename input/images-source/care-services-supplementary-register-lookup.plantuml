@@ -21,7 +21,7 @@ group Phase 1: resolve register-local identifier to national identifier
  QC -> QC: If the Organization has no national identifier,\nfollow partOf up to the top-level Organization
 end
 
-note over QC
+note right of SR
   The two replicas are never merged.
   The join is on the **identifier value**
   (URA/KvK), not on a FHIR Reference.

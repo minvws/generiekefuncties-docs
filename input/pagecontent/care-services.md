@@ -262,65 +262,9 @@ Beyond transport security, mutations MAY be signed at record level with a FHIR `
 
 ### Supplementary Registers
 
-#### Introduction
+Other registers already exist alongside the LRZa that may hold organization information that is relevant for addressing. It would be efficient for users (service providers) if those registers were to offer the same API as specified here, using the same ITI-90-NL and ITI-91-NL interactions described in the relevant CapabilityStatements. In that model, the [Update Client](#update-client) can replicate each register into its own local replica, and the [Query Client](#query-client) can integrate the results from multiple replicas using the business identifiers that are present in each register, such as KvK number, URA, or a custodian-assigned identifier.
 
-Besides the LRZa, other registers in the Dutch healthcare sector can hold information that is relevant for addressing. Such a register may be national or local, and many were established — with their own identifier schemes — before a national directory was available for the exchanges they support. It publishes statements about organizations. Examples of such statements are:
-
-- an **identifier mapping**: "we know this organization and assigned it identifier `RSR-4711` in our own scheme";
-- a **membership or qualification**: "this organization participates in our network, scheme or agreement".
-
-A register is not limited to these; it publishes whatever its scheme calls for. This section defines how such a register — a **Supplementary Directory** — publishes its content so that consumers can use it alongside the LRZa Directory, and what a register SHALL implement in order to claim conformance with this specification. It does so to support the move towards URA and KvK as the common identifiers for addressing: an existing scheme can keep serving its exchanges while the organizations in it are related to their national identifier, so parties can adopt URA/KvK at their own pace rather than in a single step.
-
-The problem this solves is a two-phase lookup. A consumer that only knows a register-local identifier first resolves it to a national identifier (URA/KvK) at the Supplementary Directory, and then uses that national identifier against the LRZa replica to find the Endpoint, exactly as described in [use case 4](#use-case-4-endpoint-discovery). Where a party can already be addressed by URA or KvK directly, that single lookup is the preferred route; the resolution step below is for the cases where it cannot yet.
-
-The LRZa Directory can hold a register-local identifier on a resource alongside the national identifier, but it does not validate such an identifier, does not check it for uniqueness, and does not guarantee its presence. A consumer therefore cannot rely on the LRZa Directory to resolve a register-local identifier; that resolution is what the Supplementary Directory provides.
-
-The design goal of this section is that this costs a consumer no new replication machinery. A Supplementary Directory serves the *same* transactions as the LRZa Directory, so the [Update Client](#update-client) that already replicates the LRZa can replicate a Supplementary Directory without modification — only its base URL differs. Integrating one or more supplementary registers is then a matter of running additional instances of software that already exists.
-
-#### Design principle: separate replicas, joined by identifier
-
-Content from different sources is **not merged**. Each source register is replicated into its own local replica, and a consumer that needs information from several sources queries each replica separately. There is no reconciliation of resources across sources and no master-data merge anywhere in this model.
-
-This has a number of consequences that are normative for a Supplementary Directory:
-
-1. Two registers MAY each publish their own `Organization` resource for the same real-world organization. Because these resources live in separate replicas and are never merged, this is expected and is not a conflict.
-1. Resource identity (`Organization.id`) is only meaningful within the replica it came from. A consumer SHALL NOT assume that an `id` from one source refers to anything in another source.
-1. The primary link between a Supplementary Directory and the LRZa is the **national business identifier value** (URA or KvK), carried as an `Organization.identifier` value. Cross-source resolution is performed by searching on that value, not by dereferencing a `Reference` across replicas.
-1. A register-local identifier MAY serve as a secondary link. Once the national identifier has restricted the search to the sub-graph of a single organization in the LRZa replica, a register-local identifier that is also present there can be used to select a specific node within that sub-graph. Because the LRZa does not validate such identifiers, this is a convenience within an already-restricted scope, not a substitute for resolving the national identifier first.
-
-Keeping the stores separate is a deliberate choice: merging would require a replica to decide which source wins when sources disagree, which would make the replica an authority over content it did not author. Resolving by identifier value avoids that entirely, at the cost of the consumer performing an explicit second query.
-
-#### Actor: Supplementary Directory
-
-A Supplementary Directory is a register that publishes its content for replication using the same transactions as the [LRZa Directory](#lrza-directory). To claim conformance with this specification, a Supplementary Directory SHALL:
-
-1. Support [ITI-90-NL](#search-care-services-iti-90-nl) `search-type` interactions without search parameters, for the initial load of a local replica, and return results using paging: it SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce and advertise a maximum page size.
-1. Report the server time in `Bundle.meta.lastUpdated` on the first page of an initial load, so that an Update Client can record the sync timestamp in the way described under [Paging and consistent initial load](#national-constraints-compared-to-ihe-mcsd).
-1. Support [ITI-91-NL](#request-care-services-updates-iti-91-nl) type-level `history-type` interactions (`{resourceType}/_history`) with the `_since` parameter, for incremental synchronization.
-1. Publish a `CapabilityStatement` declaring the interactions, resource types and search parameters it supports, and the maximum page size it applies.
-1. Use TLS on its interfaces, with a server certificate from a Qualified Trusted Service Provider, so that a consumer can establish which register it is replicating from.
-
-A Supplementary Directory MAY require client authentication — whether its content is public, restricted to members, or subject to a commercial agreement is a decision of the register, not of this specification. When client authentication is required, the Supplementary Directory SHALL document the mechanism in `CapabilityStatement.rest.security`, and an Update Client SHALL authenticate as documented there.
-
-##### Published content
-
-A Supplementary Directory SHALL publish `Organization` resources for the organizations it publishes information about. For each such `Organization`:
-
-- It SHALL carry the register's own identifier, in an identifier system that the register controls and publishes.
-- An `Organization` that is not `partOf` another `Organization` SHALL additionally carry at least one national identifier: a URA (`http://fhir.nl/fhir/NamingSystem/ura`, the organization number from the UZI/DEZI register) or a KvK number (`http://fhir.nl/fhir/NamingSystem/kvk`). Only the top-level number counts.
-- A child `Organization` (a department or other administrative unit) SHALL be `partOf` a parent `Organization` and is not required to carry a national identifier. Its resolution to a national identifier runs through its top-level parent.
-
-This `Organization` resource *is* the identifier mapping: it carries the register-local identifier and the national identifier side by side, so resolving the one to the other is a single search. Publishing that relation is what allows consumers of the scheme to move to the national identifier over time and to need the resolution step less as they do.
-
-Beyond this, a Supplementary Directory MAY publish whatever content its scheme calls for, including `OrganizationAffiliation` to express membership of a network or agreement, and including resource types that the LRZa Directory also publishes. This specification does not restrict what a register publishes. How much weight to give a register's content — and whether to consult it at all for a given purpose, such as endpoint discovery — is a judgement made by the consumer, not a guarantee conferred by conformance with this section.
-
-#### Reuse of existing actors
-
-**Update Client.** The [Update Client](#update-client) replicates a Supplementary Directory in exactly the way it replicates the LRZa Directory: a paged initial load over ITI-90-NL, a recorded sync timestamp, and periodic incremental synchronization over ITI-91-NL with `_since`. All rules described for that actor apply unchanged, including idempotent processing, sequential application of history entries, retry from the last successful watermark, and spreading the synchronization moment across the interval. A consumer that replicates several sources runs one Update Client instance per source, each with its own replica and its own sync timestamp.
-
-**Query Client.** Selecting which Supplementary Directories to consult, and in which order to query them, is application logic in the consuming system: a system that works with a register-local identifier knows which register issued it and which replica answers for it. This specification does not define a discovery mechanism for Supplementary Directories, and the LRZa Directory has no role in registering, admitting or vouching for them.
-
-When resolving a register-local identifier to an Endpoint, the Query Client SHALL treat the LRZa replica as authoritative for the validity of the national identifier. A mapping published by a Supplementary Directory states that the register bound its own identifier to a national identifier; it does not state that the national identifier is currently valid. If the resolved `Organization` is absent or inactive in the LRZa replica, the lookup yields no result, regardless of what the Supplementary Directory holds.
+The source register remains the authority for its own data, while the consumer combines information across local replicas by matching identifier values. This avoids requiring a central merge while still enabling cross-register lookup and endpoint resolution. See [Use case 6](#use-case-6-two-phase-lookup-via-a-supplementary-register) for an example.
 
 ### Example use cases
 
@@ -389,9 +333,9 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 #### Use Case #6: Two-phase lookup via a Supplementary Register
 A consuming system knows an organization only by an identifier assigned by a supplementary register (see [Supplementary Registers](#supplementary-registers)), and needs to reach that organization's Endpoint:
 - The Query Client searches the replica of the supplementary register for an `Organization` with the register-local identifier. If the resulting `Organization` carries no national identifier, it is a child organization and the Query Client follows `partOf` up to the top-level `Organization`.
-- The Query Client takes the national identifier **value** (URA or KvK) from that `Organization`. The two replicas are never merged and are not linked by reference; the identifier value is the only link between them.
-- The Query Client searches the LRZa replica for the `Organization` with that national identifier, and continues with endpoint discovery as in [use case 4](#use-case-4-endpoint-discovery).
-- If the `Organization` is absent or inactive in the LRZa replica, the lookup yields no result: the LRZa replica is authoritative for the validity of the national identifier.
+- The Query Client takes the national identifier **value** (URA or KvK) from that `Organization`.
+- The Query Client searches the LRZa replica for the `Organization` with that national identifier, and continues with endpoint discovery as in [use case 4](#use-case-4-endpoint-discovery).  
+If the `Organization` is absent or inactive in the LRZa replica, the lookup yields no result: the LRZa replica is authoritative for the validity of the national identifier.
 
 <div>
 {% include care-services-supplementary-register-lookup.svg %}
