@@ -317,7 +317,10 @@ Description: "Example consultation healthcare service named Polikliniek 't Vaatj
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Polikliniek 't Vaatje"
-* type = $service-type#397 "Outpatients"
+* type.coding[+] = NlGfZorgvragenCS#msz.chirurgie.vaatchirurgie "Vascular surgery"
+* type.coding[+] = $service-type#397 "Outpatients"
+* type.coding[+] = NlGfZorgvragenCS#msz.chirurgie.vaatchirurgie.varices "Varicose veins"
+* type[+] = NlGfZorgvragenCS#msz.chirurgie.vaatchirurgie.perifeer-arterieel-vaatlijden-pav "Peripheral Arterial Disease (PAD)"
 * specialty[+].coding = $sct#394609007 "Surgery-general"
 
 Instance: d5cc8cb0-9ea2-5100-bd1b-d3d60075aee2
@@ -330,7 +333,10 @@ Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Neurochirurgie"
-* type = $service-type#216 "Neurosurgery"
+* type.coding[+] = NlGfZorgvragenCS#msz.neurologie-neurochirurgie "Neurology - neurosurgery"
+* type.coding[+] = $service-type#216 "Neurosurgery"
+* type.coding[+] = NlGfZorgvragenCS#msz.neurologie-neurochirurgie.radiculair-syndroom "Radicular syndrome"
+* type.coding[+] = NlGfZorgvragenCS#msz.neurologie-neurochirurgie.cerebrovasculaire-aandoeningen "Cerebrovascular conditions"
 * specialty[+].coding = $sct#394610002 "Surgery-Neurosurgery"
 
 Instance: 3b09ed4b-bd16-5562-b529-1ab18082cac8
@@ -343,7 +349,10 @@ Description: "Example: Organization 2 - HealthcareService Orthopedie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Orthopedie"
-* type = $service-type#218 "Orthopaedic Surgery"
+* type.coding[+] = NlGfZorgvragenCS#msz.orthopedie "Orthopaedics"
+* type.coding[+] = $service-type#218 "Orthopaedic Surgery"
+* type.coding[+] = NlGfZorgvragenCS#msz.orthopedie.gewrichtsaandoeningen "Joint conditions"
+* type.coding[+] = NlGfZorgvragenCS#msz.orthopedie.traumatologie "Traumatology"
 * specialty[+].coding = $sct#394801008 "Surgery-Trauma and orthopedics"
 
 Instance: 02b32653-f18e-5e09-bab4-f49579d4f261
@@ -356,7 +365,10 @@ Description: "Example: Organization 2 - HealthcareService Interne Geneeskunde"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Interne Geneeskunde"
-* type = $service-type#382 "Medical Services"
+* type.coding[+] = NlGfZorgvragenCS#msz.interne-geneeskunde "Internal medicine"
+* type.coding[+] = $service-type#382 "Medical Services"
+* type.coding[+] = NlGfZorgvragenCS#msz.interne-geneeskunde.endocriene-aandoeningen "Endocrine conditions"
+* type.coding[+] = NlGfZorgvragenCS#msz.interne-geneeskunde.vasculaire-aandoeningen "Vascular conditions"
 * specialty[+].coding = $sct#419192003 "Internal medicine"
 
 
@@ -370,7 +382,10 @@ Description: "Example: Organization 2 - HealthcareService Geriatrie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Geriatrie"
-* type = $service-type#171 "Geriatric Medicine"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie "Geriatrics"
+* type.coding[+] = $service-type#171 "Geriatric Medicine"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie.geheugenstoornis-dementie "Memory disorder / dementia"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie.functionele-achteruitgang "Functional decline"
 * specialty[+].coding = $sct#394811001 "Geriatric medicine"
 
 Instance: 9c55a4a8-dda1-59d0-bee5-eae2ca4a917b
@@ -383,7 +398,10 @@ Description: "Example: Organization 2 - HealthcareService Urologie"
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
 * active = true
 * name = "Urologie"
-* type = $service-type#222 "Urology"
+* type.coding[+] = NlGfZorgvragenCS#msz.urologie "Urology"
+* type.coding[+] = $service-type#222 "Urology"
+* type.coding[+] = NlGfZorgvragenCS#msz.urologie.urineweginfectie "Urinary tract infection"
+* type.coding[+] = NlGfZorgvragenCS#msz.urologie.verhoogd-psa "Elevated PSA"
 * specialty[+].coding = $sct#394612005 "Urology"
 
 
@@ -501,7 +519,10 @@ Description: "Example: Organization 3 - HealthcareService Geriatrie"
 * providedBy = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * active = true
 * name = "Geriatrie"
-* type[+] = $service-type#171 "Geriatric Medicine"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie "Geriatrics"
+* type.coding[+] = $service-type#171 "Geriatric Medicine"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie.geheugenstoornis-dementie "Memory disorder / dementia"
+* type.coding[+] = NlGfZorgvragenCS#msz.geriatrie.functionele-achteruitgang "Functional decline"
 * specialty[+].coding = $sct#394811001 "Geriatric medicine"
 
 
@@ -516,12 +537,15 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * name = "Verpleging"
 * location[+] = Reference(Location/f37e7fdb-21b9-54ac-bd36-70c56f2f09c7)
 * location[+] = Reference(Location/bbec4d2a-1be2-539b-817e-f85ef6e895f2)
-* type[+] = $service-type#59 "Nursing"
+* type.coding[+] = $service-type#59 "Nursing"
+* type[=].coding[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.verpleging "Nursing"
 * type[=].extension[supportedActivityDefinitions].valueCanonical = Canonical(nl-gf-nursing-care-6VV)
-* type[+] = $zorgzwaartepakket#754 "5VV: Beschermd wonen met intensieve dementiezorg"
-* type[+] = $zorgzwaartepakket#755 "6VV: Beschermd wonen met intensieve verzorging en verpleging"
-* type[+] = $zorgzwaartepakket#756 "7VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met nadruk op begeleiding"
-* type[+] = $zorgzwaartepakket#757 "8VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
+* type.coding[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.specialistische-verpleging "Specialist nursing"
+* type.coding[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.palliatieve-zorg "Palliative care"
+* type.coding[+] = $zorgzwaartepakket#754 "5VV: Beschermd wonen met intensieve dementiezorg"
+* type.coding[+] = $zorgzwaartepakket#755 "6VV: Beschermd wonen met intensieve verzorging en verpleging"
+* type.coding[+] = $zorgzwaartepakket#756 "7VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met nadruk op begeleiding"
+* type.coding[+] = $zorgzwaartepakket#757 "8VV: Beschermd wonen met zeer intensieve zorg, vanwege specifieke aandoeningen, met de nadruk op verzorging/verpleging"
 
 
 // // ----------------------------------------------------------------
