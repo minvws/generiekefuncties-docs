@@ -152,6 +152,11 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "MedicationStatement"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Immunization"
+* #Notification "Notification"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Notificatie gebeurtenissen"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Notification events"
 * #Nutrition "Nutrition"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Voeding"
