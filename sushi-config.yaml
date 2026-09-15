@@ -3,9 +3,8 @@
 # │  used properties are included. For a list of all supported properties and their functions,     │
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
-id: hl7.fhir.nl.gf
-canonical: http://minvws.github.io/generiekefuncties-docs
-url: http://minvws.github.io/generiekefuncties-docs/ImplementationGuide/hl7.fhir.nl.gf
+id: nl.gis.fhir
+canonical: http://landelijkafsprakenstelsel.nl/
 name: NlGenericFunctionsIG
 title: Netherlands - Generic Functions for data exchange Implementation Guide
 language: en-US
