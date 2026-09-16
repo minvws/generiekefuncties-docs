@@ -27,18 +27,18 @@ sequenceDiagram
 
     Note over client,recipient: Client-side preparation
     client->>client: Build Identifier<br/>{ landCode, type, value }
-    client->>client: HKDF(SHA-256, info=<br/>"{recipient_org}|{recipient_scope}|v1") → pseudonym
+    client->>client: HKDF(SHA-256,<br/>info="{recipient_org}|{recipient_scope}|v1")<br/>→ pseudonym
     client->>client: OPRF.blind(pseudonym)<br/>→ (blind_factor, blinded_input)
 
     Note over client,recipient: PRS evaluation
     activate prs
-    client->>prs: POST /evaluate<br/>{ blinded_input, recipient_organization, recipient_scope }
+    client->>prs: POST /evaluate<br/>{ blinded_input,<br/>recipient_organization, recipient_scope }
     prs->>prs: Validate input, evaluate OPRF<br/>and encrypt for recipient
     prs-->>client: JWE (evaluated_output)<br/>encrypted to recipient public key
     deactivate prs
 
     Note over client,recipient: Hand-off to recipient
-    client->>client: Compose patient identifier:<br/>base64url(JSON{ evaluated_output, blind_factor })
+    client->>client: Compose patient identifier:<br/>base64url(JSON{ evaluated_output,<br/>blind_factor })
     client->>recipient: Request carrying patient identifier<br/>(+ blind_factor as oprf_key)
     activate recipient
     recipient->>recipient: Decrypt JWE with own private key
