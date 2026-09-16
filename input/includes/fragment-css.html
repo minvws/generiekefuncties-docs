@@ -1,0 +1,372 @@
+<style>
+/* Rijksoverheid corporate font (RO Sans), loaded from the official host; falls
+   back to Calibri/Verdana/Arial offline. Matches datavoorgezondheid.nl. */
+@font-face {
+	font-family: "RO Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url(https://www.datavoorgezondheid.nl/fonts/rijks-sans-regular.woff2) format("woff2");
+}
+@font-face {
+	font-family: "RO Sans";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url(https://www.datavoorgezondheid.nl/fonts/rijks-sans-regular.woff2) format("woff2");
+}
+@font-face {
+	font-family: "RO Sans";
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url(https://www.datavoorgezondheid.nl/fonts/rijks-sans-italic.woff2) format("woff2");
+}
+@font-face {
+	font-family: "RO Sans";
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url(https://www.datavoorgezondheid.nl/fonts/rijks-sans-italic.woff2) format("woff2");
+}
+
+:root {
+	--ig-status-text-color: #154273;
+	--navbar-bg-color: #01689b;
+	--footer-bg-color: #0b3558;
+	--footer-container-bg-color: #154273;
+	--stripe-bg-color: #154273;
+	--btn-hover-color: #005b8f;
+	--btn-active-color: #154273;
+	--btn-text-color: #ffffff;
+	--link-color: #01689b;
+	--link-hover-color: #154273;
+	--ig-header-color: #ffffff;
+	--ig-header-container-color: #ffffff;
+	--breadcrumb-bg-color: #ffffff;
+	--breadcrumb-text-color: #154273;
+	/* Neutralise the base template's yellow accents */
+	--publish-box-bg-color: #f3f3f3;
+	--publish-box-border: 1px solid #d6d6d6;
+	--toc-box-bg-color: #eef3f8;
+	--toc-box-border: 1px solid #cddcea;
+	--stu-note-background-color: #eef3f8;
+	--stu-note-border-left-color: #01689b;
+	--footer-highlight-text-color: #ffffff;
+	--footer-hyperlink-text-color: #9dc7e0;
+}
+
+html,
+body {
+	background-color: #ffffff;
+	color: #1b1b1b;
+	font-family: "RO Sans", Calibri, Verdana, Arial, sans-serif;
+	font-size: 18px;
+	line-height: 1.5;
+}
+
+#content {
+	font-size: 18px;
+	line-height: 1.5;
+}
+
+#segment-header > .container,
+#segment-content > .container,
+#segment-breadcrumb > .container {
+	background-color: #ffffff;
+}
+
+#segment-header > .container {
+	background: #ffffff;
+	box-shadow: none;
+	padding-bottom: 0;
+}
+
+/* Rijksoverheid-style header logo bar (white strip above the blue band) */
+#rijkslogo-bar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 10px 0 10px;
+	text-decoration: none;
+}
+
+#rijkslogo-bar:hover,
+#rijkslogo-bar:focus {
+	text-decoration: none;
+}
+
+#rijkslogo-img {
+	height: 52px;
+	width: auto;
+	flex: 0 0 auto;
+}
+
+#rijkslogo-text {
+	color: #154273;
+	font-weight: 700;
+	font-size: 0.8rem;
+	line-height: 1.2;
+}
+
+/* One continuous blue band holding the IG title, menu and breadcrumb
+   (like generiekefuncties.nl) */
+#stripe {
+	display: none;
+}
+
+#ig-status {
+	position: relative;
+	background: #01689b;
+	color: #ffffff;
+	height: auto;
+	text-align: left;
+	margin: 6px 0 0;
+	padding: 12px 20px;
+	border-radius: 0 40px 0 0;
+}
+
+#ig-status p {
+	margin: 0;
+	padding-right: 130px;
+}
+
+#ig-status br {
+	display: none;
+}
+
+#ig-status p,
+#ig-status span,
+#ig-status a {
+	color: #ffffff !important;
+}
+
+#ig-status p > span:first-of-type {
+	font-size: 1.3rem !important;
+	font-weight: 400 !important;
+	line-height: 1.25;
+}
+
+#ig-status p > span:last-of-type {
+	position: absolute;
+	right: 20px;
+	top: 14px;
+	font-size: 0.9rem;
+	white-space: nowrap;
+}
+
+#segment-navbar > .container {
+	background: #eef2f5;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.navbar {
+	margin-bottom: 0;
+}
+
+.navbar-inverse {
+	background-color: transparent;
+}
+
+/* Light page menu with blue chevrons (like generiekefuncties.nl) */
+#segment-navbar .navbar-nav > li > a {
+	font-size: 15px;
+	color: #01689b;
+}
+
+#segment-navbar .navbar-nav > li > a::before {
+	content: "\276F";
+	color: #01689b;
+	margin-right: 7px;
+	font-size: 11px;
+	vertical-align: middle;
+}
+
+#segment-navbar .navbar-nav > li > a:hover,
+#segment-navbar .navbar-nav > li > a:focus {
+	color: #154273;
+	background-color: transparent;
+	text-decoration: underline;
+}
+
+#segment-navbar .navbar-nav > .active > a,
+#segment-navbar .navbar-nav > .active > a:hover,
+#segment-navbar .navbar-nav > .active > a:focus {
+	color: #154273;
+	background-color: transparent;
+	font-weight: 700;
+}
+
+/* Breadcrumb, now inside the blue title band under the title */
+#ig-status .breadcrumb {
+	background: transparent;
+	margin: 8px 0 0;
+	padding: 0;
+	font-size: 0.8rem;
+}
+
+#ig-status .breadcrumb,
+#ig-status .breadcrumb a,
+#ig-status .breadcrumb b,
+#ig-status .breadcrumb li {
+	color: #d6e6f2 !important;
+	font-weight: normal !important;
+}
+
+#ig-status .breadcrumb > li + li::before {
+	content: "\203A";
+	color: #9fc3dd;
+	padding: 0 6px;
+}
+
+#ig-status .breadcrumb a:hover {
+	color: #ffffff !important;
+	text-decoration: underline;
+}
+
+#segment-content > .container {
+	padding-top: 0.4rem;
+	padding-bottom: 2.5rem;
+}
+
+/* Narrative body text (slightly smaller than menu/headings) */
+#segment-content .col-12 p,
+#segment-content .col-12 li {
+	font-size: 0.9rem;
+	line-height: 1.6;
+}
+
+/* Larger table text */
+#segment-content .col-12 table td,
+#segment-content .col-12 table th {
+	font-size: 0.9rem;
+}
+
+/* Keep the build/release banner modest */
+#segment-content .col-12 > p#publish-box {
+	font-size: 0.8rem;
+	line-height: 1.4;
+	margin-bottom: 1.2rem;
+}
+
+/* Emphasised lead paragraph (tagged with {: .ig-lead} in the markdown) */
+#segment-content .col-12 p.ig-lead {
+	font-size: 1.15rem;
+	line-height: 1.45;
+	margin-bottom: 1.2rem;
+	color: #1b1b1b;
+}
+
+/* Narrative headings (larger, in the house blue, not bold) */
+#segment-content .col-12 h1,
+#segment-content .col-12 h2,
+#segment-content .col-12 h3,
+#segment-content .col-12 h4 {
+	color: #154273;
+	font-weight: 400;
+}
+
+#segment-content .col-12 h1 {
+	font-size: 1.85rem;
+}
+
+#segment-content .col-12 h2 {
+	font-size: 1.55rem;
+	margin-top: 2.2rem;
+}
+
+#segment-content .col-12 h3 {
+	font-size: 1.3rem;
+	margin-top: 1.8rem;
+}
+
+#segment-content .col-12 h4 {
+	font-size: 1.1rem;
+	margin-top: 1.4rem;
+}
+
+#content h1,
+#content h2,
+#content h3 {
+	color: #154273;
+	font-weight: 400;
+	letter-spacing: 0;
+}
+
+#content h1 {
+	font-size: 2.35rem;
+	line-height: 1.15;
+	margin-top: 0.65rem;
+	margin-bottom: 1.4rem;
+}
+
+#content h2 {
+	border-bottom: 1px solid #d6d6d6;
+	margin-top: 2.7rem;
+	padding-bottom: 0.45rem;
+}
+
+#content h3 {
+	font-size: 1.25rem;
+	margin-top: 2rem;
+}
+
+#content a {
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+#content .note-to-balloters,
+#content .stu-note {
+	background: #eef3f8;
+	border-left: 4px solid #01689b;
+	border-radius: 0 4px 4px 0;
+	margin: 1.5rem 0;
+	padding: 1rem 1.25rem;
+}
+
+#content .note-to-balloters::before,
+#content .stu-note::before {
+	color: #154273;
+}
+
+#content li::marker {
+	color: #01689b;
+}
+
+#sidebar > .inner-wrapper {
+	background: #f3f3f3;
+	border-left: 1px solid #d6d6d6;
+	padding: 1rem 1.1rem;
+}
+
+@media (max-width: 767px) {
+	html,
+	body {
+		font-size: 16.5px;
+	}
+
+	#content {
+		font-size: 16.5px;
+	}
+
+	#content h1 {
+		font-size: 1.9rem;
+	}
+
+	#rijkslogo-img {
+		height: 46px;
+	}
+
+	#rijkslogo-text {
+		font-size: 0.75rem;
+	}
+
+	#segment-content > .container {
+		padding-top: 0.75rem;
+		padding-bottom: 1.5rem;
+	}
+}
+</style>

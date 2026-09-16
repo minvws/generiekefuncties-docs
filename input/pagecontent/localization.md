@@ -1,6 +1,5 @@
-### Introduction
 Patient data is often divided over multiple data holders. Generic Function Localization provides a standardized framework that enables healthcare professionals to discover which organizations hold relevant patient data of a specific type.
-
+{: .ig-lead}
 
 ### Solution overview
 
