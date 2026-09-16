@@ -3,8 +3,8 @@
 # │  used properties are included. For a list of all supported properties and their functions,     │
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
-id: nl.gis.fhir
-canonical: http://landelijkafsprakenstelsel.nl
+id: hl7.fhir.nl.gf
+canonical: http://minvws.github.io/generiekefuncties-docs
 name: NlGenericFunctionsIG
 title: GIS Generieke Functies - Implementation Guide
 language: en-US
@@ -50,28 +50,10 @@ pages:
     title: Home
 
   care-services.md:
-    title: Care Services Directory
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
+    title: Addressing
 
   signing.md:
     title: Resource signing
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
-
-  localization.md:
-    title: Localization
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
-
-  pseudonymisation.md:
-    title: Pseudonymisation
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
 
   # identification.md:
   #   title: Identification
@@ -91,10 +73,20 @@ pages:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
 
+  localization.md:
+    title: Localization
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
+  pseudonymisation.md:
+    title: Pseudonymisation
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
-  history.md:
-    title: History
+  # history.md:
+  #   title: History
 
 #
 # The parameters property represents IG.definition.parameter. Rather
@@ -128,15 +120,16 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Care Services Directory: care-services.html
-  Resource signing: signing.html
-  Localization: localization.html
-  Pseudonymisation: pseudonymisation.html
-  # Identification: identification.html
-  # Authentication: authentication.html
-  # Authorization: authorization.html
+  Addressing: care-services.html
+  Signing: signing.html
+  # Identification (draft): identification.html
+  # Authentication (draft): authentication.html
+  # Authorization (draft): authorization.html
+  Localization (draft): localization.html
+  Pseudonymisation (draft): pseudonymisation.html
   Artifacts: artifacts.html
-  History: history.html
+
+  # History: history.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │
