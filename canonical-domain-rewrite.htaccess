@@ -4,4 +4,4 @@
 RewriteEngine On
 
 RewriteCond %{HTTP_HOST} ^(www\.)?landelijkafsprakenstelsel\.nl$ [NC]
-RewriteRule ^(.*)$ https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/canonical/$1 [R=301,L]
+RewriteRule ^(.*)$ https://minvws.github.io/generiekefuncties-docs/$1 [R=301,L]
