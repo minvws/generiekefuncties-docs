@@ -1,7 +1,7 @@
 {
   "resourceType" : "Requirements",
   "id" : "fromNarrative",
-  "url" : "http://landelijkafsprakenstelsel.nl/Requirements/fromNarrative",
+  "url" : "http://minvws.github.io/generiekefuncties-docs/Requirements/fromNarrative",
   "name" : "FromNarrative",
   "title" : "Narrative Conformance Statements",
   "status" : "active",

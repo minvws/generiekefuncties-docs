@@ -3,7 +3,7 @@ InstanceOf: ActivityDefinition
 Usage: #definition
 Title: "Nursing Care Activity Definition"
 Description: "Definition of a nursing care request. To instantiate this activity, the patient's coverage and condition are required as inputs."
-* url = "http://landelijkafsprakenstelsel.nl/ActivityDefinition/nl-gf-nursing-care-6VV"
+* url = "http://minvws.github.io/generiekefuncties-docs/ActivityDefinition/nl-gf-nursing-care-6VV"
 * name = "NursingCareActivityDefinition"
 * status = #active
 * experimental = true
@@ -17,7 +17,7 @@ InstanceOf: Library
 Usage: #definition
 Title: "Nursing Care Input Requirements"
 Description: "Data requirements for a nursing care request: the patient's coverage and condition are required."
-* url = "http://landelijkafsprakenstelsel.nl/Library/nl-gf-nursing-care-6VV-input-requirements"
+* url = "http://minvws.github.io/generiekefuncties-docs/Library/nl-gf-nursing-care-6VV-input-requirements"
 * name = "NursingCareInputRequirements"
 * status = #active
 * experimental = true
