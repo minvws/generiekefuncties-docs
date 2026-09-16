@@ -1,0 +1,7 @@
+# Rename this file to ".htaccess" and upload it to the canonical domain configured
+# in sushi-config.yaml to redirect requests to the environment hosting this IG,
+# such as GitHub Pages.
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^(www\.)?landelijkafsprakenstelsel\.nl$ [NC]
+RewriteRule ^(.*)$ https://minvws.github.io/generiekefuncties-docs/$1 [R=301,L]
