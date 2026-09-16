@@ -50,7 +50,31 @@
 	  <script type="text/javascript" src="{{site.data.info.assets}}assets/js/prism-fhirpath.js"></script>
 	  <script type="text/javascript" src="{{site.data.info.assets}}assets/js/prism-cql.js"></script>
     <script type="text/javascript" src="{{site.data.info.assets}}assets/js/mermaid.js"></script>
-    <script type="text/javascript" src="{{site.data.info.assets}}assets/js/mermaid-init.js"></script>
+    <script type="text/javascript">
+      // Render Mermaid inline instead of in a sandboxed iframe, so diagrams
+      // scale responsively to the content width without leaving whitespace.
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('pre.language-mermaid code.language-mermaid').forEach(function (code) {
+          var pre = code.parentNode;
+          var div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = code.textContent;
+          pre.parentNode.replaceChild(div, pre);
+        });
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'loose',
+          flowchart: { useMaxWidth: true },
+          sequence: { useMaxWidth: true, actorMargin: 35, width: 130 },
+          er: { useMaxWidth: true }
+        });
+        if (typeof mermaid.run === 'function') {
+          mermaid.run({ querySelector: '.mermaid' });
+        } else {
+          mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+        }
+      });
+    </script>
     <style type="text/css">h2{--heading-prefix:"{{site.data.info.headingOffset}}{{label}}"}
     h3,h4,h5,h6{--heading-prefix:"{{site.data.info.headingOffset}}{{site.data.pages[localPage].label}}"}</style>
 {% assign shownav = site.data.info.shownav | downcase | slice: 0 %}

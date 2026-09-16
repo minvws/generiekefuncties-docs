@@ -316,7 +316,7 @@ sequenceDiagram
     activate DSAdmin
     Admin->>DSAdmin: Register authorization for IT vendor
     activate LRZa
-    DSAdmin->>LRZa: POST /OrganizationAffiliation<br/>(organization, participatingOrganization, code)
+    DSAdmin->>LRZa: POST /OrganizationAffiliation<br/>(organization,<br/>participatingOrganization, code)
     LRZa-->>DSAdmin: 201 Created
     DSAdmin-->>Admin: Authorization active
     deactivate DSAdmin
@@ -352,7 +352,7 @@ sequenceDiagram
 
     activate QUC
     Note over QUC: Initial load — replica state: LOADING
-    loop For each resource type, in recommended order (Organization → Location → HealthcareService → Endpoint → OrganizationAffiliation)
+    loop For each resource type (in recommended order)
         QUC->>LRZa: GET /{resourceType}
         activate LRZa
         LRZa-->>QUC: Bundle (searchset, page 1)<br/>Bundle.meta.lastUpdated = T0
@@ -373,7 +373,7 @@ sequenceDiagram
     end
     Note over QUC,QD: Pages are streamed: each page is written<br/>before the next is fetched.
 
-    Note over QD,LRZa: Catch-up for mutations during the (non-atomic) load
+    Note over QD,LRZa: Catch-up for mutations<br/>during the (non-atomic) load
     loop For each resource type
         QUC->>LRZa: GET /{resourceType}/_history?_since=T0
         activate LRZa
@@ -414,7 +414,7 @@ sequenceDiagram
     activate QD
     QD-->>QUC: 200 OK
     deactivate QD
-    Note over QUC,QD: Sync complete. Advance sync timestamp to {sync ts}
+    Note over QUC,QD: Sync complete.<br/>Advance sync timestamp to {sync ts}
     deactivate QUC
 ```
 
@@ -440,7 +440,7 @@ sequenceDiagram
     else another writer advanced it to 4 first
         LRZa-->>DS: 412 Precondition Failed (OperationOutcome)
         deactivate LRZa
-        Note over DS: Re-read, re-base the change on the latest version, retry
+        Note over DS: Re-read, re-base the change<br/>on the latest version, retry
         DS->>LRZa: GET /Organization/123
         activate LRZa
         LRZa-->>DS: 200 OK, ETag W/"4"
@@ -474,9 +474,9 @@ sequenceDiagram
     activate EHR
     Doctor->>EHR: use EHR's custom query tool,<br/>search for orthopedic services,<br/>within 30km of Vera's home
     activate CSD
-    EHR->>CSD: Find Matching Care Services request<br/>GET [base]/HealthcareService?type=consultation&specialty=orthopedics
+    EHR->>CSD: Find Matching Care Services request<br/>GET [base]/HealthcareService?<br/>type=consultation&specialty=orthopedics
     CSD-->>EHR: response
-    EHR->>CSD: Get (parent) Organizations and Locations for HealthcareServices<br/>GET /Organization/[id], GET /Location/[id], etc
+    EHR->>CSD: Get (parent) Organizations and Locations<br/>for HealthcareServices<br/>GET /Organization/[id], GET /Location/[id], etc
     CSD-->>EHR: response
     EHR->>EHR: Filter results on distance to Vera's home
     deactivate CSD
@@ -505,7 +505,7 @@ sequenceDiagram
         Doctor->>EHR: create referral for Dr. East<br/>for Orthopedic department at Hospital East
     end
     activate CSD
-    EHR->>CSD: Find HealthcareService of Orthopedic department including Endpoints<br/>GET /HealthcareService/[id], GET /Endpoint/[id]
+    EHR->>CSD: Find HealthcareService of Orthopedic<br/>department including Endpoints<br/>GET /HealthcareService/[id], GET /Endpoint/[id]
     EHR->>EHR: Check Endpoints for 'Transfer of care' support
     deactivate CSD
     EHR-->>Doctor: If no endpoint found: Use other means to send referral
