@@ -84,10 +84,10 @@ Usage: #definition
 Title: "KVK Basisprofiel naar FHIR Organization"
 Description: "StructureMap die een KVK Basisprofiel API response transformeert naar een FHIR Organization resource."
 * id = "KvkBasisprofielToOrganization"
-* url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
+* url = "http://landelijkafsprakenstelsel.nl/StructureMap/KvkBasisprofielToOrganization"
 * name = "KvkBasisprofielToOrganization"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkBasisprofiel"
+* structure[+].url = "http://landelijkafsprakenstelsel.nl/StructureDefinition/KvkBasisprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkBasisprofiel"
 * structure[+].url = Canonical(NlGfOrganization)
@@ -117,7 +117,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-organization"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://landelijkafsprakenstelsel.nl/StructureDefinition/nl-gf-organization"
 
 // Rule: kvkNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk)
 * group[=].rule[+].name = "kvkNummer"
@@ -728,10 +728,10 @@ Usage: #definition
 Title: "KVK Vestigingsprofiel naar FHIR Location"
 Description: "StructureMap die een KVK Vestigingsprofiel API response transformeert naar een FHIR Location resource."
 * id = "KvkVestigingsprofielToLocation"
-* url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkVestigingsprofielToLocation"
+* url = "http://landelijkafsprakenstelsel.nl/StructureMap/KvkVestigingsprofielToLocation"
 * name = "KvkVestigingsprofielToLocation"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkVestigingsprofiel"
+* structure[+].url = "http://landelijkafsprakenstelsel.nl/StructureDefinition/KvkVestigingsprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkVestigingsprofiel"
 * structure[+].url = Canonical(NlGfLocation)
@@ -761,7 +761,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-location"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://landelijkafsprakenstelsel.nl/StructureDefinition/nl-gf-location"
 
 // Rule: vestigingsnummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer)
 * group[=].rule[+].name = "vestigingsnummer"
@@ -1344,7 +1344,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 // Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
 // Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
 // * type = #transaction
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)
+// * insert BundleEntryPUT(http://landelijkafsprakenstelsel.nl/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
+// * insert BundleEntryPUT(http://landelijkafsprakenstelsel.nl/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
+// * insert BundleEntryPUT(http://landelijkafsprakenstelsel.nl/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
+// * insert BundleEntryPUT(http://landelijkafsprakenstelsel.nl/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)

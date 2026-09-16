@@ -8,9 +8,9 @@ Description: "Example instance of the NlGfLocalizationList profile. It expresses
 * status = #current
 * mode = #working
 * code = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
-* subject.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
+* subject.identifier.system = "http://landelijkafsprakenstelsel.nl/NamingSystem/nvi-identifier"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
-* source.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id"
+* source.identifier.system = "http://landelijkafsprakenstelsel.nl/NamingSystem/oauth-client-id"
 * source.identifier.value = "ehr-client-org2"
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 
