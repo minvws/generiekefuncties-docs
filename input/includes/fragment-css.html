@@ -31,29 +31,22 @@
 }
 
 :root {
-	--ig-status-text-color: #154273;
-	--navbar-bg-color: #01689b;
+	/* Footer + links (base defaults are purple/blue) */
 	--footer-bg-color: #0b3558;
 	--footer-container-bg-color: #154273;
-	--stripe-bg-color: #154273;
-	--btn-hover-color: #005b8f;
-	--btn-active-color: #154273;
-	--btn-text-color: #ffffff;
+	--footer-highlight-text-color: #ffffff;
+	--footer-hyperlink-text-color: #9dc7e0;
 	--link-color: #01689b;
 	--link-hover-color: #154273;
+	/* White header gutters (base default is grey) */
 	--ig-header-color: #ffffff;
-	--ig-header-container-color: #ffffff;
-	--breadcrumb-bg-color: #ffffff;
-	--breadcrumb-text-color: #154273;
-	/* Neutralise the base template's yellow accents */
+	/* Neutralise the base template's yellow/pink accents */
 	--publish-box-bg-color: #f3f3f3;
 	--publish-box-border: 1px solid #d6d6d6;
 	--toc-box-bg-color: #eef3f8;
 	--toc-box-border: 1px solid #cddcea;
 	--stu-note-background-color: #eef3f8;
 	--stu-note-border-left-color: #01689b;
-	--footer-highlight-text-color: #ffffff;
-	--footer-hyperlink-text-color: #9dc7e0;
 }
 
 html,
@@ -65,20 +58,7 @@ body {
 	line-height: 1.5;
 }
 
-#content {
-	font-size: 18px;
-	line-height: 1.5;
-}
-
-#segment-header > .container,
-#segment-content > .container,
-#segment-breadcrumb > .container {
-	background-color: #ffffff;
-}
-
 #segment-header > .container {
-	background: #ffffff;
-	box-shadow: none;
 	padding-bottom: 0;
 }
 
@@ -287,55 +267,6 @@ body {
 	margin-top: 1.4rem;
 }
 
-#content h1,
-#content h2,
-#content h3 {
-	color: #154273;
-	font-weight: 400;
-	letter-spacing: 0;
-}
-
-#content h1 {
-	font-size: 2.35rem;
-	line-height: 1.15;
-	margin-top: 0.65rem;
-	margin-bottom: 1.4rem;
-}
-
-#content h2 {
-	border-bottom: 1px solid #d6d6d6;
-	margin-top: 2.7rem;
-	padding-bottom: 0.45rem;
-}
-
-#content h3 {
-	font-size: 1.25rem;
-	margin-top: 2rem;
-}
-
-#content a {
-	text-decoration-thickness: 1px;
-	text-underline-offset: 3px;
-}
-
-#content .note-to-balloters,
-#content .stu-note {
-	background: #eef3f8;
-	border-left: 4px solid #01689b;
-	border-radius: 0 4px 4px 0;
-	margin: 1.5rem 0;
-	padding: 1rem 1.25rem;
-}
-
-#content .note-to-balloters::before,
-#content .stu-note::before {
-	color: #154273;
-}
-
-#content li::marker {
-	color: #01689b;
-}
-
 #sidebar > .inner-wrapper {
 	background: #f3f3f3;
 	border-left: 1px solid #d6d6d6;
@@ -346,14 +277,6 @@ body {
 	html,
 	body {
 		font-size: 16.5px;
-	}
-
-	#content {
-		font-size: 16.5px;
-	}
-
-	#content h1 {
-		font-size: 1.9rem;
 	}
 
 	#rijkslogo-img {
