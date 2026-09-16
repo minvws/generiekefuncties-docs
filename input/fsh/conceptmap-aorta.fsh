@@ -28,16 +28,16 @@ Instance: AortaToNlGfDataCategories
 InstanceOf: ConceptMap
 Usage: #definition
 * id = "aorta-to-nl-gf-datacategories"
-* url = "http://minvws.github.io/generiekefuncties-docs/ConceptMap/aorta-to-nl-gf-datacategories"
+* url = "http://landelijkafsprakenstelsel.nl/ConceptMap/aorta-to-nl-gf-datacategories"
 * name = "AortaToNlGfDataCategories"
 * title = "AORTA to NL GF Data Categories"
 * description = "Concept map defining the equivalence between AORTA (Architecture for Organizing Trusted and Reliable Access) data categories and NL Generic Functions (NL-GF) data categories. This mapping enables interoperability between systems using the AORTA terminology and those conforming to the NL-GF framework for healthcare data exchange in the Netherlands."
 * status = #active
 * experimental = true
-* sourceUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/aorta-data-categories-vs"
-* targetUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-zorgcontext-vs"
+* sourceUri = "http://landelijkafsprakenstelsel.nl/ValueSet/aorta-data-categories-vs"
+* targetUri = "http://landelijkafsprakenstelsel.nl/ValueSet/nl-gf-zorgcontext-vs"
 * group[+].source = "urn:oid:2.16.840.1.113883.2.4.3.111.15.3"
-* group[=].target = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
+* group[=].target = "http://landelijkafsprakenstelsel.nl/CodeSystem/nl-gf-data-categories-cs"
 * group[=].element[+].code = #LABBEPALING
 * group[=].element[=].target[+].code = #ObservationLaboratory
 * group[=].element[=].target[=].equivalence = #equivalent

@@ -2,13 +2,13 @@ Instance: SBIToOrganisatieType
 InstanceOf: ConceptMap
 Usage: #definition
 * id = "sbi-to-organisatietype"
-* url = "http://minvws.github.io/generiekefuncties-docs/ConceptMap/sbi-to-organisatietype"
+* url = "http://landelijkafsprakenstelsel.nl/ConceptMap/sbi-to-organisatietype"
 * name = "SBIToOrganisatieType"
 * title = "SBI to OrganisatieType"
 * description = "Concept map relating health-sector Standaard Bedrijfsindeling (SBI 2025) activity codes to the Dutch OrganisatieTypeCodelijst (organization-type) codes. Only SBI codes that have a clear OrganisatieType equivalent are included."
 * status = #active
 * experimental = true
-* sourceUri = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-org-types-vs"
+* sourceUri = "http://landelijkafsprakenstelsel.nl/ValueSet/nl-gf-org-types-vs"
 * targetUri = "http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000"
 * group[+].source = "https://www.cbs.nl/standaard-bedrijfsindeling"
 * group[=].target = "http://nictiz.nl/fhir/NamingSystem/organization-type"

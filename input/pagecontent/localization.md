@@ -53,7 +53,7 @@ The client SHALL be able to create and register List resources (localization rec
 }
 ```
 
-This object is used in the `subject.identifier.value` element (using the system `http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier`).
+This object is used in the `subject.identifier.value` element (using the system `http://landelijkafsprakenstelsel.nl/NamingSystem/nvi-identifier`).
 
 **Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 
@@ -80,18 +80,18 @@ For more information on the content, see the paragraph on [Localization record](
                 "value": "11111111"
               }
             },
-            "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian"
+            "url": "http://landelijkafsprakenstelsel.nl/StructureDefinition/nl-gf-localization-custodian"
           }
         ],
         "subject": {
           "identifier": {
-            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+            "system": "http://landelijkafsprakenstelsel.nl/NamingSystem/nvi-identifier",
             "value": "eyJldmFsdWF0ZWRfb3V0cHV0IjoiSldFX0ZST01fUFJTIiwiYmxpbmRfZmFjdG9yIjoiQ0xJRU5UX0dFTl9CTElORF9GQUNUT1IifQ"
           }
         },
         "source": {
           "identifier": {
-            "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id",
+            "system": "http://landelijkafsprakenstelsel.nl/NamingSystem/oauth-client-id",
             "value": "ehr-client-org2"
           }
         },
@@ -133,7 +133,7 @@ Client SHALL either use the subject:identifier or source:identifier in a search.
 
 **Example Search Query**:
 ```
-GET [base]/List?subject:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+GET [base]/List?subject:identifier=http://landelijkafsprakenstelsel.nl/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
@@ -190,7 +190,7 @@ The following diagram illustrates the registration workflow, including interacti
 **Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific client/system (the Localization Client)
 
 ```
-GET [base]/List?source:identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id|ehr-client-org2
+GET [base]/List?source:identifier=http://landelijkafsprakenstelsel.nl/NamingSystem/oauth-client-id|ehr-client-org2
 ```
 
 **Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or client.
