@@ -27,7 +27,7 @@ mkdir -p "$OUTPUT_DIR"
 INPUT_FILE="${INPUT_DIR}/kvk-basisprofiel-90006623.json"
 INPUT_FILE_WITH_URA="${INPUT_DIR}/kvk-basisprofiel-90006623-with-ura.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-organization-90006623.json"
-TRANSFORM_MAP="http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
+TRANSFORM_MAP="http://landelijkafsprakenstelsel.nl/StructureMap/KvkBasisprofielToOrganization"
 
 # Preprocess: rename _embedded → embedded (underscore prefix is reserved in FHIR JSON)
 # and add uraNummer to the basisprofiel input
@@ -60,7 +60,7 @@ java -jar "$VALIDATOR_JAR" \
 
 INPUT_FILE="${INPUT_DIR}/kvk-vestigingsprofiel-990064773193.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-location-990064773193.json"
-TRANSFORM_MAP="http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkVestigingsprofielToLocation"
+TRANSFORM_MAP="http://landelijkafsprakenstelsel.nl/StructureMap/KvkVestigingsprofielToLocation"
 
 # Transform the KVK Vestigingsprofiel JSON to a FHIR Location resource
 echo "======Transforming KVK Vestigingsprofiel to Location..."
