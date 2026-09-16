@@ -1,5 +1,3 @@
-### Introduction
-
 Authentication verifies the identity of entities, such as healthcare professionals and organizations, within healthcare systems.
 Verified identities support downstream processes such as secure authorization (access control) and accounting (audit logging).
 

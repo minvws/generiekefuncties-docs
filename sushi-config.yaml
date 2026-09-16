@@ -6,7 +6,7 @@
 id: nl.gis.fhir
 canonical: http://landelijkafsprakenstelsel.nl
 name: NlGenericFunctionsIG
-title: Netherlands - Generic Functions for data exchange Implementation Guide
+title: GIS Generieke Functies - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown

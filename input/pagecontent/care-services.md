@@ -1,18 +1,6 @@
-### Introduction
-
 Generic Function Addressing (GFA) defines how healthcare parties can publish, discover, and use trusted addressing information for organizations, services, locations, and endpoints. Its purpose is to make healthcare data exchange interoperable and reliable by helping practitioners and systems route requests, referrals, data retrievals and notifications to the correct destination.  
 This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile and reuses the actor and transaction definitions that were defined in that specification. You should be able to read this specification without prior knowledge of IHE mCSD, but a basic understanding of the FHIR specification is preferred.
-
-<p class="note-to-balloters">
-
-This guide outlines the technical requirements and architectural principles underlying these generic functions. For related specifications/documents, see: <br/><br/>
-
-Consultation memo: <a href="Oplegnotitie Consultatie GF Adressering v0.9.0.pdf">Oplegnotitie Consultatie GF Adressering v0.9.0.pdf</a><br/>
-Consultation reviewsheet: <a href="Reviewsheet consultatie GF Adressering v0.9.0.xlsx">Reviewsheet consultatie GF Adressering v0.9.0.xlsx</a><br/>
-Functional design: <a href="FO adressering v0.9.0.pdf">FO adressering v0.9.0.pdf</a><br/>
-Technical design: <a href="GTO adressering v0.9.0.pdf">GTO adressering v0.9.0.pdf</a>
-
-</p>
+{: .ig-lead}
 
 
 ### Solution overview

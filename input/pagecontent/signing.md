@@ -1,6 +1,5 @@
-### Introduction
-
 This page explains how to create and verify a **FHIR digital signature** for a mutation submitted to the LRZa Directory, by worked example. Signing is optional (see the [Mutation signing (optional)](care-services.html#mutation-signing-optional) and the [Provenance](care-services.html#provenance) entity); this page shows *how* to produce a correct signature when a party chooses to sign.
+{: .ig-lead}
 
 The mechanism follows the FHIR [Digital Signatures](https://build.fhir.org/signatures.html) specification: a *detached* [JSON Web Signature (JWS, RFC 7515)](https://tools.ietf.org/html/rfc7515) computed over the **canonical JSON** form of the signed resource.
 
