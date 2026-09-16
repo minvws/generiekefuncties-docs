@@ -13,7 +13,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 1. A practitioner and/or system (e.g. an EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
-<img src="careservices-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
+<img src="careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
 This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
@@ -99,7 +99,60 @@ All transactions SHALL return a standard FHIR `OperationOutcome` with an appropr
 Within GF Addressing, several addressable entities are used to capture and publish information. 
 An overview of the *most common* elements and relations between entities:
 
-<img src="careservices-datamodel.png" width="85%" style="float: none"/>
+```mermaid
+erDiagram
+    HealthcareService }o--|| Organization : providedBy
+    HealthcareService }o--o{ Location : location
+    HealthcareService }o--o{ Endpoint : endpoint
+    Location }o--|| Organization : managingOrganization
+    Organization }o--o{ Endpoint : endpoint
+    Endpoint }o--|| Organization : managingOrganization
+    OrganizationAffiliation }o--|| Organization : organization
+    OrganizationAffiliation }o--|| Organization : participatingOrganization
+
+    HealthcareService {
+        providedBy Reference  "1..1"
+        type CodeableConcept "1..*"
+        supportedActivityDefinitions Reference "0..*"
+        specialty CodeableConcept "0..*"
+        name string  "0..1"
+        telecom ContactPoint  "0..*"
+        location Reference  "0..*"
+        availableTime Availability  "0..*"
+        endpoint Reference  "0..*"
+    }
+
+    Location {
+        name string  "0..1"
+        alias string  "0..*"
+        address Address  "0..1"
+        managingOrganization Reference  "1..1"
+        partOf Reference  "0..1 (parent Location)"
+    }
+
+    Organization {
+        identifier Identifier  "0..1"
+        type CodeableConcept  "1..*"
+        name string  "1..1"
+        alias string  "0..*"
+        telecom ContactPoint  "0..*"
+        partOf Reference  "0..1 (parent Organization)"
+        endpoint Reference  "0..*"
+    }
+
+    Endpoint {
+        status code  "1..1"
+        connectionType Coding  "1..1"
+        payloadType CodeableConcept  "1..*"
+        address url  "1..1"
+    }
+
+    OrganizationAffiliation {
+        organization Reference  "1..1"
+        participatingOrganization Reference  "1..1"
+        code CodeableConcept  "1..*"
+    }
+```
 
 A brief description of the entities:
 
@@ -248,33 +301,156 @@ Beyond transport security, mutations MAY be signed at record level with a FHIR `
 
 
 
-##### Use Case #1: Admin Registers Affiliation, Service Provider Publishes Resources
+#### Use Case #1: Admin Registers Affiliation, Service Provider Publishes Resources
 This sequence shows a two-step onboarding flow: first, the care provider administrator creates an OrganizationAffiliation that authorizes the service provider. After this authorization exists, the service provider is able to register their Endpoints (if not already registered). Finally, the care provider administrator is able to register and update the remaining mCSD resource types in the application of the service provider (e.g. the EHR).
 
-<div>
-{% include care-services-registration-use-case.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    actor Admin as Care provider<br/>administrator
+    actor SPAdmin as Service Provider<br/>administrator
+    participant SP as Service Provider<br/>(Data Source)
+    participant DSAdmin as LRZa Portal<br/>(Data Source)
+    participant LRZa as LRZa Directory
 
-##### Use Case #2a: Update Client Initial Load
+    activate Admin
+    activate DSAdmin
+    Admin->>DSAdmin: Register authorization for IT vendor
+    activate LRZa
+    DSAdmin->>LRZa: POST /OrganizationAffiliation<br/>(organization, participatingOrganization, code)
+    LRZa-->>DSAdmin: 201 Created
+    DSAdmin-->>Admin: Authorization active
+    deactivate DSAdmin
+
+    Note over Admin,LRZa: After affiliation is active
+
+    activate SPAdmin
+    activate SP
+    SPAdmin->>SP: Register new endpoints for EHR system
+    SP->>LRZa: POST /Endpoint
+    Note right of SP: If the endpoints were already registered<br/>for other care providers, these Endpoint<br/>updates can be skipped.
+    deactivate SPAdmin
+    Admin->>SP: Link endpoints to organization
+    SP->>LRZa: PUT /Organization/ura-123
+    Admin->>SP: Register new location
+    SP->>LRZa: POST /Location
+    Admin->>SP: Register new healthcare service<br/>with links to location and endpoints
+    SP->>LRZa: POST /HealthcareService
+    Note over LRZa: Authorization checks are based on<br/>OrganizationAffiliation and requested scope.
+    deactivate SP
+    deactivate LRZa
+    deactivate Admin
+```
+
+#### Use Case #2a: Update Client Initial Load
 The following sequence diagram illustrates how an Update Client performs the paged initial load of a local replica, records the sync timestamp, and runs a `_history` catch-up before serving Query Clients:
 
-<div>
-{% include care-services-sync-initial-load.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    participant QD as Directory<br/>(local replica)
+    participant QUC as Query and Update<br/>Client
+    participant LRZa as LRZa Directory
 
-##### Use Case #2b: Update Client Incremental Sync
+    activate QUC
+    Note over QUC: Initial load — replica state: LOADING
+    loop For each resource type, in recommended order (Organization → Location → HealthcareService → Endpoint → OrganizationAffiliation)
+        QUC->>LRZa: GET /{resourceType}
+        activate LRZa
+        LRZa-->>QUC: Bundle (searchset, page 1)<br/>Bundle.meta.lastUpdated = T0
+        Note over QUC: Keep T0 as sync timestamp<br/>(LRZa time, from first page, once)
+        QUC->>QD: persist page (batch/upsert)
+        activate QD
+        QD-->>QUC: 200 OK
+        deactivate QD
+        loop While Bundle.link[next] present
+            QUC->>LRZa: GET {next}
+            LRZa-->>QUC: Bundle (searchset, next page)
+            QUC->>QD: persist page (batch/upsert)
+            activate QD
+            QD-->>QUC: 200 OK
+            deactivate QD
+        end
+        deactivate LRZa
+    end
+    Note over QUC,QD: Pages are streamed: each page is written<br/>before the next is fetched.
+
+    Note over QD,LRZa: Catch-up for mutations during the (non-atomic) load
+    loop For each resource type
+        QUC->>LRZa: GET /{resourceType}/_history?_since=T0
+        activate LRZa
+        LRZa-->>QUC: Bundle (history delta)
+        deactivate LRZa
+        QUC->>QD: persist delta (batch/upsert)
+        activate QD
+        QD-->>QUC: 200 OK
+        deactivate QD
+    end
+    Note over QUC,QD: Initial load complete. Replica state: READY.<br/>Retain sync timestamp for next sync.
+    deactivate QUC
+```
+
+#### Use Case #2b: Update Client Incremental Sync
 The following sequence diagram illustrates the periodic incremental synchronization, including delta processing, status changes, retry on transient failure, and advancing the sync timestamp:
 
-<div>
-{% include care-services-sync-incremental.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    participant QD as Directory<br/>(local replica)
+    participant QUC as Query and Update<br/>Client
+    participant LRZa as LRZa Directory
 
-##### Use Case #2c: Optimistic Locking on Update
+    Note over QUC: Periodic incremental sync<br/>(single interval for all resource types — see SLA)
+    activate QUC
+    loop For each resource type
+        QUC->>LRZa: GET /{resourceType}/_history?_since={sync ts}
+        activate LRZa
+        alt success
+            LRZa-->>QUC: Bundle (history delta) incl. status changes<br/>(inactive / off / entered-in-error)
+        else transient failure (5xx / network)
+            LRZa-->>QUC: error
+            Note over QUC: Retry with exponential backoff from the<br/>same {sync ts} (do not advance the timestamp)
+        end
+        deactivate LRZa
+    end
+    QUC->>QD: persist delta (batch/upsert)
+    activate QD
+    QD-->>QUC: 200 OK
+    deactivate QD
+    Note over QUC,QD: Sync complete. Advance sync timestamp to {sync ts}
+    deactivate QUC
+```
+
+#### Use Case #2c: Optimistic Locking on Update
 The following sequence diagram illustrates the recommended optimistic-locking flow when a Data Source updates a resource: it reads the current `ETag`, sends the update with `If-Match`, and — if another writer advanced the version first — receives `412 Precondition Failed`, then re-reads and retries:
 
-<div>
-{% include care-services-optimistic-locking.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    participant DS as Data Source
+    participant LRZa as LRZa Directory
+
+    Note over DS,LRZa: Optimistic locking on update
+    DS->>LRZa: GET /Organization/123
+    activate LRZa
+    LRZa-->>DS: 200 OK, ETag W/"3"
+    deactivate LRZa
+    Note over DS: Prepare update based on version 3
+    DS->>LRZa: PUT /Organization/123, If-Match W/"3"
+    activate LRZa
+    alt current version is still 3
+        LRZa-->>DS: 200 OK, ETag W/"4"
+        Note over DS: Update applied
+    else another writer advanced it to 4 first
+        LRZa-->>DS: 412 Precondition Failed (OperationOutcome)
+        deactivate LRZa
+        Note over DS: Re-read, re-base the change on the latest version, retry
+        DS->>LRZa: GET /Organization/123
+        activate LRZa
+        LRZa-->>DS: 200 OK, ETag W/"4"
+        deactivate LRZa
+        DS->>LRZa: PUT /Organization/123, If-Match W/"4"
+        activate LRZa
+        LRZa-->>DS: 200 OK, ETag W/"5"
+        deactivate LRZa
+    end
+```
 
 #### Use Case #3: Healthcare service Query
 The patient, Vera Brooks, consults with her physician who recommends surgery. The physician can assist the patient in finding a suitable care provider, taking into consideration the location and specialty for orthopedic surgeons.
@@ -284,17 +460,61 @@ The patient, Vera Brooks, consults with her physician who recommends surgery. Th
 - The EHR retrieves the information from the Directory and displays it to Dr. West.
 - Vera and Dr. West decide on the Orthopedic department at Hospital East; Dr. West prepares a referral.
 
-<div>
-{% include care-services-service-query-use-case.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    actor Patient as Vera
+    actor Doctor as Dr. West
+    participant EHR as EHR (Query Client)
+    participant CSD as Directory<br/>(local replica)
+
+    activate Patient
+    activate Doctor
+    Patient->>Doctor: My knee hurts
+    Doctor->>Doctor: diagnosis = torn ACL
+    activate EHR
+    Doctor->>EHR: use EHR's custom query tool,<br/>search for orthopedic services,<br/>within 30km of Vera's home
+    activate CSD
+    EHR->>CSD: Find Matching Care Services request<br/>GET [base]/HealthcareService?type=consultation&specialty=orthopedics
+    CSD-->>EHR: response
+    EHR->>CSD: Get (parent) Organizations and Locations for HealthcareServices<br/>GET /Organization/[id], GET /Location/[id], etc
+    CSD-->>EHR: response
+    EHR->>EHR: Filter results on distance to Vera's home
+    deactivate CSD
+    EHR-->>Doctor: Review results<br/>with office address, hours of operation
+    Doctor-->>Patient: Review and discuss options
+    deactivate Patient
+    deactivate Doctor
+    deactivate EHR
+```
 
 #### Use Case #4: Endpoint Discovery
 Dr. West just created a referral (for patient Vera Brooks from use case #3). The EHR has to notify Hospital East and the Orthopedic department of this referral. This may include some recurring requests:
 - The EHR looks up the HealthcareService instance of the Orthopedic department at the (local) Directory, fetches the related endpoints and checks if these support a 'Request' payloadType. The EHR sends the notification and referral-workflow continues.
 
-<div>
-{% include care-services-endpoint-query-use-case.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    actor Doctor as Dr. West
+    participant EHR as EHR
+    participant CSD as Directory<br/>(local replica)
+    participant EHR2 as Endpoint supporting<br/>Transfer of care<br/>@Hospital East
+
+    activate Doctor
+    activate EHR
+    rect rgb(238, 242, 245)
+        Note over Doctor,EHR: create referral
+        Doctor->>EHR: create referral for Dr. East<br/>for Orthopedic department at Hospital East
+    end
+    activate CSD
+    EHR->>CSD: Find HealthcareService of Orthopedic department including Endpoints<br/>GET /HealthcareService/[id], GET /Endpoint/[id]
+    EHR->>EHR: Check Endpoints for 'Transfer of care' support
+    deactivate CSD
+    EHR-->>Doctor: If no endpoint found: Use other means to send referral
+    deactivate Doctor
+    activate EHR2
+    EHR->>EHR2: Post notification to Endpoint<br/>of Hospital East with referral ID
+    deactivate EHR
+    deactivate EHR2
+```
 
 #### Use Case #5: Endpoint Transition
 The general practice from use case #1 replaces its EHR system and plans a cutover moment at which the new system takes over:
@@ -303,9 +523,46 @@ The general practice from use case #1 replaces its EHR system and plans a cutove
 - Update Clients synchronize both registrations to the local replicas. Query Clients keep selecting the old Endpoint until the cutover moment, and the new Endpoint thereafter; at no moment are both Endpoints valid.
 - After the old system is decommissioned, its Endpoint status is set to `off`.
 
-<div>
-{% include care-services-endpoint-transition-use-case.svg %}
-</div>
+```mermaid
+sequenceDiagram
+    actor Admin as Care provider<br/>administrator
+    participant SPNew as New EHR<br/>(Data Source B)
+    participant SPOld as Old EHR<br/>(Data Source A)
+    participant LRZa as LRZa Directory
+    participant Replica as Directory<br/>(local replica)
+    participant QC as EHR at other<br/>care provider<br/>(Query Client)
+
+    Note over Admin,QC: In this example the practice plans the cutover<br/>to the new EHR at 2024-01-15.
+
+    Note over Admin,QC: Before cutover (2024-01-15)
+    activate Admin
+    Admin->>SPNew: Prepare migration to new EHR
+    activate SPNew
+    SPNew->>LRZa: POST /Endpoint<br/>(status=active, period.start=2024-01-15)
+    activate LRZa
+    deactivate SPNew
+    Admin->>SPOld: End usage per 2024-01-15
+    activate SPOld
+    SPOld->>LRZa: PUT /Endpoint/[old]<br/>(period.end=2024-01-15)
+    deactivate SPOld
+    deactivate Admin
+    Note right of LRZa: Both Endpoints are registered, but their periods<br/>do not overlap: at any moment at most one Endpoint<br/>is valid. If one Data Source is authorized for both<br/>changes, they SHOULD be combined in a single<br/>transaction Bundle.
+    Replica->>LRZa: Sync updates (ITI-91)
+    activate Replica
+    deactivate LRZa
+    QC->>Replica: Find Endpoints of the practice
+    activate QC
+    QC->>QC: Filter: status=active and<br/>period includes now → old Endpoint
+
+    Note over Admin,QC: After cutover (2024-01-15)
+    QC->>Replica: Find Endpoints of the practice
+    QC->>QC: Filter: status=active and<br/>period includes now → new Endpoint
+    deactivate QC
+    deactivate Replica
+
+    Note over Admin,QC: After decommissioning the old system
+    SPOld->>LRZa: PUT /Endpoint/[old] (status=off)
+```
 
 
 
