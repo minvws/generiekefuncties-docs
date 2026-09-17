@@ -13,7 +13,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 1. A practitioner and/or system (e.g. an EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
-<img src="careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
+<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
 
 
 This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
