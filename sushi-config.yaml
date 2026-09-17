@@ -6,7 +6,7 @@
 id: hl7.fhir.nl.gf
 canonical: http://minvws.github.io/generiekefuncties-docs
 name: NlGenericFunctionsIG
-title: GIS Generieke Functies - Implementation Guide
+title: Generic Functions & Patterns - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown
