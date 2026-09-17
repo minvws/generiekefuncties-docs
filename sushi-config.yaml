@@ -5,16 +5,15 @@
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 id: hl7.fhir.nl.gf
 canonical: http://minvws.github.io/generiekefuncties-docs
-url: http://minvws.github.io/generiekefuncties-docs/ImplementationGuide/hl7.fhir.nl.gf
 name: NlGenericFunctionsIG
-title: Netherlands - Generic Functions for data exchange Implementation Guide
+title: Generic Functions & Patterns - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown
-version: 0.10.0
+version: 0.9.9
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2026+
-releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
+releaseLabel: trial-use # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
 license: CC0-1.0 # https://www.hl7.org/fhir/valueset-spdx-license.html
 jurisdiction: urn:iso:std:iso:3166#NL "Netherlands" # https://www.hl7.org/fhir/valueset-jurisdiction.html
 publisher:
@@ -51,28 +50,10 @@ pages:
     title: Home
 
   care-services.md:
-    title: Care Services Directory
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
+    title: Addressing
 
   signing.md:
     title: Resource signing
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
-
-  localization.md:
-    title: Localization
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
-
-  pseudonymisation.md:
-    title: Pseudonymisation
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
 
   # identification.md:
   #   title: Identification
@@ -92,10 +73,20 @@ pages:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
 
+  localization.md:
+    title: Localization
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
+  pseudonymisation.md:
+    title: Pseudonymisation
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
-  history.md:
-    title: History
+  # history.md:
+  #   title: History
 
 #
 # The parameters property represents IG.definition.parameter. Rather
@@ -129,15 +120,16 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Care Services Directory: care-services.html
-  Resource signing: signing.html
-  Localization: localization.html
-  Pseudonymisation: pseudonymisation.html
-  # Identification: identification.html
-  # Authentication: authentication.html
-  # Authorization: authorization.html
+  Addressing: care-services.html
+  Signing: signing.html
+  # Identification (draft): identification.html
+  # Authentication (draft): authentication.html
+  # Authorization (draft): authorization.html
+  Localization (draft): localization.html
+  Pseudonymisation (draft): pseudonymisation.html
   Artifacts: artifacts.html
-  History: history.html
+
+  # History: history.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │

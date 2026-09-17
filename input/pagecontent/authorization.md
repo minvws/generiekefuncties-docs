@@ -1,5 +1,3 @@
-### Introduction
-
 This FHIR Implementation Guide specifies the technical components of the Generic Function Authorization, a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS). The GF Authorization aims to establish a standardized, interoperable system for authorizing access to data and services of healthcare organizations, enabling reliable and efficient exchange of health data across healthcare systems and organizations.
 
 This guide outlines the data requirements and principles underlying the GF Authorization. Key design principles include:
@@ -17,7 +15,7 @@ On a high level, a data access/operation authorization starts with a request fro
 
 Just below this top level abstraction, there's a lot more to discuss:
 
-<img src="authorization-overview-transactions.png" width="100%" style="float: none" alt="Overview of authorization process"/>
+<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/authorization-overview-transactions.png" width="100%" style="float: none" alt="Overview of authorization process"/>
 
 1. Authorization policy makers create authorization policies based on attributes specified in Healthcare Information models and standards. These attributes can be certain identifiers (BSN, URA, etc.), entity characteristics (organization type, practitioner role), permission records (qualifications, consent) and/or specified operations or capability statements for requesting and responding party
 2. Requesting and responding parties need to acquire attributes (data) from authoritative data sources. When to get this data is not specified here. A (PKIoverheid) certificate from a Trust Service Provider may be fetched one a year, a CiBG-DeZI-token may be fetched when a practitioner starts his/her shift and a VZVZ Mitz patient consent may be fetched, by the responding party, just after receiving a data request.

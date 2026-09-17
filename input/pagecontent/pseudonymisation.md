@@ -1,6 +1,5 @@
-### Introduction
-
 Generic Function Pseudonymisation defines how a national Pseudonymization Register Service (PRS) is used to convert an identifier (e.g. a Burgerservicenummer, BSN) into a recipient-specific, single-use pseudonym. The goal is to allow generic functions such as [GF Localization](./localization.html) to exchange patient-bound information without ever revealing the underlying BSN to the receiving party (e.g. the Nationale Verwijs Index, NVI).
+{: .ig-lead}
 
 The PRS combines two cryptographic building blocks:
 
@@ -20,7 +19,33 @@ The basic process for obtaining and using a pseudonym is:
 5. The client forwards the `evaluated_output` together with the `blind_factor` (a.k.a. `oprf_key`) to the recipient as part of a downstream transaction (for example, a [GF Localization](./localization.html) registration or query).
 6. The recipient decrypts the JWE with its own private key and de-blinds it with the `blind_factor` to obtain the final, stable pseudonym for that recipient.
 
-{% include pseudonymisation-overview.svg %}
+```mermaid
+sequenceDiagram
+    participant client as Pseudonymization<br/>Client (e.g. EHR)
+    participant prs as Pseudonymization<br/>Service (PRS)
+    participant recipient as Recipient<br/>(e.g. NVI)
+
+    Note over client,recipient: Client-side preparation
+    client->>client: Build Identifier<br/>{ landCode, type, value }
+    client->>client: HKDF(SHA-256,<br/>info="{recipient_org}|{recipient_scope}|v1")<br/>→ pseudonym
+    client->>client: OPRF.blind(pseudonym)<br/>→ (blind_factor, blinded_input)
+
+    Note over client,recipient: PRS evaluation
+    activate prs
+    client->>prs: POST /evaluate<br/>{ blinded_input,<br/>recipient_organization, recipient_scope }
+    prs->>prs: Validate input, evaluate OPRF<br/>and encrypt for recipient
+    prs-->>client: JWE (evaluated_output)<br/>encrypted to recipient public key
+    deactivate prs
+
+    Note over client,recipient: Hand-off to recipient
+    client->>client: Compose patient identifier:<br/>base64url(JSON{ evaluated_output,<br/>blind_factor })
+    client->>recipient: Request carrying patient identifier<br/>(+ blind_factor as oprf_key)
+    activate recipient
+    recipient->>recipient: Decrypt JWE with own private key
+    recipient->>recipient: De-blind with blind_factor → stable pseudonym
+    recipient-->>client: Response
+    deactivate recipient
+```
 
 For more background on how the result is consumed, see [GF Localization](./localization.html).
 

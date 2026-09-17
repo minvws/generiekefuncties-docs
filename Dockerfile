@@ -6,7 +6,7 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y gcc g++ make apt-utils
 
 # Install Node from NodeSource.
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_26.x | bash -
 RUN apt-get install -y nodejs
 
 # Install Jekyll for Ubuntu/Debian: https://jekyllrb.com/docs/installation/ubuntu/
