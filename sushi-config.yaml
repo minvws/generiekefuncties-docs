@@ -61,11 +61,11 @@ pages:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
 
-  # authentication.md:
-  #   title: Authentication
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
+  authentication.md:
+    title: Authentication
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
 
   # authorization.md:
   #   title: Authorization
@@ -123,7 +123,7 @@ menu:
   Addressing: care-services.html
   Signing: signing.html
   # Identification (draft): identification.html
-  # Authentication (draft): authentication.html
+  Authentication (draft): authentication.html
   # Authorization (draft): authorization.html
   Localization (draft): localization.html
   Pseudonymisation (draft): pseudonymisation.html
