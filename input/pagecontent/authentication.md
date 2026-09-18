@@ -28,7 +28,7 @@ The solution is built on:
 
 **In scope** is the targeted *sending* of health data between two healthcare providers within BgZ and eOverdracht, where a referral, handover or "aanmelding" precedes the exchange and a (starting) treatment relationship therefore exists at the receiving organization. In this situation consent is presumed: the patient's consent is already implied in the agreement to the referral.
 
-**Out of scope** (addressed in [Authorization](./authorization.html) and future work) are authorization for other use cases such as a query without a preceding referral (no presumed consent) or exchanges that do not run between two healthcare providers (for example from a PGO or research institution). The query use case is previewed in [Outlook: the "query" use case](#outlook-the-query-use-case), because the chosen technique is well prepared for it.
+**Out of scope** are authorization for other use cases such as a query without a preceding referral (no presumed consent) or exchanges that do not run between two healthcare providers (for example from a PGO or research institution). 
 
 ### Federated trust model
 
