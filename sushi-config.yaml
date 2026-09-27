@@ -85,6 +85,12 @@ pages:
         - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
           valueCode: draft
 
+  bulk-export.md:
+    title: Bulk Export
+    extension:
+        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+          valueCode: draft
+
   # history.md:
   #   title: History
 
@@ -127,6 +133,7 @@ menu:
   # Authorization (draft): authorization.html
   Localization (draft): localization.html
   Pseudonymisation (draft): pseudonymisation.html
+  Bulk Export (draft): bulk-export.html
   Artifacts: artifacts.html
 
   # History: history.html
