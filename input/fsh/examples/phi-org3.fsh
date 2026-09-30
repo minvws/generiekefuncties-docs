@@ -4,9 +4,9 @@ Usage: #inline
 Title: "Patient Jaantje Merkens"
 * identifier[0].system = "http://organization3.example.org/EHR/patients"
 * identifier[=].value = "126"
-* identifier[+].system = "http://fhir.nl/fhir/NamingSystem/bsn"
+* identifier[+].system = "urn:oid:2.16.840.1.113883.2.4.6.3"
 * identifier[=].value = "111222333"
-* insert CustodianAssignedIdentifier("https://cp3-test.example.org/Patient","96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
+* insert CustodianAssignedIdentifier("https://cp3-test.example.org/Patient","96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * name
   * given[0] = "Jaantje"
   * family = "Merkens"
@@ -19,9 +19,9 @@ Title: "Patient Jaantje Merkens"
 * address.line = "Kerkstraat 18"
 * address.postalCode = "7071 WZ"
 * address.city = "Ulft"
-* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* managingOrganization.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * managingOrganization.identifier.value = "33333333"
-* managingOrganization.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* managingOrganization.identifier.assigner.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.assigner.identifier.value = "50000535"
 * managingOrganization.type = "Organization"
 * managingOrganization.display = "Organization 3"
@@ -30,14 +30,14 @@ Instance: 8732d369-7759-447b-af01-f3e0c601b452
 InstanceOf: MedicationStatement
 Usage: #inline
 Title: "MedicationStatement for Apremilast"
-* insert CustodianAssignedIdentifier("https://cp3-test.example.org/MedicationStatement","8732d369-7759-447b-af01-f3e0c601b452","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
+* insert CustodianAssignedIdentifier("https://cp3-test.example.org/MedicationStatement","8732d369-7759-447b-af01-f3e0c601b452","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * status = #active
 * medicationCodeableConcept = $atc#L04AA32 "apremilast"
 * subject = Reference(Patient/96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
 * dateAsserted = "2024-10-03"
-* informationSource.identifier.system = "http://fhir.nl/fhir/NamingSystem/uzi"
+* informationSource.identifier.system = "urn:oid:2.16.528.1.1007.3.1"
 * informationSource.identifier.value = "03333333"
-* informationSource.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* informationSource.identifier.assigner.identifier.system = "http://kvk.nl"
 * informationSource.identifier.assigner.identifier.value = "50000535"
 * informationSource.type = "PractitionerRole"
 * dosage[0].text = "10 mg orally every 4 hours"
@@ -53,20 +53,20 @@ Instance: bd8f360a-7bf2-4b65-9202-f3c092525492
 InstanceOf: CareTeam
 Usage: #inline
 Title: "CareTeam of Patient Jaantje Merkens"
-* insert CustodianAssignedIdentifier("https://cp3-test.example.org/CareTeam","bd8f360a-7bf2-4b65-9202-f3c092525492","http://fhir.nl/fhir/NamingSystem/ura", "33333333")
+* insert CustodianAssignedIdentifier("https://cp3-test.example.org/CareTeam","bd8f360a-7bf2-4b65-9202-f3c092525492","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * participant[+].period.start = "2024-08-27"
 * participant[=].member = Reference(Patient/96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)
 * participant[+].period.start = "2024-08-27"
-* participant[=].member.identifier.system = "http://fhir.nl/fhir/NamingSystem/uzi"
+* participant[=].member.identifier.system = "urn:oid:2.16.528.1.1007.3.1"
 * participant[=].member.identifier.value = "03333333"
-* participant[=].member.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participant[=].member.identifier.assigner.identifier.system = "http://kvk.nl"
 * participant[=].member.identifier.assigner.identifier.value = "50000535"
 * participant[=].member.type = "PractitionerRole"
 * participant[+].period.start = "2024-08-27"
 * participant[=].member.display = "Organization 1"
-* participant[=].member.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* participant[=].member.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * participant[=].member.identifier.value = "33333333"
-* participant[=].member.identifier.assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/kvk"
+* participant[=].member.identifier.assigner.identifier.system = "http://kvk.nl"
 * participant[=].member.identifier.assigner.identifier.value = "50000535"
 * participant[=].member.type = "Organization"
 

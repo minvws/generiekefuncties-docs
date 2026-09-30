@@ -23,7 +23,7 @@ Example identifier for a Condition registered at a Care provider with URA-number
     "use": "official",
     "assigner": {
         "identifier": {
-        "system": "http://fhir.nl/fhir/NamingSystem/ura",
+        "system": "urn:oid:2.16.528.1.1007.3.3",
         "value": "11111111",
         "type": {
             "coding": [{
@@ -40,7 +40,7 @@ Example identifier for a HealthcareService (registered at the [LRZa Directory](.
     "use": "official",
     "assigner": {
     "identifier": {
-        "system": "http://fhir.nl/fhir/NamingSystem/kvk",
+        "system": "http://kvk.nl",
         "value": "50000535",
         "type": {
         "coding": [{

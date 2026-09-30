@@ -16,7 +16,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * connectionType ^binding.extension[=].extension[+].url = "purpose"
 * connectionType ^binding.extension[=].extension[=].valueCode = #extensible
 * connectionType ^binding.extension[=].extension[+].url = "valueSet"
-* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs"
+* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-connection-types-vs"
 * payloadType from NlGfPayloadTypeVS (extensible)
 * payloadType obeys nl-gf-payloadtype-req
 
@@ -56,7 +56,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * specialty ^binding.extension[=].extension[+].url = "purpose"
 * specialty ^binding.extension[=].extension[=].valueCode = #extensible
 * specialty ^binding.extension[=].extension[+].url = "valueSet"
-* specialty ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-healthcare-specialty-vs"
+* specialty ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-healthcare-specialty-vs"
 
 
 Profile: NlGfLocation
@@ -83,66 +83,27 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * type ^binding.extension[=].extension[+].url = "purpose"
 * type ^binding.extension[=].extension[=].valueCode = #extensible
 * type ^binding.extension[=].extension[+].url = "valueSet"
-* type ^binding.extension[=].extension[=].valueCanonical = "http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs"
+* type ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-location-type-vs"
 
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
 // * managingOrganization only Reference(NlGfOrganization)
 
-Profile: NlGfLocalizationList
-Parent: List
-Id: nl-gf-localization-list
-Title: "NL Generic Functions Localization List Profile"
-Description: """A List profile for registering the availability of patient data
-at healthcare organizations for localization services. This profile is used to
-indicate that certain patient data is available at a specific organization and
-can be accessed for localization purposes."""
-* ^experimental = true
-* implicitRules ..0
-* meta ..0
-* language ..0
-* contained ..0
-* identifier ..0
-* title ..0
-* status 1..1
-* status ^comment = "All records are always current"
-* status = #current
-* mode 1..1
-* mode = #working
-* code 1..1
-* code from NlGfZorgcontextVS (required)
-* subject 1..1
-* subject only Reference(Patient)
-* subject.identifier 1..1
-* subject.identifier only NviIdentifier
-* subject.reference ..0
-* extension contains NlGfLocalizationCustodian named custodian 1..1
-* extension[custodian] ^short = "The Organization which published the data"
-* source 1..1
-* source ^short = "The OAuth client (application/system) that registered this record, identified by its OAuth client_id."
-* source.identifier 1..1
-* source.identifier.system 1..1
-* source.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id"
-* source.identifier.value 1..1
-* source.reference ..0
-* entry ..0
-* note ..0
-* emptyReason 1..1
-* emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
+
 
 Invariant:   ura-identifier-or-partof
 Description: "an Organization instance must either have an identifier of type URA or KVK, or must be 'partOf' some other instance that is an nl-gf-organization instance."
-Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or identifier.where(system='http://fhir.nl/fhir/NamingSystem/kvk').exists() or partOf.exists()"
+Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or identifier.where(system='http://kvk.nl').exists() or partOf.exists()"
 Severity:    #error
 
 Invariant:   assigner-identifier-system
 Description: "The assigner identifier system must be either URA or KVK."
-Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http://fhir.nl/fhir/NamingSystem/kvk'"
+Expression:  "system = 'urn:oid:2.16.528.1.1007.3.3' or system = 'http://kvk.nl'"
 Severity:    #error
 
 Invariant:   only-ura-identified-organization-can-refer-to-an-endpoint
 Description: "an Organization instance must have a URA-identifier in order to be able to refer to an Endpoint instance."
-Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or endpoint.empty()"
+Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or endpoint.empty()"
 Severity:    #error
 
 Profile: NlGfOrganization
@@ -224,59 +185,39 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 * assigner.identifier.type.coding.system = $provenance-participant-type
 * assigner.identifier.type.coding.code = #custodian
 
-Profile: NviIdentifier
-Parent: Identifier
-Id: nl-gf-nvi-identifier
-Title: "NVI Identifier"
-Description: """Identifier used at the NVI for pseudonymized Dutch citizen service numbers (BSN)."""
-* system 1..
-* system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier" (exactly)
-* value 1..
-* use = #temp
 
-
-Extension: NlGfLocalizationCustodian
-Id: nl-gf-localization-custodian
-Title: "NL Generic Functions Localization Custodian"
-Description: "The organization responsible for the localization record, identified by URA number."
-Context: List
-* value[x] only Reference(Organization)
-* valueReference.identifier 1..1
-* valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
-* valueReference.identifier.value 1..1
-* valueReference.reference 0..0
 
 Invariant: nl-gf-connectiontype-req
 Description: "At least one coding SHALL be from the NL GF Connection Types value set; additional codes from other code systems are also allowed."
-Expression:  "memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-connection-types-vs')"
+Expression:  "memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-connection-types-vs')"
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
 Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-payload-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-payload-type-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-servicetype-req
 Description: "At least one type coding SHALL be from the NL GF Service Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-service-types-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-service-types-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-specialty-req
 Description: "At least one specialty coding SHALL be from the NL GF HealthcareService Specialty value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-locationtype-req
 Description: "At least one type coding SHALL be from the NL GF Location Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-location-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-location-type-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-orgtype-req
 Description: "At least one type coding SHALL be from the NL GF Organization Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-org-types-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-org-types-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-affiliationcode-req
 Description: "At least one code coding SHALL be from the NL GF Affiliation Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://minvws.github.io/generiekefuncties-docs/ValueSet/nl-gf-affiliation-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-affiliation-type-vs')).exists()"
 Severity:    #error

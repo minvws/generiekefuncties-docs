@@ -1,7 +1,7 @@
 {
   "resourceType" : "Requirements",
   "id" : "fromNarrative",
-  "url" : "http://minvws.github.io/generiekefuncties-docs/Requirements/fromNarrative",
+  "url" : "http://gis.minvws.nl/fhir/csd/Requirements/fromNarrative",
   "name" : "FromNarrative",
   "title" : "Narrative Conformance Statements",
   "status" : "active",

@@ -218,7 +218,7 @@ Other input for the policy evaluation is added to the context.
 ### Advanced Care Planning (ACP) / Proactieve ZorgPlanning (PZP)
 
 The following policy allows the following FHIR requests, if the patient gave consent in Mitz:
-- `GET [base]/Patient?identifier=http://fhir.nl/fhir/NamingSystem/bsn|{context.patient_bsn}`
+- `GET [base]/Patient?identifier=urn:oid:2.16.840.1.113883.2.4.6.3|{context.patient_bsn}`
 - `GET [base]/Consent?patient=Patient/{context.patient_id}&scope=http://terminology.hl7.org/CodeSystem/consentscope|treatment&category=http://snomed.info/sct|129125009`
 
 ```
@@ -242,14 +242,14 @@ patient_gave_mitz_consent if {
     input.context.mitz_consent == true
 }
 
-# GET [base]/Patient?identifier=http://fhir.nl/fhir/NamingSystem/bsn|{value}
+# GET [base]/Patient?identifier=urn:oid:2.16.840.1.113883.2.4.6.3|{value}
 default is_allowed_query := false
 is_allowed_query if {
     input.resource.type == "Patient"
     input.action.fhir_rest.interaction_type == "search-type"
     # identifier: exactly 1 identifier of type BSN
     is_string(input.action.fhir_rest.search_params.identifier)
-    startswith(input.action.fhir_rest.search_params.identifier, "http://fhir.nl/fhir/NamingSystem/bsn|")
+    startswith(input.action.fhir_rest.search_params.identifier, "urn:oid:2.16.840.1.113883.2.4.6.3|")
 }
 
 # GET [base]/Consent?patient={reference}&scope=http://terminology.hl7.org/CodeSystem/consentscope|treatment&category=http://snomed.info/sct|129125009

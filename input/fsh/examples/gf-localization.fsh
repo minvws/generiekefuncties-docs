@@ -3,14 +3,14 @@ InstanceOf: NlGfLocalizationList
 Usage: #example
 Title: "Example NL Generic Functions Localization List"
 Description: "Example instance of the NlGfLocalizationList profile. It expresses an Organization with identifier (URA) 22222222 having a Medication request of a patient with a pseudonymised identifier (BSN)"
-* extension[custodian].valueReference.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
+* extension[custodian].valueReference.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * extension[custodian].valueReference.identifier.value = "22222222"
 * status = #current
 * mode = #working
 * code = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
-* subject.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
+* subject.identifier.system = "http://gis.minvws.nl/nvi-identifier"
 * subject.identifier.value = "UHN1ZWRvYnNuOiA5OTk5NDAwMw=="
-* source.identifier.system = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/oauth-client-id"
+* source.identifier.system = "http://gis.minvws.nl/oauth-client-id"
 * source.identifier.value = "ehr-client-org2"
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 
