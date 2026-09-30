@@ -140,6 +140,11 @@ Description: "The assigner identifier system must be either URA or KVK."
 Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http://fhir.nl/fhir/NamingSystem/kvk'"
 Severity:    #error
 
+Invariant:   only-ura-identified-organization-can-refer-to-an-endpoint
+Description: "an Organization instance must have a URA-identifier in order to be able to refer to an Endpoint instance."
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or endpoint.empty()"
+Severity:    #error
+
 Profile: NlGfOrganization
 Parent: $EuOrganization
 Id: nl-gf-organization
@@ -148,6 +153,7 @@ Description: "Organization profile based on NL Core Healthcare Provider Organiza
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Organization"
 * ^experimental = true
 * obeys ura-identifier-or-partof
+* obeys only-ura-identified-organization-can-refer-to-an-endpoint
 // * identifier ^slicing.discriminator[0].type = #value
 // * identifier ^slicing.discriminator[=].path = "$this"
 * identifier ^slicing.discriminator[+].type = #profile
