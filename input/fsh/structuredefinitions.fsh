@@ -130,9 +130,8 @@ can be accessed for localization purposes."""
 * emptyReason 1..1
 * emptyReason = http://terminology.hl7.org/CodeSystem/list-empty-reason#withheld
 
-
 Invariant:   ura-identifier-or-partof
-Description: "an Organization instance must either have an URA-identifier or must be 'partOf' some other instance that is an nl-gf-organization instance."
+Description: "an Organization instance must either have an identifier of type URA or KVK, or must be 'partOf' some other instance that is an nl-gf-organization instance."
 Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or identifier.where(system='http://fhir.nl/fhir/NamingSystem/kvk').exists() or partOf.exists()"
 Severity:    #error
 
