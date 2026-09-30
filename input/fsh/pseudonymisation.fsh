@@ -49,11 +49,11 @@
 // CodeSystem: NlGfPrsOrganizationIdentifierSystemCS
 // Id: nl-gf-prs-org-identifier-system-cs
 // Title: "NL GF PRS Organization Identifier System CodeSystem"
-// Description: "Valid identifier system URIs for the recipient organization in a PRS evaluate request. The identifier system determines the prefix used in the HKDF info string (e.g. system `http://fhir.nl/fhir/NamingSystem/ura` maps to prefix `ura:`)."
+// Description: "Valid identifier system URIs for the recipient organization in a PRS evaluate request. The identifier system determines the prefix used in the HKDF info string (e.g. system `urn:oid:2.16.528.1.1007.3.3` maps to prefix `ura:`)."
 // * ^status = #active
 // * ^experimental = true
 // * ^caseSensitive = true
-// * #ura "URA" "Unified Registration for Abonnees (URA): the Dutch national identifier for healthcare organizations. System URI: http://fhir.nl/fhir/NamingSystem/ura"
+// * #ura "URA" "Unified Registration for Abonnees (URA): the Dutch national identifier for healthcare organizations. System URI: urn:oid:2.16.528.1.1007.3.3"
 
 // ValueSet: NlGfPrsOrganizationIdentifierSystemVS
 // Id: nl-gf-prs-org-identifier-system-vs
@@ -76,7 +76,7 @@
 // - `type`: `type.coding.code`, bound to [NL GF PRS Personal Identifier Type](ValueSet-nl-gf-prs-identifier-type-vs.html)
 // - `value`: `value`
 
-// For Dutch citizens identified by BSN, use system `http://fhir.nl/fhir/NamingSystem/bsn`."""
+// For Dutch citizens identified by BSN, use system `urn:oid:2.16.840.1.113883.2.4.6.3`."""
 // * ^experimental = true
 // * system 1..1
 // * value 1..1
@@ -104,12 +104,12 @@
 // Description: """Identifier for the recipient organization passed to the PRS evaluate request as `recipient_organization`.
 
 // The HKDF info string prefix is determined by the identifier system:
-// - System `http://fhir.nl/fhir/NamingSystem/ura` → prefix `ura:` (e.g. `ura:90000901`)
+// - System `urn:oid:2.16.528.1.1007.3.3` → prefix `ura:` (e.g. `ura:90000901`)
 
 // Only URA identifiers are currently supported as a recipient organization identifier for the NVI."""
 // * ^experimental = true
 // * system 1..1
-// * system = "http://fhir.nl/fhir/NamingSystem/ura" (exactly)
+// * system = "urn:oid:2.16.528.1.1007.3.3" (exactly)
 // * value 1..1
 
 

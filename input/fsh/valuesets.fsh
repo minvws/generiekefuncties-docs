@@ -69,6 +69,7 @@ ValueSet: NlGfZorgcontextVS
 Id: nl-gf-zorgcontext-vs
 Title: "NL GF Patient Information Data Categories ValueSet"
 Description: "Data categories (a.k.a. zorgcontext) that map to FHIR resource types containing patient-related clinical or personal health information."
+* ^url = "http://gis.minvws.nl/fhir/localization/ValueSet/zorgcontext"
 * ^status = #active
 * ^experimental = true
 * NlGfDataCategoriesCS#AdvanceDirective
@@ -104,7 +105,7 @@ ValueSet: AortaDataCategoriesVS
 Id: aorta-data-categories-vs
 Title: "AORTA Data Categories ValueSet"
 Description: "The data categories defined in the AORTA code system."
+* ^url = "http://gis.minvws.nl/fhir/localization/ValueSet/aorta-datacategories"
 * ^status = #active
 * ^experimental = true
 * include codes from system AORTADataCategoriesCS
-
