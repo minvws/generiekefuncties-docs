@@ -1,11 +1,11 @@
-This FHIR Implementation Guide specifies the technical components of the Generic Functions for data exchange in the Dutch Healthcare system. A national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS). There are five generic functions in this programme, of which two are specified here; Care Services Directory and Localization (Medical Record Localization).
+This FHIR Implementation Guide specifies the technical components of the generic function Care Service Directory (in Dutch: "generieke functie Adressering"). Care Service Directory is one of the generic functions for data availabity in the Dutch Healthcare system. The generic functions are specified in a national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS).
 {: .ig-lead}
 
-### Care Services Directory 
-Enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Services Directory](care-services.html).
+### Care Service Directory 
+The generic function Care Service Directory enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Service Directory](csd.html).
 
-### Localization (Medical Record Localization)
-Provides a standardized framework for discovering which healthcare organizations hold relevant patient data of a specific type. Using a national Medical Record Localization Service (Nationale Verwijs Index or NVI), data holders register the presence of patient data by category, enabling healthcare professionals to efficiently locate health information while ensuring GDPR compliance through proportionality and subsidiarity principles. See [Localization](localization.html).
+<!--### Localization (Medical Record Localization)
+Provides a standardized framework for discovering which healthcare organizations hold relevant patient data of a specific type. Using a national Medical Record Localization Service (Nationale Verwijs Index or NVI), data holders register the presence of patient data by category, enabling healthcare professionals to efficiently locate health information while ensuring GDPR compliance through proportionality and subsidiarity principles. See [Localization](localization.html).-->
 
 <!-- #### Consent
 Establishes a standardized system for managing patient consent as a legal basis for processing medical data. Supports both explicit consent (stored nationally or locally) and implicit consent, with granular control allowing patients to grant permissions to individual organizations or categories of organizations based on type, ensuring consistent and secure consent management across the healthcare ecosystem. See [Consent](consent.html).
@@ -57,6 +57,4 @@ The following package file includes an NPM package file used by many of the FHIR
 - [R4B Package](../package.r4b.tgz){::download="true"}
 
 See the overview on [validating FHIR profiles and resources](http://hl7.org/fhir/R4/validation.html) for more information about validating profiles and how to use these artefacts.
-
-
 

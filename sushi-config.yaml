@@ -49,8 +49,8 @@ pages:
   index.md:
     title: Home
 
-  care-services.md:
-    title: Care Services Directory
+  csd.md:
+    title: Care Service Directory
 
   signing.md:
     title: Resource signing
@@ -123,7 +123,7 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Care Services Directory: care-services.html
+  Care Service Directory: csd.html
   Signing: signing.html
   # Identification (draft): identification.html
   # Authentication (draft): authentication.html
