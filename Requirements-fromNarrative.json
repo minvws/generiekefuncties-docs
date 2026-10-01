@@ -1,7 +1,7 @@
 {
   "resourceType" : "Requirements",
   "id" : "fromNarrative",
-  "url" : "http://gis.minvws.nl/fhir/csd/Requirements/fromNarrative",
+  "url" : "http://fhir.generiekefuncties.nl/csd/Requirements/fromNarrative",
   "name" : "FromNarrative",
   "title" : "Narrative Conformance Statements",
   "status" : "active",

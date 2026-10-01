@@ -16,7 +16,7 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * connectionType ^binding.extension[=].extension[+].url = "purpose"
 * connectionType ^binding.extension[=].extension[=].valueCode = #extensible
 * connectionType ^binding.extension[=].extension[+].url = "valueSet"
-* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-connection-types-vs"
+* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-connection-types-vs"
 * payloadType from NlGfPayloadTypeVS (extensible)
 * payloadType obeys nl-gf-payloadtype-req
 
@@ -56,7 +56,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * specialty ^binding.extension[=].extension[+].url = "purpose"
 * specialty ^binding.extension[=].extension[=].valueCode = #extensible
 * specialty ^binding.extension[=].extension[+].url = "valueSet"
-* specialty ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-healthcare-specialty-vs"
+* specialty ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-healthcare-specialty-vs"
 
 
 Profile: NlGfLocation
@@ -83,7 +83,7 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * type ^binding.extension[=].extension[+].url = "purpose"
 * type ^binding.extension[=].extension[=].valueCode = #extensible
 * type ^binding.extension[=].extension[+].url = "valueSet"
-* type ^binding.extension[=].extension[=].valueCanonical = "http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-location-type-vs"
+* type ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-location-type-vs"
 
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
@@ -189,35 +189,35 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 
 Invariant: nl-gf-connectiontype-req
 Description: "At least one coding SHALL be from the NL GF Connection Types value set; additional codes from other code systems are also allowed."
-Expression:  "memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-connection-types-vs')"
+Expression:  "memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-connection-types-vs')"
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
 Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-payload-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-payload-type-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-servicetype-req
 Description: "At least one type coding SHALL be from the NL GF Service Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-service-types-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-service-types-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-specialty-req
 Description: "At least one specialty coding SHALL be from the NL GF HealthcareService Specialty value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-locationtype-req
 Description: "At least one type coding SHALL be from the NL GF Location Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-location-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-location-type-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-orgtype-req
 Description: "At least one type coding SHALL be from the NL GF Organization Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-org-types-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-org-types-vs')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-affiliationcode-req
 Description: "At least one code coding SHALL be from the NL GF Affiliation Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://gis.minvws.nl/fhir/csd/ValueSet/nl-gf-affiliation-type-vs')).exists()"
+Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-affiliation-type-vs')).exists()"
 Severity:    #error
