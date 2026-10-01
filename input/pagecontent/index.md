@@ -1,8 +1,8 @@
-This FHIR Implementation Guide specifies the technical components of the Generic Functions for data exchange in the Dutch Healthcare system. A national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS). There are five generic functions in this programme, of which two are specified here; Care Services Directory and Localization (Medical Record Localization).
+This FHIR Implementation Guide specifies the technical components of the Generic Functions for data exchange in the Dutch Healthcare system. A national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS). There are five generic functions in this programme, of which two are specified here; Care Service Directory and Localization (Medical Record Localization).
 {: .ig-lead}
 
-### Care Services Directory 
-Enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Services Directory](care-services.html).
+### Care Service Directory 
+Enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Service Directory](care-services.html).
 
 ### Localization (Medical Record Localization)
 Provides a standardized framework for discovering which healthcare organizations hold relevant patient data of a specific type. Using a national Medical Record Localization Service (Nationale Verwijs Index or NVI), data holders register the presence of patient data by category, enabling healthcare professionals to efficiently locate health information while ensuring GDPR compliance through proportionality and subsidiarity principles. See [Localization](localization.html).
