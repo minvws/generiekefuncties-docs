@@ -1,4 +1,4 @@
-Generic Function Addressing (GFA) defines how healthcare parties can publish, discover, and use trusted addressing information for organizations, services, locations, and endpoints. Its purpose is to make healthcare data exchange interoperable and reliable by helping practitioners and systems route requests, referrals, data retrievals and notifications to the correct destination.  
+Generic Function Care Service Directory (CSD) defines how healthcare parties can publish, discover, and use trusted addressing information for organizations, services, locations, and endpoints. Its purpose is to make healthcare data exchange interoperable and reliable by helping practitioners and systems route requests, referrals, data retrievals and notifications to the correct destination.  
 This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile and reuses the actor and transaction definitions that were defined in that specification. You should be able to read this specification without prior knowledge of IHE mCSD, but a basic understanding of the FHIR specification is preferred.
 {: .ig-lead}
 
@@ -13,7 +13,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 1. A practitioner and/or system (e.g. an EHR) can now use the local replica of the LRZa Directory to match resources defined within mCSD (for example: a practitioner searching for a healthcare service or a system searching for a specific endpoint)
 
 
-<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Services Addressing solution."/>
+<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Service Directory solution."/>
 
 
 This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
@@ -96,7 +96,7 @@ All transactions SHALL return a standard FHIR `OperationOutcome` with an appropr
 
 
 ### Entities
-Within GF Addressing, several addressable entities are used to capture and publish information. 
+Within GF Care Service Directory, several addressable entities are used to capture and publish information. 
 An overview of the *most common* elements and relations between entities:
 
 ```mermaid
@@ -285,7 +285,7 @@ The signature is computed over the **canonical JSON** form of the referenced res
 
 #### Not in scope: Practitioner and PractitionerRole
 
-The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Addressing. The main reason is that there is currently no legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
+The data model of the IHE mCSD contains resourcetypes/profiles for Practioner and PractitionerRole. These entities are NOT in scope of the Generic Function Care Service Directory. The main reason is that there is currently no legal basis for the processing of data of healthcare professionals by the 'Landelijk Register Zorgaanbieders' (LRZa).
 
 ### Security
 

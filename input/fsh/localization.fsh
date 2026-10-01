@@ -4,7 +4,7 @@ Id: nl-gf-nvi-identifier
 Title: "NVI Identifier"
 Description: """Identifier used at the NVI for pseudonymized Dutch citizen service numbers (BSN)."""
 * system 1..
-* system = "http://nvi.generiekefuncties.nl/identifier" (exactly)
+* system = "http://generiekefuncties.nl/nvi/identifier" (exactly)
 * value 1..
 * use = #temp
 
@@ -41,7 +41,7 @@ can be accessed for localization purposes."""
 * source ^short = "The OAuth client (application/system) that registered this record, identified by its OAuth client_id."
 * source.identifier 1..1
 * source.identifier.system 1..1
-* source.identifier.system = "http://nvi.generiekefuncties.nl/client-id"
+* source.identifier.system = "http://generiekefuncties.nl/nvi/client-id"
 * source.identifier.value 1..1
 * source.reference ..0
 * entry ..0

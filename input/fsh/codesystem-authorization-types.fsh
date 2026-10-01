@@ -2,13 +2,14 @@ CodeSystem: NlGfAuthorizationTypeCS
 Id: nl-gf-authorization-type-cs
 Title: "NL GF Authorization Type CodeSystem"
 Description: "Local code system for authorization types used in NL Generic Functions for managing authorization and access control"
+* ^url = "http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs"
 * ^status = #active
 * ^experimental = true
 * ^caseSensitive = true
 * ^property[+].code = #smart-on-fhir-scope
 * ^property[=].description = "SMART on FHIR v2 scope associated with this authorization type."
 * ^property[=].type = #string
-* #lrza-careprovider-admin "LRZa Care Provider Administration" "Authorization to create and update manage all GF Addressing entities for a care provider."
+* #lrza-careprovider-admin "LRZa Care Provider Administration" "Authorization to create and update manage all GF Care Service Directory entities for a care provider."
   * ^property[+].code = #smart-on-fhir-scope
   * ^property[=].valueString = "system/Organization.crus"
   * ^property[+].code = #smart-on-fhir-scope
