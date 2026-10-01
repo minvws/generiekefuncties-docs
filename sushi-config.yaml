@@ -50,7 +50,7 @@ pages:
     title: Home
 
   care-services.md:
-    title: Addressing
+    title: Care Services Directory
 
   signing.md:
     title: Resource signing
@@ -108,6 +108,7 @@ parameters:
     - http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000
     - http://ei.vektis.nl/codelijsten/COD016-VEKT
     - http://fhir.generiekefuncties.nl/localization/ValueSet/zorgcontext
+    - http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs
 
 
 #   validation: [allow-any-extensions, no-broken-links]
@@ -122,7 +123,7 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Addressing: care-services.html
+  Care Services Directory: care-services.html
   Signing: signing.html
   # Identification (draft): identification.html
   # Authentication (draft): authentication.html

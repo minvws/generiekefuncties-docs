@@ -49,7 +49,7 @@ Example identifier for a HealthcareService (registered at the [LRZa Directory](.
     }]}}}}]
 ```
 
-However, the custodian may have multiple systems or endpoints that expose the data-object in varying formats (e.g. FHIR STU3 and R4). Systems may also changes over time. This requires a lookup of the actual system/endpoint using [GF Addressing](./care-services.md)
+However, the custodian may have multiple systems or endpoints that expose the data-object in varying formats (e.g. FHIR STU3 and R4). Systems may also changes over time. This requires a lookup of the actual system/endpoint using [GF Care Service Directory](./care-services.md)
 
 This identifier is applied in the profiles specified in this IG (e.g. [NL-GF-Organization](./StructureDefinition-nl-gf-organization.html) or [NL-GF-HealthCareService](./StructureDefinition-nl-gf-healthcareservice.html)) and example FHIR-resources (e.g. [Organization](./Organization-631cf10e-42d6-4165-9907-11e2333d4a85.json.html) (department), [Condition](./Condition-5a7f34e7-9b7b-4e5c-ba7c-890edbc4d757.json.html) and [Task](./Task-a0fc5221-bcd9-46f1-922f-c2913dae5d63.json.html) that references the example Organization/department). For discussion and other solutions that were considered, see [GF-Identification, ADR#48](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/48) and [GF-Identification, ADR#33](https://github.com/nuts-foundation/nl-generic-functions-ig/issues/33).
 

@@ -52,7 +52,7 @@ The client SHALL be able to create and register List resources (localization rec
 }
 ```
 
-This object is used in the `subject.identifier.value` element (using the system `http://fhir.generiekefuncties.nl/NamingSystem/nvi-identifier`).
+This object is used in the `subject.identifier.value` element (using the system `http://generiekefuncties.nl/nvi/identifier`).
 
 **Data Holder Identification**: The client MUST include the appropriate organization identifier (URA) in the nl-gf-localization-custodian extension of each localization record to identify the data holder/custodian.
 
@@ -84,13 +84,13 @@ For more information on the content, see the paragraph on [Localization record](
         ],
         "subject": {
           "identifier": {
-            "system": "http://fhir.generiekefuncties.nl/NamingSystem/nvi-identifier",
+            "system": "http://generiekefuncties.nl/nvi/identifier",
             "value": "eyJldmFsdWF0ZWRfb3V0cHV0IjoiSldFX0ZST01fUFJTIiwiYmxpbmRfZmFjdG9yIjoiQ0xJRU5UX0dFTl9CTElORF9GQUNUT1IifQ"
           }
         },
         "source": {
           "identifier": {
-            "system": "http://nvi.generiekefuncties.nl/client-id",
+            "system": "http://generiekefuncties.nl/nvi/client-id",
             "value": "ehr-client-org2"
           }
         },
@@ -132,7 +132,7 @@ Client SHALL either use the subject:identifier or source:identifier in a search.
 
 **Example Search Query**:
 ```
-GET [base]/List?subject:identifier=http://fhir.generiekefuncties.nl/NamingSystem/nvi-identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
+GET [base]/List?subject:identifier=http://generiekefuncties.nl/nvi/identifier|UHN1ZWRvYnNuOiA5OTk5NDAwMw==&code=LABBEPALING
 ```
 
 The search operation returns a Bundle of type `searchset` containing matching List resources, allowing the client to identify which data holders have specific types of patient data.  
@@ -209,7 +209,7 @@ sequenceDiagram
     participant ehr as EHR System @<br/>(Care Provider, URA 456)
     participant prs as Pseudonymization<br/>Service (PRS)
     participant nvi as Localization Service<br/>(NVI)
-    participant addressing as Addressing Service
+    participant addressing as Care Service Directory Service
     participant ehr_reg as EHR @<br/>(Care Provider)
 
     doctor->>ehr: Request data for patient (BSN:987654321)
@@ -230,7 +230,7 @@ sequenceDiagram
     nvi-->>ehr: Bundle (searchset) with List resources<br/>containing data holder organizations (URAs)
     ehr->>ehr: Extract organization URAs<br/>from List.extension.custodian
 
-    Note over doctor,ehr_reg: Addressing and fetching data
+    Note over doctor,ehr_reg: Care Service Directory and fetching data
     loop for each data holder organization (URA)
         ehr->>addressing: Search /Organization?identifier=ura|{URA}<br/>&_include=Organization:endpoint
         addressing-->>ehr: Organization + Endpoint resources
@@ -247,7 +247,7 @@ sequenceDiagram
 **Scenario**: A healthcare organization needs to retrieve all localization records it has registered in the National Localization Service (NVI). This is useful for administrative purposes, data quality checks, reconciliation, or audit trails. This query retrieves all localization records registered by a specific client/system (the Localization Client)
 
 ```
-GET [base]/List?source:identifier=http://nvi.generiekefuncties.nl/client-id|ehr-client-org2
+GET [base]/List?source:identifier=http://generiekefuncties.nl/nvi/client-id|ehr-client-org2
 ```
 
 **Response**: The NVI returns a Bundle of type `searchset` containing all matching List resources registered by the specified organization or client.
