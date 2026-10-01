@@ -84,10 +84,10 @@ Usage: #definition
 Title: "KVK Basisprofiel naar FHIR Organization"
 Description: "StructureMap die een KVK Basisprofiel API response transformeert naar een FHIR Organization resource."
 * id = "KvkBasisprofielToOrganization"
-* url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkBasisprofielToOrganization"
+* url = "http://fhir.generiekefuncties.nl/csd/StructureMap/KvkBasisprofielToOrganization"
 * name = "KvkBasisprofielToOrganization"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkBasisprofiel"
+* structure[+].url = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/KvkBasisprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkBasisprofiel"
 * structure[+].url = Canonical(NlGfOrganization)
@@ -117,9 +117,9 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-organization"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-organization"
 
-// Rule: kvkNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk)
+// Rule: kvkNummer → identifier (system: http://kvk.nl)
 * group[=].rule[+].name = "kvkNummer"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "kvkNummer"
@@ -141,7 +141,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
 * group[=].rule[=].rule[+].name = "kvkValue"
 * group[=].rule[=].rule[=].source[+].context = "kvkNum"
 * group[=].rule[=].rule[=].target[+].context = "kvkId"
@@ -151,7 +151,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "kvkNum"
 
 
-// Rule: uraNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/ura)
+// Rule: uraNummer → identifier (system: urn:oid:2.16.528.1.1007.3.3)
 * group[=].rule[+].name = "uraNummer"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "uraNummer"
@@ -173,7 +173,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "urn:oid:2.16.528.1.1007.3.3"
 * group[=].rule[=].rule[+].name = "uraValue"
 * group[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].target[+].context = "uraId"
@@ -199,7 +199,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
@@ -710,7 +710,7 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Vestigin
 // StructureMap: KVK Vestigingsprofiel → FHIR Location
 //
 // Mapping summary:
-//   vestigingsnummer                → Location.identifier (system: kvk-vestigingsnummer)
+//   vestigingsnummer                → Location.identifier (system: kvk)
 //   kvkNummer                       → Location.identifier (system: kvk)
 //   eersteHandelsnaam               → Location.name
 //   statutaireNaam                  → Location.alias
@@ -728,10 +728,10 @@ Usage: #definition
 Title: "KVK Vestigingsprofiel naar FHIR Location"
 Description: "StructureMap die een KVK Vestigingsprofiel API response transformeert naar een FHIR Location resource."
 * id = "KvkVestigingsprofielToLocation"
-* url = "http://minvws.github.io/generiekefuncties-docs/StructureMap/KvkVestigingsprofielToLocation"
+* url = "http://fhir.generiekefuncties.nl/csd/StructureMap/KvkVestigingsprofielToLocation"
 * name = "KvkVestigingsprofielToLocation"
 * status = #draft
-* structure[+].url = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/KvkVestigingsprofiel"
+* structure[+].url = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/KvkVestigingsprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkVestigingsprofiel"
 * structure[+].url = Canonical(NlGfLocation)
@@ -761,9 +761,9 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-location"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-location"
 
-// Rule: vestigingsnummer → identifier (system: http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer)
+// Rule: vestigingsnummer → identifier (system: http://kvk.nl)
 * group[=].rule[+].name = "vestigingsnummer"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "vestigingsnummer"
@@ -785,7 +785,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
 * group[=].rule[=].rule[+].name = "vestValue"
 * group[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].target[+].context = "vestId"
@@ -811,7 +811,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
 * group[=].rule[=].rule[=].rule[=].rule[+].name = "assignerIdValue"
 * group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "vestNr"
 * group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "assignerId"
@@ -867,7 +867,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/kvk"
+* group[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
 * group[=].rule[=].rule[=].rule[+].name = "orgIdValue"
 * group[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
 * group[=].rule[=].rule[=].rule[=].target[+].context = "orgId"
@@ -1344,7 +1344,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 // Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
 // Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
 // * type = #transaction
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
-// * insert BundleEntryPUT(http://minvws.github.io/generiekefuncties-docs/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)
