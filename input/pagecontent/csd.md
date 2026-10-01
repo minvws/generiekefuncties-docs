@@ -566,7 +566,7 @@ sequenceDiagram
 
 
 
-### Roadmap for Care Services
+### Roadmap for Care Service Directory
 
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
 - Digital signing of mutations (FHIR `Provenance`) is currently optional; making it mandatory will hardening security and trustworthiness of the data 
