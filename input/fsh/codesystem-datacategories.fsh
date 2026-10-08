@@ -44,6 +44,13 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "HealthcareService"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Endpoint"
+* #CareTeam "Care Team"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Zorgteam"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Care Team"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "CareTeam"
 * #Condition "Condition"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Aandoeningen"
@@ -164,27 +171,13 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Nutrition"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "NutritionOrder"
-* #ObservationActivity "Observation (category: Activity)"
+* #ObservationActivity "Observation"
   * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Activiteit)"
+  * ^designation[=].value = "Observatie"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Activity)"
+  * ^designation[=].value = "Observation"
   * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|activity"
-* #ObservationExam "Observation (category: Exam)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Lichamelijk onderzoek)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Exam)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|exam"
-* #ObservationImaging "Observation (category: Imaging)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Beeldvorming)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Imaging)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|imaging"
+  * ^property[=].valueString = "Observation"
 * #ObservationLaboratory "Observation (category: Laboratory)"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Observatie (categorie: Laboratorium)"
@@ -192,36 +185,6 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Observation (category: Laboratory)"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|laboratory"
-* #ObservationProcedure "Observation (category: Procedure)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Procedure)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Procedure)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|procedure"
-* #ObservationSocialHistory "Observation (category: Social History)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Sociale anamnese)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Social History)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|social-history"
-* #ObservationSurvey "Observation (category: Survey)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Vragenlijst)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Survey)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|survey"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "QuestionnaireResponse"
-* #ObservationTherapy "Observation (category: Therapy)"
-  * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Observatie (categorie: Therapie)"
-  * ^designation[+].language = #en-US
-  * ^designation[=].value = "Observation (category: Therapy)"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "Observation?category=http://terminology.hl7.org/CodeSystem/observation-category|therapy"
 * #ObservationVitalSigns "Observation (category: Vital Signs)"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Observatie (categorie: Vitale functies)"
@@ -238,8 +201,6 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "Patient"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "RelatedPerson"
-  * ^property[+].code = #fhir-resourcetype-params
-  * ^property[=].valueString = "CareTeam"
 * #Practitioner "Practitioner"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Zorgverlener"
@@ -272,10 +233,10 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Specimen, biological material"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Specimen"
-* #Subscription "Subscription and notifications"
+* #Subscription "Subscriptions"
   * ^designation[0].language = #nl-NL
-  * ^designation[=].value = "Abonnementen en notificaties"
+  * ^designation[=].value = "Abonnementen"
   * ^designation[+].language = #en-US
-  * ^designation[=].value = "Subscription and notifications"
+  * ^designation[=].value = "Subscriptions"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Subscription"
