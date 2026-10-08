@@ -187,37 +187,41 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 
 
 
+// These invariants check the code systems underlying the NL GF value sets instead of using memberOf(),
+// because memberOf() requires a terminology service that not all validators (e.g. Firely .NET) provide.
+// Membership of the individual codes is still validated through the (extensible) value set bindings.
+
 Invariant: nl-gf-connectiontype-req
-Description: "At least one coding SHALL be from the NL GF Connection Types value set; additional codes from other code systems are also allowed."
-Expression:  "memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-connection-types-vs')"
+Description: "The connectionType SHALL be from a code system of the NL GF Connection Types value set (HL7 endpoint-connection-type, NL GF Authorization Server types, or Koppeltaal hti-smart-on-fhir)."
+Expression:  "system = 'http://terminology.hl7.org/CodeSystem/endpoint-connection-type' or system = 'http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-authorization-server-cs' or (system = 'http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type' and code = 'hti-smart-on-fhir')"
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
-Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-payload-type-vs')).exists()"
+Description: "At least one payloadType coding SHALL be from a code system of the NL GF Payload Type value set (HL7 endpoint-payload-type or NL GF Data Categories); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs').exists()"
 Severity:    #error
 
 Invariant: nl-gf-servicetype-req
-Description: "At least one type coding SHALL be from the NL GF Service Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-service-types-vs')).exists()"
+Description: "At least one type coding SHALL be from a code system of the NL GF Service Types value set (HL7 service-type or NL GF Zorgvragen); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/service-type' or system = 'http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs').exists()"
 Severity:    #error
 
 Invariant: nl-gf-specialty-req
-Description: "At least one specialty coding SHALL be from the NL GF HealthcareService Specialty value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-healthcare-specialty-vs')).exists()"
+Description: "At least one specialty coding SHALL be from a code system of the NL GF HealthcareService Specialty value set (SNOMED CT or Vektis COD016-VEKT); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://snomed.info/sct' or system = 'http://ei.vektis.nl/codelijsten/COD016-VEKT').exists()"
 Severity:    #error
 
 Invariant: nl-gf-locationtype-req
-Description: "At least one type coding SHALL be from the NL GF Location Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-location-type-vs')).exists()"
+Description: "At least one type coding SHALL be from a code system of the NL GF Location Types value set (SBI or HL7 v3 RoleCode); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'https://www.cbs.nl/standaard-bedrijfsindeling' or system = 'http://terminology.hl7.org/CodeSystem/v3-RoleCode').exists()"
 Severity:    #error
 
 Invariant: nl-gf-orgtype-req
-Description: "At least one type coding SHALL be from the NL GF Organization Types value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-org-types-vs')).exists()"
+Description: "At least one type coding SHALL be from a code system of the NL GF Organization Types value set (HL7 organization-type or SBI); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/organization-type' or system = 'https://www.cbs.nl/standaard-bedrijfsindeling').exists()"
 Severity:    #error
 
 Invariant: nl-gf-affiliationcode-req
-Description: "At least one code coding SHALL be from the NL GF Affiliation Type value set; additional codes from other code systems are also allowed."
-Expression:  "coding.where(memberOf('http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-affiliation-type-vs')).exists()"
+Description: "At least one code coding SHALL be from a code system of the NL GF Affiliation Type value set (NL GF Authorization Types or HL7 organization-role); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs' or system = 'http://hl7.org/fhir/organization-role').exists()"
 Severity:    #error
