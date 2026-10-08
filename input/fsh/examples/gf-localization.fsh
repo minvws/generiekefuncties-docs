@@ -3,6 +3,7 @@ InstanceOf: NlGfLocalizationList
 Usage: #example
 Title: "Example NL Generic Functions Localization List"
 Description: "Example instance of the NlGfLocalizationList profile. It expresses an Organization with identifier (URA) 22222222 having a Medication request of a patient with a pseudonymised identifier (BSN)"
+* language = #en
 * extension[custodian].valueReference.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * extension[custodian].valueReference.identifier.value = "22222222"
 * status = #current

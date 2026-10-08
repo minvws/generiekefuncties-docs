@@ -19,7 +19,6 @@ can be accessed for localization purposes."""
 * ^experimental = true
 * implicitRules ..0
 * meta ..0
-* language ..0
 * contained ..0
 * identifier ..0
 * title ..0

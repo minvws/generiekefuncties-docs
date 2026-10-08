@@ -3,6 +3,7 @@ InstanceOf: Task
 Usage: #example
 Title: "Organization 2 - Task for ServiceRequest Nursing"
 Description: "Task created by Organization 2 to fulfill the ServiceRequest for nursing care at Nursing department at Organization 3"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp2-test.example.org/tasks","a0fc5221-bcd9-46f1-922f-c2913dae5d63","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * status = #requested
 * intent = #order
