@@ -9,7 +9,8 @@
 - [Implementation Guide](https://minvws.github.io/generiekefuncties-docs/)
 - [Source code](https://github.com/minvws/generiekefuncties-docs)
 - [Compare version current to 0.9.0-ballot](https://github.com/minvws/generiekefuncties-docs/compare/0.9.0-ballot...main)
-<!-- Significant changes/Closed issues: -->
+#### Significant changes/Closed issues:
+- Localization; data users search with a search context (zoekcontext), and the NVI only returns data holders that pass a consent check (HEAD request on the FHIR API of the data holder). Localization records contain a custodian pseudonym.
 
 ### Version: 0.9.0-ballot
 - [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/0.9.0-ballot/)

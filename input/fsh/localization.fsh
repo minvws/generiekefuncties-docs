@@ -35,8 +35,11 @@ can be accessed for localization purposes."""
 * subject.identifier 1..1
 * subject.identifier only NviIdentifier
 * subject.reference ..0
-* extension contains NlGfLocalizationCustodian named custodian 1..1
+* extension contains
+    NlGfLocalizationCustodian named custodian 1..1 and
+    NlGfLocalizationCustodianPseudonym named custodianPseudonym 1..1
 * extension[custodian] ^short = "The Organization which published the data"
+* extension[custodianPseudonym] ^short = "Pseudonym of the patient at the custodian, used by the Localization Service for the consent check. Never returned in search results."
 * source 1..1
 * source ^short = "The OAuth client (application/system) that registered this record, identified by its OAuth client_id."
 * source.identifier 1..1
@@ -60,3 +63,56 @@ Context: List
 * valueReference.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * valueReference.identifier.value 1..1
 * valueReference.reference 0..0
+
+
+Extension: NlGfLocalizationCustodianPseudonym
+Id: nl-gf-localization-custodian-pseudonym
+Title: "NL Generic Functions Localization Custodian Pseudonym"
+Description: """Pseudonym of the patient at the custodian (data holder): a value that the FHIR Endpoint of the custodian accepts
+as value of the `patient` search parameter, typically the logical id of the Patient resource. The Localization Service
+uses it only in the consent check towards this custodian and never returns it in search results."""
+Context: List
+* value[x] only id
+* valueId 1..1
+
+
+Instance: nl-gf-localization-list-custodian
+InstanceOf: SearchParameter
+Usage: #definition
+* name = "NlGfLocalizationListCustodian"
+* status = #active
+* experimental = true
+* description = "Selects localization records by the identifier (URA) of the custodian (data holder)."
+* code = #custodian
+* base = #List
+* type = #token
+* expression = "List.extension('http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-localization-custodian').value.identifier"
+
+Instance: nl-gf-localization-list-custodian-type
+InstanceOf: SearchParameter
+Usage: #definition
+* name = "NlGfLocalizationListCustodianType"
+* status = #active
+* experimental = true
+* description = """Selects localization records by the type of the custodian (`Organization.type`). The Localization Service
+resolves the type of the custodian Organization (identified by URA) and its child Organizations in its replica of the
+Care Service Directory (LRZa). Supports the `:below` modifier for hierarchical code systems such as SBI."""
+* code = #custodian-type
+* base = #List
+* type = #token
+* modifier[+] = #below
+
+Instance: nl-gf-localization-list-custodian-service-type
+InstanceOf: SearchParameter
+Usage: #definition
+* name = "NlGfLocalizationListCustodianServiceType"
+* status = #active
+* experimental = true
+* description = """Selects localization records by the type of healthcare services provided by the custodian
+(`HealthcareService.type`). The Localization Service resolves the HealthcareServices provided by the custodian Organization
+(identified by URA) and its child Organizations in its replica of the Care Service Directory (LRZa). Supports the `:below`
+modifier for hierarchical code systems such as NL GF Zorgvragen."""
+* code = #custodian-service-type
+* base = #List
+* type = #token
+* modifier[+] = #below
