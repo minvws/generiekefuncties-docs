@@ -10,8 +10,8 @@
 - [Source code](https://github.com/minvws/generiekefuncties-docs)
 - [Compare version current to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...main)
 #### Significant changes/Closed issues:
-- Localization; localization records no longer contain a data-category code. Search-context data categories are matched against LRZa FHIR Endpoint.payloadType.
-- Localization; data users search with a search context (zoekcontext), and the NVI only returns data holders with an allow Authorization Decision (HEAD request on the data holder's FHIR API). Localization Patients contain a custodian-assigned patient identifier.
+- Localization; localization records (NVI-pseudonyms) no longer contain a data-category code.
+- Localization; data users search with a search context (zoekcontext) containing custodian characteristics, and the NVI only returns relevant custodians with an allow Authorization Decision (HEAD request on the custodian's FHIR API). Localization-Patients contain a custodian-assigned patient identifier.
 
 ### Version: 1.0.0
 - [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/1.0.0/)
