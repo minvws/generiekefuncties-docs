@@ -8,9 +8,23 @@
 ### Version: current
 - [Implementation Guide](https://minvws.github.io/generiekefuncties-docs/)
 - [Source code](https://github.com/minvws/generiekefuncties-docs)
-- [Compare version current to 0.9.0-ballot](https://github.com/minvws/generiekefuncties-docs/compare/0.9.0-ballot...main)
+- [Compare version current to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...main)
 #### Significant changes/Closed issues:
-- Localization; data users search with a search context (zoekcontext), and the NVI only returns data holders that pass a consent check (HEAD request on the FHIR API of the data holder). Localization records contain a custodian pseudonym.
+- Localization; localization records no longer contain a data-category code. Search-context data categories are matched against LRZa FHIR Endpoint.payloadType.
+- Localization; data users search with a search context (zoekcontext), and the NVI only returns data holders with an allow Authorization Decision (HEAD request on the data holder's FHIR API). Localization Patients contain a custodian-assigned patient identifier.
+
+### Version: 1.0.0
+- [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/1.0.0/)
+- [Source code](https://github.com/minvws/generiekefuncties-docs/tree/1.0.0)
+- [Compare this version to 0.9.0-ballot](https://github.com/minvws/generiekefuncties-docs/compare/0.9.0-ballot...1.0.0)
+#### Significant changes/Closed issues:
+- Pseudonymisation; added the pseudonymisation specification, including the requirement to use JSON Canonicalization Scheme (JCS) for PRS input.
+- Care Services; clarified Endpoint lifecycle, period-based transitions and selection, and added machine-readable FHIR version guidance.
+- Care Services; added synchronization requirements for paging, concurrency, retention and error handling, and expanded Endpoint management and directory support.
+- Care Services; added Chamber of Commerce (KvK) data transformation guidance and support for publishing notification Endpoints.
+- Localization; removed Device and used the OAuth client ID as the source.
+- Authorization; added resource signing requirements and support for deletes.
+- Terminology and interoperability; added subscription as a data category, a code system for care questions, and aligned the guide with EHDS.
 
 ### Version: 0.9.0-ballot
 - [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/0.9.0-ballot/)
