@@ -63,40 +63,4 @@ Description: "Authorization types supported by NL Generic Functions."
 * ^status = #active
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
-* include codes from system http://hl7.org/fhir/organization-role 
-
-ValueSet: NlGfZorgcontextVS
-Id: nl-gf-zorgcontext-vs
-Title: "NL GF Patient Information Data Categories ValueSet"
-Description: "Data categories (a.k.a. zorgcontext) that map to FHIR resource types containing patient-related clinical or personal health information."
-* ^url = "http://fhir.generiekefuncties.nl/localization/ValueSet/zorgcontext"
-* ^status = #active
-* ^experimental = true
-* NlGfDataCategoriesCS#AdvanceDirective
-* NlGfDataCategoriesCS#Alert
-* NlGfDataCategoriesCS#AllergyIntolerance
-* NlGfDataCategoriesCS#Condition
-* NlGfDataCategoriesCS#Consent
-* NlGfDataCategoriesCS#Device
-* NlGfDataCategoriesCS#DiagnosticReport
-* NlGfDataCategoriesCS#Encounter
-* NlGfDataCategoriesCS#Episode
-* NlGfDataCategoriesCS#Genomics
-* NlGfDataCategoriesCS#Imaging
-* NlGfDataCategoriesCS#Logging
-* NlGfDataCategoriesCS#MedicationRequest
-* NlGfDataCategoriesCS#MedicationUse
-* NlGfDataCategoriesCS#Nutrition
-* NlGfDataCategoriesCS#ObservationActivity
-* NlGfDataCategoriesCS#ObservationExam
-* NlGfDataCategoriesCS#ObservationImaging
-* NlGfDataCategoriesCS#ObservationLaboratory
-* NlGfDataCategoriesCS#ObservationProcedure
-* NlGfDataCategoriesCS#ObservationSocialHistory
-* NlGfDataCategoriesCS#ObservationSurvey
-* NlGfDataCategoriesCS#ObservationTherapy
-* NlGfDataCategoriesCS#ObservationVitalSigns
-* NlGfDataCategoriesCS#Patient
-* NlGfDataCategoriesCS#Procedure
-* NlGfDataCategoriesCS#Request
-* NlGfDataCategoriesCS#Specimen
+* include codes from system http://hl7.org/fhir/organization-role
