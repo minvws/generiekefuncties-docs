@@ -7,7 +7,7 @@ Description: "Example localization Patient record for one custodian, containing 
 * identifier[nvi].value = "eyJldmFsdWF0ZWRfb3V0cHV0IjoiLi4uIiwiYmxpbmRfZmFjdG9yIjoiLi4uIn0"
 * identifier[custodian].use = #official
 * identifier[custodian].system = "https://fhir.datahouder-22222222.example/identifier/patient"
-* identifier[custodian].value = "patient-123"
+* identifier[custodian].value = "9fd244dc-6b35-4a7d-843d-ac77591cb14d"
 * identifier[custodian].assigner.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * identifier[custodian].assigner.identifier.value = "22222222"
 * identifier[custodian].assigner.identifier.type.coding.system = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
