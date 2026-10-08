@@ -2,6 +2,7 @@ Instance: 128447d2-e153-4c93-8ac6-6c357555f3db
 InstanceOf: Patient
 Usage: #inline
 Title: "Patient Jaantje Merkens"
+* language = #en
 * identifier[+].system = "urn:oid:2.16.840.1.113883.2.4.6.3"
 * identifier[=].value = "111222333"
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/patients","128447d2-e153-4c93-8ac6-6c357555f3db","urn:oid:2.16.528.1.1007.3.3", "11111111")
@@ -39,6 +40,7 @@ Instance: 8cdd8f8d-f75b-4285-851e-ff302dad46fb
 InstanceOf: Condition
 Usage: #inline
 Title: "Condition General Weakness"
+* language = #en
 * meta.lastUpdated = "2024-09-03T12:00:00Z"
 * identifier = 607bc9c7-8a3b-47e6-ac72-8a50e97d6ae2
 //* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","urn:oid:2.16.528.1.1007.3.3", "11111111")
@@ -60,6 +62,7 @@ Instance: 73f4bffe-eac4-4863-8e4a-852c578f95dd
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Vascular medicine"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","73f4bffe-eac4-4863-8e4a-852c578f95dd","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 * intent = #order
@@ -78,6 +81,7 @@ Instance: d2f1d123-9bfb-485f-8b6f-2db411c4884e
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Neurological Diagnostics"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","d2f1d123-9bfb-485f-8b6f-2db411c4884e","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 * intent = #order
@@ -96,6 +100,7 @@ Instance: 4e4215a2-d6ff-4e53-8737-d9810a4cc3eb
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Orthopedic Diagnostics"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","4e4215a2-d6ff-4e53-8737-d9810a4cc3eb","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 * intent = #order
@@ -114,6 +119,7 @@ Instance: 3cb7873f-c222-4196-b441-02b3790ec97e
 InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Internal medicine"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","3cb7873f-c222-4196-b441-02b3790ec97e","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 * intent = #order
@@ -132,6 +138,7 @@ Instance: 98f9d4a7-d58d-4889-8e63-0cb2d4e35144
 InstanceOf: MedicationStatement
 Usage: #inline
 Title: "MedicationStatement Urokinase"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp1-test.example.org/MedicationStatement","98f9d4a7-d58d-4889-8e63-0cb2d4e35144","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 * medicationCodeableConcept = $atc#B01AD04 "urokinase"
@@ -156,6 +163,7 @@ InstanceOf: Bundle
 Usage: #example
 Title: "Bundle of personal health information in HIS of Organization 1"
 Description: "This bundle contains all personal health information for Patient Jaantje Merkens in Organization 1"
+* language = #en
 * type = #transaction
 * insert BundleEntryPUT(urn:uuid:,Patient, 128447d2-e153-4c93-8ac6-6c357555f3db)
 * insert BundleEntryPUT(urn:uuid:,Condition, 8cdd8f8d-f75b-4285-851e-ff302dad46fb)

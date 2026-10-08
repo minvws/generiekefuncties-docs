@@ -23,6 +23,25 @@ INPUT_DIR="${PROJECT_DIR}/test/transform/input"
 OUTPUT_DIR="${PROJECT_DIR}/test/transform/output"
 mkdir -p "$OUTPUT_DIR"
 
+generate_narrative() {
+  local resource_file="$1"
+  echo "======Generating English narrative..."
+  if ! java -jar "$VALIDATOR_JAR" narrative \
+    "$resource_file" \
+    -version 4.0.1 \
+    -ig "$RESOURCES_DIR" \
+    -tx n/a \
+    -output "$resource_file"; then
+    echo "ERROR: Failed to generate narrative for $resource_file"
+    exit 1
+  fi
+
+  if ! jq -e '.language == "en" and (.text.div | test("(^| )lang=\"en\""))' "$resource_file" > /dev/null; then
+    echo "ERROR: Expected an English language attribute in the narrative for $resource_file"
+    exit 1
+  fi
+}
+
 
 INPUT_FILE="${INPUT_DIR}/kvk-basisprofiel-90006623.json"
 INPUT_FILE_WITH_URA="${INPUT_DIR}/kvk-basisprofiel-90006623-with-ura.json"
@@ -44,6 +63,7 @@ java -jar "$VALIDATOR_JAR" \
   -ig "ihe.iti.mcsd#4.0.0" \
   -ig "hl7.fhir.eu.base#2.0.0"
 
+generate_narrative "$OUTPUT_FILE"
 
 # Validate the transformed outputs against their profiles
 echo "======Validating Organization..."
@@ -71,6 +91,7 @@ java -jar "$VALIDATOR_JAR" \
   -ig "ihe.iti.mcsd#4.0.0" \
   -ig "hl7.fhir.eu.base#2.0.0"
 
+generate_narrative "$OUTPUT_FILE"
 
 # Validate the transformed outputs against their profiles
 echo "======Validating Location..."
@@ -80,4 +101,3 @@ java -jar "$VALIDATOR_JAR" \
   -ig "$RESOURCES_DIR" \
   -ig "ihe.iti.mcsd#4.0.0" \
   -ig "hl7.fhir.eu.base#2.0.0"
-

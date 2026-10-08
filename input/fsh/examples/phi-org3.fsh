@@ -2,6 +2,7 @@ Instance: 96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d
 InstanceOf: Patient
 Usage: #inline
 Title: "Patient Jaantje Merkens"
+* language = #en
 * identifier[0].system = "http://organization3.example.org/EHR/patients"
 * identifier[=].value = "126"
 * identifier[+].system = "urn:oid:2.16.840.1.113883.2.4.6.3"
@@ -30,6 +31,7 @@ Instance: 8732d369-7759-447b-af01-f3e0c601b452
 InstanceOf: MedicationStatement
 Usage: #inline
 Title: "MedicationStatement for Apremilast"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp3-test.example.org/MedicationStatement","8732d369-7759-447b-af01-f3e0c601b452","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * status = #active
 * medicationCodeableConcept = $atc#L04AA32 "apremilast"
@@ -53,6 +55,7 @@ Instance: bd8f360a-7bf2-4b65-9202-f3c092525492
 InstanceOf: CareTeam
 Usage: #inline
 Title: "CareTeam of Patient Jaantje Merkens"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp3-test.example.org/CareTeam","bd8f360a-7bf2-4b65-9202-f3c092525492","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * participant[+].period.start = "2024-08-27"
 * participant[=].member = Reference(Patient/96e7aa36-6d66-4a9e-bf6b-245d97d8ec1d)

@@ -119,6 +119,15 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-organization"
 
+// Set the resource language so generated narratives carry lang="en".
+* group[=].rule[+].name = "setLanguage"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "language"
+* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].parameter[+].valueString = "en"
+
 // Rule: kvkNummer → identifier (system: http://kvk.nl)
 * group[=].rule[+].name = "kvkNummer"
 * group[=].rule[=].source[+].context = "src"
@@ -763,6 +772,15 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-location"
 
+// Set the resource language so generated narratives carry lang="en".
+* group[=].rule[+].name = "setLanguage"
+* group[=].rule[=].source[+].context = "src"
+* group[=].rule[=].target[+].context = "tgt"
+* group[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].target[=].element = "language"
+* group[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].target[=].parameter[+].valueString = "en"
+
 // Rule: vestigingsnummer → identifier (system: http://kvk.nl)
 * group[=].rule[+].name = "vestigingsnummer"
 * group[=].rule[=].source[+].context = "src"
@@ -1326,6 +1344,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].element = "code"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "code"
+
 // Map sbiOmschrijving → coding.display
 * group[=].rule[=].rule[+].name = "sbiDisplay"
 * group[=].rule[=].rule[=].source[+].context = "src"
