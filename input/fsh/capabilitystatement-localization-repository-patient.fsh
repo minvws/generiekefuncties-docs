@@ -29,7 +29,7 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
-      * documentation = """SHALL support search using `POST [base]/Patient/_search` (`application/x-www-form-urlencoded`). Search SHALL include the NVI patient identifier and MAY combine it with managing-organization filters. SHALL support the standard chained searches `organization:identifier`, `organization.type`, `organization.endpoint.payload-type`, and `organization._has:HealthcareService:organization:service-type`; the NVI resolves managing-organization identifiers against its LRZa replica. SHALL return only matching Patient records for which the Authorization Decision is allow. Search results SHALL omit all Patient.identifier values and meta.source."""
+      * documentation = """SHALL support data-user search using `POST [base]/Patient/_search` (`application/x-www-form-urlencoded`). This search SHALL include the NVI patient identifier and MAY combine it with managing-organization filters. SHALL support the standard chained searches `organization:identifier`, `organization.type`, `organization.endpoint.payload-type`, and `organization._has:HealthcareService:organization:service-type`; the NVI resolves managing-organization identifiers against its LRZa replica. SHALL return only matching Patient projections for which the Authorization Decision is allow, marked with the `SUBSETTED` tag and omitting all Patient.identifier values and meta.source. These projections SHALL NOT be used to update registrations. An authorized registering client MAY search its registrations by `_source` for maintenance; those results are distinct from data-user search results."""
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "identifier"

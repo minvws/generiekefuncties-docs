@@ -1,11 +1,11 @@
-Generic Function Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Data Localization Index or, in Dutch, Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI-pseudonym and optional custodian properties, and receives only custodians that return a positive Authorization Decision result.
+Generic Function Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Data Localization Index or, in Dutch, Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
 
 ### Solution overview
 
 Custodians first register patients whose data they manage:
 
-1. The custodian obtains an NVI-scoped pseudonym from the [Pseudonym Registration Service (PRS)](./pseudonymisation.html).
+1. The custodian obtains the encrypted PRS result and blinding factor for an NVI-scoped pseudonym from the [Pseudonym Registration Service (PRS)](./pseudonymisation.html).
 2. The custodian registers a `Patient` resource for that patient and custodian at the NVI.
 
 <img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
@@ -14,12 +14,12 @@ Custodians first register patients whose data they manage:
 
 A data user can then discover relevant custodians:
 
-1. The data user determines the relevant custodians and data categories for the care need.
-2. The data user obtains the patient's NVI-scoped pseudonym from the PRS.
-3. The data user queries the NVI for the patient, specifying which custodian are relevant by properties such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type.
+1. The data user determines the custodian search criteria and data categories relevant to the care need.
+2. The data user obtains the encrypted PRS result and blinding factor for the patient's NVI-scoped pseudonym from the PRS.
+3. The data user queries the NVI for the patient, specifying which custodians are relevant by properties such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type.
 4. The NVI selects relevant custodians by matching the query against its local [Care Service Directory replica](./csd.html#lrza-directory).
-5. For each selected custodian, the NVI requests an Authorization Decision. The NVI returns only the custodians with a positive Authorization Decision.
-6. The data user discovers their data Endpoints through the Care Service Directory and requests data directly from those custodians, which authorize each data request independently.
+5. For each selected custodian, the NVI requests an Authorization Decision. The NVI returns only custodians with an allow Authorization Decision.
+6. The data user discovers the custodians' data Endpoints through the Care Service Directory and requests data directly from them. Custodians authorize each data request independently.
 
 <img src="localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
 
@@ -49,20 +49,19 @@ For each matching custodian and requested data category, the NVI sends a `HEAD` 
 HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned identifier]
 ```
 
-- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. Optionally including `payloadType` matching the requested custodian Endpoint payload types.
-- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration` and `MedicationStatement` for code `MedicationUse`. If no custodian Endpoint payload types were requested, resourceType `Patient` is used.
+- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When custodian Endpoint payload types is specified, the Endpoint's `payloadType` SHALL match at least one of these types.
+- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
 - `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
 
 For a resource type of `Patient`, use `HEAD [fhir-base-url]/Patient?identifier=[custodian-assigned identifier]` instead of `patient.identifier`.
 
-The request carries an access token with care provider and practitioner information in `authorization_details` identify the data user, and the NVI is the acting party (the OAuth client). See [Authentication and Authorization](#authentication-and-authorization) and [EHDS Implementing Act 2026/2099, annex 1](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202602099#anx_1).
+The request carries an access token whose `authorization_details` identifies the care provider and practitioner acting as the data user. The NVI is the acting party (the OAuth client). See [Authentication and Authorization](#authentication-and-authorization).
 
 Example:
 
 ```
 HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=https://fhir.datahouder-123.example/identifier/patient|9fd244dc-6b35-4a7d-843d-ac77591cb14d HTTP/1.1
-Authorization: [data user token with NVI as acting party]
-{access token: care provider and practitioner identifiers in authorization_details, NVI OAuth client as actor}
+Authorization: Bearer [access-token]
 ```
 
 The NVI interprets the HTTP status of the response as follows:
@@ -76,13 +75,13 @@ The NVI interprets the HTTP status of the response as follows:
 Processing rules:
 - The NVI SHALL group requests by custodian and custodian-assigned identifier, and send one request per resource type mapped to each requested data category. If a category maps to multiple resource types, it is allowed when at least one decision is allow.
 - The NVI SHALL perform requests in parallel and with a timeout. A timeout is deny.
-- The NVI SHALL NOT send the BSN, NVI pseudonym, or search context to the custodian, other than the data category implied by the resource type.
+- The NVI SHALL NOT send the BSN, NVI pseudonym, or broader search context to the custodian; only the requested data category may be implied by the resource type.
 - Decisions SHALL only be used for the current search and SHALL NOT be cached.
 
 An allow decision does not replace authorization of the actual data request. The custodian authorizes every subsequent request because access policies can change.
 
 #### Pseudonym Registration Service
-The Pseudonym Registration Service (PRS) is responsible for creating recipient-scoped pseudonyms of patient identifiers using HKDF and Oblivious Pseudorandom Function (OPRF) protocols. See [GF Pseudonymization](./pseudonymisation.html) for the full specification and the [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
+The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clients to derive recipient-scoped pseudonyms from patient identifiers using HKDF and OPRF protocols. See [GF Pseudonymization](./pseudonymisation.html) for the full specification and the [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
 
 
 #### Localization client
@@ -140,7 +139,7 @@ identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 
 `{NVI-patient-identifier}` is the base64url-encoded PRS object described under [Registration](#registration). The NVI decrypts and unblinds it to find matching Patient resources.
 
-The search operation returns a `Bundle` of type `searchset` containing Patient projections for the custodians that match the search context and received an allow decision. For privacy, the NVI omits all `Patient.identifier` values and `meta.source`.
+The data-user search operation returns a `Bundle` of type `searchset` containing Patient projections for custodians that match the search context and received an allow decision. These projections are marked with the `SUBSETTED` tag. For privacy, the NVI omits all `Patient.identifier` values and `meta.source`; the projections are not complete instances of the registration profile and SHALL NOT be used to update registrations.
 
 **Example Search Response**:
 ```json
@@ -198,7 +197,7 @@ The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-locali
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
 
-The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHOULD NOT be derivable from the BSN without a secret. The NVI stores it only to request Authorization Decisions from that custodian and SHALL NOT return it to localization client/data users.
+The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHOULD NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized registering Localization Client for record maintenance.
 
 #### Search context
 
@@ -218,9 +217,9 @@ FHIR R4 defines these standard search parameters and chained paths. The NVI SHAL
 #### Authentication and Authorization
 See [GF Pseudonymisation](./pseudonymisation.html) for PRS authentication requirements.
 
-When searching, the Localization client access token SHALL include care provider and practitioner details in the `authorization_details` object (see [EHDS Implementing Act 2026/2099, Annex 1](https://eur-lex.europa.eu/eli/reg_impl/2026/2099/oj/eng#anx_1)).
+When searching, the Localization Client's access token SHALL include care provider and practitioner details in the `authorization_details` object (as required for EU-cross-border exchange by [EHDS Implementing Act 2026/2099, Annex 1](https://eur-lex.europa.eu/eli/reg_impl/2026/2099/oj/eng#anx_1))
 
-For an [Authorization Decision](#authorization-decision), the care provider and practitioner details are, again, in the `authorization_details` object, but now the NVI is the acting party (the OAuth client). 
+For an [Authorization Decision](#authorization-decision), the care provider and practitioner details are, again, in the `authorization_details` object, but now the NVI is the acting party (the OAuth client).
 For other authentication, transport-layer and access-token details, see GF Authentication.
 
 
@@ -232,7 +231,7 @@ For other authentication, transport-layer and access-token details, see GF Authe
 
 ### Privacy and security considerations
 
-- **Disclosure to custodians**: an Authorization Decision reveals that the data user is seeking data about a patient. Requests are limited to custodians matching the 'search context'.
+- **Disclosure to custodians**: an Authorization Decision reveals that the data user is seeking data about a patient. Requests are limited to custodians matching the search context.
 - **Patient identifier privacy**: the NVI sends the custodian-assigned identifier only to its custodian for Authorization Decision requests and SHALL NOT include it in search responses to data users. The custodian does not receive the BSN, NVI pseudonym, or broader search context.
 - **No reason leakage**: the NVI returns only allowed Patient projections and does not reveal whether a custodian was absent, filtered out, denied, or unreachable.
 - **Fail closed**: every Authorization Decision other than `200 OK`, including timeouts, is deny.
