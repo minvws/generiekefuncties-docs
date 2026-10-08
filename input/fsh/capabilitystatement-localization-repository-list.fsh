@@ -30,13 +30,31 @@ Usage: #definition
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #search-type
+      * documentation = """SHALL support search using `POST [base]/List/_search` (`application/x-www-form-urlencoded`). Searches by `subject` SHALL use POST and SHALL include a search context: one or more `code` values, optionally combined with `custodian`, `custodian-type` and/or `custodian-service-type`. The Localization Service SHALL only return localization records of custodians that match the search context and pass the consent check, and SHALL omit `subject` and the custodian pseudonym extension from search results."""
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "subject"
-      * type = #token
+      * type = #reference
+      * documentation = "Used with the `:identifier` modifier and the NVI identifier of the patient."
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "code"
+      * type = #token
+      * documentation = "Data category. Required when searching by `subject`."
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "custodian"
+      * definition = Canonical(nl-gf-localization-list-custodian)
+      * type = #token
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "custodian-type"
+      * definition = Canonical(nl-gf-localization-list-custodian-type)
+      * type = #token
+    * searchParam[+]
+      * insert Expectation(SHALL)
+      * name = "custodian-service-type"
+      * definition = Canonical(nl-gf-localization-list-custodian-service-type)
       * type = #token
   * interaction[+]
     * insert Expectation(SHALL)

@@ -13,6 +13,12 @@ curl --request POST \
     --header 'content-type: application/json' \
     --data '{"ref": "refs/tags/0.9.0-ballot","repository": {"full_name": "minvws/generiekefuncties-docs"}}'
 
+
+curl --request POST \
+    --url https://us-central1-fhir-org-starter-project.cloudfunctions.net/ig-commit-trigger \
+    --header 'content-type: application/json' \
+    --data '{"ref": "refs/tags/1.0.0","repository": {"full_name": "minvws/generiekefuncties-docs"}}'
+
 # curl --request POST \
 #     --url https://us-central1-fhir-org-starter-project.cloudfunctions.net/ig-commit-trigger \
 #     --header 'content-type: application/json' \

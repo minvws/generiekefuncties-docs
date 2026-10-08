@@ -2,9 +2,10 @@ Instance: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 InstanceOf: NlGfLocalizationList
 Usage: #example
 Title: "Example NL Generic Functions Localization List"
-Description: "Example instance of the NlGfLocalizationList profile. It expresses an Organization with identifier (URA) 22222222 having a Medication request of a patient with a pseudonymised identifier (BSN)"
+Description: "Example instance of the NlGfLocalizationList profile. It expresses an Organization with identifier (URA) 22222222 having a Medication request of a patient with a pseudonymised identifier (BSN), and the pseudonym of that patient at the Organization (custodian pseudonym)."
 * extension[custodian].valueReference.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
 * extension[custodian].valueReference.identifier.value = "22222222"
+* extension[custodianPseudonym].valueId = "3f9c2a7e-8b41-4d6a-9c1e-5b7d2f0a6e13"
 * status = #current
 * mode = #working
 * code = nl-gf-data-categories-cs#MedicationRequest "Medication Request"
