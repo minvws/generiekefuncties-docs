@@ -104,6 +104,68 @@ The client places this object, base64url-encoded, in the NVI `Patient.identifier
 
 Use direct `POST [base]/Patient` to register the resource. See the [Patient example](./Patient-nl-gf-localization-patient-example.html).
 
+##### Lifecycle
+The registration key is the combination of the custodian's ID (`managingOrganization.identifier`) and the custodian-assigned identifier (`system|value`).
+
+**Register.** The client SHALL register a patient when both conditions hold:
+- the custodian holds data for the patient in a data category it exposes;
+- the custodian is permitted to register the patient.
+
+One registration covers all data categories of that custodian. The client SHOULD register within 24 hours after both conditions hold.
+
+**Delete.** The client SHALL delete the registration when either condition no longer holds. For example, the retention period has ended, or the record has moved to another care provider.
+
+**Change.** The NVI does not support updates. To change a registration, for example after a new custodian-assigned identifier or a patient merge, the client SHALL delete the registration and register a new one.
+
+**No duplicates.** The client SHALL register with a conditional create, so a retry never creates a second registration:
+
+```
+POST [base]/Patient
+If-None-Exist: identifier=[custodian-assigned identifier]&_source=urn:generiekefuncties:nvi:client-id:{client_id}
+```
+
+If a matching registration exists, the NVI returns it with `200 OK` and does not create a new one.
+
+##### Reconciliation
+Registration on events can miss changes, for example after an outage or a failed request. The client SHALL therefore reconcile its registrations with the custodian's records at least once a week.
+
+A missing registration is the harmful case: data users cannot find the custodian's data. A stale registration only costs an extra Authorization Decision, because the custodian answers deny.
+
+The client SHALL perform these steps in this order:
+
+1. **Fetch the NVI list.** Request `GET [base]/Patient?_source=urn:generiekefuncties:nvi:client-id:{client_id}`. Follow every `next` link in the returned Bundle until there is none. For each Patient, record its `id` and its registration key. This is list N.
+2. **Build the local list.** Only after step 1 is complete, list the registration key of every patient that meets both registration conditions. This is list L.
+3. **Register missing patients.** For each key in L that is not in N, obtain a new NVI pseudonym from the PRS and register the patient with a conditional create.
+4. **Delete stale registrations.** For each key in N that is not in L, send `DELETE [base]/Patient/[id]`.
+5. **Delete duplicates.** For each key that occurs more than once in N, keep one registration and delete the others.
+6. **Handle errors.** Treat `404 Not Found` on a delete as success. Do not stop the run on a failed request; the next run retries it.
+
+Step 1 SHALL complete before step 2 starts. A patient registered on an event during the run is then in L, and step 3 does nothing for it because of the conditional create. In the opposite order, that patient could be in N but not in L, and step 4 would delete it by mistake.
+
+```mermaid
+sequenceDiagram
+    participant client as Localization Client
+    participant records as Custodian records
+    participant prs as Pseudonym Registration Service
+    participant nvi as NVI
+
+    client->>nvi: GET /Patient?_source=[client URI]
+    nvi-->>client: searchset Bundle (follow next links)
+    client->>client: Build list N (id, registration key)
+    client->>records: Select patients that meet both registration conditions
+    records-->>client: Build list L (registration key)
+    loop for each key in L, not in N
+        client->>prs: OPRF exchange with random blinding factor
+        prs-->>client: Encrypted, NVI-scoped pseudonym
+        client->>nvi: POST /Patient<br/>If-None-Exist
+        nvi-->>client: 201 Created, or 200 OK if it exists
+    end
+    loop for each key in N, not in L, and each duplicate
+        client->>nvi: DELETE /Patient/[id]
+        nvi-->>client: 200 OK, 204 No Content or 404 Not Found
+    end
+```
+
 ##### Search
 The client SHALL search for Patient resources using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard FHIR searches:
 
