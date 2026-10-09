@@ -1,4 +1,4 @@
-Generic Function Pseudonymisation defines how a national Pseudonymization Register Service (PRS) is used to convert an identifier (e.g. a Burgerservicenummer, BSN) into a recipient-specific, single-use pseudonym. The goal is to allow generic functions such as [GF Localization](./localization.html) to exchange patient-bound information without ever revealing the underlying BSN to the receiving party (e.g. the Nationale Verwijs Index, NVI).
+Generic Function Pseudonymisation defines how a national Pseudonym Registration Service (PRS) is used to convert an identifier (e.g. a Burgerservicenummer, BSN) into a recipient-specific, single-use pseudonym. The goal is to allow generic functions such as [GF Localization](./localization.html) to exchange patient-bound information without ever revealing the underlying BSN to the receiving party (e.g. the Nationale Verwijs Index, NVI).
 {: .ig-lead}
 
 The PRS combines two cryptographic building blocks:
@@ -53,15 +53,15 @@ For more background on how the result is consumed, see [GF Localization](./local
 
 This guide makes the following national choices for pseudonymisation:
 
-1. **Single national PRS.** All generic functions that need to exchange patient-bound information rely on the same national Pseudonymization Register Service. Recipients (such as the NVI) do not operate their own pseudonymisation infrastructure.
+1. **Single national PRS.** All generic functions that need to exchange patient-bound information rely on the same national Pseudonym Registration Service. Recipients (such as the NVI) do not operate their own pseudonymisation infrastructure.
 2. **OPRF + HKDF.** Pseudonyms are derived using HKDF with SHA-256 ([RFC 5869](https://www.rfc-editor.org/rfc/rfc5869)) and blinded using an OPRF protocol. The PRS only ever sees blinded values.
-3. **Recipient-scoped pseudonyms.** A pseudonym is bound to one specific recipient and scope at derivation time (encoded in the HKDF `info` string). The same identifier therefore yields different pseudonyms for different recipients, preventing cross-service correlation.
+3. **Recipient-scoped pseudonyms.** A pseudonym is bound to one specific recipient and scope at derivation time (encoded in the HKDF `info` string). The same identifier therefore yields different pseudonyms for different recipients, preventing cross-service correlation. The scope identifies the recipient service only.
 4. **JWE container, single use.** The PRS response is a JWE, opaque to the client, intended for one-time use in a single downstream transaction. Clients SHALL NOT cache or persist the JWE beyond the transaction it was obtained for.
 5. **No identifier persistence at PRS.** The PRS does not store identifiers, pseudonyms or links between them.
 
 ### Actors
 
-#### Pseudonymization Service (PRS)
+#### Pseudonym Registration Service (PRS)
 
 The PRS is the central national service that evaluates blinded inputs and returns a recipient-encrypted JWE. The PRS:
 
@@ -85,7 +85,7 @@ A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or
 
 #### Recipient
 
-The Recipient (for example, the [NVI](./localization.html#localization-service)) is the party for which the pseudonym is intended. The Recipient:
+The Recipient (for example, the [NVI](./localization.html#data-localization-index---nationale-verwijs-index-nvi)) is the party for which the pseudonym is intended. The Recipient:
 
 - MUST publish a public key that the PRS can use to encrypt the JWE;
 - MUST decrypt the JWE with the corresponding private key;
@@ -124,7 +124,7 @@ Content-Type: application/json
 }
 ```
 
-The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Registration of Localization Records](./localization.html#registration-of-localization-records) for how this identifier is represented in a `List` resource.
+The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Registration](./localization.html#registration) for how this identifier is represented in `Patient.identifier`.
 
 
 
@@ -132,7 +132,7 @@ The pair `(evaluated_output, blind_factor)` together forms the patient identifie
 
 #### Identifier
 
-The Identifier is a small JSON object that uniquely identifies the natural person being pseudonymised. For example, a Dutch citizen identified by its BSN:
+The Identifier is a small JSON object that uniquely identifies the natural person being pseudonymized. For example, a Dutch citizen identified by its BSN:
 
 ```json
 {"landCode":"NL","type":"BSN","value":"999940003"}
@@ -197,15 +197,15 @@ A full reference flow including the call to the PRS is available in the [`gfmodu
 
 #### Use case: preparing a Localization registration
 
-A care provider's Localization Client needs to register the existence of patient data at the NVI (see the [Radiologist registration use case](./localization.html#use-case-radiologist-registering-imaging-data)). Before submitting the `List` resource it:
+A care provider's Localization Client needs to register the existence of patient data at the NVI (see the [Radiologist registration use case](./localization.html#use-case-registering-a-patient)). Before submitting the `Patient` resource it:
 
 1. builds the `Identifier` from the patient's BSN;
 2. derives the HKDF pseudonym using `recipient_organization = "ura:<NVI URA>"` and `recipient_scope = "nationale-verwijsindex"`;
 3. blinds it with the OPRF and obtains `(blind_factor, blinded_input)`;
 4. calls `POST /evaluate` on the PRS to obtain the JWE;
-5. encodes `(evaluated_output, blind_factor)` as the NVI patient identifier and places it in `List.subject.identifier`;
-6. POSTs the transaction Bundle to the NVI.
+5. encodes `(evaluated_output, blind_factor)` as the NVI patient identifier and places it in `Patient.identifier`;
+6. POSTs the `Patient` resource to the NVI.
 
 #### Use case: preparing a Localization query
 
-A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used as the value of the `subject:identifier` search parameter on `GET [base]/List` (see [Localization](./localization.html#search-for-localization-records)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
+A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used with the `identifier` search parameter on `POST [base]/Patient/_search`, together with a search context (see [Localization](./localization.html#search)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
