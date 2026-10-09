@@ -93,6 +93,8 @@ The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clien
 
 The Localization Client registers that a custodian holds data for a patient.
 
+**Artifacts.** [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html) (`create` interaction), [Patient profile](./StructureDefinition-nl-gf-localization-patient.html), [Patient example](./Patient-nl-gf-localization-patient-example.html).
+
 **Request.** The client SHALL register with a conditional create, so a retry never creates a second registration:
 
 ```
@@ -133,6 +135,8 @@ For other errors, see [Error handling](#error-handling).
 
 The Localization Client deletes a registration.
 
+**Artifacts.** [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html) (`delete` interaction).
+
 **Request.**
 
 ```
@@ -152,6 +156,8 @@ The NVI does not support updates. To change a registration, for example after a 
 
 The Localization Client retrieves the registrations it made, for record maintenance.
 
+**Artifacts.** [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html) (`search-type` interaction, `_source` search parameter), [Patient profile](./StructureDefinition-nl-gf-localization-patient.html).
+
 **Request.**
 
 ```
@@ -166,16 +172,18 @@ This response is separate from the [GF-LOC-4](#gf-loc-4-search-localization) res
 
 The Localization Client searches for custodians that hold relevant data for a patient, for a data user.
 
+**Artifacts.** [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html) (`search-type` interaction, `identifier` and `organization` search parameters), [Search context](#search-context).
+
 **Request.** The client SHALL search using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard FHIR searches:
 
 - `organization:identifier`: custodian Organization identifier(s) (URA);
 - `organization.type`: custodian Organization type;
-- `organization.endpoint:Endpoint.payload-type`: payload type of an Endpoint belonging to the custodian;
+- `organization.endpoint.payload-type`: payload type of an Endpoint belonging to the custodian;
 - `organization._has:HealthcareService:organization:service-type`: type of a HealthcareService provided by the custodian.
 
 `organization:identifier` uses the standard reference `:identifier` modifier to match the identifier carried by `Patient.managingOrganization`. This is different from `organization.identifier`, which chains to the identifier of a referenced Organization resource. The NL GF Data Localization Patient profile carries the URA on `managingOrganization.identifier` and prohibits `managingOrganization.reference`, so these forms are not interchangeable for profile-conformant registrations.
 
-The Endpoint chain is type-qualified as `organization.endpoint:Endpoint.payload-type` to identify the target of `Organization.endpoint` explicitly. The other filters use standard chained or reverse-chained parameters. The NVI SHALL resolve the `managingOrganization` URA against its Care Service Directory replica when evaluating these filters. Implementations SHALL support `organization:identifier` for the profile's identifier-only reference, including when the underlying FHIR server does not support that standard modifier natively.
+The filters use standard chained or reverse-chained parameters. `Organization.endpoint` can only refer to an `Endpoint`, so the Endpoint chain needs no type qualifier. The NVI SHALL also accept the equivalent type-qualified form `organization.endpoint:Endpoint.payload-type`. The NVI SHALL resolve the `managingOrganization` URA against its Care Service Directory replica when evaluating these filters. Implementations SHALL support `organization:identifier` for the profile's identifier-only reference, including when the underlying FHIR server does not support that standard modifier natively.
 
 Search parameters are combined with AND; comma-separated values within a parameter are combined with OR. The data user is identified from the access token's `authorization_details` object, never from search parameters.
 
@@ -188,7 +196,7 @@ Content-Type: application/x-www-form-urlencoded
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
-&organization.endpoint:Endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
+&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
 &organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
@@ -242,6 +250,8 @@ Example response:
 #### GF-LOC-5: Authorization Decision
 
 For each matching custodian, the NVI asks whether the data user may access the custodian's data for the patient.
+
+**Artifacts.** [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html). There is no custodian CapabilityStatement yet (see [Open issues](#open-issues)).
 
 **Request.** The NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories:
 

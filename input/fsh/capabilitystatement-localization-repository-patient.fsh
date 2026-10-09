@@ -40,7 +40,7 @@ Usage: #definition
       * name = "organization"
       * definition = "http://hl7.org/fhir/SearchParameter/Patient-organization"
       * type = #reference
-      * documentation = """SHALL support filtering on the managing Organization using its `:identifier` modifier and chained `type`, `endpoint.payload-type`, and `_has:HealthcareService:organization:service-type` parameters. The Organization identifier is resolved against the LRZa replica."""
+      * documentation = """SHALL support filtering on the managing Organization using its `:identifier` modifier and chained `type`, `endpoint.payload-type`, and `_has:HealthcareService:organization:service-type` parameters. SHALL also accept the equivalent type-qualified form `organization.endpoint:Endpoint.payload-type`. The Organization identifier is resolved against the LRZa replica."""
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "_source"
