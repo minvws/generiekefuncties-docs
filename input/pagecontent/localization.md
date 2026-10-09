@@ -88,7 +88,7 @@ The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clien
 
 A Localization Client registers and maintains a Patient resource for each patient and custodian through direct FHIR REST interactions.
 
-The Localization Client MUST support `POST`, `PUT`, and `DELETE` on Patient resources.
+The Localization Client MUST support `POST`, and `DELETE` on Patient resources.
 
 ##### Registration
 Each registered Patient SHALL contain:
@@ -310,3 +310,4 @@ Potential future enhancements to the NVI include:
 - Minimum specificity of a search context.
 - Timeout values for Authorization Decisions.
 - A CapabilityStatement for custodians, specifying `HEAD` support and Authorization Decision responses.
+- Specifying Authorization Decision mechanisms for for-FHIR API's or data categories (e.g. DICOM)

@@ -22,9 +22,6 @@ Usage: #definition
       * code = #create
     * interaction[+]
       * insert Expectation(SHALL)
-      * code = #update
-    * interaction[+]
-      * insert Expectation(SHALL)
       * code = #delete
     * interaction[+]
       * insert Expectation(SHALL)
