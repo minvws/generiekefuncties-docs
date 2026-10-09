@@ -26,7 +26,7 @@ This page does not specify:
 | Localization Search Client | The software, such as an EHR, that searches the NVI for a data user. |
 | Registration | A `Patient` resource at the NVI that states that one custodian holds data for one patient. |
 | NVI pseudonym | The patient identifier at the NVI. The [Pseudonym Registration Service (PRS)](./pseudonymisation.html) derives it from the BSN for the NVI only. |
-| Custodian-assigned identifier | The custodian's own patient identifier. The NVI uses it to request Authorization Decisions from that custodian. |
+| Custodian-assigned identifier | An opaque patient identifier that the custodian issues for the NVI only. The NVI uses it to request Authorization Decisions from that custodian. |
 | Search context | The custodian properties that a data user searches on, such as care provider type or healthcare-service type. See [Search context](#search-context). |
 | Authorization Decision | A custodian's allow or deny answer to the question whether the data user may access its data for the patient. See [GF-LOC-5](#gf-loc-5-authorization-decision). |
 
@@ -136,8 +136,10 @@ The client places this object, base64url-encoded, in the NVI `Patient.identifier
 | Status | Meaning |
 |---|---|
 | `201 Created` | The NVI created the registration. |
-| `200 OK` | A matching registration exists. The NVI returns it and does not create a new one. |
+| `200 OK` | A matching registration exists, by the condition or by NVI pseudonym. The NVI returns it and does not create a new one. |
 | `412 Precondition Failed` | More than one registration matches the condition. The client SHALL delete the duplicates (see [Reconciliation](#reconciliation)). |
+
+The NVI also checks for duplicates after it unblinds the NVI pseudonym. If this client already registered the same NVI pseudonym for the same custodian, the NVI returns that registration with `200 OK`, even if its custodian-assigned identifier differs.
 
 For other errors, see [Error handling](#error-handling).
 
@@ -377,7 +379,7 @@ The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-locali
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
 
-The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance.
+The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. It SHALL be opaque and used for the NVI only: it SHALL NOT be the custodian's patient number or another identifier that is used or shown outside the custodian. The Custodian Server SHALL map it back to the patient. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance.
 
 #### Search context
 
