@@ -1,4 +1,4 @@
-GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
+GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs <!-- BW, waarom geen 'Localisatie'? --> Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
 
 ### Scope
