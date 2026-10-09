@@ -69,7 +69,7 @@ This guide makes the following national choices for pseudonymisation:
 
 #### Pseudonymization Client
 
-A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or another generic-function client (e.g. a [Localization Client](./localization.html#localization-client)). The client:
+A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or another generic-function client (e.g. a [Localization Registration Client](./localization.html#localization-registration-client) or [Localization Search Client](./localization.html#localization-search-client)). The client:
 
 - SHALL construct the `Identifier` from authoritative source data (e.g. the patient's BSN held in the EHR);
 - SHALL derive the pseudonym using HKDF with the agreed `info` string for the intended recipient and scope;
@@ -220,7 +220,7 @@ A full reference flow including the call to the PRS is available in the [`gfmodu
 
 #### Use case: preparing a Localization registration
 
-A care provider's Localization Client needs to register the existence of patient data at the NVI (see the [Radiologist registration use case](./localization.html#use-case-registering-a-patient)). Before submitting the `Patient` resource it:
+A care provider's Localization Registration Client needs to register the existence of patient data at the NVI (see the [Radiologist registration use case](./localization.html#use-case-registering-a-patient)). Before submitting the `Patient` resource it:
 
 1. builds the `Identifier` from the patient's BSN;
 2. derives the HKDF pseudonym using `recipient_organization = "oin:<OIN of the Ministry of VWS>"` and `recipient_scope = "nationale-verwijsindex"`;
@@ -231,4 +231,4 @@ A care provider's Localization Client needs to register the existence of patient
 
 #### Use case: preparing a Localization query
 
-A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used with the `identifier` search parameter on `POST [base]/Patient/_search`, together with a search context (see [Localization](./localization.html#gf-loc-4-search-localization)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
+A consulting practitioner's Localization Search Client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used with the `identifier` search parameter on `POST [base]/Patient/_search`, together with a search context (see [Localization](./localization.html#gf-loc-4-search-localization)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
