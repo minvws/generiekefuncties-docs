@@ -5,7 +5,7 @@ Generic Function Localization enables healthcare professionals to find care prov
 
 Custodians first register patients whose data they manage:
 
-1. The custodian obtains the encrypted PRS result and blinding factor for an NVI-scoped pseudonym from the [Pseudonym Registration Service (PRS)](./pseudonymisation.html).
+1. The custodian generates a random blinding factor. It uses this factor in an oblivious pseudorandom function (OPRF) exchange with the [Pseudonym Registration Service (PRS)](./pseudonymisation.html) to obtain an encrypted, NVI-scoped pseudonym for the patient.
 2. The custodian registers a `Patient` resource for that patient and custodian at the NVI.
 
 <img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
@@ -15,11 +15,12 @@ Custodians first register patients whose data they manage:
 A data user can then discover relevant custodians:
 
 1. The data user determines the custodian search criteria and data categories relevant to the care need.
-2. The data user obtains the encrypted PRS result and blinding factor for the patient's NVI-scoped pseudonym from the PRS.
+2. The data user generates a random blinding factor and uses it in an OPRF exchange with the PRS to obtain the patient's encrypted, NVI-scoped pseudonym.
 3. The data user queries the NVI for the patient, specifying which custodians are relevant by properties such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type.
 4. The NVI selects relevant custodians by matching the query against its local [Care Service Directory replica](./csd.html#lrza-directory).
-5. For each selected custodian, the NVI requests an Authorization Decision. The NVI returns only custodians with an allow Authorization Decision.
-6. The data user discovers the custodians' data Endpoints through the Care Service Directory and requests data directly from them. Custodians authorize each data request independently.
+5. The NVI searches its registrations for `Patient` resources that match the patient's pseudonym and belong to one of the selected custodians.
+6. For each matching custodian, the NVI requests an Authorization Decision. The NVI returns only custodians with an allow Authorization Decision.
+7. The data user discovers the custodians' data Endpoints through the Care Service Directory and requests data directly from them. Custodians authorize each data request independently.
 
 <img src="localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
 
@@ -33,23 +34,22 @@ The Data Localization Index or Nationale Verwijs Index (NVI) manages `Patient` r
 These FHIR capabilities cover support for [use case: Registering a patient](#use-case-registering-a-patient) and [use case: Retrieving registrations by client](#use-case-retrieving-registrations-by-localization-client).
 
 When a data user searches (like in [use case: Searching for imaging data](#use-case-searching-for-imaging-data)), the NVI SHALL:
-1. find `Patient` resources matching the NVI patient identifier;
-1. apply any managing-organization filters by resolving the custodian ID against its Care Service Directory replica;
+1. select relevant custodians by matching the search criteria, such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type, against its Care Service Directory replica;
+1. search its registrations for `Patient` resources that match the NVI patient identifier and belong to one of the selected custodians;
 1. request an [Authorization Decision](#authorization-decision) from each matching custodian;
-1. return only `Patient` search results for which the decision is allow, omitting all `Patient.identifier` values and `meta.source`;
-1. log the search (see [Logging and transparency](#logging-and-transparency)).
+1. return only `Patient` search results for which the decision is allow, omitting all `Patient.identifier` values and `meta.source`.
 
 The response SHALL NOT reveal whether a custodian was omitted because it had no matching record, did not match the search context, received a deny decision, or could not be reached.
 
 ##### Authorization Decision
 
-For each matching custodian and requested data category, the NVI sends a `HEAD` request to the custodian's existing FHIR API. The custodian evaluates whether the data user may access matching data:
+For each matching custodian, the NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories. The custodian evaluates whether the data user may access matching data:
 
 ```
 HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned identifier]
 ```
 
-- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When custodian Endpoint payload types is specified, the Endpoint's `payloadType` SHALL match at least one of these types.
+- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When the search specifies custodian Endpoint payload types, the Endpoint's `payloadType` SHALL match at least one of these types.
 - `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
 - `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
 
@@ -64,18 +64,10 @@ HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=ht
 Authorization: Bearer [access-token]
 ```
 
-The NVI interprets the HTTP status of the response as follows:
-
-| HTTP status | Authorization Decision | Result |
-|---|---|---|
-| `200 OK` | Allow | Custodian is included for this data category |
-| `204 No Content` | Deny | Custodian is not included |
-| Any other status or timeout | Deny | Custodian is not included |
+The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 10 seconds, as deny.
 
 Processing rules:
-- The NVI SHALL group requests by custodian and custodian-assigned identifier, and send one request per resource type mapped to each requested data category. If a category maps to multiple resource types, it is allowed when at least one decision is allow.
-- The NVI SHALL perform requests in parallel and with a timeout. A timeout is deny.
-- The NVI SHALL NOT send the BSN, NVI pseudonym, or broader search context to the custodian; only the requested data category may be implied by the resource type.
+- The NVI SHALL include a custodian when at least one of its requests returns allow.
 - Decisions SHALL only be used for the current search and SHALL NOT be cached.
 
 An allow decision does not replace authorization of the actual data request. The custodian authorizes every subsequent request because access policies can change.
@@ -181,14 +173,14 @@ The data-user search operation returns a `Bundle` of type `searchset` containing
 
 #### Custodian
 
-A custodian exposes its data through a FHIR API registered in the [Care Service Directory](./csd.html). For an Authorization Decision, it SHALL:
-- support `HEAD` requests on the relevant FHIR search interactions at the Endpoint registered for each data category;
-- evaluate the request using the data user's authorization policy, including consent or access restrictions;
-- return `200 OK` only for an allow decision, and `204 No Content` or any other status for deny. Status `204 No Content` is preferred over any other status, because it reveals minimal information to the NVI;
+A custodian exposes its data through a FHIR API registered in the [Care Service Directory](./csd.html). For an Authorization Decision, its FHIR Endpoint SHALL:
+- support `HEAD` requests on the relevant FHIR search interactions for each data category;
+- accept multiple requests for the same patient within one search, one for each resource type of the requested data categories;
+- identify the patient by the custodian-assigned identifier alone, without the BSN or NVI pseudonym;
 - accept an access token that identifies the data user and has the NVI as acting party;
-- log the request and response (authorization decision).
-
-The custodian uses the custodian-assigned identifier to identify the patient.
+- evaluate the request using the data user's authorization policy, including consent or access restrictions;
+- respond with `200 OK` for allow or `204 No Content` for deny;
+- respond within 10 seconds.
 
 ### Data models
 
@@ -224,12 +216,6 @@ When searching, the Localization Client's access token SHALL include care provid
 For an [Authorization Decision](#authorization-decision), the care provider and practitioner details are, again, in the `authorization_details` object, but now the NVI is the acting party (the OAuth client).
 For other authentication, transport-layer and access-token details, see GF Authentication.
 
-
-### Logging and transparency
-
-- The NVI SHALL log each search: timestamp, data-user identifiers, NVI pseudonym, search context, candidate custodians, Authorization Decisions, and returned custodians.
-- The custodian SHALL log each Authorization Decision (see [Custodian](#custodian)).
-- Search context is visible in the log and may be shown to the patient.
 
 ### Privacy and security considerations
 
@@ -303,13 +289,8 @@ The NVI returns a `searchset` Bundle of matching Patient resources to the author
 
 ### Roadmap for GF Localization
 
-#### NVI
-Potential future enhancements to the NVI include:
-- Audit logging capabilities (MUST HAVE, TODO)
-
 #### Open issues
 - Token profile for the NVI acting on behalf of the data user, aligned with GF Authentication and GF Authorization.
 - Minimum specificity of a search context.
-- Timeout values for Authorization Decisions.
 - A CapabilityStatement for custodians, specifying `HEAD` support and Authorization Decision responses.
 - Specifying Authorization Decision mechanisms for for-FHIR API's or data categories (e.g. DICOM)
