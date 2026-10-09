@@ -39,7 +39,7 @@ Custodians first register patients whose data they manage:
 1. The custodian generates a random blinding factor. It uses this factor in an oblivious pseudorandom function (OPRF) exchange with the PRS to obtain an encrypted, NVI-scoped pseudonym for the patient.
 2. The custodian registers a `Patient` resource for that patient and custodian at the NVI.
 
-<img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in GF Localization."/>
+<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in GF Localization."/>
 
 <!-- <img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/> -->
 
@@ -53,7 +53,7 @@ A data user can then discover relevant custodians:
 6. For each matching custodian, the NVI requests an Authorization Decision. The NVI returns only custodians with an allow Authorization Decision.
 7. The data user discovers the custodians' data Endpoints through the Care Service Directory and requests data directly from them. Custodians authorize each data request independently.
 
-<img src="localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in GF Localization."/>
+<img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in GF Localization."/>
 
 <!-- <img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions-data-user.png" width="80%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/> -->
 
