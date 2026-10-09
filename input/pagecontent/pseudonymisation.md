@@ -85,7 +85,7 @@ A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or
 
 #### Recipient
 
-The Recipient (for example, the [NVI](./localization.html#data-localization-index---nationale-verwijs-index-nvi)) is the party for which the pseudonym is intended. The Recipient:
+The Recipient (for example, the [NVI](./localization.html#nvi)) is the party for which the pseudonym is intended. The Recipient:
 
 - SHALL publish a public key that the PRS can use to encrypt the JWE;
 - SHALL decrypt the JWE with the corresponding private key;
@@ -124,7 +124,7 @@ Content-Type: application/json
 }
 ```
 
-The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Registration](./localization.html#registration) for how this identifier is represented in `Patient.identifier`.
+The pair `(evaluated_output, blind_factor)` together forms the patient identifier that is passed to the recipient. See [GF Localization — Register Patient](./localization.html#gf-loc-1-register-patient) for how this identifier is represented in `Patient.identifier`.
 
 
 
@@ -208,4 +208,4 @@ A care provider's Localization Client needs to register the existence of patient
 
 #### Use case: preparing a Localization query
 
-A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used with the `identifier` search parameter on `POST [base]/Patient/_search`, together with a search context (see [Localization](./localization.html#search)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.
+A consulting practitioner's client wants to discover which organisations hold data for a patient. The pseudonym is computed in exactly the same way as for registration, but the resulting NVI patient identifier is used with the `identifier` search parameter on `POST [base]/Patient/_search`, together with a search context (see [Localization](./localization.html#gf-loc-4-search-localization)). Because pseudonyms are deterministic for a given recipient and scope, the value will match the pseudonyms used by the registering parties.

@@ -1,14 +1,42 @@
-Generic Function Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Data Localization Index or, in Dutch, Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
+GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
+
+### Scope
+
+This page specifies:
+- how a custodian registers and maintains its patients at the NVI;
+- how a data user searches the NVI for custodians that hold relevant data;
+- how the NVI asks each custodian for an Authorization Decision before it returns that custodian.
+
+This page does not specify:
+- how the data user retrieves the data itself. The data user requests data directly from the custodian's FHIR API, which authorizes each request;
+- how pseudonyms are derived. See [GF Pseudonymization](./pseudonymisation.html);
+- how custodians, their Endpoints and their healthcare services are published. See [GF Care Service Directory](./csd.html);
+- Authorization Decisions for non-FHIR APIs, such as DICOM.
+
+### Terminology
+
+| Term | Meaning |
+|---|---|
+| GF Localization | The generic function specified on this page. |
+| NVI | Nationale Verwijs Index, the Data Localization Index. The central service that stores registrations and answers searches. |
+| Custodian | A care provider that holds data for a patient and registers that patient at the NVI. |
+| Data user | A care provider and practitioner who search for custodians that hold relevant data for a patient. |
+| Localization Client | The software, such as an EHR or PACS, that communicates with the NVI. It acts for a custodian when it registers, and for a data user when it searches. When this page says that a custodian or data user sends a request, its Localization Client sends it. |
+| Registration | A `Patient` resource at the NVI that states that one custodian holds data for one patient. |
+| NVI pseudonym | The patient identifier at the NVI. The [Pseudonym Registration Service (PRS)](./pseudonymisation.html) derives it from the BSN for the NVI only. |
+| Custodian-assigned identifier | The custodian's own patient identifier. The NVI uses it to request Authorization Decisions from that custodian. |
+| Search context | The custodian properties that a data user searches on, such as care provider type or healthcare-service type. See [Search context](#search-context). |
+| Authorization Decision | A custodian's allow or deny answer to the question whether the data user may access its data for the patient. See [GF-LOC-5](#gf-loc-5-authorization-decision). |
 
 ### Solution overview
 
 Custodians first register patients whose data they manage:
 
-1. The custodian generates a random blinding factor. It uses this factor in an oblivious pseudorandom function (OPRF) exchange with the [Pseudonym Registration Service (PRS)](./pseudonymisation.html) to obtain an encrypted, NVI-scoped pseudonym for the patient.
+1. The custodian generates a random blinding factor. It uses this factor in an oblivious pseudorandom function (OPRF) exchange with the PRS to obtain an encrypted, NVI-scoped pseudonym for the patient.
 2. The custodian registers a `Patient` resource for that patient and custodian at the NVI.
 
-<img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
+<img src="localization-overview-transactions.png" width="60%" style="float: none" alt="Overview of transactions in GF Localization."/>
 
 <!-- <img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions.png" width="80%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/> -->
 
@@ -22,76 +50,65 @@ A data user can then discover relevant custodians:
 6. For each matching custodian, the NVI requests an Authorization Decision. The NVI returns only custodians with an allow Authorization Decision.
 7. The data user discovers the custodians' data Endpoints through the Care Service Directory and requests data directly from them. Custodians authorize each data request independently.
 
-<img src="localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in Generic Function Localization."/>
+<img src="localization-overview-transactions-data-user.png" width="100%" style="float: none" alt="Overview of transactions in GF Localization."/>
 
 <!-- <img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/localization-overview-transactions-data-user.png" width="80%" style="float: none" alt="Overview of transactions in the Medical Record Localization solution."/> -->
 
-### Components (actors)
+### Actors
 
-#### Data Localization Index - Nationale Verwijs Index (NVI)
+| Actor | Role | Transactions | Requirements |
+|---|---|---|---|
+| [NVI](#nvi) | Stores registrations, answers searches, and requests Authorization Decisions | Server for [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-4](#gf-loc-4-search-localization); client for [GF-LOC-5](#gf-loc-5-authorization-decision) | [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html), [Patient profile](./StructureDefinition-nl-gf-localization-patient.html) |
+| [Localization Client](#localization-client) | Registers and maintains patients for a custodian; searches for a data user | Client for [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-4](#gf-loc-4-search-localization) | [Patient profile](./StructureDefinition-nl-gf-localization-patient.html), [Registration lifecycle](#registration-lifecycle) |
+| [Custodian](#custodian) | Answers Authorization Decisions on its FHIR Endpoint | Server for [GF-LOC-5](#gf-loc-5-authorization-decision) | This page; no CapabilityStatement yet (see [Open issues](#open-issues)) |
+| [Pseudonym Registration Service](#pseudonym-registration-service) | Evaluates the OPRF for NVI pseudonyms | See [GF Pseudonymization](./pseudonymisation.html) | [GF Pseudonymization](./pseudonymisation.html) |
 
-The Data Localization Index or Nationale Verwijs Index (NVI) manages `Patient` resources and SHALL implement these [FHIR capabilities](./CapabilityStatement-nl-gf-localization-repository-patient.html).
-These FHIR capabilities cover support for [use case: Registering a patient](#use-case-registering-a-patient) and [use case: Retrieving registrations by client](#use-case-retrieving-registrations-by-localization-client).
+#### NVI
 
-When a data user searches (like in [use case: Searching for imaging data](#use-case-searching-for-imaging-data)), the NVI SHALL:
-1. select relevant custodians by matching the search criteria, such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type, against its Care Service Directory replica;
-1. search its registrations for `Patient` resources that match the NVI patient identifier and belong to one of the selected custodians;
-1. request an [Authorization Decision](#authorization-decision) from each matching custodian;
-1. return only `Patient` search results for which the decision is allow, omitting all `Patient.identifier` values and `meta.source`.
-
-The response SHALL NOT reveal whether a custodian was omitted because it had no matching record, did not match the search context, received a deny decision, or could not be reached.
-
-##### Authorization Decision
-
-For each matching custodian, the NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories. The custodian evaluates whether the data user may access matching data:
-
-```
-HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned identifier]
-```
-
-- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When the search specifies custodian Endpoint payload types, the Endpoint's `payloadType` SHALL match at least one of these types.
-- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
-- `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
-
-For a resource type of `Patient`, use `HEAD [fhir-base-url]/Patient?identifier=[custodian-assigned identifier]` instead of `patient.identifier`.
-
-The request carries an access token whose `authorization_details` identifies the care provider and practitioner acting as the data user. The NVI is the acting party (the OAuth client). See [Authentication and Authorization](#authentication-and-authorization).
-
-Example:
-
-```
-HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=https://fhir.datahouder-123.example/identifier/patient|9fd244dc-6b35-4a7d-843d-ac77591cb14d HTTP/1.1
-Authorization: Bearer [access-token]
-```
-
-The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 10 seconds, as deny.
-
-Processing rules:
-- The NVI SHALL include a custodian when at least one of its requests returns allow.
-- Decisions SHALL only be used for the current search and SHALL NOT be cached.
-
-An allow decision does not replace authorization of the actual data request. The custodian authorizes every subsequent request because access policies can change.
-
-#### Pseudonym Registration Service
-The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clients to derive recipient-scoped pseudonyms from patient identifiers using HKDF and OPRF protocols. See [GF Pseudonymization](./pseudonymisation.html) for the full specification and the [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
-
+The NVI SHALL implement these [FHIR capabilities](./CapabilityStatement-nl-gf-localization-repository-patient.html). It is the server for [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-4](#gf-loc-4-search-localization), and the client for [GF-LOC-5](#gf-loc-5-authorization-decision).
 
 #### Localization Client
 
-A Localization Client registers and maintains a Patient resource for each patient and custodian through direct FHIR REST interactions.
+The Localization Client SHALL support [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-3](#gf-loc-3-retrieve-registrations) when it acts for a custodian, and [GF-LOC-4](#gf-loc-4-search-localization) when it acts for a data user. When it acts for a custodian, it SHALL follow the [Registration lifecycle](#registration-lifecycle).
 
-The Localization Client SHALL support `POST`, and `DELETE` on Patient resources.
+#### Custodian
 
-##### Registration
+A custodian exposes its data through a FHIR API registered in the [Care Service Directory](./csd.html). Its FHIR Endpoint is the server for [GF-LOC-5](#gf-loc-5-authorization-decision).
+
+#### Pseudonym Registration Service
+
+The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clients to derive recipient-scoped pseudonyms from patient identifiers using HKDF and OPRF protocols. See [GF Pseudonymization](./pseudonymisation.html) for the full specification and the [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
+
+### Transactions
+
+| ID | Transaction | Client | Server |
+|---|---|---|---|
+| GF-LOC-1 | [Register Patient](#gf-loc-1-register-patient) | Localization Client | NVI |
+| GF-LOC-2 | [Delete Patient](#gf-loc-2-delete-patient) | Localization Client | NVI |
+| GF-LOC-3 | [Retrieve Registrations](#gf-loc-3-retrieve-registrations) | Localization Client | NVI |
+| GF-LOC-4 | [Search Localization](#gf-loc-4-search-localization) | Localization Client | NVI |
+| GF-LOC-5 | [Authorization Decision](#gf-loc-5-authorization-decision) | NVI | Custodian |
+
+#### GF-LOC-1: Register Patient
+
+The Localization Client registers that a custodian holds data for a patient.
+
+**Request.** The client SHALL register with a conditional create, so a retry never creates a second registration:
+
+```
+POST [base]/Patient
+If-None-Exist: identifier=[custodian-assigned identifier]&_source=urn:generiekefuncties:nvi:client-id:{client_id}
+```
+
 Each registered Patient SHALL contain:
-- the PRS-created NVI pseudonym in `identifier` with system `http://generiekefuncties.nl/nvi/identifier`;
+- the NVI pseudonym in `identifier` with system `http://generiekefuncties.nl/nvi/identifier`;
 - the custodian-assigned Patient identifier, with the custodian as its `Identifier.assigner`;
 - the custodian's ID in `managingOrganization.identifier`;
 - the registering OAuth `client_id` represented as a URI in `meta.source`, using the form `urn:generiekefuncties:nvi:client-id:{client_id}`.
 
 The custodian-assigned identifier SHALL be accepted as the `patient` search value at the custodian's FHIR Endpoint.
 
-**Pseudonymization Integration**: Before submitting localization records, the client SHALL compose a pseudonymized patient identifier using the [Pseudonym Registration Service (PRS)](./pseudonymisation.html). When the pseudonym is forwarded to the NVI, the client packages the JWE and `blind_factor` together as a base64url-encoded JSON object:
+**NVI pseudonym.** Before registering, the client SHALL obtain the NVI pseudonym from the [Pseudonym Registration Service (PRS)](./pseudonymisation.html). The client packages the JWE and `blind_factor` together as a JSON object:
 
 ```json
 {
@@ -100,74 +117,56 @@ The custodian-assigned identifier SHALL be accepted as the `patient` search valu
 }
 ```
 
-The client places this object, base64url-encoded, in the NVI `Patient.identifier` value. The NVI decrypts and unblinds it before storing the resulting pseudonym.
+The client places this object, base64url-encoded, in the NVI `Patient.identifier` value. The NVI decrypts and unblinds it before storing the resulting pseudonym. See the [Patient example](./Patient-nl-gf-localization-patient-example.html).
 
-Use direct `POST [base]/Patient` to register the resource. See the [Patient example](./Patient-nl-gf-localization-patient-example.html).
+**Response.**
 
-##### Lifecycle
-The registration key is the combination of the custodian's ID (`managingOrganization.identifier`) and the custodian-assigned identifier (`system|value`).
+| Status | Meaning |
+|---|---|
+| `201 Created` | The NVI created the registration. |
+| `200 OK` | A matching registration exists. The NVI returns it and does not create a new one. |
+| `412 Precondition Failed` | More than one registration matches the condition. The client SHALL delete the duplicates (see [Reconciliation](#reconciliation)). |
 
-**Register.** The client SHALL register a patient when both conditions hold:
-- the custodian holds data for the patient in a data category it exposes;
-- the custodian is permitted to register the patient.
+For other errors, see [Error handling](#error-handling).
 
-One registration covers all data categories of that custodian. The client SHOULD register within 24 hours after both conditions hold.
+#### GF-LOC-2: Delete Patient
 
-**Delete.** The client SHALL delete the registration when either condition no longer holds. For example, the retention period has ended, or the record has moved to another care provider.
+The Localization Client deletes a registration.
 
-**Change.** The NVI does not support updates. To change a registration, for example after a new custodian-assigned identifier or a patient merge, the client SHALL delete the registration and register a new one.
-
-**No duplicates.** The client SHALL register with a conditional create, so a retry never creates a second registration:
+**Request.**
 
 ```
-POST [base]/Patient
-If-None-Exist: identifier=[custodian-assigned identifier]&_source=urn:generiekefuncties:nvi:client-id:{client_id}
+DELETE [base]/Patient/[id]
 ```
 
-If a matching registration exists, the NVI returns it with `200 OK` and does not create a new one.
+**Response.**
 
-##### Reconciliation
-Registration on events can miss changes, for example after an outage or a failed request. The client SHALL therefore reconcile its registrations with the custodian's records at least once a week.
+| Status | Meaning |
+|---|---|
+| `200 OK` or `204 No Content` | The NVI deleted the registration. |
+| `404 Not Found` | The registration does not exist. The client SHALL treat this as success. |
 
-A missing registration is the harmful case: data users cannot find the custodian's data. A stale registration only costs an extra Authorization Decision, because the custodian answers deny.
+The NVI does not support updates. To change a registration, for example after a new custodian-assigned identifier or a patient merge, the client SHALL delete the registration and register a new one.
 
-The client SHALL perform these steps in this order:
+#### GF-LOC-3: Retrieve Registrations
 
-1. **Fetch the NVI list.** Request `GET [base]/Patient?_source=urn:generiekefuncties:nvi:client-id:{client_id}`. Follow every `next` link in the returned Bundle until there is none. For each Patient, record its `id` and its registration key. This is list N.
-2. **Build the local list.** Only after step 1 is complete, list the registration key of every patient that meets both registration conditions. This is list L.
-3. **Register missing patients.** For each key in L that is not in N, obtain a new NVI pseudonym from the PRS and register the patient with a conditional create.
-4. **Delete stale registrations.** For each key in N that is not in L, send `DELETE [base]/Patient/[id]`.
-5. **Delete duplicates.** For each key that occurs more than once in N, keep one registration and delete the others.
-6. **Handle errors.** Treat `404 Not Found` on a delete as success. Do not stop the run on a failed request; the next run retries it.
+The Localization Client retrieves the registrations it made, for record maintenance.
 
-Step 1 SHALL complete before step 2 starts. A patient registered on an event during the run is then in L, and step 3 does nothing for it because of the conditional create. In the opposite order, that patient could be in N but not in L, and step 4 would delete it by mistake.
+**Request.**
 
-```mermaid
-sequenceDiagram
-    participant client as Localization Client
-    participant records as Custodian records
-    participant prs as Pseudonym Registration Service
-    participant nvi as NVI
-
-    client->>nvi: GET /Patient?_source=[client URI]
-    nvi-->>client: searchset Bundle (follow next links)
-    client->>client: Build list N (id, registration key)
-    client->>records: Select patients that meet both registration conditions
-    records-->>client: Build list L (registration key)
-    loop for each key in L, not in N
-        client->>prs: OPRF exchange with random blinding factor
-        prs-->>client: Encrypted, NVI-scoped pseudonym
-        client->>nvi: POST /Patient<br/>If-None-Exist
-        nvi-->>client: 201 Created, or 200 OK if it exists
-    end
-    loop for each key in N, not in L, and each duplicate
-        client->>nvi: DELETE /Patient/[id]
-        nvi-->>client: 200 OK, 204 No Content or 404 Not Found
-    end
+```
+GET [base]/Patient?_source=urn:generiekefuncties:nvi:client-id:{client_id}
 ```
 
-##### Search
-The client SHALL search for Patient resources using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard FHIR searches:
+**Response.** `200 OK` with a `searchset` Bundle of the complete Patient resources registered by this client, including the custodian-assigned identifier. The client SHALL follow every `next` link until there is none.
+
+This response is separate from the [GF-LOC-4](#gf-loc-4-search-localization) response, which SHALL NOT include the custodian-assigned identifier.
+
+#### GF-LOC-4: Search Localization
+
+The Localization Client searches for custodians that hold relevant data for a patient, for a data user.
+
+**Request.** The client SHALL search using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard FHIR searches:
 
 - `organization:identifier`: custodian Organization identifier(s) (URA);
 - `organization.type`: custodian Organization type;
@@ -193,11 +192,19 @@ identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
-`{NVI-patient-identifier}` is the base64url-encoded PRS object described under [Registration](#registration). The NVI decrypts and unblinds it to find matching Patient resources.
+`{NVI-patient-identifier}` is the base64url-encoded PRS object described under [GF-LOC-1](#gf-loc-1-register-patient). The NVI decrypts and unblinds it to find matching Patient resources.
 
-The data-user search operation returns a `Bundle` of type `searchset` containing Patient projections for custodians that match the search context and received an allow decision. These projections are marked with the `SUBSETTED` tag. For privacy, the NVI omits all `Patient.identifier` values and `meta.source`; the projections are not complete instances of the registration profile and SHALL NOT be used to update registrations.
+**Processing.** The NVI SHALL:
+1. select relevant custodians by matching the search criteria, such as care provider ID (URA), care provider type, Endpoint payload type, or healthcare-service type, against its Care Service Directory replica;
+1. search its registrations for `Patient` resources that match the NVI pseudonym and belong to one of the selected custodians;
+1. request an Authorization Decision ([GF-LOC-5](#gf-loc-5-authorization-decision)) from each matching custodian;
+1. return only `Patient` search results for which the decision is allow, omitting all `Patient.identifier` values and `meta.source`.
 
-**Example Search Response**:
+**Response.** `200 OK` with a `searchset` Bundle containing Patient projections for custodians that match the search context and received an allow decision. These projections are marked with the `SUBSETTED` tag. For privacy, the NVI omits all `Patient.identifier` values and `meta.source`; the projections are not complete instances of the registration profile and SHALL NOT be used to update registrations.
+
+The response SHALL NOT reveal whether a custodian was omitted because it had no matching record, did not match the search context, received a deny decision, or could not be reached.
+
+Example response:
 ```json
 {
   "resourceType": "Bundle",
@@ -232,10 +239,32 @@ The data-user search operation returns a `Bundle` of type `searchset` containing
 }
 ```
 
+#### GF-LOC-5: Authorization Decision
 
-#### Custodian
+For each matching custodian, the NVI asks whether the data user may access the custodian's data for the patient.
 
-A custodian exposes its data through a FHIR API registered in the [Care Service Directory](./csd.html). For an Authorization Decision, its FHIR Endpoint SHALL:
+**Request.** The NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories:
+
+```
+HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned identifier]
+```
+
+- `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When the search specifies custodian Endpoint payload types, the Endpoint's `payloadType` SHALL match at least one of these types.
+- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
+- `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
+
+For a resource type of `Patient`, use `HEAD [fhir-base-url]/Patient?identifier=[custodian-assigned identifier]` instead of `patient.identifier`.
+
+The request carries an access token whose `authorization_details` identifies the care provider and practitioner acting as the data user. The NVI is the acting party (the OAuth client). See [Security](#security).
+
+Example:
+
+```
+HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=https://fhir.datahouder-123.example/identifier/patient|9fd244dc-6b35-4a7d-843d-ac77591cb14d HTTP/1.1
+Authorization: Bearer [access-token]
+```
+
+**Custodian requirements.** For an Authorization Decision, the custodian's FHIR Endpoint SHALL:
 - support `HEAD` requests on the relevant FHIR search interactions for each data category;
 - accept multiple requests for the same patient within one search, one for each resource type of the requested data categories;
 - identify the patient by the custodian-assigned identifier alone, without the BSN or NVI pseudonym;
@@ -243,6 +272,81 @@ A custodian exposes its data through a FHIR API registered in the [Care Service 
 - evaluate the request using the data user's authorization policy, including consent or access restrictions;
 - respond with `200 OK` for allow or `204 No Content` for deny;
 - respond within 10 seconds.
+
+**NVI processing.** The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 10 seconds, as deny. In addition:
+- The NVI SHALL include a custodian when at least one of its requests returns allow.
+- Decisions SHALL only be used for the current search and SHALL NOT be cached.
+
+An allow decision does not replace authorization of the actual data request. The custodian authorizes every subsequent request because access policies can change.
+
+### Registration lifecycle
+
+The registration key is the combination of the custodian's ID (`managingOrganization.identifier`) and the custodian-assigned identifier (`system|value`).
+
+**Register.** The Localization Client SHALL register a patient ([GF-LOC-1](#gf-loc-1-register-patient)) when both conditions hold:
+- the custodian holds data for the patient in a data category it exposes;
+- the custodian is permitted to register the patient.
+
+One registration covers all data categories of that custodian. The client SHOULD register within 24 hours after both conditions hold.
+
+**Delete.** The client SHALL delete the registration ([GF-LOC-2](#gf-loc-2-delete-patient)) when either condition no longer holds. For example, the retention period has ended, or the record has moved to another care provider.
+
+#### Reconciliation
+
+Registration on events can miss changes, for example after an outage or a failed request. The client SHALL therefore reconcile its registrations with the custodian's records at least once a week.
+
+A missing registration is the harmful case: data users cannot find the custodian's data. A stale registration only costs an extra Authorization Decision, because the custodian answers deny.
+
+The client SHALL perform these steps in this order:
+
+1. **Fetch the NVI list.** Retrieve all registrations made by this client ([GF-LOC-3](#gf-loc-3-retrieve-registrations)). For each Patient, record its `id` and its registration key. This is list N.
+2. **Build the local list.** Only after step 1 is complete, list the registration key of every patient that meets both registration conditions. This is list L.
+3. **Register missing patients.** For each key in L that is not in N, obtain a new NVI pseudonym from the PRS and register the patient ([GF-LOC-1](#gf-loc-1-register-patient)).
+4. **Delete stale registrations.** For each key in N that is not in L, delete the registration ([GF-LOC-2](#gf-loc-2-delete-patient)).
+5. **Delete duplicates.** For each key that occurs more than once in N, keep one registration and delete the others.
+6. **Handle errors.** Treat `404 Not Found` on a delete as success. Do not stop the run on a failed request; the next run retries it.
+
+Step 1 SHALL complete before step 2 starts. A patient registered on an event during the run is then in L, and step 3 does nothing for it because of the conditional create. In the opposite order, that patient could be in N but not in L, and step 4 would delete it by mistake.
+
+```mermaid
+sequenceDiagram
+    participant client as Localization Client
+    participant records as Custodian records
+    participant prs as Pseudonym Registration Service
+    participant nvi as NVI
+
+    client->>nvi: GF-LOC-3: GET /Patient?_source=[client URI]
+    nvi-->>client: searchset Bundle (follow next links)
+    client->>client: Build list N (id, registration key)
+    client->>records: Select patients that meet both registration conditions
+    records-->>client: Build list L (registration key)
+    loop for each key in L, not in N
+        client->>prs: OPRF exchange with random blinding factor
+        prs-->>client: Encrypted, NVI-scoped pseudonym
+        client->>nvi: GF-LOC-1: POST /Patient<br/>If-None-Exist
+        nvi-->>client: 201 Created, or 200 OK if it exists
+    end
+    loop for each key in N, not in L, and each duplicate
+        client->>nvi: GF-LOC-2: DELETE /Patient/[id]
+        nvi-->>client: 200 OK, 204 No Content or 404 Not Found
+    end
+```
+
+### Error handling
+
+The NVI SHOULD return an `OperationOutcome` that describes the error for every `4xx` and `5xx` response in [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-4](#gf-loc-4-search-localization).
+
+| Status | Cause | Client action |
+|---|---|---|
+| `400 Bad Request` | The request is malformed, for example a search without `identifier` or with an unsupported parameter. | Correct the request. Do not retry unchanged. |
+| `401 Unauthorized` | The access token is missing, expired, or invalid. | Obtain a new token and retry. |
+| `403 Forbidden` | The client is not authorized for this request, for example to maintain another client's registrations. | Do not retry. |
+| `422 Unprocessable Entity` | The Patient does not conform to the profile, or the NVI cannot decrypt or unblind the NVI pseudonym. | Correct the registration or obtain a new pseudonym. |
+| `5xx` | The NVI cannot process the request. | Retry later. A retry of [GF-LOC-1](#gf-loc-1-register-patient) is safe because of the conditional create. |
+
+The NVI SHALL NOT answer a failed search with an empty Bundle. When the NVI itself cannot process a search, it returns a `5xx` status.
+
+An unreachable custodian is not an NVI failure. The NVI treats it as deny, does not retry the Authorization Decision within the same search, and returns the search result without that custodian. As a result, a data user cannot tell an empty result from a result in which custodians were unreachable or denied access. This is by design: a timeout only occurs for a custodian that holds a registration for the patient, so reporting it would reveal that the registration exists.
 
 ### Data models
 
@@ -269,23 +373,30 @@ The search context (zoekcontext) consists of properties of custodians that are r
 
 FHIR R4 defines these standard search parameters and chained paths. The NVI SHALL support the listed paths and resolve `managingOrganization` identifiers against the Care Service Directory replica.
 
+### Security
+
+| Transaction | OAuth client | Access token identifies | Never sent |
+|---|---|---|---|
+| PRS evaluation | Localization Client | See [GF Pseudonymization](./pseudonymisation.html) | The BSN or the derived pseudonym, to the PRS |
+| [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-3](#gf-loc-3-retrieve-registrations) | Localization Client | The registering client (`client_id`, stored in `meta.source`) | The BSN, to the NVI |
+| [GF-LOC-4](#gf-loc-4-search-localization) | Localization Client | The data user: care provider and practitioner, in `authorization_details` | The BSN, to the NVI; the custodian-assigned identifier and `meta.source`, to the data user |
+| [GF-LOC-5](#gf-loc-5-authorization-decision) | NVI (acting party) | The data user: care provider and practitioner, in `authorization_details` | The BSN, the NVI pseudonym, and the broader search context, to the custodian |
 
 #### Authentication and Authorization
-See [GF Pseudonymisation](./pseudonymisation.html) for PRS authentication requirements.
 
-When searching, the Localization Client's access token SHALL include care provider and practitioner details in the `authorization_details` object (as required for EU-cross-border exchange by [EHDS Implementing Act 2026/2099, Annex 1](https://eur-lex.europa.eu/eli/reg_impl/2026/2099/oj/eng#anx_1))
+See [GF Pseudonymization](./pseudonymisation.html) for PRS authentication requirements.
 
-For an [Authorization Decision](#authorization-decision), the care provider and practitioner details are, again, in the `authorization_details` object, but now the NVI is the acting party (the OAuth client).
+When searching, the Localization Client's access token SHALL include care provider and practitioner details in the `authorization_details` object (as required for EU-cross-border exchange by [EHDS Implementing Act 2026/2099, Annex 1](https://eur-lex.europa.eu/eli/reg_impl/2026/2099/oj/eng#anx_1)).
+
+For an Authorization Decision, the care provider and practitioner details are, again, in the `authorization_details` object, but now the NVI is the acting party (the OAuth client).
 For other authentication, transport-layer and access-token details, see GF Authentication.
 
-
-### Privacy and security considerations
+#### Privacy considerations
 
 - **Disclosure to custodians**: an Authorization Decision reveals that the data user is seeking data about a patient. Requests are limited to custodians matching the search context.
 - **Patient identifier privacy**: the NVI sends the custodian-assigned identifier only to its custodian for Authorization Decision requests and SHALL NOT include it in search responses to data users. The custodian does not receive the BSN, NVI pseudonym, or broader search context.
 - **No reason leakage**: the NVI returns only allowed Patient projections and does not reveal whether a custodian was absent, filtered out, denied, or unreachable.
 - **Fail closed**: every Authorization Decision other than `200 OK`, including timeouts, is deny.
-
 
 ### Example Use Cases
 
@@ -301,14 +412,14 @@ sequenceDiagram
     participant NVI as NVI
 
     doctor->>ehr: Register patient data
-    ehr->>prs: Create NVI-scoped pseudonym
-    prs-->>ehr: JWE and blind_factor
-    ehr->>ehr: Create Patient with both identifiers,<br/>managingOrganization and meta.source
-    ehr->>NVI: POST /Patient
-    NVI->>NVI: Decrypt and unblind NVI identifier
-    NVI-->>ehr: 201 Created
+    ehr->>ehr: Derive pseudonym from BSN<br/>and blind it with a random blinding factor
+    ehr->>prs: OPRF exchange with blinded input
+    prs-->>ehr: Encrypted, NVI-scoped pseudonym (JWE)
+    ehr->>ehr: Create Patient with JWE and blinding factor,<br/>custodian-assigned identifier,<br/>managingOrganization and meta.source
+    ehr->>NVI: GF-LOC-1: POST /Patient<br/>If-None-Exist
+    NVI->>NVI: Decrypt and unblind NVI pseudonym
+    NVI-->>ehr: 201 Created, or 200 OK if it exists
 ```
-
 
 #### Use case: Searching for imaging data
 
@@ -323,14 +434,16 @@ sequenceDiagram
     participant holder as Custodian FHIR API
 
     doctor->>ehr: Request patient imaging data
-    ehr->>prs: Create NVI-scoped pseudonym
-    prs-->>ehr: JWE and blind_factor
-    ehr->>nvi: POST /Patient/_search<br/>identifier + organization chains
-    nvi->>nvi: Resolve organizations, Endpoints<br/>and HealthcareServices in Care Service Directory
-    loop for each matching custodian
-        nvi->>holder: HEAD mapped data search<br/>using custodian-assigned identifier
+    ehr->>ehr: Derive pseudonym from BSN<br/>and blind it with a random blinding factor
+    ehr->>prs: OPRF exchange with blinded input
+    prs-->>ehr: Encrypted, NVI-scoped pseudonym (JWE)
+    ehr->>nvi: GF-LOC-4: POST /Patient/_search<br/>identifier + organization chains
+    nvi->>nvi: Select custodians in<br/>Care Service Directory replica
+    nvi->>nvi: Match patient registrations<br/>of selected custodians
+    loop for each matching custodian and resource type
+        nvi->>holder: GF-LOC-5: HEAD mapped data search<br/>using custodian-assigned identifier
         holder->>holder: Evaluate Authorization Decision
-        holder-->>nvi: 200 OK allow, otherwise deny
+        holder-->>nvi: 200 OK allow, or 204 No Content deny
     end
     nvi-->>ehr: searchset Bundle with allowed Patient projections
     ehr->>holder: Request data from returned custodians
@@ -338,16 +451,13 @@ sequenceDiagram
     ehr-->>doctor: Display available data
 ```
 
-
-
 #### Use case: Retrieving registrations by Localization Client
 
 ```
 GET [base]/Patient?_source=urn:generiekefuncties:nvi:client-id:ehr-client-org2
 ```
 
-The NVI returns a `searchset` Bundle of matching Patient resources to the authorized registering Localization Client for record maintenance. This maintenance interaction is separate from data-user search responses, which SHALL NOT include the custodian-assigned identifier.
-
+The NVI returns a `searchset` Bundle of matching Patient resources to the authorized registering Localization Client for record maintenance ([GF-LOC-3](#gf-loc-3-retrieve-registrations)). This maintenance interaction is separate from data-user search responses, which SHALL NOT include the custodian-assigned identifier.
 
 ### Roadmap for GF Localization
 
@@ -355,4 +465,4 @@ The NVI returns a `searchset` Bundle of matching Patient resources to the author
 - Token profile for the NVI acting on behalf of the data user, aligned with GF Authentication and GF Authorization.
 - Minimum specificity of a search context.
 - A CapabilityStatement for custodians, specifying `HEAD` support and Authorization Decision responses.
-- Specifying Authorization Decision mechanisms for for-FHIR API's or data categories (e.g. DICOM)
+- Specifying Authorization Decision mechanisms for non-FHIR APIs or data categories (e.g. DICOM).
