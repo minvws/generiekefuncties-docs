@@ -51,6 +51,15 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Care Team"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "CareTeam"
+* #Communication "Communication"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Communicatie"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Communication"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "Communication"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "CommunicationRequest"
 * #Condition "Condition"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Aandoeningen"
@@ -86,6 +95,15 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "StructureDefinition"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "StructureMap"
+* #Document "Documents"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Documenten"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Documents"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "Composition"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "DocumentReference"
 * #Device "Device"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Apparaat"
@@ -132,6 +150,8 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Imaging"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "ImagingStudy"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "ImagingSelection"
 * #Logging "Logging"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Logging"
@@ -157,6 +177,8 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^property[=].valueString = "MedicationAdministration"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "MedicationStatement"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "Medication"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Immunization"
 * #Notification "Notification"
@@ -217,6 +239,13 @@ Description: "Local code system for data categories in NL Generic Functions."
   * ^designation[=].value = "Procedure"
   * ^property[+].code = #fhir-resourcetype-params
   * ^property[=].valueString = "Procedure"
+* #Provenance "Provenance"
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "Herkomst"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "Provenance"
+  * ^property[+].code = #fhir-resourcetype-params
+  * ^property[=].valueString = "Provenance"
 * #Request "Requests, transfers and orders"
   * ^designation[0].language = #nl-NL
   * ^designation[=].value = "Verzoeken, overdrachten en opdrachten"
