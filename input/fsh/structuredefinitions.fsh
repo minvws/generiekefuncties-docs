@@ -27,6 +27,11 @@ Description: "ActivityDefinitions or PlanDefinitions to specify the codeable con
 Context: HealthcareService.type
 * value[x] only Canonical(ActivityDefinition or PlanDefinition)
 
+Invariant:   hcservice-can-only-refernce-orgs-with-derivable-ura-identifier
+Description: "A HealthcareService instance can only reference an Organization instance that has a URA-identifier itself or has a (first or second level) parent Organization with a URA-identifier."
+Expression:  "providedBy.identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or (providedBy.resolve().partOf.exists() and providedBy.resolve().partOf.resolve().identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists()) or (providedBy.resolve().partOf.exists() and providedBy.resolve().partOf.resolve().partOf.exists() and providedBy.resolve().partOf.resolve().partOf.resolve().identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists())"
+Severity:    #error
+
 Profile: NlGfHealthcareService
 Parent: HealthcareService
 Id: nl-gf-healthcareservice
@@ -34,6 +39,7 @@ Title: "NL Generic Functions HealthcareService Profile"
 Description: "HealthcareService profile aligned with IHE mCSD HealthcareService constraints, with required value set bindings on type and specialty, support for ActivityDefinition/PlanDefinition references on type, and a required custodian-assigned identifier."
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.HealthcareService"
 * ^experimental = true
+* obeys hcservice-can-only-refernce-orgs-with-derivable-ura-identifier
 * identifier ^slicing.discriminator.type = #profile
 * identifier ^slicing.discriminator.path = "$this"
 * identifier ^slicing.rules = #open
