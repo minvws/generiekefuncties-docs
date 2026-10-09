@@ -84,7 +84,7 @@ An allow decision does not replace authorization of the actual data request. The
 The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clients to derive recipient-scoped pseudonyms from patient identifiers using HKDF and OPRF protocols. See [GF Pseudonymization](./pseudonymisation.html) for the full specification and the [reference implementation](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service/blob/main/test_flow/OPRF.py).
 
 
-#### Localization client
+#### Localization Client
 
 A Localization Client registers and maintains a Patient resource for each patient and custodian through direct FHIR REST interactions.
 
@@ -113,14 +113,16 @@ The client places this object, base64url-encoded, in the NVI `Patient.identifier
 Use direct `POST [base]/Patient` to register the resource. See the [Patient example](./Patient-nl-gf-localization-patient-example.html).
 
 ##### Search
-The client SHALL search for Patient resources using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard chained searches:
+The client SHALL search for Patient resources using `POST [base]/Patient/_search` with `Content-Type: application/x-www-form-urlencoded`, so the patient pseudonym and search context are not exposed in URLs or access logs. The `identifier` parameter SHALL identify the NVI pseudonym. It MAY be combined with these standard FHIR searches:
 
-- `organization:identifier`: custodian Organization identifier, such as a URA;
+- `organization:identifier`: custodian Organization identifier(s) (URA);
 - `organization.type`: custodian Organization type;
-- `organization.endpoint.payload-type`: payload type of an Endpoint belonging to the custodian;
+- `organization.endpoint:Endpoint.payload-type`: payload type of an Endpoint belonging to the custodian;
 - `organization._has:HealthcareService:organization:service-type`: type of a HealthcareService provided by the custodian.
 
-`organization:identifier` uses the standard reference `:identifier` modifier. The remaining filters use standard chained or reverse-chained parameters. The NVI SHALL resolve the `managingOrganization` URA against its Care Service Directory replica when evaluating these chains.
+`organization:identifier` uses the standard reference `:identifier` modifier to match the identifier carried by `Patient.managingOrganization`. This is different from `organization.identifier`, which chains to the identifier of a referenced Organization resource. The NL GF Data Localization Patient profile carries the URA on `managingOrganization.identifier` and prohibits `managingOrganization.reference`, so these forms are not interchangeable for profile-conformant registrations.
+
+The Endpoint chain is type-qualified as `organization.endpoint:Endpoint.payload-type` to identify the target of `Organization.endpoint` explicitly. The other filters use standard chained or reverse-chained parameters. The NVI SHALL resolve the `managingOrganization` URA against its Care Service Directory replica when evaluating these filters. Implementations SHALL support `organization:identifier` for the profile's identifier-only reference, including when the underlying FHIR server does not support that standard modifier natively.
 
 Search parameters are combined with AND; comma-separated values within a parameter are combined with OR. The data user is identified from the access token's `authorization_details` object, never from search parameters.
 
@@ -133,7 +135,7 @@ Content-Type: application/x-www-form-urlencoded
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
-&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
+&organization.endpoint:Endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
 &organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
@@ -197,7 +199,7 @@ The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-locali
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
 
-The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHOULD NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized registering Localization Client for record maintenance.
+The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized registering Localization Client for record maintenance.
 
 #### Search context
 
@@ -246,7 +248,7 @@ A custodian registers a Patient resource for each patient it holds. The NVI iden
 ```mermaid
 sequenceDiagram
     actor doctor as Practitioner
-    participant ehr as EHR / PACS<br/>Localization client
+    participant ehr as EHR / PACS<br/>Localization Client
     participant prs as Pseudonym Registration Service
     participant NVI as NVI
 
@@ -267,7 +269,7 @@ Dr. Smith's EHR searches for a patient's imaging data at organizations offering 
 ```mermaid
 sequenceDiagram
     actor doctor as Practitioner<br/>Data user
-    participant ehr as EHR<br/>Localization client
+    participant ehr as EHR<br/>Localization Client
     participant prs as Pseudonym Registration Service
     participant nvi as NVI
     participant holder as Custodian FHIR API
@@ -290,13 +292,13 @@ sequenceDiagram
 
 
 
-#### Use case: Retrieving registrations by Localization client
+#### Use case: Retrieving registrations by Localization Client
 
 ```
 GET [base]/Patient?_source=urn:generiekefuncties:nvi:client-id:ehr-client-org2
 ```
 
-The NVI returns a `searchset` Bundle of matching Patient resources to the authorized registering Localization client for record maintenance. This maintenance interaction is separate from data-user search responses, which SHALL NOT include the custodian-assigned identifier.
+The NVI returns a `searchset` Bundle of matching Patient resources to the authorized registering Localization Client for record maintenance. This maintenance interaction is separate from data-user search responses, which SHALL NOT include the custodian-assigned identifier.
 
 
 ### Roadmap for GF Localization
