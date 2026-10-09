@@ -6,6 +6,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 1 - Organization"
 Description: "Example: LRZa - Organization 1 - Organization"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3","11111111","http://kvk.nl", "50000535")
 * name = "example General Practice"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8621 "General medical practice activities"
@@ -32,6 +33,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "22222222", "http://kvk.nl", "50000535")
 * name = "example Hospital"
 * type[+].coding[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
@@ -59,6 +61,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "LRZa - Organization 3 - Organization"
 Description: "Example: LRZa - Organization 3 - Organization"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "33333333", "http://kvk.nl", "50000535")
 * name = "example Care Institution"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
@@ -83,6 +86,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 1 authorizes PharmaPartners"
 Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * active = true
 * organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
@@ -96,6 +100,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 2 authorizes ExampleSoft"
 Description: "Example: Authorization: Organization 2 authorizes ExampleSoft"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * organization = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -113,6 +118,7 @@ InstanceOf: Provenance
 Usage: #example
 Title: "Signed Provenance for OrganizationAffiliation mandate (Organization 2 authorizes ExampleSoft)"
 Description: "Example: digital signature over the OrganizationAffiliation mandate 'Organization 2 authorizes ExampleSoft'. The care provider (Organization 2) signs the stored resource version with a UZI or PKIoverheid certificate. The detached JWS in signature.data is computed over the canonical JSON form of the OrganizationAffiliation using canonicalization type http://hl7.org/fhir/canonicalization/json#static (Resource.meta and narrative removed, then RFC 8785 JCS). See the [Mutation signing](signing.html) page for the step-by-step derivation of this value."
+* language = #en
 * target = Reference(OrganizationAffiliation/c5d6c9d6-7562-589e-9b34-c20a3488daa1)
 * recorded = "2026-07-14T10:15:00Z"
 * agent[+].type = $provenance-participant-type#author
@@ -134,6 +140,7 @@ InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
 Title: "Authorization: Organization 3 authorizes Gerimedica"
 Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * active = true
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
@@ -152,6 +159,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint"
 Description: "Example: Organization 1 - Endpoint"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:59654248-477c-4694-b156-e0042f0765a6","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 
@@ -176,6 +184,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (STU3 and R4)"
 Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirVersion MIME parameter."
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 
@@ -195,6 +204,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (superseded)"
 Description: "Example: superseded Endpoint of the previous EHR system of Organization. Period.end marks the cutover to the replacing Endpoint and the status was set to off after the old system was decommissioned."
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:88037f33-3bc5-4e93-8735-091f0f3d1b76","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #off
 
@@ -220,6 +230,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR R4"
 Description: "Example: Organization 2 - Endpoint FHIR R4"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:430f7379-8ec2-4e55-b096-919995da61e2","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * status = #active
 
@@ -243,6 +254,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint DICOM-WADO-RS"
 Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:d4c1d657-67a9-471c-9732-9c042e9a6d43","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Imaging "Imaging"
@@ -264,6 +276,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 2 - Endpoint FHIR STU3"
 Description: "Example: Organization 2 - Endpoint FHIR STU3"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:2427ca0c-8a29-4a6a-aabd-50cf02f587a7","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * status = #active
 
@@ -311,6 +324,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Polikliniek 't Vaatje"
 Description: "Example consultation healthcare service named Polikliniek 't Vaatje at Organization 2."
+* language = #en
 * identifier = 01b4a250-f331-477e-8762-1ad392473c63
 // * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:5cb05355-474b-4d30-8b0e-a9ca574b8274","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
@@ -328,6 +342,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Neurochirurgie"
 Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:c79125e5-739f-4238-959c-cd5872518c1f","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -344,6 +359,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Orthopedie"
 Description: "Example: Organization 2 - HealthcareService Orthopedie"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:9d47ca45-4166-4531-a23d-ef5fa613ece4","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -360,6 +376,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Interne Geneeskunde"
 Description: "Example: Organization 2 - HealthcareService Interne Geneeskunde"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:f6a508bd-9455-4afa-aad0-baec0833602d","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -377,6 +394,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Geriatrie"
 Description: "Example: Organization 2 - HealthcareService Geriatrie"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:120325af-083c-40ee-b16e-01230fe65655","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -393,6 +411,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 2 - HealthcareService Urologie"
 Description: "Example: Organization 2 - HealthcareService Urologie"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:08013141-16b2-42a0-8c9a-af57cee5511b","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * active = true
 * providedBy = Reference(Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8)
@@ -414,6 +433,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Organization 3 - Organization Nursing department"
 Description: "Nursing department at Organization 3"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:631cf10e-42d6-4165-9907-11e2333d4a85","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * name = "Nursing department at Organization 3"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
@@ -424,6 +444,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Main Building"
 Description: "Example: Organization 3 - Location Main Building"
+* language = #en
 * insert CustodianAssignedIdentifier("http://kvk.nl","990064773193","http://kvk.nl", "50000535")
 * status = #active
 * name = "Main Building"
@@ -440,6 +461,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Organization 3 - Location Verpleeghuis Weltevree"
 Description: "Example location Verpleeghuis Weltevree managed by the nursing department of Organization 3."
+* language = #en
 * insert CustodianAssignedIdentifier("http://kvk.nl","990064773194","http://kvk.nl", "50000535")
 * status = #active
 * name = "Verpleeghuis Weltevree"
@@ -454,6 +476,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR R4"
 Description: "Example: Organization 3 - Endpoint FHIR R4"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:8f224548-6d50-44b6-82c5-75826ee0900f","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * status = #active
 
@@ -477,6 +500,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 3 - Endpoint FHIR STU3"
 Description: "Example: Organization 3 - Endpoint FHIR STU3"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:72a349cc-7336-4a91-873d-fc9349769e1a","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * status = #active
 
@@ -514,6 +538,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Geriatrie"
 Description: "Example: Organization 3 - HealthcareService Geriatrie"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:4fcf98c7-b198-4d61-8b3e-5ea39e33c405","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * active = true
 * providedBy = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
@@ -531,6 +556,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Organization 3 - HealthcareService Verpleging"
 Description: "Example: Organization 3 - HealthcareService Verpleging"
+* language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:b48826dc-2d58-479a-bfd3-80b7a9d69757","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * active = true
 * providedBy = Reference(Organization/e1ce0872-8a80-5fdd-8b30-a3b2203ef46b)

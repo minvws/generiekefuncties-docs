@@ -3,6 +3,7 @@ InstanceOf: ServiceRequest
 Usage: #example
 Title: "Organisation 2 - ServiceRequest Nursing"
 Description: "Request from Organization 2 for nursing care"
+* language = #en
 * insert CustodianAssignedIdentifier("https://cp2-test.example.org/ServiceRequest","53a41e63-e826-45fa-9076-9be4b18399c8","urn:oid:2.16.528.1.1007.3.3", "22222222")
 * status = #active
 * intent = #order
