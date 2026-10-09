@@ -132,7 +132,7 @@ Policy writers are encouraged to use the connection type-specific properties, e.
   - `include`: an array of strings containing the FHIR `_include` parameters of the request, for example `["MedicationRequest:medication"]`.
   - `revinclude`: an array of strings containing the FHIR `_revinclude` parameters of the request, for example `["Provenance:target"]`.
 
-For requests that are scoped to a patient, `patient_bsn` and/or `patient_id` MUST be provided.
+For requests that are scoped to a patient, `patient_bsn` and/or `patient_id` SHALL be provided.
 They are typically derived from the request (e.g. FHIR search parameter `patient` or `identifier`).
 They could also be sourced from the authentication token, or be looked up in the EHR if only `patient_id` was provided in the request, and the policy requires the `patient_bsn` for the Mitz consent check.
 

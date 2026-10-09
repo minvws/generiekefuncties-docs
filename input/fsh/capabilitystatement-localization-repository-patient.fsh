@@ -17,9 +17,11 @@ Usage: #definition
     * type = #Patient
     * supportedProfile = Canonical(NlGfLocalizationPatient)
     * documentation = """A Patient resource represents one patient at one custodian. Registration and maintenance use direct Patient REST interactions; transaction Bundles SHALL NOT be used."""
+    * conditionalCreate = true
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create
+      * documentation = """SHALL support conditional create with `If-None-Exist: identifier=[custodian-assigned identifier]&_source=[client URI]`, so a registering client cannot create duplicate registrations."""
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #delete
@@ -32,13 +34,13 @@ Usage: #definition
       * name = "identifier"
       * definition = "http://hl7.org/fhir/SearchParameter/Patient-identifier"
       * type = #token
-      * documentation = "The NVI patient pseudonym. SHALL support the NVI identifier system."
+      * documentation = "The NVI patient pseudonym. SHALL support the NVI identifier system. A registering client MAY also search by the custodian-assigned identifier, combined with `_source`, for record maintenance and conditional create."
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "organization"
       * definition = "http://hl7.org/fhir/SearchParameter/Patient-organization"
       * type = #reference
-      * documentation = """SHALL support filtering on the managing Organization using its `:identifier` modifier and chained `type`, `endpoint.payload-type`, and `_has:HealthcareService:organization:service-type` parameters. The Organization identifier is resolved against the LRZa replica."""
+      * documentation = """SHALL support filtering on the managing Organization using its `:identifier` modifier and chained `type`, `endpoint.payload-type`, and `_has:HealthcareService:organization:service-type` parameters. SHALL also accept the equivalent type-qualified form `organization.endpoint:Endpoint.payload-type`. The Organization identifier is resolved against the LRZa replica."""
     * searchParam[+]
       * insert Expectation(SHALL)
       * name = "_source"
