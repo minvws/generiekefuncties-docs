@@ -29,7 +29,7 @@ A data user can then discover relevant custodians:
 
 #### Data Localization Index - Nationale Verwijs Index (NVI)
 
-The Data Localization Index or Nationale Verwijs Index (NVI) manages `Patient` resources and MUST implement these [FHIR capabilities](./CapabilityStatement-nl-gf-localization-repository-patient.html).
+The Data Localization Index or Nationale Verwijs Index (NVI) manages `Patient` resources and SHALL implement these [FHIR capabilities](./CapabilityStatement-nl-gf-localization-repository-patient.html).
 These FHIR capabilities cover support for [use case: Registering a patient](#use-case-registering-a-patient) and [use case: Retrieving registrations by client](#use-case-retrieving-registrations-by-localization-client).
 
 When a data user searches (like in [use case: Searching for imaging data](#use-case-searching-for-imaging-data)), the NVI SHALL:
@@ -88,7 +88,7 @@ The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clien
 
 A Localization Client registers and maintains a Patient resource for each patient and custodian through direct FHIR REST interactions.
 
-The Localization Client MUST support `POST`, and `DELETE` on Patient resources.
+The Localization Client SHALL support `POST`, and `DELETE` on Patient resources.
 
 ##### Registration
 Each registered Patient SHALL contain:
@@ -99,7 +99,7 @@ Each registered Patient SHALL contain:
 
 The custodian-assigned identifier SHALL be accepted as the `patient` search value at the custodian's FHIR Endpoint.
 
-**Pseudonymization Integration**: Before submitting localization records, the client MUST compose a pseudonymized patient identifier using the [Pseudonym Registration Service (PRS)](./pseudonymisation.html). When the pseudonym is forwarded to the NVI, the client packages the JWE and `blind_factor` together as a base64url-encoded JSON object:
+**Pseudonymization Integration**: Before submitting localization records, the client SHALL compose a pseudonymized patient identifier using the [Pseudonym Registration Service (PRS)](./pseudonymisation.html). When the pseudonym is forwarded to the NVI, the client packages the JWE and `blind_factor` together as a base64url-encoded JSON object:
 
 ```json
 {

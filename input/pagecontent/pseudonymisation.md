@@ -65,10 +65,10 @@ This guide makes the following national choices for pseudonymisation:
 
 The PRS is the central national service that evaluates blinded inputs and returns a recipient-encrypted JWE. The PRS:
 
-- MUST validate the structure of incoming `blinded_input` values;
-- MUST evaluate the OPRF using a key bound to the declared `recipient_organization` and `recipient_scope`;
-- MUST encrypt the evaluation result as a JWE using the recipient's published public key;
-- MUST NOT persist the input, the output, or any link between them.
+- SHALL validate the structure of incoming `blinded_input` values;
+- SHALL evaluate the OPRF using a key bound to the declared `recipient_organization` and `recipient_scope`;
+- SHALL encrypt the evaluation result as a JWE using the recipient's published public key;
+- SHALL NOT persist the input, the output, or any link between them.
 
 
 
@@ -87,9 +87,9 @@ A Pseudonymization Client is typically embedded in or alongside an EHR, PACS, or
 
 The Recipient (for example, the [NVI](./localization.html#data-localization-index---nationale-verwijs-index-nvi)) is the party for which the pseudonym is intended. The Recipient:
 
-- MUST publish a public key that the PRS can use to encrypt the JWE;
-- MUST decrypt the JWE with the corresponding private key;
-- MUST de-blind the result using the `blind_factor` provided by the client to obtain the stable, recipient-specific pseudonym;
+- SHALL publish a public key that the PRS can use to encrypt the JWE;
+- SHALL decrypt the JWE with the corresponding private key;
+- SHALL de-blind the result using the `blind_factor` provided by the client to obtain the stable, recipient-specific pseudonym;
 - SHALL use the resulting pseudonym only as a lookup key for its own data and SHALL NOT attempt to correlate it with pseudonyms intended for other recipients.
 
 ### Transactions
