@@ -271,7 +271,7 @@ Example:
 
 ```
 HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=https://fhir.datahouder-123.example/identifier/patient|9fd244dc-6b35-4a7d-843d-ac77591cb14d HTTP/1.1
-Authorization: Bearer [access-token]
+Authorization: [access token]
 ```
 
 **Custodian requirements.** For an Authorization Decision, the custodian's FHIR Endpoint SHALL:
@@ -387,14 +387,14 @@ FHIR R4 defines these standard search parameters and chained paths. The NVI SHAL
 
 | Transaction | OAuth client | Access token identifies | Never sent |
 |---|---|---|---|
-| PRS evaluation | Localization Client | See [GF Pseudonymization](./pseudonymisation.html) | The BSN or the derived pseudonym, to the PRS |
+| PRS evaluation | Localization Client | See [GF Pseudonymization](./pseudonymisation.html#security) | The BSN or the derived pseudonym, to the PRS |
 | [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-3](#gf-loc-3-retrieve-registrations) | Localization Client | The registering client (`client_id`, stored in `meta.source`) | The BSN, to the NVI |
 | [GF-LOC-4](#gf-loc-4-search-localization) | Localization Client | The data user: care provider and practitioner, in `authorization_details` | The BSN, to the NVI; the custodian-assigned identifier and `meta.source`, to the data user |
 | [GF-LOC-5](#gf-loc-5-authorization-decision) | NVI (acting party) | The data user: care provider and practitioner, in `authorization_details` | The BSN, the NVI pseudonym, and the broader search context, to the custodian |
 
 #### Authentication and Authorization
 
-See [GF Pseudonymization](./pseudonymisation.html) for PRS authentication requirements.
+See [GF Pseudonymization](./pseudonymisation.html#security) for PRS authentication requirements.
 
 When searching, the Localization Client's access token SHALL include care provider and practitioner details in the `authorization_details` object (as required for EU-cross-border exchange by [EHDS Implementing Act 2026/2099, Annex 1](https://eur-lex.europa.eu/eli/reg_impl/2026/2099/oj/eng#anx_1)).
 
