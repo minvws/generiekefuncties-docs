@@ -64,7 +64,7 @@ A data user can then discover relevant custodians:
 | [NVI](#nvi) | Stores registrations, answers searches, and requests Authorization Decisions | Server for [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-4](#gf-loc-4-search-localization); client for [GF-LOC-5](#gf-loc-5-authorization-decision) | [CapabilityStatement](./CapabilityStatement-nl-gf-localization-repository-patient.html), [Patient profile](./StructureDefinition-nl-gf-localization-patient.html) |
 | [Localization Registration Client](#localization-registration-client) | Registers and maintains patients for a custodian | Client for [GF-LOC-1](#gf-loc-1-register-patient) to [GF-LOC-3](#gf-loc-3-retrieve-registrations) | [Patient profile](./StructureDefinition-nl-gf-localization-patient.html), [Registration lifecycle](#registration-lifecycle) |
 | [Localization Search Client](#localization-search-client) | Searches for custodians for a data user | Client for [GF-LOC-4](#gf-loc-4-search-localization) | [Search context](#search-context) |
-| [Custodian](#custodian) | Answers Authorization Decisions on its FHIR Endpoint | Server for [GF-LOC-5](#gf-loc-5-authorization-decision) | This page; no CapabilityStatement yet (see [Open issues](#open-issues)) |
+| [Custodian Server](#custodian-server) | The custodian's FHIR API; answers Authorization Decisions | Server for [GF-LOC-5](#gf-loc-5-authorization-decision) | This page; no CapabilityStatement yet (see [Open issues](#open-issues)) |
 | [Pseudonym Registration Service](#pseudonym-registration-service) | Evaluates the OPRF for NVI pseudonyms | See [GF Pseudonymization](./pseudonymisation.html) | [GF Pseudonymization](./pseudonymisation.html) |
 
 #### NVI
@@ -81,9 +81,9 @@ The Localization Search Client acts for a data user. It SHALL support [GF-LOC-4]
 
 One system, such as an EHR, MAY implement both client actors.
 
-#### Custodian
+#### Custodian Server
 
-A custodian exposes its data through a FHIR API registered in the [Care Service Directory](./csd.html). Its FHIR Endpoint is the server for [GF-LOC-5](#gf-loc-5-authorization-decision).
+The Custodian Server is the custodian's FHIR API, registered in the [Care Service Directory](./csd.html). It serves the custodian's data, and is the server for [GF-LOC-5](#gf-loc-5-authorization-decision).
 
 #### Pseudonym Registration Service
 
@@ -97,7 +97,7 @@ The Pseudonym Registration Service (PRS) provides OPRF evaluations used by clien
 | GF-LOC-2 | [Delete Patient](#gf-loc-2-delete-patient) | Localization Registration Client | NVI |
 | GF-LOC-3 | [Retrieve Registrations](#gf-loc-3-retrieve-registrations) | Localization Registration Client | NVI |
 | GF-LOC-4 | [Search Localization](#gf-loc-4-search-localization) | Localization Search Client | NVI |
-| GF-LOC-5 | [Authorization Decision](#gf-loc-5-authorization-decision) | NVI | Custodian |
+| GF-LOC-5 | [Authorization Decision](#gf-loc-5-authorization-decision) | NVI | Custodian Server |
 
 #### GF-LOC-1: Register Patient
 
@@ -261,7 +261,7 @@ Example response:
 
 For each matching custodian, the NVI asks whether the data user may access the custodian's data for the patient.
 
-**Artifacts.** [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html). There is no custodian CapabilityStatement yet (see [Open issues](#open-issues)).
+**Artifacts.** [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html). There is no Custodian Server CapabilityStatement yet (see [Open issues](#open-issues)).
 
 **Request.** The NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories:
 
@@ -284,7 +284,7 @@ HEAD https://fhir.datahouder-123.example/fhir/ImagingStudy?patient.identifier=ht
 Authorization: [access token]
 ```
 
-**Custodian requirements.** For an Authorization Decision, the custodian's FHIR Endpoint SHALL:
+**Custodian Server requirements.** For an Authorization Decision, the Custodian Server SHALL:
 - support `HEAD` requests on the relevant FHIR search interactions for each data category;
 - accept multiple requests for the same patient within one search, one for each resource type of the requested data categories;
 - identify the patient by the custodian-assigned identifier alone, without the BSN or NVI pseudonym;
@@ -451,7 +451,7 @@ sequenceDiagram
     participant ehr as EHR<br/>Localization Search Client
     participant prs as Pseudonym Registration Service
     participant nvi as NVI
-    participant holder as Custodian FHIR API
+    participant holder as Custodian Server
 
     doctor->>ehr: Request patient imaging data
     ehr->>ehr: Derive pseudonym from BSN<br/>and blind it with a random blinding factor
@@ -484,5 +484,5 @@ The NVI returns a `searchset` Bundle of matching Patient resources to the author
 #### Open issues
 - Token profile for the NVI acting on behalf of the data user, aligned with GF Authentication and GF Authorization.
 - Minimum specificity of a search context.
-- A CapabilityStatement for custodians, specifying `HEAD` support and Authorization Decision responses.
+- A CapabilityStatement for the Custodian Server, specifying `HEAD` support and Authorization Decision responses.
 - Specifying Authorization Decision mechanisms for non-FHIR APIs or data categories (e.g. DICOM).
