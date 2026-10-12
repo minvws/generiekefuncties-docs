@@ -72,6 +72,8 @@ pages:
       title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
     authenticatie-service-provider-mandatering.md:
       title: Service provider en mandatering
+    authenticatie-dynamic-client-registration.md:
+      title: Varianten voor Dynamic Client Registration
     authenitcatie-en-autorisatie-Normenanlyse-eOverdracht-BgZ-vMT-DICIO.md:
       title: Normenanalyse authenticatie en autorisatie
 

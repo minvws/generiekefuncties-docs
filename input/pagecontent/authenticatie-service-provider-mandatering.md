@@ -108,7 +108,7 @@ sequenceDiagram
 
 #### O3 — Centraal opgeslagen en gedistribueerd OrganizationAffiliation-mandaat (LRZa Directory)
 
-Het "namens"-verband wordt vastgelegd als een `OrganizationAffiliation`-resource in de LRZa Directory (zoals in [Care Services Directory](care-services.html)) en via replicatie (ITI-90-NL/ITI-91-NL) verspreid naar lokale replica's. De zorgaanbieder (`organization`) autoriseert de SP (`participatingOrganization`) met een autorisatietype (`code`). De authorization server aan bronhouder-zijde raadpleegt **altijd** zijn **lokale replica** — centrale live lookups op de LRZa Directory zijn uitgesloten, want de Directory heeft geen operationele rol in de data-uitwisseling (zie [Care Services Directory](care-services.html)). Gegeven de geauthenticeerde SP-identiteit controleert de server of er een actieve affiliatie met de geclaimde zorgaanbieder (URA) bestaat voor het relevante autorisatietype. Optioneel draagt de affiliatie een ondertekende `Provenance` (zie [Resource signing](signing.html)), zodat het mandaat onafhankelijk verifieerbaar is zonder de LRZa op zijn woord te vertrouwen.
+Het "namens"-verband wordt vastgelegd als een `OrganizationAffiliation`-resource in de LRZa Directory (zoals in [Care Services Directory](csd.html)) en via replicatie (ITI-90-NL/ITI-91-NL) verspreid naar lokale replica's. De zorgaanbieder (`organization`) autoriseert de SP (`participatingOrganization`) met een autorisatietype (`code`). De authorization server aan bronhouder-zijde raadpleegt **altijd** zijn **lokale replica** — centrale live lookups op de LRZa Directory zijn uitgesloten, want de Directory heeft geen operationele rol in de data-uitwisseling (zie [Care Services Directory](csd.html)). Gegeven de geauthenticeerde SP-identiteit controleert de server of er een actieve affiliatie met de geclaimde zorgaanbieder (URA) bestaat voor het relevante autorisatietype. Optioneel draagt de affiliatie een ondertekende `Provenance` (zie [Resource signing](signing.html)), zodat het mandaat onafhankelijk verifieerbaar is zonder de LRZa op zijn woord te vertrouwen.
 
 ```mermaid
 sequenceDiagram
@@ -132,7 +132,7 @@ Overwegingen:
 
 - **Beveiliging — Midden/Hoog.** Aparte SP-identiteit; het mandaat is centraal beheerd en (met `Provenance`) onafhankelijk verifieerbaar. De bron vertrouwt op de integriteit van de replicatieketen; ondertekening dekt dat af.
 - **Implementatie-inspanning — Midden/Hoog.** Vereist een nieuw autorisatietype en een identiteitsbinding, plus replica-infrastructuur — maar hergebruikt de bestaande GF Adressering en de reeds aanwezige signing-aanpak.
-- **Duurzaamheid — Hoog.** De bevraging gebruikt altijd de lokale replica; live centrale lookups op de LRZa Directory zijn uitgesloten (zie [Care Services Directory](care-services.html)), dus er is geen centrale *single point of failure*. Het mandaat is niet per-transactie maar vooraf vastgelegd.
+- **Duurzaamheid — Hoog.** De bevraging gebruikt altijd de lokale replica; live centrale lookups op de LRZa Directory zijn uitgesloten (zie [Care Services Directory](csd.html)), dus er is geen centrale *single point of failure*. Het mandaat is niet per-transactie maar vooraf vastgelegd.
 - **Performance — Hoog.** Lokale replica-lookup, geen ondertekening of JWKS-lookup per tokenverzoek.
 
 #### O4 — OpenID Federation (trust chains)
@@ -186,7 +186,7 @@ De volgende gestandaardiseerde bouwstenen zijn geen zelfstandige "namens"-bewijz
 
 #### B1 — Dynamic Client Registration (RFC 7591 / UDAP)
 
-Met [OAuth 2.0 Dynamic Client Registration (RFC 7591)](https://www.rfc-editor.org/rfc/rfc7591), geprofileerd volgens [UDAP](https://www.udap.org/), registreert de SP zichzelf trust-based als OAuth-client op basis van zijn X.509-certificaat (zie ook de sectie *Dynamic Client Registration* in [Authentication](authentication.html)). Dit vestigt de **technische SP-identiteit** en voldoet aan de FAPI-eis van een *confidential client*. DCR drukt op zichzelf géén "namens"-relatie uit en wordt daarom gecombineerd met O2 (mandaat) of O3 (directory-affiliatie).
+Met [OAuth 2.0 Dynamic Client Registration (RFC 7591)](https://www.rfc-editor.org/rfc/rfc7591), geprofileerd volgens [UDAP](https://www.udap.org/), registreert de SP zichzelf trust-based als OAuth-client op basis van zijn X.509-certificaat (zie ook de sectie *Dynamic Client Registration* in [Authentication](authentication.html)). Dit vestigt de **technische SP-identiteit** en voldoet aan de FAPI-eis van een *confidential client*. DCR drukt op zichzelf géén "namens"-relatie uit en wordt daarom gecombineerd met O2 (mandaat) of O3 (directory-affiliatie). De varianten, relevante standaarden en het moment van handtekening- en intrekkingscontrole zijn uitgewerkt in [Varianten voor Dynamic Client Registration](authenticatie-dynamic-client-registration.html).
 
 #### B2 — Protected Resource Metadata (RFC 9728)
 
