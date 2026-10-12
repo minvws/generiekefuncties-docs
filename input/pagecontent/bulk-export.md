@@ -296,6 +296,8 @@ Direct identifiers SHALL be replaced by pseudonyms produced by the [Pseudonymiza
 
 Pseudonymisation alone does not make a dataset anonymous. Indirect identifiers (rare diagnosis codes, exact dates, postal areas, extreme values) remain re-identifying. Suppressing them is a joint responsibility of the data permit (which SHOULD constrain `_elements`), the data holder (which SHOULD refuse exports below a minimum cohort size and applies the [default date-shift policy](#default-date-shift-policy)), and the SPE (which performs output checking).
 
+See [De-identification for secondary use](./deidentification.html) for the de-identification pipeline at the data holder (structured data, free text, imaging), candidate open-source tools, and a comparison of these requirements with what the Pseudonymization Service delivers.
+
 #### Default date-shift policy
 
 Exact dates are among the strongest indirect identifiers in an exported dataset. Unless the data permit specifies otherwise, the Bulk Export Server SHALL apply the following default date-shift policy to every exported resource:
