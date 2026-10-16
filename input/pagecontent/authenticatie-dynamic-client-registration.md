@@ -126,6 +126,7 @@ De AS registreert de client niet vooraf. De client stuurt bij elk tokenverzoek e
 - **Controle van het software statement:** niet van toepassing, want er is geen software statement. De AS controleert elke `client_assertion` afzonderlijk.
 - **Intrekkingscontrole:** dit kan bij elk verzoek. iSHARE verwijst voor certificaatcontrole naar "best practices ... (such as a check on revocation lists)", maar schrijft de statuscontrole van de deelnemer bij elk verzoek expliciet voor. Bij mTLS laat RFC 8705 de intrekkingscontrole aan de AS over.
 - **Beoordeling:** dit is het eenvoudigste model en wordt in meerdere Europese landen gebruikt. Een intrekking werkt direct door, omdat er geen registratie is die geldig kan blijven. Er is wel geen gestandaardiseerde plek voor clientmetadata, zoals toegestane `authorization_details_types` en scopes; die moeten uit het certificaat, een register of stelselafspraken komen. Veel standaard AS-producten verwachten bovendien vooraf geregistreerde clients, terwijl reviewers van de memo juist om een bekende *confidential client* vroegen. Dat is op te vangen als de AS bij het eerste geldige verzoek automatisch een client aanmaakt (*registratie bij eerste gebruik*).
+- **Uitwerking:** [Authentication variant: PSD2 / Berlin Group model](authentication-psd2.html) werkt deze variant uit volgens het PSD2-patroon, met mTLS en een door de zorgaanbieder ondertekend mandaat.
 
 #### V5 — DCR met client-attestatie (ZETA-patroon, in opkomst)
 

@@ -70,10 +70,14 @@ pages:
           
     authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
       title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
+    authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:
+      title: "Vervolg harmonisatie: clientregistratie en mandatering"
     authenticatie-service-provider-mandatering.md:
       title: Service provider en mandatering
     authenticatie-dynamic-client-registration.md:
       title: Varianten voor Dynamic Client Registration
+    authentication-psd2.md:
+      title: "Authentication variant: PSD2 / Berlin Group model"
     authenitcatie-en-autorisatie-Normenanlyse-eOverdracht-BgZ-vMT-DICIO.md:
       title: Normenanalyse authenticatie en autorisatie
 

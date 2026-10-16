@@ -126,6 +126,8 @@ In a federated, many-to-many healthcare network it does not scale to configure e
 
 Registration follows the OAuth 2.0 Dynamic Client Registration Protocol ([RFC 7591](https://www.rfc-editor.org/rfc/rfc7591)), profiled along the lines of the HL7 [UDAP](https://www.udap.org/) Security profile so that trust is established from an X.509 certificate rather than from an out-of-band shared secret. This reuses the same certificate infrastructure (UZI/PKIoverheid) and the same organization identity (URA) as the token exchange, and produces a client that is configured for the `client_credentials` grant with `private_key_jwt` authentication.
 
+> A variant without client registration, modelled on PSD2 and the Berlin Group, is described in [Authentication variant: PSD2 / Berlin Group model](authentication-psd2.html).
+
 #### Discovery
 
 Before registering, the client discovers the authorization server's registration endpoint and capabilities from the server's metadata ([RFC 8414](https://www.rfc-editor.org/rfc/rfc8414)) and/or the UDAP well-known endpoint:
