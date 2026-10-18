@@ -150,14 +150,14 @@ De authorization server en de opvragende dienstverlener controleren naast het ma
 
 ### Vergelijking
 
-| Variant | Zorgaanbieder heeft nodig | Kan de dienstverlener zichzelf mandateren? | Vindplaats van het mandaat | Controle door de bron | Externe afhankelijkheid voor het mandaat (cachebaar) | Intrekking | Status |
-|---|---|---|---|---|---|---|---|
-| **M0** Dienstverlener ondertekent met UZI-sleutel van de zorgaanbieder | UZI-servercertificaat, sleutel bij de dienstverlener | Niet van toepassing: hij treedt op als de zorgaanbieder | Niet van toepassing | UZI-keten, intrekkingsstatus en URA | OCSP of CRL van het UZI-register | Intrekken UZI-certificaat | Huidige praktijk |
-| **M1** Zorgaanbieder ondertekent | UZI-servercertificaat en ondertekendienst | Ja, als hij de UZI-sleutel beheert | Bij de dienstverleners: als `subject_token` in het tokenrequest, en het mandaat van de bron in de *Protected Resource Metadata* | Handtekening, keten, intrekkingsstatus en `may_act` | OCSP of CRL van het UZI-register; statuslijst | Statuslijst (verplicht) of verloop | Techniek is bewezen/beschikbaar |
-| **M2** European Business Wallet | Business wallet | Nee, als hij de wallet niet bedient | Zoals M1 | Zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling | OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten; statusmechanisme | Status van de attestatie (verplicht) of verloop | Voorstel EU-verordening |
-| **M3** `OrganizationAffiliation` in de LRZa | eHerkenning | Nee, mits alleen het portaal mandaten registreert, zonder ketenmachtiging | LRZa en lokale replica; niet in het tokenrequest | Lokale LRZa-replica | Synchronisatie met de LRZa (maximale ouderdom) | Deactiveren in het portaal | Bouwt voort op de LRZa |
-| **M4** Combinatie van M1 en M3 | UZI-servercertificaat (sleutel bij één dienstverlener) en eHerkenning | Alleen de beherende dienstverlener met de UZI-sleutel; andere dienstverleners niet | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Lokale LRZa-replica en `Provenance` (UZI-keten, intrekkingsstatus en URA) | Synchronisatie met de LRZa; OCSP of CRL van het UZI-register | Deactiveren in het portaal of door de beherende dienstverlener; intrekken UZI-certificaat | Bouwt voort op de LRZa en de Provenance-ondertekening |
-| **M5** Combinatie van M2 en M3 | Business wallet | Nee, als hij de wallet niet bedient | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Lokale LRZa-replica en `Provenance` (zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling) | Synchronisatie met de LRZa; OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten | Deactiveren in het portaal | Na invoering van de European Business Wallet |
+| Variant | Zorgaanbieder heeft nodig | Vindplaats van het mandaat | Externe afhankelijkheid voor het mandaat (cachebaar) | Intrekking |
+|---|---|---|---|---|
+| **M0** Dienstverlener ondertekent met UZI-sleutel van de zorgaanbieder | UZI-servercertificaat, sleutel bij de dienstverlener | Niet van toepassing | OCSP of CRL van het UZI-register | Intrekken UZI-certificaat |
+| **M1** Zorgaanbieder ondertekent | UZI-servercertificaat en ondertekendienst | Bij de dienstverleners: als `subject_token` in het tokenrequest, en het mandaat van de bron in de *Protected Resource Metadata* | OCSP of CRL van het UZI-register; statuslijst | Statuslijst (verplicht) of verloop |
+| **M2** European Business Wallet | Business wallet | Zoals M1 | OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten; statusmechanisme | Status van de attestatie (verplicht) of verloop |
+| **M3** `OrganizationAffiliation` in de LRZa | eHerkenning | LRZa en lokale replica; niet in het tokenrequest | Synchronisatie met de LRZa (maximale ouderdom) | Deactiveren in het portaal |
+| **M4** Combinatie van M1 en M3 | UZI-servercertificaat (sleutel bij één dienstverlener) en eHerkenning | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Synchronisatie met de LRZa; OCSP of CRL van het UZI-register | Deactiveren in het portaal of door de beherende dienstverlener; intrekken UZI-certificaat |
+| **M5** Combinatie van M2 en M3 | Business wallet | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Synchronisatie met de LRZa; OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten | Deactiveren in het portaal |
 
 Geen van de varianten is dus volledig zonder centrale afhankelijkheid. De federatieve varianten M1 en M2 hebben geen centrale mandaatvoorziening nodig, maar wel de intrekkingsdienst van de certificaatuitgever; de dienstverleners bewaren en publiceren de mandaten dan zelf. M3 heeft geen intrekkingscontrole voor het mandaat nodig, maar is afhankelijk van de synchronisatie van de replica met de LRZa. M4 en M5 voegen aan M3 een handtekening of zegel van de zorgaanbieder toe, en worden daarmee ook afhankelijk van de intrekkingsdienst van de certificaatuitgever.
 
@@ -304,36 +304,36 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 sequenceDiagram
     autonumber
     actor ZA as Zorgaanbieder A
-    participant DA as Dienstverlener A (opvragend)
-    participant RepA as LRZa-replica (A)
-    participant AS as Authorization Server (dienstverlener B)
-    participant RS as Resource Server (dienstverlener B)
-    participant RepB as LRZa-replica (B)
+    participant DA as Dienstverlener A<br/>(opvragend)
+    participant RepA as LRZa-replica A
+    participant AS as Authorization<br/>Server B
+    participant RS as Resource<br/>Server B
+    participant RepB as LRZa-replica B
 
-    Note over ZA,DA: Periodiek, bijvoorbeeld eens per drie maanden
-    DA->>ZA: Mandaat ter ondertekening aanbieden
-    ZA->>ZA: Ondertekenen met UZI-sleutel (M1)<br/>of ondertekenen met business wallet (M2)
-    ZA-->>DA: Ondertekend mandaat
+    Note over ZA,DA: Periodiek, bijvoorbeeld<br/>eens per drie maanden
+    DA->>ZA: Mandaat ter<br/>ondertekening
+    ZA->>ZA: Ondertekenen met<br/>UZI-sleutel (M1) of<br/>business wallet (M2)
+    ZA-->>DA: Ondertekend<br/>mandaat
 
-    Note over ZA,RepB: Bij elke uitwisseling, alle verbindingen over mTLS
-    Note over DA,RS: Dienstverlener B heeft een notificatie gestuurd<br/>met de referentie naar Task 123
-    ZA->>DA: Zorgverlener opent de verpleegkundige overdracht<br/>van patiënt X (Task 123)
-    DA->>RepA: Zoek FHIR-endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor eOverdracht)
-    RepA-->>DA: Endpoint-adres van de resource server<br/>(managingOrganization: dienstverlener B)
-    DA->>RS: GET /.well-known/oauth-protected-resource<br/>(Protected Resource Metadata, RFC 9728 (cachebaar))
-    RS-->>DA: authorization_servers en mandaat van zorgaanbieder B<br/>aan dienstverlener B (scope TREAT-custodian)
-    DA->>DA: Task 123 ligt op het endpoint van zorgaanbieder B?<br/>Mandaat van zorgaanbieder B geldig (handtekening, keten)?<br/>may_act = servercertificaat dienstverlener B?<br/>AS staat in authorization_servers?
-    DA->>AS: POST /token, token exchange<br/>subject_token=mandaat, RAR
-    AS->>AS: Intrekkingsstatus certificaat dienstverlener A (OCSP/CRL)<br/>Handtekening, keten en intrekking van het mandaat (OCSP/CRL, statuslijst)<br/>may_act = client_id dienstverlener A?<br/>sub = subject_organization_id?<br/>scope bevat TREAT-user (doel uit RAR)?
-    AS-->>DA: access_token (sub=URA-A, act=dienstverlener A,<br/>gebonden aan certificaat dienstverlener A)
-    DA->>RS: GET /Task/123 met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Task 123 open?
-    RS->>RepB: HealthcareService in Task.owner geleverd door URA-A<br/>uit authorization_details (providedBy, eventueel via partOf)?
-    RS-->>DA: 200 OK, Task 123 (input: Composition 456)
-    DA->>RS: GET /Composition/456/$document met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Composition 456 staat in Task.input van Task 123,<br/>die bij URA-A hoort?
-    RS-->>DA: 200 OK, Bundle met het overdrachtsbericht
-    DA-->>ZA: Verpleegkundige overdracht van patiënt X tonen
+    Note over ZA,RepB: Bij elke uitwisseling,<br/>alle verbindingen over mTLS
+    Note over DA,RS: Notificatie van<br/>dienstverlener B met<br/>referentie naar Task 123
+    ZA->>DA: Overdracht van<br/>patiënt X openen
+    DA->>RepA: FHIR-endpoint<br/>van URA-B voor<br/>eOverdracht?
+    RepA-->>DA: Endpoint, beheerd<br/>door dienstverlener B
+    DA->>RS: GET /.well-known/<br/>oauth-protected-<br/>resource
+    RS-->>DA: authorization_servers<br/>en mandaat van URA-B<br/>(TREAT-custodian)
+    DA->>DA: Task 123 op endpoint?<br/>Mandaat geldig?<br/>may_act past bij<br/>servercertificaat?<br/>AS staat in<br/>authorization_servers?
+    DA->>AS: POST /token<br/>(token exchange)<br/>subject_token=mandaat<br/>RAR: URA-A, TREAT
+    AS->>AS: Clientcertificaat<br/>niet ingetrokken?<br/>Mandaat: handtekening,<br/>keten en status?<br/>may_act = client_id?<br/>sub = URA-A uit RAR?<br/>scope bevat<br/>TREAT-user?
+    AS-->>DA: access_token<br/>(sub=URA-A, gebonden<br/>aan certificaat A)
+    DA->>RS: GET /Task/123
+    RS->>RS: Token geldig<br/>en gebonden?<br/>Task 123 open?
+    RS->>RepB: HealthcareService<br/>in Task.owner<br/>geleverd door URA-A?
+    RS-->>DA: Task 123 (input:<br/>Composition 456)
+    DA->>RS: GET /Composition/<br/>456/$document
+    RS->>RS: Token geldig<br/>en gebonden?<br/>Composition 456<br/>in Task 123?
+    RS-->>DA: Bundle met het<br/>overdrachtsbericht
+    DA-->>ZA: Overdracht tonen
 ```
 
 ## B. M4: ondertekend mandaat in de lokale LRZa-replica
@@ -346,45 +346,45 @@ Bij de andere varianten met de LRZa verloopt de uitwisseling grotendeels hetzelf
 ```mermaid
 sequenceDiagram
     autonumber
-    actor ZA as Zorgaanbieder A (URA-A)
-    participant LRZa as LRZa (portaal en Directory)
-    participant DA as Dienstverlener A (opvragend, beheert UZI-sleutel A)
-    participant RepA as LRZa-replica (A)
-    participant RepB as LRZa-replica (B)
-    participant AS as Authorization Server (dienstverlener B)
-    participant RS as Resource Server (dienstverlener B)
+    actor ZA as Zorgaanbieder A<br/>(URA-A)
+    participant LRZa as LRZa (portaal<br/>en Directory)
+    participant DA as Dienstverlener A<br/>(opvragend,<br/>UZI-sleutel A)
+    participant RepA as LRZa-replica A
+    participant RepB as LRZa-replica B
+    participant AS as Authorization<br/>Server B
+    participant RS as Resource<br/>Server B
 
     Note over ZA,LRZa: Eenmalig
-    ZA->>LRZa: Inloggen met eHerkenning<br/>dienstverlener A mandateren: HSYSADMIN-custodian
+    ZA->>LRZa: eHerkenning:<br/>dienstverlener A<br/>mandateren voor<br/>HSYSADMIN-custodian
 
-    Note over ZA,RepB: Bij een nieuw, gewijzigd of ingetrokken mandaat
-    ZA->>DA: Opdracht: dienstverlener A mandateren voor TREAT-user
-    DA->>DA: OrganizationAffiliation (URA-A, dienstverlener A, TREAT-user)<br/>ondertekenen in een Provenance met de UZI-sleutel van zorgaanbieder A
-    DA->>LRZa: OrganizationAffiliation en Provenance registreren (ITI-130-NL)
-    LRZa->>LRZa: Dienstverlener A heeft HSYSADMIN-custodian van URA-A?<br/>Provenance geldig en URA in het UZI-certificaat = URA-A?
-    LRZa-->>ZA: Melding van het nieuwe mandaat (actief na de wachttijd)
-    LRZa-->>RepA: Synchronisatie (ITI-91-NL)
-    LRZa-->>RepB: Synchronisatie (ITI-91-NL)
+    Note over ZA,RepB: Bij een nieuw, gewijzigd<br/>of ingetrokken mandaat
+    ZA->>DA: Opdracht: mandaat<br/>TREAT-user voor<br/>dienstverlener A
+    DA->>DA: OrganizationAffiliation<br/>ondertekenen in een<br/>Provenance met<br/>UZI-sleutel A
+    DA->>LRZa: Registreren<br/>(ITI-130-NL)
+    LRZa->>LRZa: HSYSADMIN-custodian?<br/>Provenance geldig?<br/>URA = URA-A?
+    LRZa-->>ZA: Melding nieuw<br/>mandaat (actief<br/>na wachttijd)
+    LRZa-->>RepA: Synchronisatie<br/>(ITI-91-NL)
+    LRZa-->>RepB: Synchronisatie<br/>(ITI-91-NL)
 
-    Note over ZA,RS: Bij elke uitwisseling, alle verbindingen over mTLS
-    Note over DA,RS: Dienstverlener B heeft een notificatie gestuurd<br/>met de referentie naar Task 123
-    ZA->>DA: Zorgverlener opent de verpleegkundige overdracht<br/>van patiënt X (Task 123)
-    DA->>RepA: Zoek FHIR-endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor eOverdracht)
-    RepA-->>DA: Endpoint-adres van de resource server<br/>(managingOrganization: dienstverlener B)
-    DA->>RepA: Actieve OrganizationAffiliation (URA-B, dienstverlener B, TREAT-custodian)?
-    DA->>DA: Provenance geldig: handtekening, UZI-keten en intrekkingsstatus (OCSP/CRL, cachebaar)?<br/>URA in het UZI-certificaat = URA-B?<br/>Past dienstverlener B bij het servercertificaat?<br/>Task 123 ligt op het endpoint van zorgaanbieder B?
-    DA->>AS: POST /token, client credentials<br/>RAR: subject_organization_id=URA-A,<br/>purpose_of_use=TREAT
-    AS->>AS: client_id afleiden uit certificaat dienstverlener A<br/>en intrekkingsstatus controleren (OCSP/CRL, cachebaar)
-    AS->>RepB: Replica actueel? Actieve OrganizationAffiliation<br/>(URA-A, dienstverlener A, TREAT-user)?
-    AS->>AS: Provenance geldig: handtekening, UZI-keten en intrekkingsstatus (OCSP/CRL, cachebaar)?<br/>URA in het UZI-certificaat = URA-A?
-    AS-->>DA: access_token (opaque, gebonden aan certificaat dienstverlener A)
-    DA->>RS: GET /Task/123 met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Task 123 open?
-    RS->>RepB: HealthcareService in Task.owner geleverd door URA-A<br/>uit authorization_details (providedBy, eventueel via partOf)?
-    RS-->>DA: 200 OK, Task 123 (input: Composition 456)
-    DA->>RS: GET /Composition/456/$document met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Composition 456 staat in Task.input van Task 123,<br/>die bij URA-A hoort?
-    RS-->>DA: 200 OK, Bundle met het overdrachtsbericht
-    DA-->>ZA: Verpleegkundige overdracht van patiënt X tonen
-    Note over ZA,RS: Beide kanten loggen zorgaanbieder, dienstverlener en certificaatgegevens (NEN 7513)
+    Note over ZA,RS: Bij elke uitwisseling,<br/>alle verbindingen over mTLS
+    Note over DA,RS: Notificatie van<br/>dienstverlener B met<br/>referentie naar Task 123
+    ZA->>DA: Overdracht van<br/>patiënt X openen
+    DA->>RepA: FHIR-endpoint<br/>van URA-B voor<br/>eOverdracht?
+    RepA-->>DA: Endpoint, beheerd<br/>door dienstverlener B
+    DA->>RepA: Mandaat van URA-B<br/>aan dienstverlener B<br/>(TREAT-custodian)?
+    DA->>DA: Provenance geldig<br/>(handtekening, keten,<br/>status)?<br/>URA = URA-B?<br/>Servercertificaat =<br/>dienstverlener B?<br/>Task 123 op endpoint?
+    DA->>AS: POST /token<br/>(client credentials)<br/>RAR: URA-A, TREAT
+    AS->>AS: client_id uit<br/>certificaat,<br/>niet ingetrokken?
+    AS->>RepB: Replica actueel?<br/>Mandaat van URA-A<br/>aan dienstverlener A<br/>(TREAT-user)?
+    AS->>AS: Provenance geldig<br/>(handtekening, keten,<br/>status)?<br/>URA = URA-A?
+    AS-->>DA: access_token<br/>(opaque, gebonden<br/>aan certificaat A)
+    DA->>RS: GET /Task/123
+    RS->>RS: Token geldig<br/>en gebonden?<br/>Task 123 open?
+    RS->>RepB: HealthcareService<br/>in Task.owner<br/>geleverd door URA-A?
+    RS-->>DA: Task 123 (input:<br/>Composition 456)
+    DA->>RS: GET /Composition/<br/>456/$document
+    RS->>RS: Token geldig<br/>en gebonden?<br/>Composition 456<br/>in Task 123?
+    RS-->>DA: Bundle met het<br/>overdrachtsbericht
+    DA-->>ZA: Overdracht tonen
+    Note over ZA,RS: Beide kanten loggen zorgaanbieder,<br/>dienstverlener en certificaatgegevens<br/>(NEN 7513)
 ```
