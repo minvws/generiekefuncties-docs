@@ -61,23 +61,19 @@ pages:
   #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
   #         valueCode: draft
 
-  authentication.md:
-    title: Authentication
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
+  # authentication.md:
+  #   title: Authentication
+  #   extension:
+  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+  #         valueCode: draft
 
           
     authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
       title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
     authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:
       title: "Vervolg harmonisatie: clientregistratie en mandatering"
-    authenticatie-service-provider-mandatering.md:
-      title: Service provider en mandatering
-    authenticatie-dynamic-client-registration.md:
-      title: Varianten voor Dynamic Client Registration
-    authentication-psd2.md:
-      title: "Authentication variant: PSD2 / Berlin Group model"
+    authenticatie-en-autorisatie-security-review.md:
+      title: "Security review: client registration and mandates"
     authenitcatie-en-autorisatie-Normenanlyse-eOverdracht-BgZ-vMT-DICIO.md:
       title: Normenanalyse authenticatie en autorisatie
 
@@ -142,7 +138,7 @@ menu:
   Care Service Directory: csd.html
   Signing: signing.html
   # Identification (draft): identification.html
-  Authentication (draft): authentication.html
+  # Authentication (draft): authentication.html
   # Authorization (draft): authorization.html
   Localization (draft): localization.html
   Pseudonymisation (draft): pseudonymisation.html
