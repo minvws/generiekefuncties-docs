@@ -13,31 +13,22 @@ Deze notitie geeft een voorstel ter aanscherping van hoofdstuk 6 (*Technische ke
 - [Rollen: zorgaanbieder en dienstverlener](#1-rollen-zorgaanbieder-en-dienstverlener)
 - [Gewijzigde technische keuzes](#2-gewijzigde-technische-keuzes)
   - [2.1 Ongewijzigde keuzes](#21-ongewijzigde-keuzes)
-  - [2.2 Registratie van OAuth-clients](#22-registratie-van-oauth-clients)
-  - [2.3 Clientauthenticatie van de dienstverlener: mTLS](#23-clientauthenticatie-van-de-dienstverlener-mtls)
-  - [2.4 Mandaat in plaats van ondertekening door de zorgaanbieder](#24-mandaat-in-plaats-van-ondertekening-door-de-zorgaanbieder)
-  - [2.5 Access token: uitgifte door de authorization server van de bron](#25-access-token-uitgifte-door-de-authorization-server-van-de-bron)
-  - [2.6 Grant en RAR-object](#26-grant-en-rar-object)
-  - [2.7 Voorstel voor mandaatcodes](#27-voorstel-voor-mandaatcodes)
-- [Toetsing aan eisen en uitgangspunten](#3-toetsing-aan-eisen-en-uitgangspunten)
-- [Verwerking van de reacties](#4-verwerking-van-de-reacties)
-- [Conclusie en openstaande besluiten](#5-conclusie-en-openstaande-besluiten)
+  - [2.2 Mandaat in plaats van ondertekening door de zorgaanbieder](#22-mandaat-in-plaats-van-ondertekening-door-de-zorgaanbieder)
+  - [2.3 Voorstel voor mandaatcodes](#23-voorstel-voor-mandaatcodes)
+  - [2.4 Registratie van OAuth-clients](#24-registratie-van-oauth-clients)
+  - [2.5 Clientauthenticatie van de dienstverlener: mTLS](#25-clientauthenticatie-van-de-dienstverlener-mtls)
+  - [2.6 Access token: uitgifte door de authorization server van de bron](#26-access-token-uitgifte-door-de-authorization-server-van-de-bron)
+  - [2.7 Grant en RAR-object](#27-grant-en-rar-object)
+
 - [Bijlage: voorbeelden van de technische flow](#bijlage-voorbeelden-van-de-technische-flow)
   - [A. M1 en M2: mandaat als `subject_token`](#a-m1-en-m2-mandaat-als-subject_token)
   - [B. M4: ondertekend mandaat in de lokale LRZa-replica](#b-m4-ondertekend-mandaat-in-de-lokale-lrza-replica)
-- [Bijlage: autorisatiecontroles bij een push](#bijlage-autorisatiecontroles-bij-een-push)
-  - [Rollen en transacties](#rollen-en-transacties)
-  - [Soorten controles en Rego](#soorten-controles-en-rego)
-  - [Basiscontroles bij elke verbinding](#basiscontroles-bij-elke-verbinding)
-  - [Controles per transactie](#controles-per-transactie)
-  - [Overzicht per actor](#overzicht-per-actor)
-  - [Voorbeeld: beleid van de AS van de verzender (P4)](#voorbeeld-beleid-van-de-as-van-de-verzender-p4)
-- [Beveiligingsreview (aparte pagina, door AI gegenereerd)](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-security-review.html)
+
 
 # 1. Rollen: zorgaanbieder en dienstverlener
 De oorspronkelijke notitie maakt geen onderscheid tussen de zorgaanbieder en de partij die de techniek levert. Dit voorstel onderscheidt twee rollen:
 
-- **Zorgaanbieder:** de verwerkingsverantwoordelijke, geïdentificeerd met het URA. De zorgaanbieder bepaalt welke dienstverlener namens hem mag handelen en voor welke doelen (paragraaf 2.7).
+- **Zorgaanbieder:** de verwerkingsverantwoordelijke, geïdentificeerd met het URA. De zorgaanbieder bepaalt welke dienstverlener namens hem mag handelen en voor welke doelen (paragraaf 2.3).
 - **Dienstverlener:** de partij die de technische voorziening levert en beheert, zoals een EPD-leverancier, SaaS-platform, knooppunt, of de zorgaanbieder zelf bij eigen beheer. Aan de opvragende kant beheert de dienstverlener de OAuth-client, aan de bronkant de authorization server en de resource server. De dienstverlener heeft een eigen certificaat, bijvoorbeeld een PKIoverheid-servercertificaat met zijn KvK-nummer of OIN.
 
 Eén dienstverlener handelt doorgaans namens veel zorgaanbieders, en één zorgaanbieder kan meerdere dienstverleners hebben. Het mandaat legt per combinatie vast wat de dienstverlener mag.
@@ -49,68 +40,7 @@ Dit past bij GISA-keuze A44: het vertrouwen op de transportlaag ligt bij de vera
 ## 2.1 Ongewijzigde keuzes
 De volgende keuzes uit de notitie blijven van kracht: **OAuth 2.0** als basis; de beveiligingsmaatregelen uit **FAPI 2.0** (asymmetrische clientauthenticatie, *sender-constrained* access tokens, verplichte transportbeveiliging en strikte validatie); **Rich Authorization Requests** (RAR, [RFC 9396](https://www.rfc-editor.org/rfc/rfc9396)) voor zorgspecifieke attributen; en **mTLS op de transportlaag**, voorlopig met UZI-servercertificaten of PKIoverheid-certificaten.
 
-## 2.2 Registratie van OAuth-clients
-Een authorization server moet bij elk tokenrequest vaststellen welke client het verzoek doet en met welk sleutelmateriaal. FAPI 2.0 schrijft niet voor hoe clients worden geregistreerd. Twee oplossingen zijn beschouwd.
-
-### Optie R1: Dynamic Client Registration naar voorbeeld van UDAP
-De dienstverlener registreert zich bij elke authorization server via [Dynamic Client Registration](https://www.rfc-editor.org/rfc/rfc7591) (RFC 7591), geprofileerd volgens het HL7 [UDAP Security IG](https://hl7.org/fhir/us/udap-security/STU2/). Hij ondertekent een *software statement* met de sleutel van zijn certificaat, dat in `x5c` meereist. De authorization server valideert handtekening, certificaatketen en intrekkingsstatus en geeft een `client_id` uit. Bij elk volgend tokenrequest valideert de server de keten opnieuw. De Europese concept-specificatie [EU Health Data API](https://github.com/euridice-org/eu-health-data-api) gaat voor systeemkoppelingen uit van registratie buiten het protocol om. UDAP noemt zij alleen als mogelijkheid voor toegang op gebruikersniveau, die buiten haar scope valt.
-
-- *Voordelen:* gestandaardiseerd protocol met een uitgewerkt zorgprofiel (UDAP STU2, december 2025), gebruikt in de Verenigde Staten, onder meer in TEFCA; de client is daarna bekend bij de server, zoals autorisatiesoftware verwacht; een software statement kan productnaam, versie of certificeringen vastleggen.
-- *Nadelen:* een extra stap en extra 'state' aan client en server-zijde, want per authorization server een registratie en een `client_id`, met herregistratie bij certificaatvernieuwing.
-
-### Optie R2: client-id afgeleid uit het clientcertificaat
-De registratiestap vervalt. De authorization server leidt de `client_id` af uit een persistente identificatie in het certificaat van de dienstverlener: bij een PKIoverheid-certificaat het attribuut `organizationIdentifier` met KvK-nummer of OIN ([PKIoverheid PvE v5.4](https://cp.pkioverheid.nl/pkioverheid-por-v5.4.html), §7.1.4.2.2.10), bij een UZI-servercertificaat het URA in de `subjectAltName`. De client stuurt deze waarde als `client_id` mee, zoals [RFC 8705](https://www.rfc-editor.org/rfc/rfc8705) vraagt, en de server controleert of die overeenkomt met het certificaat.
-
-Dit is de praktijk in het Europese betalingsverkeer. Onder PSD2 identificeert een bank een betaaldienstverlener (TPP) uitsluitend met diens eIDAS-certificaat; de Berlin Group-specificatie gebruikt het `organizationIdentifier` uit dat certificaat als `client_id` ([Berlin Group V2.4.1, §8.8](https://berlin-group.org/wp-content/uploads/2026/09/11c.-Berlin-Group-openFinance-API-Framework-Core-PSD2-Compliance-V2-Suite-Protocol-Functions-and-Security-Measures-V2.4.1-20260731.pdf)).
-
-Voordelen:
-- **Geen 'state'.** Clients en servers hoeven geen `client_id` uit te wisselen of bij te houden; er is geen registratie die kan verouderen. Maakt de autorisatiesoftware toch een clientrecord aan (zie de nadelen), dan is dat volledig af te leiden uit het certificaat.
-- **Geen herregistratie.** De identificatie blijft gelijk bij certificaatvernieuwing.
-- **Geen registratie-endpoint en geen software statements** om te beheren en te valideren.
-- **Europese praktijk in bancaire sector** in een verplicht, grensoverschrijdend stelsel, en verenigbaar met FAPI 2.0.
-
-Nadelen:
-- Gangbare autorisatiesoftware verwacht vooraf geregistreerde clients. De server moet een client bij het eerste geldige verzoek automatisch kunnen aanmaken (*registratie bij eerste gebruik*); dat kan configuratie of een uitbreiding vragen.
-- RFC 8705 vergelijkt het certificaat met één verwachte subject-waarde per client. Het afleiden van de `client_id` uit één attribuut is een profielregel die het stelsel moet vastleggen.
-- Er is geen plek voor clientmetadata. Wat een dienstverlener mag, volgt uit het mandaat en de stelselafspraken.
-- De `client_id` identificeert de dienstverlener als organisatie. Voor herleidbaarheid naar het systeem logt de ontvanger ook serienummer en domeinnaam (FQDN) van het certificaat.
-
-### Software statements en certificering zijn niet nodig
-Het belangrijkste voordeel van R1 is dat een software statement of certificering van de client kan worden vastgelegd. Echter, daar is geen noodzaak voor:
-
-- NEN 7513 vraagt dat uit de logging kan worden vastgesteld welke externe systemen gegevens hebben ontvangen, maar schrijft niet voor dat softwareproduct, versie of kwalificatie worden vastgelegd. Het certificaat van de dienstverlener identificeert het externe systeem voldoende.
-- De EHDS legt de verantwoordelijkheid voor conformiteit bij de fabrikant zelf, via een verplichte zelfbeoordeling: met de EU-conformiteitsverklaring "the manufacturer shall assume responsibility for the compliance" ([Verordening (EU) 2025/327](https://eur-lex.europa.eu/eli/reg/2025/327/oj), art. 39 lid 5). Een software statement van de dienstverlener zelf voegt daar voor de ontvanger weinig aan toe. Certificeringen door derden zijn in UDAP wel mogelijk, maar de EHDS vereist die niet.
-
-### Voorstel
-Optie R2: geen verplichte clientregistratie; de authorization server leidt de `client_id` af uit het certificaat van de dienstverlener. Naar analogie van het Europese betalingsverkeer/PSD2 mag een authorization server geen aanvullende registratie verplicht stellen. Een authorization server mag een dienstverlener wel lokaal blokkeren (paragraaf 2.3).
-
-Om te voorkomen dat een `client_id` uit een verkeerd certificaat wordt afgeleid, gelden de volgende eisen:
-- De authorization server accepteert alleen servercertificaten van een in het stelsel vastgelegde lijst van uitgevende CA's en certificaatbeleid: PKIoverheid-servercertificaten en UZI-servercertificaten (pastype `S`). Standaard-truststores van het besturingssysteem of de gateway worden niet gebruikt.
-- Het certificaat bevat de *extended key usage* `clientAuth`.
-- Persoonsgebonden certificaten worden geweigerd, ook als ze een `organizationIdentifier` of URA bevatten. Dat geldt voor PKIoverheid-persoonscertificaten en voor UZI-passen (pastypes `Z`, `N` en `M`).
-- Of de client de zorgaanbieder zelf is (M0), volgt uit het certificaattype (een UZI-servercertificaat), niet uit een vergelijking van nummers.
-
-## 2.3 Clientauthenticatie van de dienstverlener: mTLS
-De dienstverlener authenticeert zich met zijn **eigen** certificaat, niet met de UZI-sleutel van de zorgaanbieder. Het voorstel is om voor clientauthenticatie én voor *sender-constrained* access tokens uitsluitend **mTLS** te gebruiken ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705)), in plaats van `private_key_jwt` en DPoP uit de notitie. De dienstverlener authenticeert zich met zijn certificaat in de TLS-verbinding die er volgens de GISA al is (`tls_client_auth`), en de authorization server bindt het access token aan dat certificaat (`cnf.x5t#S256`). FAPI 2.0 staat deze methode toe.
-
-Deze keuze is mogelijk doordat de verbinding tussen dienstverleners en het vertrouwen tussen verzender en ontvanger (het mandaat) uit elkaar zijn gehaald. De notitie koos `private_key_jwt` onder meer omdat het transportcertificaat de zorgaanbieder niet altijd identificeert. Nu de dienstverlener zelf de client is, vervalt dat argument: het transportcertificaat identificeert juist de dienstverlener, die verantwoordelijk is voor de verbinding, en de identiteit van de zorgaanbieder wordt op de applicatielaag geborgd met het mandaat. Dit blijft binnen het juridisch kader en de GISA.
-
-Voordelen:
-- **Eén mechanisme** voor transport, clientauthenticatie en tokenbinding. Een JWKS-endpoint per zorgaanbieder, client assertions en DPoP-proofs zijn niet meer nodig.
-- **Integriteit van het tokenrequest tijdens transport.** TLS beschermt alles wat over de verbinding gaat tegen wijziging, en bij mTLS heeft de dienstverlener zich in dezelfde verbinding met zijn certificaat geauthenticeerd. Zolang de verbinding niet onderweg wordt beëindigd, kan geen tussenpartij het tokenrequest, inclusief het RAR-object, ongemerkt wijzigen, en weet de authorization server dat het verzoek van de geauthenticeerde dienstverlener komt. Dit is geen ondertekening: achteraf kan de authorization server niet aan derden aantonen wat de dienstverlener precies heeft verzocht. Bij `private_key_jwt` is dat evenmin het geval, omdat de client assertion het RAR-object niet ondertekent.
-
-Aandachtspunten:
-- **Intrekkingscontrole van het clientcertificaat.** De authorization server en de resource server controleren de intrekkingsstatus van het certificaat van de dienstverlener via OCSP of de CRL van de vertrouwensdienstverlener. Het stelsel legt een maximale ouderdom van het OCSP-antwoord of de CRL vast, los van `nextUpdate`. Is de intrekkingsstatus onbekend of niet op te halen, dan weigert de server het verzoek (*fail-closed*). RFC 8705 laat het aan de server over of en hoe hij de intrekking controleert; het stelsel moet die controle daarom voorschrijven. Dit geldt voor alle mandaatvarianten. Omgekeerd controleert de opvragende dienstverlener op dezelfde manier de intrekkingsstatus van het servercertificaat van de dienstverlener van de bron, en of die dienstverlener is geschorst.
-- **Schorsen van een dienstverlener.** Intrekken van zijn certificaat is de snelste manier om een gecompromitteerde dienstverlener af te sluiten, maar werkt pas als de vertrouwensdienstverlener de intrekking publiceert. Daarnaast komt er een stelselvoorziening om een dienstverlener te schorsen, bijvoorbeeld een status van de dienstverlener in de LRZa of het in één keer deactiveren van al zijn mandaten; authorization servers controleren die. Een authorization server mag een dienstverlener ook lokaal blokkeren.
-- **Kortlevende access tokens.** Access tokens zijn kort geldig, in de orde van minuten, zodat een intrekking of schorsing snel doorwerkt.
-- **TLS-terminatie.** mTLS moet doorlopen tot de authorization server en de resource server. Een doorgegeven clientcertificaat, bijvoorbeeld in een header volgens het informatieve [RFC 9440](https://www.rfc-editor.org/rfc/rfc9440), bevat alleen het publieke certificaat: wie die header kan zetten, kan zich voordoen als elke dienstverlener. Daarom:
-  - TLS wordt alleen beëindigd binnen het eigen beheerdomein van de beheerder van de authorization server en de resource server.
-  - Een knooppunt of intermediair van een andere partij beëindigt de TLS-verbinding niet, maar geeft die ongewijzigd door, of treedt zelf als OAuth-client op met een eigen mandaat.
-  - Een interne gateway verwijdert of overschrijft binnenkomende certificaatheaders, valideert zelf keten, certificaatbeleid en intrekkingsstatus, en geeft het certificaat alleen via een geauthenticeerd kanaal door aan de achterliggende server.
-  - De naleving wordt getoetst, onder meer met tests op het injecteren van certificaatheaders.
-- Als GIS Veilig Netwerk in de toekomst certificaten voorschrijft die niet de dienstverlener zelf identificeren, moet deze keuze opnieuw worden bekeken.
-
-## 2.4 Mandaat in plaats van ondertekening door de zorgaanbieder
+## 2.2 Mandaat in plaats van ondertekening door de zorgaanbieder
 Omdat niet elke dienstverlener het UZI-servercertificaat en de sleutel van de zorgaanbieder heeft, en dat ook niet wenselijk is, gaat het mandaatprincipe uit van ondertekening van het tokenrequest door de dienstverlener zelf. Het mandaat zorgt voor het vertrouwen tussen verzender en ontvanger van gezondheidsgegevens: het legt vast dat de zorgaanbieder de dienstverlener heeft aangewezen om namens hem te handelen.
 
 Een mandaat bevat in alle varianten dezelfde gegevens. Die sluiten aan op de [`OrganizationAffiliation`](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/StructureDefinition-nl-gf-organizationaffiliation.html) uit de [Care Service Directory](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html), die in de LRZa al wordt gebruikt om dienstverleners te machtigen voor het beheer van adresgegevens.
@@ -118,8 +48,8 @@ Een mandaat bevat in alle varianten dezelfde gegevens. Die sluiten aan op de [`O
 | Gegeven | Ondertekend mandaat (JWT) | `OrganizationAffiliation` |
 |---|---|---|
 | Zorgaanbieder (mandaatgever) | `sub` (URA) | `organization` |
-| Dienstverlener (gemandateerde) | `may_act.sub` (de `client_id`, bijvoorbeeld KvK-nummer) | `participatingOrganization` |
-| Reikwijdte | `scope` (mandaatcodes, paragraaf 2.7) | `code` |
+| Dienstverlener (gemandateerde) | `may_act.sub` (de `client_id`, bijvoorbeeld KvK-nummer; paragraaf 2.4) | `participatingOrganization` |
+| Reikwijdte | `scope` (mandaatcodes, paragraaf 2.3) | `code` |
 | Geldigheid | `nbf` en `exp` | `period` en `active` |
 | Unieke referentie | `jti` | `identifier` |
 | Ondertekenaar | `iss` en `x5c` | Zorgaanbieder via het LRZa-portaal; geauthenticeerd door eHerkenning. Bij M4 en M5 daarnaast een ondertekende `Provenance` |
@@ -160,109 +90,177 @@ De zorgaanbieder houdt de sleutel van zijn UZI-servercertificaat zelf in beheer 
 
 Het mandaat gaat mee als parameter `subject_token` in een tokenrequest volgens OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)). De authorization server valideert de handtekening, de UZI-keten en de intrekkingsstatus, en controleert dat het URA in het certificaat gelijk is aan `sub` en dat `may_act.sub` gelijk is aan de geauthenticeerde `client_id`. Alleen een UZI-servercertificaat (pastype `S`) mag een mandaat ondertekenen. Een statusmechanisme voor tussentijdse intrekking is verplicht, bijvoorbeeld een statuslijst volgens [draft-ietf-oauth-status-list](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/) (claim `status`). De statuslijst wordt ondertekend door de ondertekenaar van het mandaat (hetzelfde URA) of door een statusuitgever die het stelsel aanwijst, en niet door de gemandateerde dienstverlener. De authorization server controleert de status en de ondertekenaar daarvan bij elk tokenrequest, met een vastgestelde maximale cachetijd. Is de status onbekend of niet op te halen, dan weigert hij het verzoek (*fail-closed*). Zie de [bijlage](#a-m1-en-m2-mandaat-als-subject_token).
 
+Er is geen centrale plek voor de mandaten. De dienstverlener bewaart de mandaten van zijn zorgaanbieders zelf. Een `user`-mandaat stuurt hij mee als `subject_token`. Een `custodian`-mandaat publiceert hij bij het endpoint, in de *Protected Resource Metadata* van de resource server, zodat de opvragende dienstverlener het vóór het verzoek kan controleren (paragraaf 2.6).
+
 - *Voordelen:* federatief verifieerbaar, zonder bevraging van de LRZa of een andere mandaatvoorziening. De intrekkingsstatus van het UZI-certificaat vraagt wel een (cachebare) OCSP- of CRL-controle bij het UZI-register, een centrale voorziening. De dienstverlener heeft een eigen identiteit en de zorgaanbieder houdt de UZI-sleutel in eigen beheer.
-- *Nadelen:* de zorgaanbieder heeft een UZI-servercertificaat en een **ondertekendienst** nodig. Die vraagt investering en doorlopend beheer: veilige sleutelopslag (HSM of cloud-KMS) met toegangsbeheer en back-up; software en procedures om mandaten op te stellen en te ondertekenen; het opnieuw ondertekenen van alle mandaten bij verloop en certificaatvernieuwing; een beschikbaar intrekkingsmechanisme; en opname in de NEN 7510-scope met audits en logging. Voor kleine zorgaanbieders, zoals in de VVT of de huisartsenzorg, is dit onevenredig, en niet alle zorgaanbieders hebben een UZI-servercertificaat. Beheert de dienstverlener in een SaaS-situatie toch de UZI-sleutel, dan kan hij zijn eigen mandaat ondertekenen en biedt M1 weinig meer dan M0. Het verplichte statusmechanisme moet de zorgaanbieder beschikbaar houden; de IETF-specificatie voor statuslijsten is nog een draft. Of het UZI-servercertificaat voor het ondertekenen van mandaten mag worden gebruikt, moet met het UZI-register (CIBG) worden afgestemd: het certificaatbeleid beschrijft dit certificaat voor de authenticatie van systemen en de beveiliging van communicatie.
+- *Nadelen:*
+  - **Ondertekendienst.** De zorgaanbieder heeft een UZI-servercertificaat en een ondertekendienst nodig. Die vraagt investering en doorlopend beheer: veilige sleutelopslag; software en procedures om mandaten op te stellen en te ondertekenen; het opnieuw ondertekenen van alle mandaten bij verloop en certificaatvernieuwing, etc. Beheert de dienstverlener in een SaaS-situatie toch de UZI-sleutel, dan kan hij zijn eigen mandaat ondertekenen en biedt M1 weinig meer dan M0.
+  - **Opslag en publicatie.** De mandaten staan verspreid bij de dienstverleners. Elke dienstverlener moet ze bewaren, tijdig laten vernieuwen en de `custodian`-mandaten publiceren.
+  - **Statusmechanisme.** Het verplichte statusmechanisme moet de zorgaanbieder beschikbaar houden; de IETF-specificatie voor statuslijsten is nog een draft.
+
 
 ### M2 — European Business Wallet
-De dienstverlener stelt periodiek, bijvoorbeeld eens per drie maanden, een mandaat op en biedt dat de zorgaanbieder ter ondertekening aan. De zorgaanbieder ondertekent het met zijn European Business Wallet (EBW), die een gekwalificeerd elektronisch zegel kan plaatsen ([COM(2025) 838](https://www.eerstekamer.nl/bijlage/20251121/com_2025_838_proposal_for_a/document3/f=/vmsoctgrbbeb.pdf), art. 5 lid 1 onder d). Het mandaat bevat dezelfde claims als bij M1 en reist, net als bij M1, mee als `subject_token`.
+De dienstverlener stelt periodiek, bijvoorbeeld eens per drie maanden, een mandaat op en biedt dat de zorgaanbieder ter ondertekening aan. De zorgaanbieder ondertekent het met zijn European Business Wallet (EBW), die een gekwalificeerd elektronisch zegel kan plaatsen ([COM(2025) 838](https://www.eerstekamer.nl/bijlage/20251121/com_2025_838_proposal_for_a/document3/f=/vmsoctgrbbeb.pdf), art. 5 lid 1 onder d). Het mandaat bevat dezelfde claims als bij M1, reist net als bij M1 mee als `subject_token`, en wordt op dezelfde manier bewaard en gepubliceerd.
 
 - *Voordelen:* een blijvend federatieve oplossing, verifieerbaar tegen de Europese vertrouwenslijsten. De intrekkingsstatus van het zegelcertificaat vraagt wel een (cachebare) OCSP- of CRL-controle bij de vertrouwensdienstverlener die het certificaat heeft uitgegeven. De wallet levert het gekwalificeerde zegel, dus de investeringen en kosten voor de zorgaanbieder zijn naar verwachting beperkter dan bij M1. Het vereist wel een periodieke administratieve handeling van de zorgaanbieder. Sluit ook aan bij Europese walletontwikkeling.
 - *Nadelen:*
   - **Nog niet operationeel.** Het voorstel voor de verordening dateert van 19 november 2025. Het Europees Parlement heeft op 7 oktober 2026 besloten de onderhandelingen met de Raad over de definitieve tekst te starten (de triloog, met de Europese Commissie als bemiddelaar; [procedure 2025/0358(COD)](https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2025/0358(COD))). De verordening is dus nog niet aangenomen. Volgens het voorstel geldt ze één jaar na inwerkingtreding.
-  - **Koppeling aan het URA.** Het zegel identificeert de zorgaanbieder met bedrijfsgegevens zoals het KvK-nummer, niet met het URA. Een vertaling via de LRZa, waarin een `Organization` beide bevat, is nodig.
+  - **Opslag en publicatie.** Zoals bij M1: de mandaten staan verspreid bij de dienstverleners, en de zorgaanbieder heeft geen centraal overzicht.
 
 ### M3 — `OrganizationAffiliation` in de LRZa
-De zorgaanbieder registreert het mandaat in het LRZa-portaal, na inloggen met eHerkenning, als `OrganizationAffiliation` met de dienstverlener als `participatingOrganization` en een mandaatcode als `code`. Een dienstverlener mag zichzelf niet kunnen mandateren. De LRZa accepteert deze registraties al alleen van zorgaanbieders, "not by the parties that are being authorized" ([Care Service Directory, Security](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html#security)). Dat is alleen sluitend met de volgende eisen, die een aanpassing van de Care Service Directory vragen:
-- Mandaten met een mandaatcode worden uitsluitend via het LRZa-portaal geregistreerd, gewijzigd en ingetrokken, door de zorgaanbieder zelf na inloggen met eHerkenning op minimaal niveau EH3; het precieze niveau moet nog worden vastgesteld. De machine-interface voor gegevensbronnen (ITI-130-NL) accepteert geen `OrganizationAffiliation` met een mandaatcode.
-- Inloggen met een eHerkenning-ketenmachtiging is voor deze dienst niet toegestaan. Het portaal weigert een registratie als de handelende organisatie niet de zorgaanbieder zelf is.
-- Bij een nieuw mandaat stuurt de LRZa een melding naar contactgegevens van de zorgaanbieder die dienstverleners niet kunnen wijzigen, bijvoorbeeld uit het UZI-register of het Handelsregister, en niet uit `Organization.telecom`. Het mandaat wordt pas na een vaste wachttijd actief, zodat de zorgaanbieder kan ingrijpen.
-- De zorgaanbieder ziet in het portaal een overzicht van alle mandaten die hij heeft gegeven.
+De zorgaanbieder registreert het mandaat in het LRZa-portaal, na inloggen met eHerkenning, als `OrganizationAffiliation` met de dienstverlener als `participatingOrganization` en een mandaatcode als `code`. Een dienstverlener mag zichzelf niet kunnen mandateren. Het mandaat wordt gerepliceerd naar de lokale LRZa-replica's van dienstverleners (ITI-91-NL).
 
-Het mandaat wordt gerepliceerd naar de lokale LRZa-replica's van dienstverleners (ITI-91-NL). Zodat een wijziging of intrekking tijdig doorwerkt, gelden verder:
-- De authorization server weigert verzoeken op basis van een mandaat als de laatste geslaagde synchronisatie van zijn replica ouder is dan een vastgestelde maximale ouderdom, bijvoorbeeld een uur. Dezelfde eis geldt voor de opvragende dienstverlener bij zijn controle van het mandaat van de bron.
-- De authorization server controleert naast `active` ook de `period` van de `OrganizationAffiliation` en de status van de betrokken organisaties. De replica verwerkt ook verwijderingen.
-- De LRZa deactiveert de mandaten van een zorgaanbieder als diens registratie in het UZI-register eindigt.
+Bij het tokenrequest reist **geen mandaat** mee. De dienstverlener vermeldt in het RAR-object (paragraaf 2.7) namens welke zorgaanbieder (`subject_organization_id`) en met welk doel (`purpose_of_use`) hij handelt. De controle gebeurt aan beide kanten in de lokale LRZa-replica:
 
-Bij het tokenrequest reist **geen mandaat** mee. De dienstverlener vermeldt in het RAR-object namens welke zorgaanbieder (`subject_organization_id`) en met welk doel (`purpose_of_use`) hij handelt. De controle gebeurt aan beide kanten in de lokale LRZa-replica:
-
-- De **authorization server van de bron** controleert of er een actieve `OrganizationAffiliation` is van de opvragende zorgaanbieder aan de geauthenticeerde dienstverlener, met de mandaatcode die bij het doel hoort, bijvoorbeeld `TREAT-user`.
 - De **opvragende dienstverlener** controleert vóór het verzoek dat het endpoint bij de bronhoudende zorgaanbieder hoort en dat de dienstverlener van de bron, herkenbaar aan zijn servercertificaat, door die zorgaanbieder is gemandateerd met de bijbehorende `custodian`-code, bijvoorbeeld `TREAT-custodian`.
+- De **authorization server van de bron** controleert of er een actieve `OrganizationAffiliation` is van de opvragende zorgaanbieder aan de geauthenticeerde dienstverlener, met de mandaatcode die bij het doel hoort, bijvoorbeeld `TREAT-user`.
 
-De uitwisseling staat in de [bijlage](#b-m4-ondertekend-mandaat-in-de-lokale-lrza-replica); bij M3 vervalt daarin de controle van de `Provenance`.
-
-- *Voordelen:* de zorgaanbieder heeft alleen eHerkenning nodig, geen sleutel of ondertekendienst en, met het certificaat van de dienstverlener, ook geen UZI-servercertificaat; zelfmandatering wordt op één plek uitgesloten, mits aan de eisen hierboven is voldaan; geen mandaat in het tokenrequest en geen centrale bevraging tijdens de uitwisseling; het bouwt voort op de bestaande LRZa-registratie en replicatie; mandaten aan de opvragende en de bronkant worden op dezelfde manier vastgelegd en gecontroleerd.
+- *Voordelen:* de zorgaanbieder heeft alleen eHerkenning nodig, geen sleutel of ondertekendienst en, met het certificaat van de dienstverlener, ook geen UZI-servercertificaat; geen centrale bevraging tijdens de uitwisseling; centraal overzicht voor de zorgaanbieder van bestaande mandateringen; het bouwt voort op de LRZa-registratie en replicatie; mandaten aan de opvragende en de bronkant worden op dezelfde manier vastgelegd en gecontroleerd.
 - *Nadelen:*
-  - Een mandaat kan alleen door de zorgaanbieder, na inloggen met eHerkenning, in de LRZa worden aangepast. Voor wijzigingen moeten het LRZa-portaal en eHerkenning beschikbaar zijn; tijdens de uitwisseling niet.
   - Wijziging en intrekking werken door na de volgende synchronisatie; een interval van ongeveer 15 minuten wordt geadviseerd.
+  - Mandaten worden opgeslagen in een centrale dienst; zodra het LRZa gecompromitteerd wordt, kunnen kwaadwillenden machigingen aanmaken en wijzigen zonder dat deze door anderen te verifieren zijn.  
 
 ### M4 — Combinatie van M1 en M3: één dienstverlener ondertekent mandaten met het UZI-certificaat van de zorgaanbieder
-De zorgaanbieder geeft één dienstverlener, bijvoorbeeld zijn EPD-leverancier, de beschikking over zijn UZI-servercertificaat en de sleutel daarvan, zoals nu bij SaaS gangbaar is (M0), maar alleen aan die ene dienstverlener. Via het LRZa-portaal, na inloggen met eHerkenning, mandateert de zorgaanbieder deze beherende dienstverlener eenmalig voor het beheer van zijn LRZa-gegevens (`HSYSADMIN-custodian`, nu `lrza-careprovider-admin`). Verder is het portaal niet nodig.
+De zorgaanbieder geeft één dienstverlener, die ook adresgegevens gaat beheren, de beschikking over zijn UZI-servercertificaat en de sleutel daarvan. Via het LRZa-portaal, na inloggen met eHerkenning, mandateert de zorgaanbieder deze beherende dienstverlener eenmalig voor het beheer van zijn LRZa-gegevens (`HSYSADMIN-custodian`, nu `lrza-careprovider-admin`). Verder is het portaal niet nodig.
 
-De beherende dienstverlener registreert daarna via ITI-130-NL de mandaten (`OrganizationAffiliation`) voor zichzelf en voor andere dienstverleners. Bij elke `OrganizationAffiliation` hoort een `Provenance`, ondertekend met de sleutel van het UZI-servercertificaat van de zorgaanbieder volgens [Resource signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/signing.html). Die ondertekening bestaat nu al als optie in de Care Service Directory, waar een UZI-certificaat voorlopig is toegestaan voor de `Provenance` van een `OrganizationAffiliation` ([Mutation signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html#mutation-signing-optional)). De mandaten worden net als bij M3 gerepliceerd en in de lokale replica gecontroleerd; in het tokenrequest reist geen mandaat mee.
+De beherende dienstverlener registreert daarna via de LRZa-API (ITI-130-NL) de mandaten (`OrganizationAffiliation`) voor zichzelf en voor andere dienstverleners. Bij elke `OrganizationAffiliation` hoort een `Provenance`, ondertekend met de sleutel van het UZI-servercertificaat van de zorgaanbieder volgens [Resource signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/signing.html). Die ondertekening bestaat nu al als optie in de Care Service Directory, waar een UZI-certificaat voorlopig is toegestaan voor de `Provenance` van een `OrganizationAffiliation` ([Mutation signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html#mutation-signing-optional)). De mandaten worden net als bij variant M3 gerepliceerd en in de lokale replica gecontroleerd.
 
 Ten opzichte van M3 verandert het volgende:
-- De eis bij M3 dat ITI-130-NL geen mandaten accepteert, vervalt voor M4: ITI-130-NL accepteert een mandaat alleen met een geldige `Provenance`, ondertekend met het UZI-servercertificaat van de zorgaanbieder in `organization`.
+- De eis bij M3 dat ITI-130-NL geen mandaten accepteert, vervalt voor M4: ITI-130-NL accepteert een mandaat alleen met/na een geldige `Provenance`, ondertekend met het UZI-servercertificaat van de zorgaanbieder in `organization`.
 - De authorization server en de opvragende dienstverlener controleren naast het mandaat ook de `Provenance`: de handtekening, de UZI-keten en de intrekkingsstatus, en of het URA in het certificaat gelijk is aan de zorgaanbieder van het mandaat. Een `OrganizationAffiliation` zonder geldige `Provenance` van de zorgaanbieder geldt niet als mandaat.
 - De eisen bij M3 voor melding aan de zorgaanbieder, wachttijd, overzicht in het portaal en actualiteit van de replica blijven gelden.
 
 Zie de [bijlage](#b-m4-ondertekend-mandaat-in-de-lokale-lrza-replica).
 
-- *Voordelen:* mandaten zijn ondertekend namens de zorgaanbieder, zodat een compromittering van de LRZa, het portaal of een replica geen geldige mandaten kan toevoegen. De zorgaanbieder heeft geen eigen ondertekendienst nodig en gebruikt het portaal alleen voor het mandaat aan de beherende dienstverlener. Andere dienstverleners hebben een eigen identiteit en hebben het UZI-certificaat niet nodig. M4 bouwt voort op de bestaande LRZa, de replicatie en de Provenance-ondertekening, en sluit aan bij de huidige praktijk waarin één leverancier het UZI-certificaat beheert.
+- *Voordelen:* mandaten zijn ondertekend namens de zorgaanbieder, zodat een compromittering van de LRZa, het portaal of een replica geen geldige mandaten kan toevoegen. De zorgaanbieder heeft geen eigen ondertekendienst nodig en gebruikt het portaal alleen voor het mandaat aan de beherende dienstverlener. Andere dienstverleners hebben een eigen identiteit en hebben het UZI-certificaat niet nodig. M4 bouwt voort op de LRZa, de replicatie en de Provenance-ondertekening.
 - *Nadelen:*
   - De beherende dienstverlener heeft de UZI-sleutel en kan zichzelf en anderen voor alle mandaatcodes mandateren. Voor die ene dienstverlener is het vertrouwen daarmee even groot als bij M0.
   - De zorgaanbieder heeft een UZI-servercertificaat nodig, en het gebruik daarvan voor ondertekening moet met CIBG worden afgestemd (zoals bij M1).
-  - Na vernieuwing of intrekking van het UZI-certificaat moeten alle mandaten opnieuw worden ondertekend. Dat geldt ook als de zorgaanbieder van beherende dienstverlener wisselt, omdat het UZI-certificaat dan moet worden vervangen.
   - De ondertekening voegt een controle van de intrekkingsstatus van het UZI-certificaat toe, een centrale voorziening.
 
 ### M5 — Combinatie van M2 en M3: zorgaanbieder verzegelt mandaten in het LRZa-portaal met zijn European Business Wallet
-De zorgaanbieder registreert het mandaat in het LRZa-portaal, zoals bij M3, en verzegelt de `OrganizationAffiliation` daar met zijn European Business Wallet (zoals bij M2), in een `Provenance` volgens [Resource signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/signing.html). Het inloggen bij het portaal gebeurt dan waarschijnlijk ook met de wallet in plaats van met eHerkenning. De mandaten worden net als bij M3 gerepliceerd en in de lokale replica gecontroleerd; in het tokenrequest reist geen mandaat mee.
+De zorgaanbieder registreert het mandaat in het LRZa-portaal, zoals bij M3, en verzegelt de `OrganizationAffiliation` daar met zijn European Business Wallet (zoals bij M2), in een `Provenance` volgens [Resource signing](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/signing.html). Het inloggen bij het portaal gebeurt dan waarschijnlijk ook met de wallet in plaats van met eHerkenning. De mandaten worden net als bij M3 gerepliceerd en in de lokale replica gecontroleerd.
 
 De authorization server en de opvragende dienstverlener controleren naast het mandaat ook het zegel in de `Provenance`: tegen de Europese vertrouwenslijsten, inclusief de intrekkingsstatus, en of de zorgaanbieder in het zegel (KvK-nummer of EUID) hoort bij het URA van de zorgaanbieder van het mandaat. Een `OrganizationAffiliation` zonder geldig zegel van de zorgaanbieder geldt niet als mandaat.
 
-- *Voordelen:* mandaten zijn verzegeld door de zorgaanbieder zelf. Een compromittering van de LRZa, het portaal of een replica kan geen geldige mandaten toevoegen, en een dienstverlener kan zichzelf niet mandateren zolang hij de wallet niet bedient. De zorgaanbieder heeft geen ondertekendienst en geen UZI-servercertificaat nodig. De wallet levert gekwalificeerde zegels en tijdstempels ([COM(2025) 838](https://www.eerstekamer.nl/bijlage/20251121/com_2025_838_proposal_for_a/document3/f=/vmsoctgrbbeb.pdf), art. 5 lid 1 onder d en e), wat ook bewijs levert in een geschil. M5 combineert de eenvoud van M3 (vastleggen in de LRZa, geen mandaat in het tokenrequest) met de verifieerbaarheid van M2, en vraagt alleen een handeling bij een wijziging.
+- *Voordelen:* mandaten zijn verzegeld door de zorgaanbieder zelf. Een compromittering van de LRZa, het portaal of een replica kan geen geldige mandaten toevoegen, en een dienstverlener kan zichzelf niet mandateren zolang hij de wallet niet bedient. De zorgaanbieder heeft geen ondertekendienst en geen UZI-servercertificaat nodig. De wallet levert gekwalificeerde zegels en tijdstempels ([COM(2025) 838](https://www.eerstekamer.nl/bijlage/20251121/com_2025_838_proposal_for_a/document3/f=/vmsoctgrbbeb.pdf), art. 5 lid 1 onder d en e). M5 combineert de eenvoud van M3 (vastleggen in de LRZa, geen mandaat in het tokenrequest) met de verifieerbaarheid van M2, en vraagt alleen een handeling bij een wijziging.
 - *Nadelen:*
   - Nog niet operationeel (zoals M2). Daarnaast moet het LRZa-portaal de wallet ondersteunen voor inloggen en verzegelen.
-  - Het zegel identificeert de zorgaanbieder met bedrijfsgegevens, niet met het URA; een vertaling naar het URA is nodig (zoals bij M2).
   - De verzegeling voegt een controle van de intrekkingsstatus van het zegelcertificaat toe, bij de vertrouwensdienstverlener die het heeft uitgegeven.
 
 ### Vergelijking
 
-| Variant | Zorgaanbieder heeft nodig | Kan de dienstverlener zichzelf mandateren? | Mandaat in het tokenrequest | Controle door de bron | Externe afhankelijkheid voor het mandaat (cachebaar) | Intrekking | Status |
+| Variant | Zorgaanbieder heeft nodig | Kan de dienstverlener zichzelf mandateren? | Vindplaats van het mandaat | Controle door de bron | Externe afhankelijkheid voor het mandaat (cachebaar) | Intrekking | Status |
 |---|---|---|---|---|---|---|---|
-| **M0** Dienstverlener ondertekent met UZI-sleutel van de zorgaanbieder | UZI-servercertificaat, sleutel bij de dienstverlener | Niet van toepassing: hij treedt op als de zorgaanbieder | Nee | UZI-keten, intrekkingsstatus en URA | OCSP of CRL van het UZI-register | Intrekken UZI-certificaat | Huidige praktijk |
-| **M1** Zorgaanbieder ondertekent | UZI-servercertificaat en ondertekendienst | Ja, als hij de UZI-sleutel beheert | Ja, als `subject_token` | Handtekening, keten, intrekkingsstatus en `may_act` | OCSP of CRL van het UZI-register; statuslijst | Statuslijst (verplicht) of verloop | Techniek is bewezen/beschikbaar |
-| **M2** European Business Wallet | Business wallet | Nee, als hij de wallet niet bedient | Ja, als `subject_token` | Zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling | OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten; statusmechanisme | Status van de attestatie (verplicht) of verloop | Voorstel EU-verordening |
-| **M3** `OrganizationAffiliation` in de LRZa | eHerkenning | Nee, mits alleen het portaal mandaten registreert, zonder ketenmachtiging | Nee; RAR verwijst naar de zorgaanbieder | Lokale LRZa-replica | Synchronisatie met de LRZa (maximale ouderdom) | Deactiveren in het portaal | Bouwt voort op de LRZa |
-| **M4** Combinatie van M1 en M3 | UZI-servercertificaat (sleutel bij één dienstverlener) en eHerkenning | Alleen de beherende dienstverlener met de UZI-sleutel; andere dienstverleners niet | Nee; RAR verwijst naar de zorgaanbieder | Lokale LRZa-replica en `Provenance` (UZI-keten, intrekkingsstatus en URA) | Synchronisatie met de LRZa; OCSP of CRL van het UZI-register | Deactiveren in het portaal of door de beherende dienstverlener; intrekken UZI-certificaat | Bouwt voort op de LRZa en de bestaande Provenance-ondertekening |
-| **M5** Combinatie van M2 en M3 | Business wallet | Nee, als hij de wallet niet bedient | Nee; RAR verwijst naar de zorgaanbieder | Lokale LRZa-replica en `Provenance` (zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling) | Synchronisatie met de LRZa; OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten | Deactiveren in het portaal | Na invoering van de European Business Wallet |
+| **M0** Dienstverlener ondertekent met UZI-sleutel van de zorgaanbieder | UZI-servercertificaat, sleutel bij de dienstverlener | Niet van toepassing: hij treedt op als de zorgaanbieder | Niet van toepassing | UZI-keten, intrekkingsstatus en URA | OCSP of CRL van het UZI-register | Intrekken UZI-certificaat | Huidige praktijk |
+| **M1** Zorgaanbieder ondertekent | UZI-servercertificaat en ondertekendienst | Ja, als hij de UZI-sleutel beheert | Bij de dienstverleners: als `subject_token` in het tokenrequest, en het mandaat van de bron in de *Protected Resource Metadata* | Handtekening, keten, intrekkingsstatus en `may_act` | OCSP of CRL van het UZI-register; statuslijst | Statuslijst (verplicht) of verloop | Techniek is bewezen/beschikbaar |
+| **M2** European Business Wallet | Business wallet | Nee, als hij de wallet niet bedient | Zoals M1 | Zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling | OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten; statusmechanisme | Status van de attestatie (verplicht) of verloop | Voorstel EU-verordening |
+| **M3** `OrganizationAffiliation` in de LRZa | eHerkenning | Nee, mits alleen het portaal mandaten registreert, zonder ketenmachtiging | LRZa en lokale replica; niet in het tokenrequest | Lokale LRZa-replica | Synchronisatie met de LRZa (maximale ouderdom) | Deactiveren in het portaal | Bouwt voort op de LRZa |
+| **M4** Combinatie van M1 en M3 | UZI-servercertificaat (sleutel bij één dienstverlener) en eHerkenning | Alleen de beherende dienstverlener met de UZI-sleutel; andere dienstverleners niet | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Lokale LRZa-replica en `Provenance` (UZI-keten, intrekkingsstatus en URA) | Synchronisatie met de LRZa; OCSP of CRL van het UZI-register | Deactiveren in het portaal of door de beherende dienstverlener; intrekken UZI-certificaat | Bouwt voort op de LRZa en de Provenance-ondertekening |
+| **M5** Combinatie van M2 en M3 | Business wallet | Nee, als hij de wallet niet bedient | LRZa en lokale replica, met `Provenance`; niet in het tokenrequest | Lokale LRZa-replica en `Provenance` (zegel, vertrouwenslijst, intrekkingsstatus en URA-vertaling) | Synchronisatie met de LRZa; OCSP of CRL van de vertrouwensdienstverlener; EU-vertrouwenslijsten | Deactiveren in het portaal | Na invoering van de European Business Wallet |
 
-Geen van de varianten is dus volledig zonder centrale afhankelijkheid. De federatieve varianten M1 en M2 hebben geen centrale mandaatvoorziening nodig, maar wel de intrekkingsdienst van de certificaatuitgever. M3 heeft geen intrekkingscontrole voor het mandaat nodig, maar is afhankelijk van de synchronisatie van de replica met de LRZa. M4 en M5 voegen aan M3 een handtekening of zegel van de zorgaanbieder toe, en worden daarmee ook afhankelijk van de intrekkingsdienst van de certificaatuitgever.
+Geen van de varianten is dus volledig zonder centrale afhankelijkheid. De federatieve varianten M1 en M2 hebben geen centrale mandaatvoorziening nodig, maar wel de intrekkingsdienst van de certificaatuitgever; de dienstverleners bewaren en publiceren de mandaten dan zelf. M3 heeft geen intrekkingscontrole voor het mandaat nodig, maar is afhankelijk van de synchronisatie van de replica met de LRZa. M4 en M5 voegen aan M3 een handtekening of zegel van de zorgaanbieder toe, en worden daarmee ook afhankelijk van de intrekkingsdienst van de certificaatuitgever.
 
-Een overzicht van de beveiligingsrisico's per variant staat in de [beveiligingsreview](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-security-review.html). In alle varianten controleren de authorization server en de resource server daarnaast de intrekkingsstatus van het certificaat van de dienstverlener (paragraaf 2.3).
+Een overzicht van de beveiligingsrisico's per variant staat in de [beveiligingsreview](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-security-review.html). In alle varianten controleren de authorization server en de resource server daarnaast de intrekkingsstatus van het certificaat van de dienstverlener (paragraaf 2.5).
 
 ### Voorgestelde richting
-Het voorstel is om op korte termijn **M4** te gebruiken. M4 sluit aan bij de huidige praktijk, waarin één leverancier het UZI-servercertificaat van de zorgaanbieder beheert, en beperkt dat tot die ene beherende dienstverlener; andere dienstverleners handelen met een eigen identiteit. De mandaten zijn ondertekend namens de zorgaanbieder, zodat een compromittering van de LRZa, het portaal of een replica geen geldige mandaten kan toevoegen. De zorgaanbieder heeft geen eigen ondertekendienst nodig en gebruikt het LRZa-portaal alleen om de beherende dienstverlener te mandateren. M4 bouwt voort op bestaande voorzieningen: de LRZa, de replicatie en de `Provenance`-ondertekening uit de Care Service Directory. Aandachtspunten zijn:
+Het voorstel is om op korte termijn **M4** te gebruiken. M4 sluit aan bij de huidige praktijk, waarin één leverancier het UZI-servercertificaat van de zorgaanbieder beheert, en beperkt dat tot die ene beherende dienstverlener; andere dienstverleners handelen met een eigen identiteit. De mandaten zijn ondertekend namens de zorgaanbieder, zodat een compromittering van de LRZa, het portaal of een replica geen geldige mandaten kan toevoegen. De zorgaanbieder heeft geen eigen ondertekendienst nodig en gebruikt het LRZa-portaal alleen om de beherende dienstverlener te mandateren. M4 bouwt voort op (bijna) bestaande voorzieningen: de LRZa, de replicatie en de `Provenance`-ondertekening uit de Care Service Directory. Aandachtspunten zijn:
 - De beherende dienstverlener kan zichzelf en anderen mandateren. De melding aan de zorgaanbieder, de wachttijd en het overzicht in het portaal (zie M3) maken dat zichtbaar, maar voorkomen het niet.
 - De zorgaanbieder heeft een UZI-servercertificaat nodig; een zorgaanbieder zonder dat certificaat moet het aanvragen. Het gebruik ervan voor het ondertekenen van mandaten moet met het UZI-register (CIBG) worden afgestemd.
 
 Het groeipad is **M5**, zodra de European Business Wallet operationeel is. M5 gebruikt dezelfde `OrganizationAffiliation`, `Provenance` en controle in de lokale replica; alleen de ondertekenaar verandert. De zorgaanbieder verzegelt zijn mandaten dan zelf met zijn wallet. Geen dienstverlener heeft dan nog de UZI-sleutel nodig, en ook de beherende dienstverlener kan zichzelf niet meer mandateren. In de overgang accepteren de LRZa, de authorization servers en de opvragende dienstverleners zowel een `Provenance` met een UZI-handtekening als een met een zegel uit de wallet. **M0** blijft bruikbaar voor, bijvoorbeeld, zorgaanbieders die hun eigen IT-diensten beheren; de dienstverlener treedt op *als* de zorgaanbieder en mandatering is niet nodig.
 
-## 2.5 Access token: uitgifte door de authorization server van de bron
-In de notitie ondertekent de bronhoudende zorgaanbieder het access token met zijn UZI-sleutel, en valideert de client die handtekening. Reviewers wijzen erop dat dit afwijkt van gangbare standaarden; IHE IUA stelt "The token is opaque to the Authorization Client". Een authorization server voor veel zorgaanbieders zou bovendien per zorgaanbieder een UZI-sleutel moeten beheren. Het voorstel:
+## 2.3 Voorstel voor mandaatcodes
+Een mandaat heeft een reikwijdte: een dienstverlener handelt namens een zorgaanbieder, maar mag niet alles. De mandaatcodes zijn gebaseerd op de HL7-codelijst *PurposeOfUse* ([v3-ActReason](https://terminology.hl7.org/CodeSystem-v3-ActReason.html)), dezelfde codelijst als voor `purpose_of_use` in het RAR-object. Een mandaatcode bestaat uit een doel en een rol: `<doel>-<rol>`.
 
+- **Doel:** een code uit PurposeOfUse. Voorgesteld worden de algemene codes van het hoogste niveau van de codelijst. Een mandaat voor een doel geldt ook voor de specialisaties ervan: `TREAT` omvat bijvoorbeeld spoed (`ETREAT`) en zorgcoördinatie (`COC`). Voor beheer wordt `HSYSADMIN` (*health system administration*) gebruikt, een code onder `HOPERAT` (*healthcare operations*).
+- **Rol:** :
+  - `user`: gegevens opvragen en ontvangen namens de zorgaanbieder, doorgaans als OAuth-client;
+  - `custodian`: als bronhouder gegevens beschikbaar stellen of registreren namens de zorgaanbieder, doorgaans als authorization server en resource server; bij registratie in de LRZa of de NVI als client van die voorziening.
+
+| Doel (PurposeOfUse) | `<doel>-user`: de dienstverlener mag namens de zorgaanbieder… | `<doel>-custodian`: de dienstverlener mag namens de zorgaanbieder… |
+|---|---|---|
+| `TREAT` — behandeling | gegevens opvragen voor de behandeling van patiënten, zoals BgZ, European Patient Summary, eOverdracht, Medicatieoverdracht, geboortezorg en spoed, en daarvoor de NVI doorzoeken. | gegevens beschikbaar stellen voor de behandeling van patiënten, daarvoor toestemmingen raadplegen bij de OTV, en patiënten registreren bij de NVI (lokalisatie). |
+| `PATRQT` — op verzoek van de patiënt | gegevens opvragen op verzoek van de patiënt. | gegevens beschikbaar stellen aan de patiënt of diens persoonlijke gezondheidsomgeving (PGO). |
+| `HRESCH` — onderzoek | gegevens opvragen voor (medisch-wetenschappelijk) onderzoek. | gegevens uitgeven voor onderzoek, en datasetbeschrijvingen bijwerken in de catalogus van de Health Data Access Body (HDAB, EHDS). |
+| `PUBHLTH` — publieke gezondheid | gegevens opvragen voor publieke gezondheid. | gegevens verstrekken voor publieke gezondheid, zoals meldingen van infectieziekten. |
+| `HSYSADMIN` — beheer | gegevens van de zorgaanbieder opvragen uit de LRZa (adressering) en bijwerken van 'eigen' resources (b.v. Endpoints) in het LRZa  | gegevens van de zorgaanbieder registreren en bijwerken in de LRZa (adressering). |
+
+Dit levert tien codes op: `TREAT-user`, `TREAT-custodian`, `PATRQT-user`, `PATRQT-custodian`, `HRESCH-user`, `HRESCH-custodian`, `PUBHLTH-user`, `PUBHLTH-custodian`, `HSYSADMIN-user` en `HSYSADMIN-custodian`.
+
+- **Doel en mandaat hangen samen.** De authorization server van de bron leidt de vereiste mandaatcode af uit `purpose_of_use` in het RAR-object: een verzoek met doel `TREAT` vraagt een mandaat `TREAT-user` van de opvragende zorgaanbieder aan zijn dienstverlener. Omgekeerd controleert de opvragende dienstverlener dat de dienstverlener van de bron het mandaat `TREAT-custodian` heeft.
+- **Bewust algemeen.** Eén code dekt alle zorgtoepassingen met hetzelfde doel. Zorgaanbieders begrijpen het mandaat daardoor makkelijk en hoeven het niet bij elke nieuwe zorgtoepassing aan te passen. Waar fijnere mandatering nodig blijkt, bijvoorbeeld alleen voor spoed, kan een specialisatie als eigen code worden toegevoegd (`ETREAT-user`). Andere doelen uit de codelijst, zoals betaling (`HPAYMT`), kunnen worden toegevoegd zodra een zorgtoepassing erom vraagt.
+
+## 2.4 Registratie van OAuth-clients
+Een authorization server moet bij elk tokenrequest vaststellen welke client het verzoek doet en met welk sleutelmateriaal. FAPI 2.0 schrijft niet voor hoe clients worden geregistreerd. Twee oplossingen zijn beschouwd.
+
+### Optie R1: Dynamic Client Registration naar voorbeeld van UDAP
+De dienstverlener registreert zich bij elke authorization server via [Dynamic Client Registration](https://www.rfc-editor.org/rfc/rfc7591) (RFC 7591), geprofileerd volgens het HL7 [UDAP Security IG](https://hl7.org/fhir/us/udap-security/STU2/). Hij ondertekent een *software statement* met de sleutel van zijn certificaat, dat in `x5c` meereist. De authorization server valideert handtekening, certificaatketen en intrekkingsstatus en geeft een `client_id` uit. De Europese concept-specificatie [EU Health Data API](https://github.com/euridice-org/eu-health-data-api) gaat voor systeemkoppelingen uit van registratie buiten het protocol om. UDAP noemt zij alleen als mogelijkheid voor toegang op gebruikersniveau, die buiten haar scope valt.
+
+- *Voordelen:* gestandaardiseerd protocol met een uitgewerkt zorgprofiel (UDAP STU2, december 2025), gebruikt in de Verenigde Staten, onder meer in TEFCA; de client is daarna bekend bij de server, zoals autorisatiesoftware verwacht; een software statement kan productnaam, versie of certificeringen vastleggen.
+- *Nadelen:* een extra stap en extra 'state' aan client en server-zijde, want per authorization server een registratie en een `client_id`, met herregistratie bij certificaatvernieuwing.
+
+### Optie R2: client-id afgeleid uit het clientcertificaat
+De registratiestap vervalt. De authorization server leidt de `client_id` af uit een persistente identificatie in het certificaat van de dienstverlener: bij een PKIoverheid-certificaat het attribuut `organizationIdentifier` met KvK-nummer of OIN ([PKIoverheid PvE v5.4](https://cp.pkioverheid.nl/pkioverheid-por-v5.4.html), §7.1.4.2.2.10), bij een UZI-servercertificaat het URA in de `subjectAltName`. Eventueel kunnen extra, n.t.b., onderdelen uit het certificaat overgenomen worden om het 'systeem'/'cert' te identificeren i.p.v. alleen de organisatie. De client stuurt deze waarde als `client_id` mee, zoals [RFC 8705](https://www.rfc-editor.org/rfc/rfc8705) vraagt, en de server controleert of die overeenkomt met het certificaat.
+
+Deze werkwijze wordt ook gebruikt in het Europese betalingsverkeer. Onder PSD2 identificeert een bank een betaaldienstverlener (TPP) uitsluitend met diens eIDAS-certificaat; de Berlin Group-specificatie gebruikt het `organizationIdentifier` uit dat certificaat als `client_id` ([Berlin Group V2.4.1, §8.8](https://berlin-group.org/wp-content/uploads/2026/09/11c.-Berlin-Group-openFinance-API-Framework-Core-PSD2-Compliance-V2-Suite-Protocol-Functions-and-Security-Measures-V2.4.1-20260731.pdf)).
+
+De belangrijkste 'feature' van R1 is dat een software statement of certificering van de client kan worden vastgelegd. Echter, daar is geen noodzaak voor:
+
+- NEN 7513 vraagt dat uit de logging kan worden vastgesteld welke externe systemen gegevens hebben ontvangen, maar schrijft niet voor dat softwareproduct, versie of kwalificatie worden vastgelegd. Het certificaat van de dienstverlener identificeert het externe systeem voldoende (uitwerking m.b.t. welke onderdelen uit de organizationIdentifier of subjectAltName is nog nader te bepalen).
+- De EHDS legt de verantwoordelijkheid voor conformiteit bij de fabrikant zelf, via een verplichte zelfbeoordeling: met de EU-conformiteitsverklaring "the manufacturer shall assume responsibility for the compliance" ([Verordening (EU) 2025/327](https://eur-lex.europa.eu/eli/reg/2025/327/oj), art. 39 lid 5). Een software statement van de dienstverlener zelf voegt daar voor de ontvanger weinig aan toe. Certificeringen door derden zijn in UDAP wel mogelijk, maar de EHDS vereist die niet.
+
+Voordelen:
+- **Geen 'state'.** Clients en servers hoeven geen `client_id` uit te wisselen of bij te houden; er is geen registratie die kan verouderen. Maakt de autorisatiesoftware toch een clientrecord aan (zie de nadelen), dan is dat volledig af te leiden uit het certificaat.
+- **Geen herregistratie.** De identificatie blijft gelijk bij certificaatvernieuwing.
+- **Geen registratie-endpoint en geen software statements** om te beheren en te valideren.
+
+Nadelen:
+- Gangbare autorisatiesoftware verwacht vooraf geregistreerde clients. De server moet een client bij het eerste geldige verzoek automatisch kunnen aanmaken (*registratie bij eerste gebruik*); dat kan configuratie of een uitbreiding vragen.
+- RFC 8705 vergelijkt het certificaat met één verwachte subject-waarde per client. Het afleiden van de `client_id` uit één attribuut is een profielregel die het stelsel moet vastleggen.
+
+
+
+### Voorstel
+Optie R2: geen verplichte clientregistratie; de authorization server leidt de `client_id` af uit het certificaat van de dienstverlener. Naar analogie van het Europese betalingsverkeer/PSD2 mag een authorization server geen aanvullende registratie verplicht stellen. Een authorization server mag een dienstverlener wel lokaal blokkeren (paragraaf 2.5).
+
+Om te voorkomen dat een `client_id` uit een verkeerd certificaat wordt afgeleid, gelden de volgende eisen:
+- De authorization server accepteert alleen servercertificaten van een in het stelsel vastgelegde lijst van uitgevende CA's en certificaatbeleid: PKIoverheid-servercertificaten en UZI-servercertificaten (pastype `S`). Standaard-truststores van het besturingssysteem of de gateway worden niet gebruikt.
+- Het certificaat bevat de *extended key usage* `clientAuth`.
+- Persoonsgebonden certificaten worden geweigerd, ook als ze een `organizationIdentifier` of URA bevatten. Dat geldt voor PKIoverheid-persoonscertificaten en voor UZI-passen (pastypes `Z`, `N` en `M`).
+- Of de client de zorgaanbieder zelf is (M0), volgt uit het certificaattype (een UZI-servercertificaat), niet uit een vergelijking van nummers.
+
+## 2.5 Clientauthenticatie van de dienstverlener: mTLS
+De dienstverlener authenticeert zich met zijn **eigen** certificaat, niet met de UZI-sleutel van de zorgaanbieder. Het voorstel is om voor clientauthenticatie én voor *sender-constrained* access tokens uitsluitend **mTLS** te gebruiken ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705)), in plaats van `private_key_jwt` en DPoP uit de notitie. De dienstverlener authenticeert zich met zijn certificaat in de TLS-verbinding die er volgens de GISA al is (`tls_client_auth`), en de authorization server bindt het access token aan dat certificaat (`cnf.x5t#S256`). FAPI 2.0 staat deze methode toe.
+
+Deze keuze is mogelijk doordat de verbinding tussen dienstverleners en het vertrouwen tussen verzender en ontvanger (het mandaat, paragraaf 2.2) uit elkaar zijn gehaald. De notitie koos `private_key_jwt` onder meer omdat het transportcertificaat de zorgaanbieder niet altijd identificeert. Nu de dienstverlener zelf de client is, vervalt dat argument: het transportcertificaat identificeert juist de dienstverlener, die verantwoordelijk is voor de verbinding, en de identiteit van de zorgaanbieder wordt op de applicatielaag geborgd met het mandaat. Dit blijft binnen het juridisch kader en de GISA.
+
+Voordelen:
+- **Eén mechanisme** voor transport, clientauthenticatie en tokenbinding. Een JWKS-endpoint per zorgaanbieder, client assertions en DPoP-proofs zijn niet meer nodig.
+- **Integriteit van het tokenrequest tijdens transport.** TLS beschermt alles wat over de verbinding gaat tegen wijziging, en bij mTLS heeft de dienstverlener zich in dezelfde verbinding met zijn certificaat geauthenticeerd. Zolang de verbinding niet onderweg wordt beëindigd, kan geen tussenpartij het tokenrequest, inclusief het RAR-object, ongemerkt wijzigen, en weet de authorization server dat het verzoek van de geauthenticeerde dienstverlener komt. Dit is geen ondertekening: achteraf kan de authorization server niet aan derden aantonen wat de dienstverlener precies heeft verzocht. Bij `private_key_jwt` is dat evenmin het geval, omdat de client assertion het RAR-object niet ondertekent.
+
+Aandachtspunten:
+- **Intrekkingscontrole van het clientcertificaat.** De authorization server en de resource server controleren de intrekkingsstatus van het certificaat van de dienstverlener via OCSP of de CRL van de vertrouwensdienstverlener. Het stelsel legt een maximale ouderdom van het OCSP-antwoord of de CRL vast, los van `nextUpdate`. Is de intrekkingsstatus onbekend of niet op te halen, dan weigert de server het verzoek (*fail-closed*). RFC 8705 laat het aan de server over of en hoe hij de intrekking controleert; het stelsel moet die controle daarom voorschrijven. Dit geldt voor alle mandaatvarianten. Omgekeerd controleert de opvragende dienstverlener op dezelfde manier de intrekkingsstatus van het servercertificaat van de dienstverlener van de bron, en of die dienstverlener is geschorst.
+- **TLS-terminatie.** mTLS moet doorlopen tot de authorization server en de resource server. Een doorgegeven clientcertificaat, bijvoorbeeld in een header volgens het informatieve [RFC 9440](https://www.rfc-editor.org/rfc/rfc9440), bevat alleen het publieke certificaat: wie die header kan zetten, kan zich voordoen als elke dienstverlener. Daarom mag een knooppunt of intermediair van een andere partij beëindigt de TLS-verbinding niet, maar geeft die ongewijzigd door, of treedt zelf als OAuth-client op met een eigen mandaat.
+
+
+## 2.6 Access token: uitgifte door de authorization server van de bron
+In de notitie ondertekent de bronhoudende zorgaanbieder het access token met zijn UZI-sleutel, en valideert de client die handtekening. Reviewers wijzen erop dat dit afwijkt van gangbare standaarden; IHE IUA stelt "The token is opaque to the Authorization Client". Een authorization server voor veel zorgaanbieders zou bovendien per zorgaanbieder een UZI-sleutel moeten beheren. 
+
+Het voorstel:
 - De authorization server van de dienstverlener van de bron ondertekent het access token met **zijn eigen sleutel** en bindt het aan het certificaat van de client (`cnf.x5t#S256`, RFC 8705). De resource server controleert bij elk verzoek dat het clientcertificaat van de mTLS-verbinding overeenkomt met deze binding.
 - Het access token is ***opaque* voor de client**. Hoe het wordt uitgegeven en gevalideerd, bepalen authorization server en resource server onderling.
 - Het token legt vast namens welke zorgaanbieder toegang is verleend (`sub`, het URA) en welke dienstverlener handelt (`client_id`, en bij token exchange de claim `act`).
 - De opvragende dienstverlener stelt de identiteit van de **bronhoudende zorgaanbieder** vóór het verzoek vast, en het servercertificaat van de dienstverlener van de bron bevestigt dat de verbinding met de gemandateerde partij is opgezet:
-  - Bij M1 en M2 via *Protected Resource Metadata* ([RFC 9728](https://www.rfc-editor.org/rfc/rfc9728)). Daarmee publiceert de resource server op `/.well-known/oauth-protected-resource` onder meer welke authorization servers bij het endpoint horen. De resource server publiceert hier ook het mandaat dat de bronhoudende zorgaanbieder aan zijn dienstverlener heeft gegeven. Hoe het mandaat in deze metadata opgenomen wordt, moet uitgewerkt worden. De opvragende dienstverlener cachet deze metadata ten hoogste een vastgestelde maximale tijd en controleert ook de status van het gepubliceerde mandaat.
+  - Bij M1 en M2 via *Protected Resource Metadata* ([RFC 9728](https://www.rfc-editor.org/rfc/rfc9728)). Daarmee publiceert de resource server op `/.well-known/oauth-protected-resource` onder meer welke authorization servers bij het endpoint horen. De resource server publiceert hier ook het mandaat dat de bronhoudende zorgaanbieder aan zijn dienstverlener heeft gegeven. RFC 9728 staat extra metadataparameters toe; hoe het mandaat daarin wordt opgenomen, moet worden uitgewerkt. Bedient één endpoint meerdere zorgaanbieders, dan bevat de metadata meerdere mandaten. Met een eigen pad per zorgaanbieder, bijvoorbeeld `https://fhir.dienstverlener-b.nl/zorgaanbieder-b/fhir`, heeft elk endpoint eigen metadata, omdat RFC 9728 het pad van het endpoint in de metadata-URL opneemt. De opvragende dienstverlener cachet deze metadata ten hoogste een vastgestelde maximale tijd en controleert ook de status van het gepubliceerde mandaat.
   - Bij M3, M4 en M5 via de lokale LRZa-replica: het endpoint hoort bij de bronhoudende zorgaanbieder, en die heeft de dienstverlener van de bron gemandateerd. Bij M4 en M5 moet dat mandaat een geldige `Provenance` van die zorgaanbieder hebben.
 
-Zo blijft eis 1 uit de notitie, het wederzijds vaststellen van de identiteit van de zorgaanbieder, vervuld. Er blijft één restrisico: de opvragende dienstverlener geeft zelf op namens welke zorgaanbieder hij handelt (paragraaf 2.6).
+Zo blijft eis 1 uit de notitie, het wederzijds vaststellen van de identiteit van de zorgaanbieder, vervuld. Er blijft één restrisico: de opvragende dienstverlener geeft zelf op namens welke zorgaanbieder hij handelt (paragraaf 2.7).
 
-## 2.6 Grant en RAR-object
+## 2.7 Grant en RAR-object
 **Grant.** De notitie motiveerde de *client-credentials flow* met de stelling dat FAPI 2.0 die voorschrijft. Dat is onjuist: FAPI 2.0 sluit andere grants niet uit. De juiste motivatie is dat er geen interactieve gebruiker in de uitwisseling is: de zorgverlener is in het eigen domein geauthenticeerd en de uitwisseling verloopt van systeem tot systeem. Bij M0, M3, M4 en M5 blijft client credentials de grant; bij M1 en M2 reist het mandaat mee in een token exchange (RFC 8693), eveneens zonder interactieve gebruiker.
 
-**RAR-object.** Het RAR-object van type `nl-gis-v1` blijft, met één aanvulling: `subject_organization_id`, het URA van de zorgaanbieder namens wie de dienstverlener handelt. Dit veld stond al in het sequentiediagram van de notitie, maar niet in het voorbeeld. De vereiste mandaatcode volgt uit `purpose_of_use` (paragraaf 2.7), zodat een apart veld voor het mandaattype niet nodig is.
+**RAR-object.** Het RAR-object van type `nl-gis-v1` blijft, met één aanvulling: `subject_organization_id`, het URA van de zorgaanbieder namens wie de dienstverlener handelt. De vereiste mandaatcode volgt uit `purpose_of_use` (paragraaf 2.3), zodat een apart veld voor het mandaattype niet nodig is.
 
 ```json
 {
@@ -280,80 +278,15 @@ Zo blijft eis 1 uit de notitie, het wederzijds vaststellen van de identiteit van
 
 De authorization server controleert dat de zorgaanbieder in `subject_organization_id` de geauthenticeerde dienstverlener heeft gemandateerd met de mandaatcode die bij `purpose_of_use` hoort. Authenticeert de client zich met het UZI-servercertificaat van de zorgaanbieder zelf (M0), dan moet `subject_organization_id` gelijk zijn aan het URA in dat certificaat en is geen mandaat nodig.
 
-Een dienstverlener die door meerdere zorgaanbieders is gemandateerd, zou namens de verkeerde zorgaanbieder kunnen handelen, bijvoorbeeld door een fout of door misbruik (een *confused deputy*). Daarom gelden aanvullend:
-- Bij M1 en M2 moet `subject_organization_id` gelijk zijn aan `sub` van het mandaat. Het access token bevat één gezaghebbende claim voor de opvragende zorgaanbieder (`sub`), die de authorization server overneemt uit het gecontroleerde mandaat of, bij M3, M4 en M5, uit de gecontroleerde `OrganizationAffiliation`.
-- Het tokenrequest en het FHIR-verzoek dragen een correlatiekenmerk van de opvragende kant, bijvoorbeeld een W3C `traceparent`. Beide kanten loggen dat kenmerk, met het URA van de opvragende zorgaanbieder en de identiteit van de dienstverlener.
-- Een dienstverlener die namens meerdere zorgaanbieders handelt, scheidt hun gegevens en verzoeken aantoonbaar. Die tenantscheiding wordt een toetredingseis en onderdeel van audits.
-- De opvragende zorgaanbieder kan bij de bron inzien welke verzoeken namens hem zijn gedaan, via een kanaal dat niet via zijn eigen dienstverlener loopt, bijvoorbeeld een inzageverzoek bij de bron. Zo kan hij ook misbruik door zijn eigen dienstverlener herkennen.
-
-Een restrisico blijft: de bron vertrouwt erop dat de dienstverlener, binnen de zorgaanbieders die hem hebben gemandateerd, de juiste zorgaanbieder opgeeft. Dat risico wordt afgedekt met toetredingseisen, audits en logging, zoals in het federatieve vertrouwensmodel van de notitie.
-
-## 2.7 Voorstel voor mandaatcodes
-Een mandaat heeft een reikwijdte: een dienstverlener handelt namens een zorgaanbieder, maar mag niet alles. De mandaatcodes zijn gebaseerd op de HL7-codelijst *PurposeOfUse* ([v3-ActReason](https://terminology.hl7.org/CodeSystem-v3-ActReason.html)), dezelfde codelijst als voor `purpose_of_use` in het RAR-object. Een mandaatcode bestaat uit een doel en een rol: `<doel>-<rol>`.
-
-- **Doel:** een code uit PurposeOfUse. Voorgesteld worden de algemene codes van het hoogste niveau van de codelijst. Een mandaat voor een doel geldt ook voor de specialisaties ervan: `TREAT` omvat bijvoorbeeld spoed (`ETREAT`) en zorgcoördinatie (`COC`). Voor beheer wordt `HSYSADMIN` (*health system administration*) gebruikt, een code onder `HOPERAT` (*healthcare operations*).
-- **Rol:** dezelfde rollen als in [GF Lokalisatie](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/localization.html):
-  - `user`: gegevens opvragen en ontvangen namens de zorgaanbieder, doorgaans als OAuth-client;
-  - `custodian`: als bronhouder gegevens beschikbaar stellen of registreren namens de zorgaanbieder, doorgaans als authorization server en resource server; bij registratie in de LRZa of de NVI als client van die voorziening.
-
-| Doel (PurposeOfUse) | `<doel>-user`: de dienstverlener mag namens de zorgaanbieder… | `<doel>-custodian`: de dienstverlener mag namens de zorgaanbieder… |
-|---|---|---|
-| `TREAT` — behandeling | gegevens opvragen voor de behandeling van patiënten, zoals BgZ, European Patient Summary, eOverdracht, Medicatieoverdracht, geboortezorg en spoed, en daarvoor de NVI doorzoeken. | gegevens beschikbaar stellen voor de behandeling van patiënten, daarvoor toestemmingen raadplegen bij de OTV, en patiënten registreren bij de NVI (lokalisatie). |
-| `PATRQT` — op verzoek van de patiënt | gegevens opvragen op verzoek van de patiënt. | gegevens beschikbaar stellen aan de patiënt of diens persoonlijke gezondheidsomgeving (PGO). |
-| `HRESCH` — onderzoek | gegevens opvragen voor (medisch-wetenschappelijk) onderzoek. | gegevens uitgeven voor onderzoek, en datasetbeschrijvingen bijwerken in de catalogus van de Health Data Access Body (HDAB, EHDS). |
-| `PUBHLTH` — publieke gezondheid | gegevens opvragen voor publieke gezondheid. | gegevens verstrekken voor publieke gezondheid, zoals meldingen van infectieziekten. |
-| `HSYSADMIN` — beheer | gegevens van de zorgaanbieder opvragen uit de LRZa (adressering) en bijwerken van 'eigen' resources (b.v. Endpoints) in het LRZa  | gegevens van de zorgaanbieder registreren en bijwerken in de LRZa (adressering). |
-
-Dit levert tien codes op: `TREAT-user`, `TREAT-custodian`, `PATRQT-user`, `PATRQT-custodian`, `HRESCH-user`, `HRESCH-custodian`, `PUBHLTH-user`, `PUBHLTH-custodian`, `HSYSADMIN-user` en `HSYSADMIN-custodian`.
-
-- **Doel en mandaat hangen samen.** De authorization server van de bron leidt de vereiste mandaatcode af uit `purpose_of_use` in het RAR-object: een verzoek met doel `TREAT` vraagt een mandaat `TREAT-user` van de opvragende zorgaanbieder aan zijn dienstverlener. Omgekeerd controleert de opvragende dienstverlener dat de dienstverlener van de bron het mandaat `TREAT-custodian` heeft.
-- **Rol in de uitwisseling, niet de OAuth-rol.** Bij een push (*notified pull*) is de dienstverlener van de verzender eerst OAuth-client, voor de notificatie, en daarna authorization server en resource server. Zijn mandaat blijft `TREAT-custodian` en dat van de ontvanger `TREAT-user` ([bijlage](#bijlage-autorisatiecontroles-bij-een-push)).
-- **Bewust algemeen.** Eén code dekt alle zorgtoepassingen met hetzelfde doel. Zorgaanbieders begrijpen het mandaat daardoor makkelijk en hoeven het niet bij elke nieuwe zorgtoepassing aan te passen. Waar fijnere mandatering nodig blijkt, bijvoorbeeld alleen voor spoed, kan een specialisatie als eigen code worden toegevoegd (`ETREAT-user`). Andere doelen uit de codelijst, zoals betaling (`HPAYMT`), kunnen worden toegevoegd zodra een zorgtoepassing erom vraagt.
-- **Beheercodes in de LRZa.** De `HSYSADMIN`-codes overlappen met de bestaande codes `lrza-careprovider-admin` en `lrza-endpoint-admin` in [`NlGfAuthorizationTypeCS`](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/CodeSystem-nl-gf-authorization-type-cs.html). Voorgesteld wordt de oude codes te vervangen.
-
-
-# 3. Toetsing aan eisen en uitgangspunten
-
-| Eis of uitgangspunt (notitie, hoofdstuk 5) | Invulling in dit voorstel |
-|---|---|
-| 1. Wederzijds vaststellen van de identiteit van de zorgaanbieder | Via het mandaat en het certificaat van de dienstverlener, aan beide kanten |
-| 2. Geen authenticatie van individuele zorgverleners of systemen | Ongewijzigd; de dienstverlener is wel herkenbaar als technische actor (NEN 7513, externe systemen) |
-| 3. Expliciet meedragen van het doel | Ongewijzigd: `purpose_of_use` in het RAR-object; het doel bepaalt ook welke mandaatcode vereist is |
-| GIS07 en GIS03/HA3: bestaande, open standaarden | OAuth 2.0, FAPI 2.0, RFC 8693, RFC 8705 en RFC 9396, met een *opaque* access token; client-id uit het certificaat volgens de Europese praktijk |
-| HA7: GIS Veilig Netwerk met mTLS | Ongewijzigd; de mTLS-verbinding tussen de dienstverleners dient ook voor clientauthenticatie en tokenbinding, mits die doorloopt tot authorization server en resource server (paragraaf 2.3) |
-| GIS02 en A44: scheiding van transport- en applicatievertrouwen | Transportvertrouwen tussen dienstverleners; applicatievertrouwen tussen verzender en ontvanger via het mandaat |
-| HA5, A12/A13: claims-based access control | Claims in het RAR-object en in het mandaat |
-
-# 4. Verwerking van de reacties
-
-| Reactie | Kern | Paragraaf |
-|---|---|---|
-| Silizo 1; Nuts 3.1 | Geen private UZI-sleutels bij leveranciers; langdurige, ondertekende mandaten | 2.4 |
-| Silizo 2; Nuts 3.3 | Uitvoerend systeem als afzonderlijke OAuth-client | 1, 2.3 |
-| Silizo 3; ChipSoft 1; Twiin 4 | Access token niet door de zorgaanbieder ondertekenen; *opaque* voor de client | 2.5 |
-| Silizo 4 | Vertrouwen in endpoint en authorization server via mandaat en RFC 9728 | 2.5 |
-| Silizo 5; ChipSoft 2 | Geautomatiseerde clientregistratie | 2.2 |
-| Silizo 6 | Onjuiste motivatie van client credentials | 2.6 |
-| ChipSoft 1 en 3 | Mandaat via token exchange; rollen verduidelijken; mTLS met eigen certificaat van de dienstverlener | 1, 2.3, 2.4 |
-| Nedap | Sleutelbeheer bij meerdere leveranciers; zorgaanbieders zonder UZI-servercertificaat | 2.4 (bij M4 de UZI-sleutel bij één dienstverlener; bij M5 geen UZI-servercertificaat nodig) |
-
-# 5. Conclusie en openstaande besluiten
-Een dienstverlener handelt met een eigen identiteit, op basis van een mandaat van de zorgaanbieder. Alleen één beherende dienstverlener beschikt nog over de UZI-sleutel van de zorgaanbieder, om mandaten te ondertekenen (M4); met de European Business Wallet vervalt ook dat (M5). Een authorization server herkent de dienstverlener aan zijn certificaat, zonder aparte registratiestap, naar voorbeeld van het Europese betalingsverkeer. Het access token wordt uitgegeven zoals gangbaar in OAuth. Het federatieve vertrouwensmodel, het juridisch kader en de eisen uit de notitie blijven ongewijzigd.
-
-Voor vaststelling zijn de volgende besluiten nodig:
-
-1. **Mandaatvariant:** M4 op korte termijn, met M5 als groeipad zodra de European Business Wallet operationeel is? Of M3, zonder ondertekening van de mandaten in de LRZa, met M2 als federatief groeipad? Of M1 als federatieve variant op basis van bestaande standaarden?
-2. **Clientregistratie:** geen verplichte registratie; het stelsel legt vast welke certificaten dienstverleners gebruiken en hoe de client-id daaruit wordt afgeleid (paragraaf 2.2).
-3. **Clientauthenticatie:** mTLS voor clientauthenticatie en tokenbinding, in plaats van `private_key_jwt` en DPoP?
-4. **Mandaatcodes:** vaststellen van de voorgestelde codes op basis van PurposeOfUse.
-5. **Productondersteuning:** kan gangbare autorisatiesoftware registratie bij eerste gebruik en token exchange ondersteunen?
-6. **Beveiligingseisen:** vaststellen van de eisen aan certificaten (paragraaf 2.2), TLS-terminatie, intrekking en schorsing (paragraaf 2.3), registratie en actualiteit van mandaten (paragraaf 2.4) en de vertegenwoordigde zorgaanbieder (paragraaf 2.6), en besluiten over de resterende risico's in de [beveiligingsreview](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-security-review.html).
 
 
 # Bijlage: voorbeelden van de technische flow
+De voorbeelden tonen het ophalen van een verpleegkundige overdracht (eOverdracht). Zorgaanbieder B, bijvoorbeeld een ziekenhuis, draagt de zorg voor patiënt X over aan een wijkverpleegkundig team van zorgaanbieder A. Dienstverlener B legt de overdracht vast in Task 123, met als `owner` de `HealthcareService` van dat team en in `Task.input` het overdrachtsbericht (Composition 456). Hij stuurt dienstverlener A een notificatie met de referentie naar de Task. Dienstverlener A haalt daarna de Task op (`GET [base]/Task/123`) en het overdrachtsbericht (`GET [base]/Composition/456/$document`).
+
+De resource server controleert bij elk verzoek, naast het token en de binding aan het clientcertificaat, dat de `HealthcareService` in `Task.owner` hoort bij de zorgaanbieder in `authorization_details` (`subject_organization_id`). Dat is zo als `HealthcareService.providedBy` in de LRZa-replica verwijst naar de `Organization` met dat URA, of naar een onderdeel daarvan (`partOf`) ([Care Service Directory](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html)). Bij een verzoek om een resource uit `Task.input` past de resource server die controle toe op de Task waar de resource bij hoort. De resource server kent `authorization_details` uit het access token zelf of via token introspection (RFC 9396).
 
 ## A. M1 en M2: mandaat als `subject_token`
-Het tokenrequest met het mandaat, bij M1 ondertekend met de UZI-sleutel van de zorgaanbieder en bij M2 ondertekend met diens European Business Wallet. Dienstverlener A haalt eerst het endpoint van zorgaanbieder B op uit zijn LRZa-replica (stap 5 en 6 in het diagram). Daarna stelt hij met *Protected Resource Metadata* vast dat het endpoint bij zorgaanbieder B hoort (paragraaf 2.5; stap 7 tot en met 9):
+Het tokenrequest met het mandaat, bij M1 ondertekend met de UZI-sleutel van de zorgaanbieder en bij M2 ondertekend met diens European Business Wallet. Dienstverlener A haalt eerst het FHIR-endpoint van zorgaanbieder B op uit zijn LRZa-replica (stap 5 en 6 in het diagram). Daarna stelt hij met *Protected Resource Metadata* vast dat het endpoint bij zorgaanbieder B hoort (paragraaf 2.6; stap 7 tot en met 9):
 
 ```
 POST /token HTTP/1.1
@@ -375,26 +308,32 @@ sequenceDiagram
     participant RepA as LRZa-replica (A)
     participant AS as Authorization Server (dienstverlener B)
     participant RS as Resource Server (dienstverlener B)
+    participant RepB as LRZa-replica (B)
 
     Note over ZA,DA: Periodiek, bijvoorbeeld eens per drie maanden
     DA->>ZA: Mandaat ter ondertekening aanbieden
     ZA->>ZA: Ondertekenen met UZI-sleutel (M1)<br/>of ondertekenen met business wallet (M2)
     ZA-->>DA: Ondertekend mandaat
 
-    Note over ZA,RS: Bij elke uitwisseling, alle verbindingen over mTLS
-    ZA->>DA: Test-zorgvraag: BgZ van patiënt X<br/>ophalen bij zorgaanbieder B
-    DA->>RepA: Zoek Endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor de BgZ)
+    Note over ZA,RepB: Bij elke uitwisseling, alle verbindingen over mTLS
+    Note over DA,RS: Dienstverlener B heeft een notificatie gestuurd<br/>met de referentie naar Task 123
+    ZA->>DA: Zorgverlener opent de verpleegkundige overdracht<br/>van patiënt X (Task 123)
+    DA->>RepA: Zoek FHIR-endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor eOverdracht)
     RepA-->>DA: Endpoint-adres van de resource server<br/>(managingOrganization: dienstverlener B)
     DA->>RS: GET /.well-known/oauth-protected-resource<br/>(Protected Resource Metadata, RFC 9728 (cachebaar))
     RS-->>DA: authorization_servers en mandaat van zorgaanbieder B<br/>aan dienstverlener B (scope TREAT-custodian)
-    DA->>DA: Mandaat van zorgaanbieder B geldig (handtekening, keten)?<br/>may_act = servercertificaat dienstverlener B?<br/>AS staat in authorization_servers?
+    DA->>DA: Task 123 ligt op het endpoint van zorgaanbieder B?<br/>Mandaat van zorgaanbieder B geldig (handtekening, keten)?<br/>may_act = servercertificaat dienstverlener B?<br/>AS staat in authorization_servers?
     DA->>AS: POST /token, token exchange<br/>subject_token=mandaat, RAR
     AS->>AS: Intrekkingsstatus certificaat dienstverlener A (OCSP/CRL)<br/>Handtekening, keten en intrekking van het mandaat (OCSP/CRL, statuslijst)<br/>may_act = client_id dienstverlener A?<br/>sub = subject_organization_id?<br/>scope bevat TREAT-user (doel uit RAR)?
     AS-->>DA: access_token (sub=URA-A, act=dienstverlener A,<br/>gebonden aan certificaat dienstverlener A)
-    DA->>RS: FHIR-verzoek met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?
-    RS-->>DA: 200 OK, FHIR-resource
-    DA-->>ZA: BgZ van patiënt X tonen
+    DA->>RS: GET /Task/123 met access token
+    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Task 123 open?
+    RS->>RepB: HealthcareService in Task.owner geleverd door URA-A<br/>uit authorization_details (providedBy, eventueel via partOf)?
+    RS-->>DA: 200 OK, Task 123 (input: Composition 456)
+    DA->>RS: GET /Composition/456/$document met access token
+    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Composition 456 staat in Task.input van Task 123,<br/>die bij URA-A hoort?
+    RS-->>DA: 200 OK, Bundle met het overdrachtsbericht
+    DA-->>ZA: Verpleegkundige overdracht van patiënt X tonen
 ```
 
 ## B. M4: ondertekend mandaat in de lokale LRZa-replica
@@ -428,274 +367,24 @@ sequenceDiagram
     LRZa-->>RepB: Synchronisatie (ITI-91-NL)
 
     Note over ZA,RS: Bij elke uitwisseling, alle verbindingen over mTLS
-    ZA->>DA: Test-zorgvraag: BgZ van patiënt X<br/>ophalen bij zorgaanbieder B
-    DA->>RepA: Zoek Endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor de BgZ)
+    Note over DA,RS: Dienstverlener B heeft een notificatie gestuurd<br/>met de referentie naar Task 123
+    ZA->>DA: Zorgverlener opent de verpleegkundige overdracht<br/>van patiënt X (Task 123)
+    DA->>RepA: Zoek FHIR-endpoint van zorgaanbieder B<br/>(Organization URA-B, payloadType voor eOverdracht)
     RepA-->>DA: Endpoint-adres van de resource server<br/>(managingOrganization: dienstverlener B)
     DA->>RepA: Actieve OrganizationAffiliation (URA-B, dienstverlener B, TREAT-custodian)?
-    DA->>DA: Provenance geldig: handtekening, UZI-keten en intrekkingsstatus (OCSP/CRL, cachebaar)?<br/>URA in het UZI-certificaat = URA-B?<br/>Past dienstverlener B bij het servercertificaat?
+    DA->>DA: Provenance geldig: handtekening, UZI-keten en intrekkingsstatus (OCSP/CRL, cachebaar)?<br/>URA in het UZI-certificaat = URA-B?<br/>Past dienstverlener B bij het servercertificaat?<br/>Task 123 ligt op het endpoint van zorgaanbieder B?
     DA->>AS: POST /token, client credentials<br/>RAR: subject_organization_id=URA-A,<br/>purpose_of_use=TREAT
     AS->>AS: client_id afleiden uit certificaat dienstverlener A<br/>en intrekkingsstatus controleren (OCSP/CRL, cachebaar)
     AS->>RepB: Replica actueel? Actieve OrganizationAffiliation<br/>(URA-A, dienstverlener A, TREAT-user)?
     AS->>AS: Provenance geldig: handtekening, UZI-keten en intrekkingsstatus (OCSP/CRL, cachebaar)?<br/>URA in het UZI-certificaat = URA-A?
     AS-->>DA: access_token (opaque, gebonden aan certificaat dienstverlener A)
-    DA->>RS: FHIR-verzoek met access token
-    RS->>RS: Token geldig en gebonden aan het clientcertificaat?
-    RS-->>DA: 200 OK, FHIR-resource
-    DA-->>ZA: BgZ van patiënt X tonen
+    DA->>RS: GET /Task/123 met access token
+    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Task 123 open?
+    RS->>RepB: HealthcareService in Task.owner geleverd door URA-A<br/>uit authorization_details (providedBy, eventueel via partOf)?
+    RS-->>DA: 200 OK, Task 123 (input: Composition 456)
+    DA->>RS: GET /Composition/456/$document met access token
+    RS->>RS: Token geldig en gebonden aan het clientcertificaat?<br/>Composition 456 staat in Task.input van Task 123,<br/>die bij URA-A hoort?
+    RS-->>DA: 200 OK, Bundle met het overdrachtsbericht
+    DA-->>ZA: Verpleegkundige overdracht van patiënt X tonen
     Note over ZA,RS: Beide kanten loggen zorgaanbieder, dienstverlener en certificaatgegevens (NEN 7513)
-```
-
-# Bijlage: autorisatiecontroles bij een push
-Een 'push' bij eOverdracht en de BgZ-verwijzing verloopt als *notified pull* ([Twiin-01 Send Notification Task](https://vzvz.atlassian.net/wiki/spaces/Twiincon/pages/331847512/10.3.1+Twiin-01+Send+Notification+Task); [eOverdracht 4.0](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht), paragraaf 3.2). De verzendende zorgaanbieder legt de overdracht of verwijzing vast in een Workflow-Task en stuurt de ontvangende zorgaanbieder een notificatie. De ontvanger haalt daarna de Task en de gegevens op bij de verzender, de bron, en werkt de status van de Task bij. Deze bijlage somt de autorisatiecontroles van die uitwisseling op, uitgaande van dit voorstel: mTLS, een client-id uit het certificaat, het RAR-object en mandaten volgens M4.
-
-## Rollen en transacties
-In een push wisselen de rollen per transactie. Bij de notificatie is de dienstverlener van de verzender de OAuth-client; bij het ophalen en bijwerken is dat de dienstverlener van de ontvanger. De mandaatcode volgt de rol in de gegevensuitwisseling, niet de OAuth-rol (paragraaf 2.7): de verzender stelt gegevens beschikbaar (`TREAT-custodian`), de ontvanger ontvangt ze (`TREAT-user`). Ook het Nuts-profiel voor de BgZ-verwijzing onderscheidt een beleid voor de ontvanger (de notificatie) en een voor de verzender (de Task en de gegevens) ([nuts-use-case-profile-bgz-referral](https://github.com/nuts-foundation/nuts-use-case-profile-bgz-referral)).
-
-| Transactie | OAuth-client | Authorization server en resource server | Mandaat van de client | Mandaat van de server |
-|---|---|---|---|---|
-| P1 Adresseren, P2 Tokenverzoek, P3 Notificatie | Dienstverlener van de verzender | Dienstverlener van de ontvanger | `TREAT-custodian` van de verzendende zorgaanbieder | `TREAT-user` van de ontvangende zorgaanbieder |
-| P4 Tokenverzoek, P5 Ophalen, P6 Task bijwerken | Dienstverlener van de ontvanger | Dienstverlener van de verzender | `TREAT-user` van de ontvangende zorgaanbieder | `TREAT-custodian` van de verzendende zorgaanbieder |
-
-In de tabellen staan *verzender* en *ontvanger* voor het systeem van de dienstverlener van de verzendende of ontvangende zorgaanbieder, met de deelrol client, authorization server (AS) of resource server (RS).
-
-```mermaid
-sequenceDiagram
-    actor ZV as Zorgaanbieder V (verzender)
-    participant DV as Dienstverlener V (client, AS en RS)
-    participant Rep as LRZa-replica
-    participant DO as Dienstverlener O (client, AS en RS)
-    actor ZO as Zorgaanbieder O (ontvanger)
-
-    ZV->>DV: Overdracht vastleggen: Workflow-Task<br/>(owner URA-O, for patiënt, input Composition)
-    Note over DV,Rep: P1 Adresseren
-    DV->>Rep: Notificatie-endpoint en mandaat TREAT-user van URA-O
-    Note over DV,DO: P2 Tokenverzoek en P3 Notificatie, over mTLS
-    DV->>DO: POST /token<br/>RAR: subject_organization_id=URA-V, purpose_of_use=TREAT
-    DO-->>DV: access token
-    DV->>DO: POST notificatie met Task-referentie
-    Note over DV,DO: P4 Tokenverzoek en P5 Ophalen, over mTLS
-    DO->>Rep: FHIR-endpoint en mandaat TREAT-custodian van URA-V
-    DO->>DV: POST /token<br/>RAR: subject_organization_id=URA-O, purpose_of_use=TREAT
-    DV-->>DO: access token
-    DO->>DV: GET Task, GET Composition/$document
-    DV-->>DO: Task en gegevens
-    DO-->>ZO: Overdracht tonen
-    ZO->>DO: Overdracht accepteren
-    Note over DV,DO: P6 Task bijwerken, over mTLS
-    DO->>DV: PUT Task (status)
-```
-
-## Soorten controles en Rego
-De controles zijn ingedeeld in twee soorten:
-- **Technisch:** controles op verbinding, certificaten, tokens en berichtvorm. Ze zijn gelijk voor alle zorgtoepassingen en worden meestal door standaardsoftware uitgevoerd, zoals de TLS-terminatie en een authorization server volgens FAPI 2.0.
-- **Functioneel:** controles op wie namens welke zorgaanbieder handelt, met welk doel, voor welke patiënt en welke gegevens. Ze hangen af van de mandaten, de zorgtoepassing en de status van de Task, en vormen het autorisatiebeleid.
-
-Volgens [GF Autorisatie](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authorization.html) wordt autorisatiebeleid vastgelegd in de [Rego policy language](https://www.openpolicyagent.org/docs/policy-language), met het informatiemodel van OpenID AuthZEN (`subject`, `action`, `resource` en `context`). Implementaties hoeven Rego niet te gebruiken, maar moeten wel tot dezelfde beslissing komen. De controles hieronder hebben daarom een naam als Rego-regel (kolom *Regel*). De volgende Rego-begrippen worden gebruikt:
-- **Regel** (*rule*): een benoemde controle. Een regel is waar als alle expressies in de body gelden (EN). Meerdere definities met dezelfde naam (*incremental definitions*) gelden als OF.
-- **Package**: een verzameling regels. Voorgesteld wordt één package per actor, bijvoorbeeld `gf.push.as_verzender`.
-- **`input`**: het verzoek zoals de beslisser het ontvangt. `subject` bevat de `client_id` en de vertegenwoordigde zorgaanbieder (`subject_organization_id`), `action` het tokenverzoek of de FHIR-interactie, `resource` het endpoint, de Task of de FHIR-resource, en `context` het doel en de bronhoudende zorgaanbieder. Technische controles worden doorgaans buiten het beleid uitgevoerd; hun uitkomst komt als `input` binnen, bijvoorbeeld de intrekkingsstatus van het clientcertificaat.
-- **`data`**: referentiegegevens die de beslisser lokaal raadpleegt, zoals de LRZa-replica met de mandaten, de Workflow-Tasks van de verzender en de lijst met geschorste dienstverleners.
-- **`default allow := false`**: weigeren, tenzij een `allow`-regel slaagt (*fail-closed*).
-- **`some`** en **`every`**: er bestaat een (bijvoorbeeld een actief mandaat), en voor alle (bijvoorbeeld elke resource in een antwoord).
-- **`not`**: negatie, bijvoorbeeld `not client_gemandateerd`.
-- **`contains`**: een regel die een verzameling oplevert (*multi-value rule*), bijvoorbeeld de redenen van een weigering voor de logging.
-- **Metadata-annotaties** (`# METADATA`): per regel onder meer `title`, `related_resources` en `custom`. In `custom` kunnen de controle, de actor en de soort uit de tabellen worden vastgelegd.
-- **`opa test`** met **`with`**: geautomatiseerde tests waarin `input` en `data` worden vervangen.
-
-Een aandachtspunt: in Rego is een expressie die naar een ontbrekende waarde verwijst *undefined*, ook een vergelijking met `!=`. Een `deny`-regel die door ontbrekende input niet kan worden geëvalueerd, weigert dan niet, en een beleid als `allow if count(deny) == 0` staat het verzoek toe. Formuleer controles daarom positief (wat moet gelden) en combineer ze in `allow`, zodat ontbrekende input tot weigering leidt.
-
-## Basiscontroles bij elke verbinding
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| B1 | Het clientcertificaat is van een toegestane CA en certificaatbeleid, heeft `clientAuth` en is niet persoonsgebonden (paragraaf 2.2) | AS en RS | Technisch | `clientcertificaat_toegestaan` |
-| B2 | De intrekkingsstatus van het clientcertificaat is bekend en goed, binnen de maximale ouderdom (paragraaf 2.3) | AS en RS | Technisch | `clientcertificaat_niet_ingetrokken` |
-| B3 | De `client_id` is afgeleid uit het certificaat, en een meegestuurde `client_id` is daaraan gelijk (paragraaf 2.2) | AS | Technisch | `client_id_uit_certificaat` |
-| B4 | De dienstverlener is niet geschorst en niet lokaal geblokkeerd (paragraaf 2.3) | AS | Functioneel | `niet_geschorst` |
-| B5 | Het servercertificaat is geldig: keten, toegestane CA, hostnaam en intrekkingsstatus | Client | Technisch | `servercertificaat_geldig` |
-| B6 | Het access token is geldig (`exp`, en `aud` is dit endpoint) en gebonden aan het clientcertificaat van de verbinding (`cnf.x5t#S256`) | RS | Technisch | `token_geldig` |
-| B7 | De LRZa-replica is actueel, binnen de maximale ouderdom (paragraaf 2.4, M3) | Client en AS | Technisch | `replica_actueel` |
-| B8 | Het mandaat is actief en binnen `period`, met een geldige `Provenance`: handtekening, UZI-keten, intrekkingsstatus, en het URA in het certificaat is gelijk aan `organization` (paragraaf 2.4, M4) | Client en AS | Functioneel (actief, periode) en technisch (`Provenance`) | `mandaat_geldig` |
-| B9 | Het RAR-object heeft type `nl-gis-v1` en de verplichte velden (paragraaf 2.6) | AS | Technisch | `rar_geldig` |
-
-## Controles per transactie
-Voorafgaand legt een zorgverlener van de verzendende zorgaanbieder de overdracht of verwijzing vast. Zijn systeem maakt een Workflow-Task aan met `owner` (de ontvangende zorgaanbieder), `requester` (de verzendende zorgaanbieder), `for` (de patiënt) en in `input` de gegevens, zoals de Composition met het overdrachtsbericht. Deze Task is de grondslag voor de controles bij P4 tot en met P6 (`data.tasks`).
-
-**P1. Adresseren van de notificatie** (lokaal, zonder verbinding)
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P1.1 | De ontvangende zorgaanbieder (`Task.owner`) staat actief in de LRZa-replica | Client verzender | Functioneel | `ontvanger_bekend` |
-| P1.2 | Er is een actief notificatie-endpoint van de ontvangende zorgaanbieder voor deze zorgtoepassing (`payloadType`); de `managingOrganization` is de dienstverlener van de ontvanger | Client verzender | Functioneel | `notificatie_endpoint` |
-| P1.3 | De ontvangende zorgaanbieder heeft die dienstverlener gemandateerd met `TREAT-user` (B7, B8) | Client verzender | Functioneel | `ontvanger_gemandateerd` |
-
-**P2. Tokenverzoek voor de notificatie** (client verzender naar AS ontvanger). RAR-object: `subject_organization_id` is de verzendende zorgaanbieder, `purpose_of_use` is `TREAT`, `locations_organization_id` is de ontvangende zorgaanbieder en `locations` het notificatie-endpoint.
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P2.1 | Het servercertificaat (B5) identificeert de dienstverlener uit P1.2 | Client verzender | Technisch | `server_is_gemandateerde` |
-| P2.2 | Basiscontroles B1 tot en met B4 en B9 | AS ontvanger | Technisch en functioneel | |
-| P2.3 | `purpose_of_use` is toegestaan voor het notificatie-endpoint | AS ontvanger | Functioneel | `doel_toegestaan` |
-| P2.4 | `locations` is een eigen notificatie-endpoint, en de zorgaanbieder in `locations_organization_id` heeft deze dienstverlener gemandateerd met `TREAT-user` | AS ontvanger | Functioneel | `ontvanger_bediend` |
-| P2.5 | De verzendende zorgaanbieder (`subject_organization_id`) heeft de client gemandateerd met `TREAT-custodian` (B7, B8) | AS ontvanger | Functioneel | `client_gemandateerd` |
-
-**P3. Notificatie** (client verzender naar RS ontvanger): een `POST` van een Notification-Task volgens TA Notified Pull, of bij eOverdracht 4.0 een lege `POST [base]/[Task.id]`.
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P3.1 | Het servercertificaat (B5) identificeert de dienstverlener uit P1.2 | Client verzender | Technisch | `server_is_gemandateerde` |
-| P3.2 | Basiscontroles B2 en B6 | RS ontvanger | Technisch | |
-| P3.3 | Alleen een `POST` op het notificatie-endpoint is toegestaan | RS ontvanger | Functioneel | `actie_toegestaan` |
-| P3.4 | De Notification-Task voldoet aan het profiel en bevat geen BSN of medische gegevens | RS ontvanger | Technisch | `notificatie_geldig` |
-| P3.5 | `requester` in de notificatie is de zorgaanbieder namens wie het token is uitgegeven, en `owner` de zorgaanbieder in `locations_organization_id` | RS ontvanger | Functioneel | `notificatie_partijen` |
-| P3.6 | `code` is een zorgtoepassing die de ontvangende zorgaanbieder ondersteunt | RS ontvanger | Functioneel | `zorgtoepassing_ondersteund` |
-
-**P4. Tokenverzoek voor het ophalen** (client ontvanger naar AS verzender). RAR-object: `subject_organization_id` is de ontvangende zorgaanbieder, `purpose_of_use` is `TREAT`, `locations_organization_id` is de verzendende zorgaanbieder en `locations` diens FHIR-endpoint.
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P4.1 | Het FHIR-endpoint van de verzendende zorgaanbieder komt uit de LRZa-replica, niet uit de notificatie; de Task-referentie uit de notificatie ligt op dat endpoint | Client ontvanger | Functioneel | `bron_endpoint` |
-| P4.2 | De verzendende zorgaanbieder heeft de `managingOrganization` van dat endpoint gemandateerd met `TREAT-custodian` (B7, B8) | Client ontvanger | Functioneel | `bron_gemandateerd` |
-| P4.3 | Het servercertificaat (B5) identificeert die dienstverlener | Client ontvanger | Technisch | `server_is_gemandateerde` |
-| P4.4 | Basiscontroles B1 tot en met B4 en B9 | AS verzender | Technisch en functioneel | |
-| P4.5 | `purpose_of_use` is toegestaan voor deze zorgtoepassing | AS verzender | Functioneel | `doel_toegestaan` |
-| P4.6 | `locations` is een eigen endpoint, en de zorgaanbieder in `locations_organization_id` heeft deze dienstverlener gemandateerd met `TREAT-custodian` | AS verzender | Functioneel | `bron_bediend` |
-| P4.7 | De ontvangende zorgaanbieder (`subject_organization_id`) heeft de client gemandateerd met `TREAT-user` (B7, B8) | AS verzender | Functioneel | `client_gemandateerd` |
-| P4.8 | Er is een open Workflow-Task van de verzendende zorgaanbieder met `owner` gelijk aan `subject_organization_id`, binnen `restriction.period` | AS verzender | Functioneel | `open_task` |
-
-**P5. Task en gegevens ophalen** (client ontvanger naar RS verzender): `GET [base]/Task/[id]`, en daarna `GET [base]/Composition/[id]/$document` of afzonderlijke leesverzoeken.
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P5.1 | Het servercertificaat (B5) identificeert de dienstverlener uit P4.2 | Client ontvanger | Technisch | `server_is_gemandateerde` |
-| P5.2 | Basiscontroles B2 en B6 | RS verzender | Technisch | |
-| P5.3 | Alleen leesinteracties: `read` van de Task en van de resources, en `$document` op de Composition | RS verzender | Functioneel | `actie_toegestaan` |
-| P5.4 | `Task.owner` is gelijk aan de zorgaanbieder in het token (`sub`), en de status van de Task geeft toegang, bijvoorbeeld `requested`, `accepted` of `in-progress`; per zorgtoepassing vast te stellen | RS verzender | Functioneel | `task_open` |
-| P5.5 | De resource is de Task, de Composition uit `Task.input` of een resource waarnaar die Composition direct of indirect verwijst. Een zoekvraag wordt beperkt tot die resources en tot de patiënt in `Task.for` (*search narrowing*) | RS verzender | Functioneel | `resource_in_task` |
-| P5.6 | De opgehaalde Task heeft als `owner` de eigen zorgaanbieder en als `requester` de verzendende zorgaanbieder uit de notificatie. Bij een lege notificatie (eOverdracht 4.0) is dit de eerste controle op de geadresseerde | Client ontvanger | Functioneel | `task_voor_mij` |
-
-**P6. Task bijwerken** (client ontvanger naar RS verzender): `PUT [base]/Task/[id]` met een nieuwe status, bijvoorbeeld `accepted`, `rejected` of `completed`.
-
-| # | Controle | Actor | Soort | Regel |
-|---|---|---|---|---|
-| P6.1 | Basiscontroles B2 en B6 | RS verzender | Technisch | |
-| P6.2 | Alleen `update` van deze Task, en `Task.owner` is gelijk aan de zorgaanbieder in het token (`sub`) | RS verzender | Functioneel | `task_bijwerken` |
-| P6.3 | Alleen toegestane elementen zijn gewijzigd, zoals `status`, en de statusovergang is toegestaan; anders volgt HTTP 422 | RS verzender | Functioneel | `statusovergang_toegestaan` |
-
-Na een afsluitende status (`rejected`, `cancelled` of `completed`) of na `restriction.period` slagen P4.8 en P5.4 niet meer. De toegang vervalt dan zonder aparte intrekking. De verzender kan de Task ook zelf annuleren. Bij een vervolgstap, zoals het versturen van het overdrachtsbericht na een bevestiging, herhaalt de verzender P1 tot en met P3 voor dezelfde Task. Bij elke transactie loggen beide kanten de zorgaanbieders, de dienstverlener, de certificaatgegevens, het Task-id en het correlatiekenmerk (paragraaf 2.6), en bij een weigering ook de reden (NEN 7513).
-
-## Overzicht per actor
-
-| Actor | Transacties | Controles | Package (voorstel) |
-|---|---|---|---|
-| Client verzender | P1 tot en met P3 | B5, B7, B8, P1.1 tot en met P1.3, P2.1, P3.1 | `gf.push.client_verzender` |
-| AS ontvanger | P2 | B1 tot en met B4, B9, P2.3 tot en met P2.5 | `gf.push.as_ontvanger` |
-| RS ontvanger | P3 | B2, B6, P3.3 tot en met P3.6 | `gf.push.rs_ontvanger` |
-| Client ontvanger | P4 tot en met P6 | B5, B7, B8, P4.1 tot en met P4.3, P5.1, P5.6 | `gf.push.client_ontvanger` |
-| AS verzender | P4 | B1 tot en met B4, B9, P4.5 tot en met P4.8 | `gf.push.as_verzender` |
-| RS verzender | P5 en P6 | B2, B6, P5.3 tot en met P5.5, P6.2 en P6.3 | `gf.push.rs_verzender` |
-
-## Voorbeeld: beleid van de AS van de verzender (P4)
-Het voorbeeld hieronder legt de functionele controles van P4 vast, met enkele basiscontroles. De technische controle van de `Provenance` is vooraf uitgevoerd; de uitkomst staat in de replica (`provenance_geldig`). Het voorbeeld is gecontroleerd met `opa check --strict` en getest met `opa test`.
-
-```rego
-# METADATA
-# title: Tokenverzoek voor het ophalen bij een push (P4)
-# description: Beleid van de authorization server van de dienstverlener van de verzender
-# related_resources:
-#   - https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html
-package gf.push.as_verzender
-
-import rego.v1
-
-# Weigeren, tenzij alle controles slagen (fail-closed)
-default allow := false
-
-allow if {
-	clientcertificaat_niet_ingetrokken
-	niet_geschorst
-	replica_actueel
-	doel_toegestaan
-	bron_bediend
-	client_gemandateerd
-	open_task
-}
-
-# METADATA
-# title: Intrekkingsstatus van het clientcertificaat is goed
-# custom:
-#   controle: B2
-#   actor: AS verzender
-#   soort: technisch
-clientcertificaat_niet_ingetrokken if {
-	input.subject.properties.certificaat.intrekkingsstatus == "good"
-}
-
-# B4
-niet_geschorst if {
-	geschorst := data.stelsel.geschorste_dienstverleners
-	not input.subject.properties.client_id in geschorst
-}
-
-# B7: maximale ouderdom van één uur
-replica_actueel if {
-	time.now_ns() - data.lrza.laatste_synchronisatie_ns <= 3600000000000
-}
-
-# P4.5
-doel_toegestaan if {
-	input.context.purpose_of_use == "http://terminology.hl7.org/CodeSystem/v3-ActReason|TREAT"
-}
-
-# P4.6
-bron_bediend if {
-	some m in data.lrza.mandaten
-	m.zorgaanbieder == input.context.data_holder_organization_id
-	m.dienstverlener == data.eigen_dienstverlener
-	mandaatcode("custodian") in m.codes
-	mandaat_geldig(m)
-}
-
-# METADATA
-# title: De opvragende zorgaanbieder heeft de client gemandateerd
-# custom:
-#   controle: P4.7
-#   actor: AS verzender
-#   soort: functioneel
-client_gemandateerd if {
-	some m in data.lrza.mandaten
-	m.zorgaanbieder == input.subject.properties.subject_organization_id
-	m.dienstverlener == input.subject.properties.client_id
-	mandaatcode("user") in m.codes
-	mandaat_geldig(m)
-}
-
-# P4.8
-open_task if {
-	some t in data.tasks
-	t.requester == input.context.data_holder_organization_id
-	t.owner == input.subject.properties.subject_organization_id
-	t.status in {"requested", "received", "accepted", "in-progress"}
-	binnen_periode(t)
-}
-
-# Mandaatcode volgt uit het doel: TREAT en user geeft TREAT-user (paragraaf 2.7)
-mandaatcode(rol) := sprintf("%s-%s", [split(input.context.purpose_of_use, "|")[1], rol])
-
-# B8: de Provenance is vooraf technisch gecontroleerd (provenance_geldig)
-mandaat_geldig(m) if {
-	m.actief == true
-	m.provenance_geldig == true
-	binnen_periode(m)
-}
-
-binnen_periode(x) if {
-	x.start_ns <= time.now_ns()
-	time.now_ns() < x.eind_ns
-}
-
-# Redenen van een weigering, voor de logging
-redenen contains "geen geldig mandaat van de opvragende zorgaanbieder" if not client_gemandateerd
-
-redenen contains "geen open Workflow-Task voor de opvragende zorgaanbieder" if not open_task
 ```

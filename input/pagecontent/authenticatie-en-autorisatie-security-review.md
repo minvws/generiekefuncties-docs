@@ -14,13 +14,13 @@ Section numbers (§) refer to the proposal. Severities are qualitative: High, Me
 
 ### Overview per mandate variant
 
-The mandate variants are described in §2.4 of the proposal:
+The mandate variants are described in §2.2 of the proposal:
 
 | Variant | Short description |
 |---|---|
 | **M0** | Service provider authenticates with the care provider's UZI key (current practice) |
-| **M1** | Care provider signs a mandate with its UZI key; the mandate travels in the token request |
-| **M2** | Care provider seals a mandate with its European Business Wallet; the mandate travels in the token request |
+| **M1** | Care provider signs a mandate with its UZI key; service providers store the mandates, send them in the token request and publish the source's mandate in the resource server's metadata |
+| **M2** | Care provider seals a mandate with its European Business Wallet; stored and published as in M1 |
 | **M3** | Care provider registers the mandate as an `OrganizationAffiliation` in the LRZa portal; checked in the local replica |
 | **M4** | As M3, but one service provider holding the care provider's UZI key registers and signs the mandates |
 | **M5** | As M3, but the care provider seals the mandate in the LRZa portal with its European Business Wallet |
@@ -30,7 +30,7 @@ The mandate variants are described in §2.4 of the proposal:
 | Property | M0 | M1 | M2 | M3 | M4 | M5 |
 |---|---|---|---|---|---|---|
 | A service provider holds the care provider's UZI key | Yes | Partly: common in SaaS | No | No | Yes: one service provider | No |
-| A service provider can mandate itself | n/a: acts as the care provider | Partly: if it holds the UZI key | Partly: if it operates the wallet (F9) | No, given the portal requirements in §2.4 | Yes: the key holder (F6, F7) | Partly: if it operates the wallet (F9) |
+| A service provider can mandate itself | n/a: acts as the care provider | Partly: if it holds the UZI key | Partly: if it operates the wallet (F9) | No, given the portal requirements in §2.2 | Yes: the key holder (F6, F7) | Partly: if it operates the wallet (F9) |
 | A compromised LRZa or replica can add valid mandates | n/a | No | Partly: via the KvK-to-URA mapping (F5) | Yes (R2) | Partly (F1–F3) | Partly (F1, F3, F5) |
 | A mandate gives evidence in a dispute | No: indistinguishable from the care provider | Yes | Yes: qualified seal | No | Weak: signed by the key holder | Yes: qualified seal |
 
@@ -78,12 +78,12 @@ An earlier round of this review produced findings that have since been addressed
 
 | Finding | Measure in the proposal |
 |---|---|
-| A client identity could be derived from personal certificates | Only server certificates from listed CAs and certificate policies, with `clientAuth` (§2.2) |
-| Self-mandating via the LRZa | Mandates only through the portal, eHerkenning at least EH3, no chain authorization, notification and waiting period (§2.4, M3) |
-| A service provider could act for the wrong care provider (*confused deputy*) | `subject_organization_id` must equal the mandate `sub`, correlation ID, tenant separation, independent insight for the care provider (§2.6) |
-| TLS termination turned proof of possession into a claim | Termination only in the operator's own domain; requirements for gateways and third-party nodes (§2.3) |
-| Revocation of mandates took effect late | Maximum replica age, mandatory status list for M1 and M2, maximum cache time for resource metadata (§2.4, §2.5) |
-| Revoking the client certificate was the only kill switch | Fail-closed revocation checks in both directions, suspension of service providers, short-lived access tokens (§2.3) |
+| A client identity could be derived from personal certificates | Only server certificates from listed CAs and certificate policies, with `clientAuth` (§2.4) |
+| Self-mandating via the LRZa | Mandates only through the portal, eHerkenning at least EH3, no chain authorization, notification and waiting period (§2.2, M3) |
+| A service provider could act for the wrong care provider (*confused deputy*) | `subject_organization_id` must equal the mandate `sub`, correlation ID, tenant separation, independent insight for the care provider (§2.7) |
+| TLS termination turned proof of possession into a claim | Termination only in the operator's own domain; requirements for gateways and third-party nodes (§2.5) |
+| Revocation of mandates took effect late | Maximum replica age, mandatory status list for M1 and M2, maximum cache time for resource metadata (§2.2, §2.6) |
+| Revoking the client certificate was the only kill switch | Fail-closed revocation checks in both directions, suspension of service providers, short-lived access tokens (§2.5) |
 
 ### Residual risks in the proposal
 
@@ -91,13 +91,13 @@ For each risk, a decision is needed: adopt a measure or accept the risk.
 
 | ID | Severity | Risk | Section |
 |---|---|---|---|
-| R1 | Medium | The purpose-code hierarchy widens mandates | §2.7 |
-| R2 | Medium | Mandates in the LRZa are not signed | §2.4 (M3) |
-| R3 | Medium | Mandates rely on LRZa identifiers that service providers can change | §2.4, §2.7 |
-| R4 | Medium | The access token is not bound to the source care provider | §2.5, §2.6 |
-| R5 | Low | Client-id derivation and scope are not fully specified | §2.2 |
-| R6 | Low | A generic custodian mandate allows taking over a source endpoint | §2.4, §2.7 |
-| R7 | Low | `HSYSADMIN-user` grants write access, and code migration is undefined | §2.7 |
+| R1 | Medium | The purpose-code hierarchy widens mandates | §2.3 |
+| R2 | Medium | Mandates in the LRZa are not signed | §2.2 (M3) |
+| R3 | Medium | Mandates rely on LRZa identifiers that service providers can change | §2.2, §2.3 |
+| R4 | Medium | The access token is not bound to the source care provider | §2.6, §2.7 |
+| R5 | Low | Client-id derivation and scope are not fully specified | §2.4 |
+| R6 | Low | A generic custodian mandate allows taking over a source endpoint | §2.2, §2.3 |
+| R7 | Low | `HSYSADMIN-user` grants write access, and code migration is undefined | §2.3 |
 
 #### R1. The purpose-code hierarchy widens mandates
 A mandate for a purpose also covers its specializations, and the authorization server derives the required mandate code from the `purpose_of_use` in the request. In the code system, `TREAT` covers `ETREAT`, `BTG` (*break the glass*), `POPHLTH` and `CLINTRL`, among others; `PATRQT` covers `FAMRQT`, `PWATRNY` and `SUPNWK`. A service provider with only `TREAT-user` can therefore send a request with `purpose_of_use` `BTG` or `POPHLTH`. If the source applies more permissive rules for such purposes, for example in emergencies, the service provider gains a power the care provider did not knowingly grant. A finer code such as `ETREAT-user` can only grant less; it cannot exclude `BTG` for a holder of `TREAT-user`.
@@ -120,7 +120,7 @@ The access token records the requesting care provider (`sub`) and the service pr
 *Possible measure:* include the source care provider (`locations_organization_id`) and the purpose in the access token or the introspection response. Have the authorization server check that it acts for that care provider, and have the resource server restrict every request to that care provider.
 
 #### R5. Client-id derivation and scope are not fully specified
-The requirements in §2.2 exclude personal certificates and decide M0 by certificate type. Three points remain open:
+The requirements in §2.4 exclude personal certificates and decide M0 by certificate type. Three points remain open:
 - The format of the client id (KvK number, OIN or URA) and how it is compared with `participatingOrganization` in the LRZa.
 - All server certificates of an organization with the same identifier lead to the same client id and receive all of that organization's mandates. A key stolen from another system of that organization therefore gives access to all its mandates.
 - Which rights a client created on first use receives by default.
@@ -133,7 +133,7 @@ The requirements in §2.2 exclude personal certificates and decide M0 by certifi
 *Possible measure:* have the LRZa allow at most one valid endpoint per organization and payload type, or allow a custodian mandate to be limited to an endpoint or payload type.
 
 #### R7. `HSYSADMIN-user` grants write access, and code migration is undefined
-The `user` role is defined as requesting and receiving data, but `HSYSADMIN-user` also allows updating the service provider's own resources, such as endpoints. A care provider that gives its service provider the `user` codes thereby unknowingly grants write access to its addressing data. The proposal replaces the current codes `lrza-careprovider-admin` and `lrza-endpoint-admin`, but does not define how. If holders of `lrza-endpoint-admin` receive `HSYSADMIN-custodian`, they silently gain write access to the whole `Organization`, including identifiers and contact details (see R3 and the notification in §2.4).
+The `user` role is defined as requesting and receiving data, but `HSYSADMIN-user` also allows updating the service provider's own resources, such as endpoints. A care provider that gives its service provider the `user` codes thereby unknowingly grants write access to its addressing data. The proposal replaces the current codes `lrza-careprovider-admin` and `lrza-endpoint-admin`, but does not define how. If holders of `lrza-endpoint-admin` receive `HSYSADMIN-custodian`, they silently gain write access to the whole `Organization`, including identifiers and contact details (see R3 and the notification in §2.2).
 
 *Possible measure:* make `HSYSADMIN-user` read-only or drop it. Publish a one-to-one migration table with a narrow, endpoint-only code, and exclude `identifier`, `partOf` and `telecom` from what service providers may change.
 
@@ -143,15 +143,15 @@ M4 and M5 add a `Provenance` to each `OrganizationAffiliation` in the LRZa: sign
 
 | ID | Severity | Variant | Finding | Section | Confidence |
 |---|---|---|---|---|---|
-| F1 | High | M4, M5 | Withdrawn mandates can be revived by replaying an old signature | §2.4 | 8/10 |
-| F2 | High | M4, M5 | The signature does not bind the care provider's URA or the service provider's identity | §2.4 | 7/10 |
-| F3 | High | M4, M5 | Downgrade to unsigned mandates | §2.4, §5 | 7/10 |
-| F4 | High | M5 | What is signed may differ from what was shown | §2.4 | 7/10 |
-| F5 | High | M5 | The KvK or EUID to URA mapping runs through modifiable LRZa data | §2.4 | 8/10 |
-| F6 | Medium | M4 | Any UZI certificate that carries the care provider's URA can sign | §2.4 | 8/10 |
-| F7 | Medium | M4 | The care provider cannot revoke against the key holder | §2.4 | 8/10 |
-| F8 | Medium | M4, M5 | When certificate validity is checked is not defined | §2.4 | 7/10 |
-| F9 | Medium | M5 | Wallet delegation lets a service provider mandate itself | §2.4 | 7/10 |
+| F1 | High | M4, M5 | Withdrawn mandates can be revived by replaying an old signature | §2.2 | 8/10 |
+| F2 | High | M4, M5 | The signature does not bind the care provider's URA or the service provider's identity | §2.2 | 7/10 |
+| F3 | High | M4, M5 | Downgrade to unsigned mandates | §2.2, §5 | 7/10 |
+| F4 | High | M5 | What is signed may differ from what was shown | §2.2 | 7/10 |
+| F5 | High | M5 | The KvK or EUID to URA mapping runs through modifiable LRZa data | §2.2 | 8/10 |
+| F6 | Medium | M4 | Any UZI certificate that carries the care provider's URA can sign | §2.2 | 8/10 |
+| F7 | Medium | M4 | The care provider cannot revoke against the key holder | §2.2 | 8/10 |
+| F8 | Medium | M4, M5 | When certificate validity is checked is not defined | §2.2 | 7/10 |
+| F9 | Medium | M5 | Wallet delegation lets a service provider mandate itself | §2.2 | 7/10 |
 
 #### F1. Withdrawn mandates can be revived by replaying an old signature
 The signature covers the content of the `OrganizationAffiliation`, including `id` and `active: true`, but not `Resource.meta`, so the version is not signed. There is no required expiry and no signed revocation. Deactivating a mandate in the portal is an unsigned change that only makes the old signature invalid, while old `Provenance` records remain and are replicated everywhere.
@@ -240,7 +240,7 @@ The signing time in the JWS header (`sigT`) is set by the signer, and M4 has no 
 - **Checked at verification time:** renewing a certificate breaks all mandates at once, and there is no re-signing procedure.
 
 *Possible measure:*
-- For authorization decisions, require the certificate to be valid and not revoked at verification time: fail-closed, with the maximum OCSP or CRL age from §2.3.
+- For authorization decisions, require the certificate to be valid and not revoked at verification time: fail-closed, with the maximum OCSP or CRL age from §2.5.
 - Use timestamps only as evidence.
 - Have the LRZa reject a `sigT` that is more than a few minutes from its own time of receipt.
 - Define how mandates are re-signed when a certificate is renewed.
