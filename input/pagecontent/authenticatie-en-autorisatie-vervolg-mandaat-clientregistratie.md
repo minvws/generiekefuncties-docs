@@ -2,10 +2,27 @@
 
 Deze notitie is een vervolg op de notitie [*Harmonisatie van authenticatie en autorisatie voor de gegevensuitwisselingen BgZ en eOverdracht*](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html) (versie 0.95, hierna: de notitie). Op het concept van de notitie zijn reacties ontvangen van onder meer Silizo, ChipSoft, Twiin, UMCG, Nedap, de Nuts Kring Techniek, VZVZ (AORTA/LSP) en RSO Nederland. Twee punten komen in vrijwel alle inhoudelijke reacties terug en deze zijn de focus voor dit document:
 
-- **Clientregistratie.** De notitie beschrijft niet hoe een authorization server een OAuth-client herkent. FAPI 2.0 gaat uit van een bekende *confidential client*, en handmatige, bilaterale registratie schaalt niet in een netwerk met veel partijen.
+
 - **Sleutelbeheer en mandatering.** De notitie laat de zorgaanbieder het tokenrequest én het access token ondertekenen met de sleutel van zijn UZI-servercertificaat. In de praktijk beheert vaak een dienstverlener die sleutel: een leverancier, SaaS-platform of knooppunt. Reviewers vinden dat onwenselijk en stellen voor dat de dienstverlener met een eigen identiteit handelt, op basis van een mandaat van de zorgaanbieder.
+- **Clientregistratie.** De notitie beschrijft niet hoe een authorization server een OAuth-client herkent. FAPI 2.0 gaat uit van een bekende *confidential client*, en handmatige, bilaterale registratie schaalt niet in een netwerk met veel partijen.
 
 Deze notitie geeft een voorstel ter aanscherping van hoofdstuk 6 (*Technische keuzes en onderbouwing*) van de notitie. Het juridisch kader (hoofdstuk 4) en de eisen en GISA-uitgangspunten (hoofdstuk 5) blijven ongewijzigd. Voor deze uitwerking zijn diverse verkenningen gedaan naar vormen van serviceprovider-mandatering, (dynamic) client registration, en zelfs verkenning van andere frameworks (o.a. iSHARE, PSD2 en OpenID Federation).
+
+
+
+Bij de keuze voor mandatering zijn er in [§2.2](#22-mandaat-in-plaats-van-ondertekening-door-de-zorgaanbieder) een vijftal alternatieven opgesteld, waar een afweging gemaakt kan worden op een aantal aspecten, bijvoorbeeld:
+- wat moet een zorgaanbieder(en dienstverlener) doen voor een mandaat? (eenmalig en/of periodiek)
+- welke operationele afhankelijkheden worden er geintroduceerd door een mandaat?
+- welke beveiligingsmaatregelen kunnen/moeten er gerealiseerd worden? (b.v. het effect van een gecompromitteerde actor)
+- moet het mandaat een afbakening/scope hebben? Zo ja; welke? ([zie §2.3](#23-voorstel-voor-mandaatcodes))
+
+Deze lijst met alternatieven is niet uitputtend; er zijn ongetwijfeld meerdere varianten te verzinnen. Bij de keuze voor client registratie, in [§2.4](#24-registratie-van-oauth-clients), is er vooral de keuze tussen:
+- dynamische/automatische registratie waarbij metadata van de client vastgelegd kan worden OF 
+- geen registratie, maar identificatie van de client d.m.v. het client-certificaat (mTLS).
+
+Paragraaf 2.5 t/m 2.7 geven de mogelijke wijzigingen aan de kant van de client, server en in de transactie (b.v. welke 'OAuth grant'). Dit lijken geen fundamentele keuzes, maar wel technische keuzes en aanpassingen n.a.v. keuzes in 2.2 t/m 2.4.
+
+
 {: .ig-lead}
 
 # Inhoudsopgave
@@ -171,7 +188,19 @@ Het voorstel is om op korte termijn **M4** te gebruiken. M4 sluit aan bij de hui
 Het groeipad is **M5**, zodra de European Business Wallet operationeel is. M5 gebruikt dezelfde `OrganizationAffiliation`, `Provenance` en controle in de lokale replica; alleen de ondertekenaar verandert. De zorgaanbieder verzegelt zijn mandaten dan zelf met zijn wallet. Geen dienstverlener heeft dan nog de UZI-sleutel nodig, en ook de beherende dienstverlener kan zichzelf niet meer mandateren. In de overgang accepteren de LRZa, de authorization servers en de opvragende dienstverleners zowel een `Provenance` met een UZI-handtekening als een met een zegel uit de wallet. **M0** blijft bruikbaar voor, bijvoorbeeld, zorgaanbieders die hun eigen IT-diensten beheren; de dienstverlener treedt op *als* de zorgaanbieder en mandatering is niet nodig.
 
 ## 2.3 Voorstel voor mandaatcodes
-Een mandaat heeft een reikwijdte: een dienstverlener handelt namens een zorgaanbieder, maar mag niet alles. De mandaatcodes zijn gebaseerd op de HL7-codelijst *PurposeOfUse* ([v3-ActReason](https://terminology.hl7.org/CodeSystem-v3-ActReason.html)), dezelfde codelijst als voor `purpose_of_use` in het RAR-object. Een mandaatcode bestaat uit een doel en een rol: `<doel>-<rol>`.
+Een dienstverlener kan met een mandaat handelen namens een zorgaanbieder, maar hoe wordt er bepaald wat de reikwijdte van het mandaat is? 
+
+Uitgangspunt is dat een code of rol alleen wordt toegevoegd als die daadwerkelijk bijdraagt aan de gegevensbescherming, doordat ze een dienstverlener beperkt tot wat hij voor zijn taak nodig heeft. Een code die dat niet doet, levert alleen administratie en foutkans op.
+
+**Binnen eOverdracht en de BgZ-MSZ** is behandeling het enige doel. Eén code, of geen code, lijkt dan voldoende, maar dan hebben alle dienstverleners van een zorgaanbieder dezelfde rechten.
+
+**Buiten eOverdracht en de BgZ-MSZ** lopen de taken van dienstverleners verder uiteen:
+- Een viewer waarmee zorgverleners gegevens bij andere zorgaanbieders inzien, heeft alleen `TREAT-user` nodig. De toestemming van de patiënt controleert de bron bij de OTV (`TREAT-custodian`); de viewer hoeft dus geen toestemmingen van patiënten op te kunnen vragen.
+- Een dienstverlener die gegevens uitgeeft aan onderzoekers, heeft `HRESCH-custodian` nodig, maar hoeft geen BgZ van een patiënt op te kunnen halen. Zonder onderscheid naar doel zou hij gegevens bij andere zorgaanbieders kunnen verzamelen onder de noemer behandeling, in strijd met de doelbinding ([AVG](https://eur-lex.europa.eu/eli/reg/2016/679/oj), art. 5 lid 1 onder b).
+
+**Onderscheid tussen `TREAT-user` en `TREAT-custodian`.** Volgens hetzelfde uitgangspunt is de vraag of dit onderscheid nodig is. Een EPD-leverancier die voor een zorgaanbieder gegevens zowel opvraagt als beschikbaar stelt, krijgt beide codes; voor hem draagt het onderscheid niet bij. Er zijn echter dienstverleners met één rol: een viewer, of een portaal waarmee een zorgaanbieder overdrachten alleen ontvangt, heeft alleen `TREAT-user` nodig; een archief of een platform dat alleen gegevens beschikbaar stelt, alleen `TREAT-custodian`. Voor hen beperkt het onderscheid de gevolgen van een fout of inbraak. Een mandaat kan meerdere codes bevatten (`scope` bij M1 en M2, `OrganizationAffiliation.code` bij M3 tot en met M5), zodat de zorgaanbieder beide codes in één handeling vastlegt; het onderscheid vraagt dan geen extra administratie. Blijkt in de praktijk dat vrijwel alle dienstverleners beide codes krijgen, dan kunnen ze worden samengevoegd tot één code.
+
+De mandaatcodes zijn gebaseerd op de HL7-codelijst *PurposeOfUse* ([v3-ActReason](https://terminology.hl7.org/CodeSystem-v3-ActReason.html)), dezelfde codelijst als voor `purpose_of_use` in het RAR-object. Een mandaatcode bestaat uit een doel en een rol: `<doel>-<rol>`.
 
 - **Doel:** een code uit PurposeOfUse. Voorgesteld worden de algemene codes van het hoogste niveau van de codelijst. Een mandaat voor een doel geldt ook voor de specialisaties ervan: `TREAT` omvat bijvoorbeeld spoed (`ETREAT`) en zorgcoördinatie (`COC`). Voor beheer wordt `HSYSADMIN` (*health system administration*) gebruikt, een code onder `HOPERAT` (*healthcare operations*).
 - **Rol:** :
