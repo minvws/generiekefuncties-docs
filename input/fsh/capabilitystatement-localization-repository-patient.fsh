@@ -16,7 +16,7 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #Patient
     * supportedProfile = Canonical(NlGfLocalizationPatient)
-    * documentation = """A Patient resource represents one patient at one custodian. Registration and maintenance use direct Patient REST interactions; transaction Bundles SHALL NOT be used."""
+    * documentation = """A Patient resource represents one patient at one custodian, registered by one client. Registration and maintenance use direct Patient REST interactions; transaction Bundles SHALL NOT be used."""
     * conditionalCreate = true
     * interaction[+]
       * insert Expectation(SHALL)
