@@ -291,9 +291,9 @@ Authorization: [access token]
 - accept an access token that identifies the data user and has the NVI as acting party;
 - evaluate the request using the data user's authorization policy, including consent or access restrictions;
 - respond with `200 OK` for allow or `204 No Content` for deny;
-- respond within 10 seconds.
+- respond within 1 second.
 
-**NVI processing.** The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 10 seconds, as deny. In addition:
+**NVI processing.** The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 1 second, as deny. In addition:
 - The NVI SHALL include a custodian when at least one of its requests returns allow.
 - Decisions SHALL only be used for the current search and SHALL NOT be cached.
 
