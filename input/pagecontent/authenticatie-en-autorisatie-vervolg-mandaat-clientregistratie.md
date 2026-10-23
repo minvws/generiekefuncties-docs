@@ -337,7 +337,7 @@ De voorbeelden tonen het ophalen van een verpleegkundige overdracht (eOverdracht
 De resource server controleert bij elk verzoek, naast het token en de binding aan het clientcertificaat, dat de `HealthcareService` in `Task.owner` hoort bij de zorgaanbieder in `authorization_details` (`subject_organization_id`). Dat is zo als `HealthcareService.providedBy` in de LRZa-replica verwijst naar de `Organization` met dat URA, of naar een onderdeel daarvan (`partOf`) ([Care Service Directory](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/authn-for-push/en/csd.html)). Bij een verzoek om een resource uit `Task.input` past de resource server die controle toe op de Task waar de resource bij hoort. De resource server kent `authorization_details` uit het access token zelf of via token introspection (RFC 9396).
 
 ## A. M1 en M2: machtiging als `subject_token`
-Het tokenrequest met de machtiging, bij M1 ondertekend met de UZI-sleutel van de zorgaanbieder en bij M2 door de uitgever. Dienstverlener A haalt eerst het FHIR-endpoint van zorgaanbieder B op uit zijn LRZa-replica (stap 5 en 6 in het diagram). Daarna stelt hij met *Protected Resource Metadata* vast dat het endpoint bij zorgaanbieder B hoort (paragraaf 2.6; stap 7 tot en met 9):
+Het diagram toont M2. De uitgifte bij M1 staat als alternatief in het diagram (stap 4 en 5); verder verloopt M1 hetzelfde, maar zonder *key binding*-JWT. Dienstverlener A haalt eerst het FHIR-endpoint van zorgaanbieder B op uit zijn LRZa-replica (stap 7 en 8). Daarna stelt hij met *Protected Resource Metadata* vast dat het endpoint bij zorgaanbieder B hoort (paragraaf 2.6; stap 9 tot en met 11). Het tokenrequest bij M2 (stap 12):
 
 ```
 POST /token HTTP/1.1
@@ -346,25 +346,33 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 &client_id=NTRNL-90000001
-&subject_token=eyJ0eXAiOiJubC1nZi1tYW5kYXRlK2p3dCIs...
-&subject_token_type=urn:ietf:params:oauth:token-type:jwt
+&subject_token=<machtiging>~<key binding JWT>
+&subject_token_type=<door het stelsel vast te leggen>
 &authorization_details=%5B%7B%22type%22%3A%22nl-gis-v1%22...%7D%5D
 ```
+
+Bij M1 is `subject_token` de door de zorgaanbieder ondertekende JWT, zonder *key binding*-JWT, en is `subject_token_type` gelijk aan `urn:ietf:params:oauth:token-type:jwt`.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor ZA as Zorgaanbieder A
     participant DA as Dienstverlener A<br/>(opvragend)
+    participant U as Uitgever
     participant RepA as LRZa-replica A
     participant AS as Authorization<br/>Server B
     participant RS as Resource<br/>Server B
     participant RepB as LRZa-replica B
 
-    Note over ZA,DA: Periodiek, bijvoorbeeld<br/>eens per drie maanden
-    DA->>ZA: Machtiging ter<br/>ondertekening
-    ZA->>ZA: Ondertekenen met<br/>UZI-sleutel (M1)
-    ZA-->>DA: Ondertekende<br/>machtiging
+    Note over ZA,U: Vooraf, en bij wijziging<br/>of vernieuwing
+    alt M2, uitgifte door de uitgever
+        DA->>U: Machtiging aanvragen<br/>(OpenID4VCI, mTLS)
+        ZA->>U: Inloggen met eHerkenning,<br/>dienstverlener A, codes<br/>en geldigheid goedkeuren
+        U-->>DA: Machtiging (SD-JWT VC),<br/>gebonden aan sleutel<br/>van dienstverlener A
+    else M1, ondertekening door de zorgaanbieder
+        DA->>ZA: Machtiging ter<br/>ondertekening
+        ZA-->>DA: Ondertekend met<br/>UZI-sleutel
+    end
 
     Note over ZA,RepB: Bij elke uitwisseling,<br/>alle verbindingen over mTLS
     Note over DA,RS: Notificatie van<br/>dienstverlener B met<br/>referentie naar Task 123
@@ -373,9 +381,9 @@ sequenceDiagram
     RepA-->>DA: Endpoint, beheerd<br/>door dienstverlener B
     DA->>RS: GET /.well-known/<br/>oauth-protected-<br/>resource
     RS-->>DA: authorization_servers<br/>en machtiging van URA-B<br/>(TREAT-custodian)
-    DA->>DA: Task 123 op endpoint?<br/>Machtiging geldig?<br/>may_act past bij<br/>servercertificaat?<br/>AS staat in<br/>authorization_servers?
-    DA->>AS: POST /token<br/>(token exchange)<br/>subject_token=machtiging<br/>RAR: URA-A, TREAT
-    AS->>AS: Clientcertificaat<br/>niet ingetrokken?<br/>Machtiging: handtekening,<br/>keten en status?<br/>may_act = client_id?<br/>sub = URA-A uit RAR?<br/>scope bevat<br/>TREAT-user?
+    DA->>DA: Task 123 op endpoint?<br/>Machtiging geldig<br/>(uitgever, status)?<br/>may_act past bij<br/>servercertificaat?<br/>AS staat in<br/>authorization_servers?
+    DA->>AS: POST /token<br/>(token exchange)<br/>subject_token=machtiging<br/>+ key binding JWT<br/>RAR: URA-A, TREAT
+    AS->>AS: Clientcertificaat<br/>niet ingetrokken?<br/>Machtiging van de<br/>uitgever, status?<br/>Key binding JWT met<br/>sleutel uit cnf,<br/>hash van RAR?<br/>may_act = client_id?<br/>sub = URA-A uit RAR?<br/>scope bevat<br/>TREAT-user?
     AS-->>DA: access_token<br/>(sub=URA-A, gebonden<br/>aan certificaat A)
     DA->>RS: GET /Task/123
     RS->>RS: Token geldig<br/>en gebonden?<br/>Task 123 open?
@@ -387,7 +395,9 @@ sequenceDiagram
     DA-->>ZA: Overdracht tonen
 ```
 
-Bij M2 vraagt dienstverlener A de machtiging met OpenID4VCI aan bij de uitgever, die haar als attestatie uitgeeft nadat zorgaanbieder A de aanvraag met eHerkenning heeft goedgekeurd, in plaats van stap 1 tot en met 3. In stap 10 voegt dienstverlener A een *key binding*-JWT toe met een hash van het RAR-object. In stap 11 controleert de authorization server die *key binding*-JWT en of de ondertekenaar de vertrouwde uitgever is; dat laatste controleert dienstverlener A ook in stap 9. De *key binding*-JWT (header `typ: kb+jwt`) bevat bijvoorbeeld:
+**Uitgifte bij M2 (stap 1 tot en met 3).** Het systeem van dienstverlener A vraagt de machtiging met OpenID4VCI aan bij de uitgever, authenticeert zich met zijn certificaat en stuurt een medewerker van zorgaanbieder A door naar de uitgever. Die medewerker logt in met eHerkenning en keurt de dienstverlener, de machtigingscodes en de geldigheid goed. De uitgever geeft de machtiging uit als SD-JWT VC, gebonden aan een sleutel van dienstverlener A (`cnf`). Bij M1 ondertekent de zorgaanbieder de machtiging zelf met zijn UZI-sleutel (stap 4 en 5).
+
+**Tokenrequest bij M2 (stap 12 en 13).** Dienstverlener A voegt aan de machtiging een *key binding*-JWT toe, ondertekend met de sleutel uit `cnf` en met een hash van het RAR-object. De authorization server controleert die *key binding*-JWT, of de machtiging van de vertrouwde uitgever komt, en de status via de statuslijst van de uitgever (cachebaar). Dienstverlener A controleert de herkomst en de status van de machtiging van zorgaanbieder B al in stap 11. De *key binding*-JWT (header `typ: kb+jwt`) bevat bijvoorbeeld:
 
 ```json
 {
@@ -399,7 +409,7 @@ Bij M2 vraagt dienstverlener A de machtiging met OpenID4VCI aan bij de uitgever,
 }
 ```
 
-**Bij M3, M4 en M5** reist geen machtiging mee. De machtigingen worden vooraf in de LRZa geregistreerd, door de zorgaanbieder in het portaal (M3 en M5) of door de beherende dienstverlener (M4), in plaats van stap 1 tot en met 3. In stap 7 tot en met 9 gebruikt dienstverlener A geen *Protected Resource Metadata*, maar controleert hij in zijn LRZa-replica of zorgaanbieder B dienstverlener B heeft gemachtigd met `TREAT-custodian`, en of het servercertificaat bij dienstverlener B past. In stap 10 vraagt hij een token aan met client credentials, met `subject_organization_id` en `purpose_of_use` in het RAR-object. In stap 11 controleert de authorization server in zijn replica, die actueel moet zijn, of zorgaanbieder A dienstverlener A heeft gemachtigd met `TREAT-user`. Bij M4 en M5 controleren beide daarnaast de handtekening of het zegel in de `Provenance`.
+**Bij M3, M4 en M5** reist geen machtiging mee. De machtigingen worden vooraf in de LRZa geregistreerd, door de zorgaanbieder in het portaal (M3 en M5) of door de beherende dienstverlener (M4), in plaats van stap 1 tot en met 5. In stap 9 tot en met 11 gebruikt dienstverlener A geen *Protected Resource Metadata*, maar controleert hij in zijn LRZa-replica of zorgaanbieder B dienstverlener B heeft gemachtigd met `TREAT-custodian`, en of het servercertificaat bij dienstverlener B past. In stap 12 vraagt hij een token aan met client credentials, met `subject_organization_id` en `purpose_of_use` in het RAR-object. In stap 13 controleert de authorization server in zijn replica, die actueel moet zijn, of zorgaanbieder A dienstverlener A heeft gemachtigd met `TREAT-user`. Bij M4 en M5 controleren beide daarnaast de handtekening of het zegel in de `Provenance`.
 
 # Bijlage: attestaties in de European Business Wallet
 Volgens het voorstel ([COM(2025) 838](https://www.eerstekamer.nl/bijlage/20251121/com_2025_838_proposal_for_a/document3/f=/vmsoctgrbbeb.pdf)) kan een EBW elektronische attestaties van attributen uitgeven aan andere EBW's en aan EUDI-wallets (art. 5 lid 1 onder f), ook vanuit de wallet van de eigenaar, gekoppeld aan andere attestaties in een keten (onder g). Daarnaast kan hij attestaties bewaren en presenteren (onder a). Het begrip 'mandate' uit het voorstel (art. 2, punt 19) is iets anders: dat machtigt een vertegenwoordiger om de wallet zelf te bedienen. Een machtiging voor gegevensuitwisseling past daarom als attestatie die de zorgaanbieder uitgeeft aan de dienstverlener. Welke standaarden een EBW gebruikt, wordt in uitvoeringshandelingen vastgelegd (art. 5 lid 5). Omdat een EBW attestaties moet kunnen uitwisselen met EUDI-wallets (art. 5 lid 1 onder c), ligt het voor de hand dat dezelfde standaarden gelden als in het [Architecture and Reference Framework](https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/) (ARF) van de EUDI-wallet:
