@@ -372,12 +372,12 @@ An unreachable custodian is not an NVI failure. The NVI treats it as deny, does 
 
 #### Data Localization Patient profile
 
-The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-localization-patient.html) uses one Patient resource per patient and custodian:
+The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-localization-patient.html) uses one Patient resource per combination of a patient, custodian and OAuth client:
 - `Patient.identifier` contains the NVI pseudonym and a custodian-assigned patient identifier;
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
 
-The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance.
+The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance. The combination of the NVI pseudonym, the custodian URA and the OAuth client id SHALL be unique.
 
 #### Search context
 
