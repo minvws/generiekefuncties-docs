@@ -1,16 +1,20 @@
-name: Build and Deploy static content with Docker to an FTPS server
+name: Build and attach static content to a GitHub release
 
 on:
-  # Runs on pushes targeting the default branch
-  # push:
-  #   branches: ["main"]
+  release:
+    types: [published]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # Allows you to (re)build the asset for an existing release from the Actions tab
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name of the existing release to attach the zip to"
+        required: true
+        type: string
 
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -21,6 +25,8 @@ jobs:
         ports:
           - 5000:5000
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -35,6 +41,8 @@ jobs:
           tags: localhost:5000/fhir/publisher:${{ github.sha }}
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.TAG }}
       - name: Build
         run: |
           mkdir -p ./output
@@ -44,14 +52,12 @@ jobs:
             -v ${{ github.workspace }}/ig.ini:/app/ig.ini \
             -v ${{ github.workspace }}/sushi-config.yaml:/app/sushi-config.yaml \
             localhost:5000/fhir/publisher:${{ github.sha }}
-      - name: Deploy to gf.afsprakenstelsel.nl
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: www784.your-server.de
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          local-dir: ./output/
-          server-dir: public_html/gf/
-          timeout: 60000
+      - name: Package output as csd/<tag>/ zip
+        run: |
+          mkdir -p "dist/csd/${TAG}"
+          cp -a ./output/. "dist/csd/${TAG}/"
+          (cd dist && zip -rq "../csd-${TAG}.zip" csd)
+      - name: Attach zip to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${TAG}" "csd-${TAG}.zip" --clobber --repo "${{ github.repository }}"
