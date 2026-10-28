@@ -270,7 +270,7 @@ HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned 
 ```
 
 - `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When the search specifies custodian Endpoint payload types, the Endpoint's `payloadType` SHALL match at least one of these types.
-- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
+- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the `path-query-param` property of the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
 - `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
 
 For a resource type of `Patient`, use `HEAD [fhir-base-url]/Patient?identifier=[custodian-assigned identifier]` instead of `patient.identifier`.

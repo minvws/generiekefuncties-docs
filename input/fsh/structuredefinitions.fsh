@@ -6,17 +6,11 @@ Description: "Endpoint profile for electronic services, aligned with IHE mCSD En
 * ^extension[http://hl7.org/fhir/StructureDefinition/structuredefinition-compliesWithProfile].valueCanonical = "https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint"
 * ^experimental = true
 * implicitRules ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
+* extension contains https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.PurposeOfUse named purposeOfUse 0..* //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * modifierExtension ..0 //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
 * managingOrganization 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Endpoint
-//* connectionType from http://hl7.org/fhir/ValueSet/endpoint-connection-type (extensible)
+* connectionType from NlGfConnectionTypesVS (extensible)
 * connectionType obeys nl-gf-connectiontype-req
-* connectionType ^binding.extension[+].url = "http://hl7.org/fhir/tools/StructureDefinition/additional-binding"
-* connectionType ^binding.extension[=].extension[+].url = "key"
-* connectionType ^binding.extension[=].extension[=].valueId = "nl-gf-connection-types"
-* connectionType ^binding.extension[=].extension[+].url = "purpose"
-* connectionType ^binding.extension[=].extension[=].valueCode = #extensible
-* connectionType ^binding.extension[=].extension[+].url = "valueSet"
-* connectionType ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-connection-types-vs"
 * payloadType from NlGfPayloadTypeVS (extensible)
 * payloadType obeys nl-gf-payloadtype-req
 
@@ -192,12 +186,12 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 // Membership of the individual codes is still validated through the (extensible) value set bindings.
 
 Invariant: nl-gf-connectiontype-req
-Description: "The connectionType SHALL be from a code system of the NL GF Connection Types value set (HL7 endpoint-connection-type, NL GF Authorization Server types, or Koppeltaal hti-smart-on-fhir)."
+Description: "The connectionType SHALL be from a code system of the NL GF Connection Types value set (HL7 endpoint-connection-type, NL GF Authorization Server, or Koppeltaal hti-smart-on-fhir)."
 Expression:  "system = 'http://terminology.hl7.org/CodeSystem/endpoint-connection-type' or system = 'http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-authorization-server-cs' or (system = 'http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type' and code = 'hti-smart-on-fhir')"
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
-Description: "At least one payloadType coding SHALL be from a code system of the NL GF Payload Type value set (HL7 endpoint-payload-type or NL GF Data Categories); additional codes from other code systems are also allowed."
+Description: "At least one payloadType coding SHALL be from a code system of the NL GF Payload Type value set (HL7 endpoint-payload-type, NL GF Data Categories); additional codes from other code systems are also allowed."
 Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs').exists()"
 Severity:    #error
 

@@ -68,7 +68,7 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Basispro
 // StructureMap: KVK Basisprofiel → FHIR Organization
 //
 // Mapping summary:
-//   kvkNummer                          → Organization.identifier (system: kvk)
+//   kvkNummer                          → Organization.identifier (system: kvk; assigner CIBG when there is no uraNummer)
 //   naam                               → Organization.name
 //   statutaireNaam                      → Organization.alias
 //   handelsnamen[].naam                 → Organization.alias
@@ -158,6 +158,60 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].element = "value"
 * group[=].rule[=].rule[=].target[=].transform = #copy
 * group[=].rule[=].rule[=].target[=].parameter[+].valueId = "kvkNum"
+// Without a URA number, the KvK-nummer is the custodian-assigned identifier (assigner CIBG)
+* group[=].rule[=].rule[+].name = "kvkAssigner"
+* group[=].rule[=].rule[=].source[+].context = "src"
+* group[=].rule[=].rule[=].source[=].condition = "uraNummer.empty()"
+* group[=].rule[=].rule[=].target[+].context = "kvkId"
+* group[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].target[=].element = "assigner"
+* group[=].rule[=].rule[=].target[=].variable = "kvkAssignerRef"
+* group[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdentifier"
+* group[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerRef"
+* group[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].target[=].element = "identifier"
+* group[=].rule[=].rule[=].rule[=].target[=].variable = "kvkAssignerId"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://kvk.nl"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdValue"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "value"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "50000535"
+* group[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerId"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "type"
+* group[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "kvkAssignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerIdType"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "coding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].variable = "kvkAssignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdTypeCodingSystem"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "system"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[+].name = "kvkAssignerIdTypeCodingCode"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].source[+].context = "kvkNum"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[+].context = "kvkAssignerIdTypeCoding"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].contextType = #variable
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].element = "code"
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].transform = #copy
+* group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "custodian"
 
 
 // Rule: uraNummer → identifier (system: urn:oid:2.16.528.1.1007.3.3)

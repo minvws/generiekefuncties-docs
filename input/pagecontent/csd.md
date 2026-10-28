@@ -16,7 +16,7 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 <img src="https://raw.githubusercontent.com/minvws/generiekefuncties-docs/refs/heads/main/input/images/careservices-overview-transactions.png" width="110%" style="float: none" alt="Overview of transactions in the Care Service Directory solution."/>
 
 
-This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-registry.
+This overview implies a decentralized architecture  with local Data Source actors and LRZa Directory replicas. An important central component is the LRZa Administration Directory, but this central component is not a crucial asset at data exchange runtime (only for creating or updating addressable entities). The LRZa Directory periodically imports Organization and Location resources from the KvK and Dezi-register. Elements copied from these authoritative registers are owned by the LRZa and can only be changed in the source register; see [LRZa-owned elements](lrza-owned-elements.html).
 
 
 ### National Constraints Compared to IHE mCSD
@@ -31,16 +31,14 @@ The LRZa Directory SHALL NOT support matching of care service entities (e.g. que
  
 1. Paging and consistent initial load:
 For the initial load (ITI-90-NL `search-type` without search parameters), the LRZa Directory SHALL return results using paging: it SHALL include `Bundle.link` with `relation = next` until all results are returned, and SHALL enforce a maximum page size. The maximum page size is advertised by the server and specified in the LRZa SLA. Update Clients SHALL follow `next` links until exhausted.
-To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Organization` → `Location` → `HealthcareService` → `Endpoint` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
+To reduce unresolved references during loading, Update Clients SHOULD load resource types in an order where referenced resources generally precede referencing resources (e.g. `Endpoint` → `Organization` → `Location` → `HealthcareService` → `OrganizationAffiliation`). Because the data model contains circular references (e.g. `Organization.endpoint` ↔ `Endpoint.managingOrganization`), no ordering can guarantee that every reference resolves during loading; this is why the order is `SHOULD`, not `SHALL`.
 Because the paged initial load is not atomic, the Update Client SHALL take the server time reported in `Bundle.meta.lastUpdated` of the first page as the **sync timestamp** — the LRZa server time up to which the replica is in sync — and, once the paged load completes, SHALL perform an incremental `history-type` synchronization (ITI-91-NL) with `_since` set to that sync timestamp. Using the LRZa-reported time avoids client/server clock skew, and this captures mutations made during the load without requiring a server-side point-in-time snapshot. How the Update Client retains the sync timestamp is implementation-defined (e.g. a small stored value, or derived from the replica content); because synchronization is processed idempotently, an inclusive `_since` (re-fetching the boundary resources) is safe.
-
 A Local Replica SHALL accept resources whose references cannot (yet) be resolved and SHALL NOT enforce referential integrity on write during the initial load; without this, replication breaks whenever a delta arrives before the resource it references. A Local Replica SHOULD NOT serve Query Clients until the initial load and the subsequent `_history` catch-up have completed.
 
-Incremental synchronization (ITI-91-NL) is type-level (`{resourceType}/_history`, per mCSD ITI-91). Resource types SHOULD be synchronized on a single, common interval rather than per-type intervals: differentiating the interval per resource type would let a referencing resource of a fast-syncing type point at a not-yet-replicated resource of a slow-syncing type for a prolonged period. The LRZa SLA specifies the *most frequent* interval the Directory accepts (the rate limit), not how often a replica must synchronize; a replica chooses its own interval within that bound, short enough for the timeliness its use case needs. As a non-binding guideline, a synchronization interval of about 15 minutes is advised, which keeps endpoint and routing changes sufficiently fresh for referral and exchange workflows. Because synchronization can run in many decentralized instances, an Update Client SHOULD spread its synchronization moment across the interval (for example by applying a random offset) rather than synchronizing on fixed clock boundaries; this avoids a self-inflicted concurrency peak at the LRZa Directory. Synchronization is delta-based (`_history`), so a typical round returns a small or empty result and the average load per client is low; the peak driven by simultaneous requests is the relevant concern, which spreading mitigates.
-
-The Update Client SHALL process incremental synchronization strictly sequentially rather than issuing `_history` requests in parallel: history entries SHALL be applied in chronological order (an older version SHALL NOT overwrite a newer one), and each `history-type` request (and each page of its response) SHALL complete and be applied before the next is issued. Sequential processing keeps the replica internally consistent, preserves the monotonic `_since` watermark on which retry depends, and bounds the request rate a single replica places on the LRZa Directory.
-
-In steady state the Update Client therefore runs a simple loop: pull the incremental updates sequentially (advancing the `_since` watermark), wait for the synchronization interval (about 15 minutes, spread as described above), and repeat.
+1. Incremental synchronization:
+Incremental synchronization (ITI-91-NL) is type-level (`{resourceType}/_history`, per mCSD ITI-91). Resource types SHOULD be synchronized on a single, common interval rather than per-type intervals: differentiating the interval per resource type would let a referencing resource of a fast-syncing type point at a not-yet-replicated resource of a slow-syncing type for a prolonged period. In FHIR R4, the `_sort` search-parameter is not supported in history-type queries. Therefore, Update Clients SHALL fetch all changes (all resource types, all pages), sort them, and apply in chronological order (an older version SHALL NOT overwrite a newer one).
+In steady state the Update Client runs a simple loop: pull the incremental updates (advancing the `_since` watermark), wait for the synchronization interval (about 15 minutes, spread as described above), and repeat.
+The LRZa SLA specifies the *most frequent* interval the Directory accepts (the rate limit), not how often a replica must synchronize; a replica chooses its own interval within that bound, short enough for the timeliness its use case needs. As a non-binding guideline, a synchronization interval of about 15 minutes is advised, which keeps endpoint and routing changes sufficiently fresh for referral and exchange workflows. Because synchronization can run in many decentralized instances, an Update Client SHOULD spread its synchronization moment across the interval (for example by applying a random offset) rather than synchronizing on fixed clock boundaries; this avoids a self-inflicted concurrency peak at the LRZa Directory. Synchronization is delta-based (`_history`), so a typical round returns a small or empty result and the average load per client is low; the peak driven by simultaneous requests is the relevant concern, which spreading mitigates.
 
 1. Concurrency control on updates:
 The LRZa Directory SHALL support optimistic locking: it SHALL return an `ETag` (resource `versionId`) on read and on create/update responses, and SHALL honour the `If-Match` header on `update` interactions, rejecting an update that carries a stale version with HTTP `412 Precondition Failed` (the server advertises this through `versioning = versioned-update`). A Data Source SHALL send `If-Match` on updates and, on a `412`, re-read and re-apply. It prevents silent overwrite where a resource can be mutated through more than one channel (e.g. from CIBG as Data Source with update records from KvK/DEZI and one or more Data Sources). For more info on this topic, see [FHIR transactional integrity](http://hl7.org/fhir/R4/http.html#transactional-integrity) and [FHIR concurrency](https://hl7.org/fhir/R4/http.html#concurrency)
@@ -78,7 +76,7 @@ Note: FHIR R4 does not define a search parameter for `Endpoint.period`, so the p
 Transactions between Service Providers and the LRZa are defined here. Other (local or 3rd party) transactions are not specified here. These transactions MAY reuse/adopt IHE mCSD and FHIR transactions, but are not obliged.  
 
 #### Care Services Feed: ITI-130-NL
-The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Resources SHOULD not be deleted; withdrawal SHOULD be expressed through a status change. Updates SHALL use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing). A Data Source MAY additionally submit a signed `Provenance` referencing the stored resource; this is optional, see [Resource signing](signing.html).
+The Data Source publishes entities to the LRZa Directory using create/update semantics as profiled in the Data Source capability statement. Submitted resources SHALL be validated against the applicable NL-GF profile; invalid resources SHALL be rejected with an `OperationOutcome`. Elements of Organization and Location that the LRZa Directory copies from the KvK and Dezi-register (e.g. the KvK, and URA `identifier`s and SBI `type` codes) are owned by the LRZa: the LRZa Directory SHALL refuse a create, update or delete that adds, modifies or removes such an element (see [LRZa-owned elements](lrza-owned-elements.html)). Resources SHOULD not be deleted; withdrawal SHOULD be expressed through a status change. Updates SHALL use optimistic locking (`If-Match`), which the server supports (see "Concurrency control on updates"). Resources may be published individually or in a `transaction` (all-or-nothing). A Data Source MAY additionally submit a signed `Provenance` referencing the stored resource; this is optional, see [Resource signing](signing.html).
 CapabilityStatement: [ITI-130-NL](./CapabilityStatement-nl-gf-directory-for-ITI-130-NL.html)
 
 #### Search Care Services: ITI-90-NL
@@ -90,7 +88,7 @@ The Update Client retrieves changes from the LRZa Directory using `history-type`
 CapabilityStatement: [ITI-91-NL](./CapabilityStatement-nl-gf-directory-for-ITI-91-NL.html)
 
 #### Error handling and resilience
-All transactions SHALL return a standard FHIR `OperationOutcome` with an appropriate HTTP status code (e.g. `400` malformed request, `412` stale version on a concurrent update, `422` profile validation failure, `429` too many requests when rate limiting applies, `5xx` server error). Clients (Data Source, Update Client) SHALL implement retry with exponential backoff for transient failures (`5xx`, network) and SHALL process synchronization idempotently. When the LRZa Directory applies rate limiting and responds with `429 Too Many Requests`, the client SHALL honor the `Retry-After` header where present and back off before retrying, rather than retrying immediately. A Query Client reads whatever the local replica currently holds; it cannot itself resolve staleness and relies on the Update Client's next synchronization to bring in newer data. Where a workflow cannot tolerate the replica's bounded staleness for a critical decision, the consuming application verifies the relevant information out of band (e.g. directly against the addressed party) rather than treating the directory as authoritative for that decision.
+All transactions SHALL return a standard FHIR `OperationOutcome` with an appropriate HTTP status code (e.g. `400` malformed request, `412` stale version on a concurrent update, `422` profile validation failure or business-rule violation such as a change to an [LRZa-owned element](lrza-owned-elements.html), `429` too many requests when rate limiting applies, `5xx` server error). Clients (Data Source, Update Client) SHALL implement retry with exponential backoff for transient failures (`5xx`, network) and SHALL process synchronization idempotently. When the LRZa Directory applies rate limiting and responds with `429 Too Many Requests`, the client SHALL honor the `Retry-After` header where present and back off before retrying, rather than retrying immediately. A Query Client reads whatever the local replica currently holds; it cannot itself resolve staleness and relies on the Update Client's next synchronization to bring in newer data. Where a workflow cannot tolerate the replica's bounded staleness for a critical decision, the consuming application verifies the relevant information out of band (e.g. directly against the addressed party) rather than treating the directory as authoritative for that decision.
 
 
 
@@ -103,6 +101,7 @@ An overview of the *most common* elements and relations between entities:
 erDiagram
     HealthcareService }o--|| Organization : providedBy
     HealthcareService }o--o{ Location : location
+    HealthcareService }o--o{ Location : coverageArea
     HealthcareService }o--o{ Endpoint : endpoint
     Location }o--|| Organization : managingOrganization
     Organization }o--o{ Endpoint : endpoint
@@ -118,6 +117,7 @@ erDiagram
         name string  "0..1"
         telecom ContactPoint  "0..*"
         location Reference  "0..*"
+        coverageArea Reference  "0..*"
         availableTime Availability  "0..*"
         endpoint Reference  "0..*"
     }
@@ -172,6 +172,7 @@ Key attributes:
 | name | 0..1 | A human-readable name for the service. |
 | telecom | 0..* | Contact details for the service. |
 | location → Location | 0..* | The location(s) where this service is available. |
+| coverageArea → Location | 0..* | Optional. The geographic area(s) in which this service is provided, e.g. provinces, cities or postal-code areas. Coverage areas are Location resources (`physicalType` `jdn` or `area`) that form a hierarchy via `partOf`; see the [example with postal-code areas](./HealthcareService-4cec3d3b-5676-52aa-8c99-f4c7aecebc12.html). A register/structure for coverage-area Locations is work in progress (see [Roadmap](#roadmap-for-care-service-directory)). |
 | availableTime | 0..* | Times the service is available. |
 | endpoint → Endpoint | 0..* | Technical endpoints for notifications or requests. |
 
@@ -190,6 +191,8 @@ The [NL-GF-Organization profile](./StructureDefinition-nl-gf-organization.html) 
 | partOf → Organization | 0..1 | The parent organization (for departments or sub-units). |
 | endpoint → Endpoint | 0..* | Technical endpoints used by this organization. |
 
+Organizations registered in the KvK and Dezi-register are imported by the LRZa Directory. When a URA number is linked to a KvK vestiging, that vestiging is also imported as an Organization that is `partOf` the Organization of the company. The elements copied from these registers (e.g. the KvK and URA `identifier`, SBI `type`, `name` and `address`) are owned by the LRZa and SHALL NOT be changed by a Data Source; in an Organization that originates from the KvK, a Data Source SHALL NOT add values to `alias`, `address`, `telecom` or `partOf` either. See [LRZa-owned elements](lrza-owned-elements.html).
+
 
 #### Endpoint
 An addressable entity may be reachable for electronic data exchange through electronic Endpoint(s). An Endpoint may be a FHIR server, a DICOM web service, OAuth token endpoint, or some other mechanism. Typically, Organizations and HealthcareServices refer to Endpoints. This relationship is meant to indicate that, e.g., a care provider (Organization) ***uses*** an Endpoint. An Endpoint also refers to one specific organization that manages the Endpoint (e.g. IT vendor); this is not the organization ***using*** the endpoint.
@@ -199,9 +202,9 @@ The [NL-GF-Endpoints profile](./StructureDefinition-nl-gf-endpoint.html) is used
 |---|---|---|
 | status | 1..1 | The operational status of the endpoint (e.g. active, off). |
 | period | 0..1 | The interval during which the endpoint is expected to be operational. An absent `period.end` means the endpoint is operational until further notice. |
-| connectionType | 1..1 | The type of connection (extensible binding to [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html) and [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html)). |
+| connectionType | 1..1 | The type of connection (extensible binding to [NL-GF Connection Types](./ValueSet-nl-gf-connection-types-vs.html), which includes the [Core connection types](https://hl7.org/fhir/R4/valueset-endpoint-connection-type.html)). |
 | payloadType | 1..* | The payload type(s) supported (extensible binding to [NL-GF Payload Types](./ValueSet-nl-gf-payload-type-vs.html)). |
-| payloadMimeType | 0..* | The mime type(s) of the payload, including the standard version for FHIR endpoints (e.g. `application/fhir+json; fhirVersion=4.0`). |
+| payloadMimeType | 0..* | The mime type(s) of the payload, including the standard version for FHIR endpoints (e.g. `application/fhir+json; fhirversion=4.0`). |
 | address | 1..1 | The technical address (URL) of the endpoint. |
 | managingOrganization → Organization | 1..1 | The organization that manages this endpoint (e.g. IT vendor). |
 
@@ -214,9 +217,9 @@ The directory therefore does not carry per-Endpoint terms of use, authentication
 
 Systems may support multiple versions of a standard at the same time, for instance during the transition from FHIR STU3 to FHIR R4 (zib2017 to zib2020). The version of the standard is therefore part of the selection criteria for an Endpoint and is expressed machine-readably in `payloadMimeType`:
 
-- An Endpoint with a FHIR-based `connectionType` (e.g. `hl7-fhir-rest`) SHALL include the FHIR version in its `payloadMimeType` values, using the standard [`fhirVersion` MIME-type parameter](https://hl7.org/fhir/R4/http.html#version-parameter): `application/fhir+json; fhirVersion=4.0` (R4) or `application/fhir+json; fhirVersion=3.0` (STU3).
+- An Endpoint with a FHIR-based `connectionType` (e.g. `hl7-fhir-rest`) SHALL include the FHIR version in its `payloadMimeType` values, using the standard [`fhirversion` MIME-type parameter](https://hl7.org/fhir/R4/http.html#version-parameter): `application/fhir+json; fhirversion=4.0` (R4) or `application/fhir+json; fhirversion=3.0` (STU3).
 - A system that serves multiple FHIR versions on the same address lists multiple `payloadMimeType` values on a single Endpoint. A future payload version migration therefore does not require registering a new Endpoint; separate Endpoints are only needed when the versions are served on different addresses.
-- When selecting an Endpoint, a Query Client matches on `connectionType`, `payloadType` and — when the payload version matters for the exchange — `payloadMimeType` including its `fhirVersion` parameter.
+- When selecting an Endpoint, a Query Client matches on `connectionType`, `payloadType` and — when the payload version matters for the exchange — `payloadMimeType` including its `fhirversion` parameter.
 - Free-text fields such as `Endpoint.name` MAY mention a version for readability, but systems SHALL NOT rely on free-text fields for version selection; `payloadMimeType` is the normative source.
 
 The Directory only carries the metadata needed for *selecting* an Endpoint (`connectionType`, `payloadType`, `payloadMimeType`). How detailed conformance information is obtained depends on the connection type:
@@ -224,6 +227,7 @@ The Directory only carries the metadata needed for *selecting* an Endpoint (`con
 - FHIR endpoints: the CapabilityStatement of the system itself, available at runtime via `[address]/metadata`.
 - IHE SOAP-based profiles (e.g. XDS, XCA): these have no runtime conformance interface; conformance is established out-of-band through IHE Integration Statements and the qualification/admission within the applicable trust framework ("afsprakenstelsel"). What a receiving system can process is declared per document (e.g. `formatCode` in the document metadata), not per Endpoint.
 - DICOM(web) endpoints: the vendor's DICOM Conformance Statement.
+- Authorization server endpoints: the `.address` SHALL point to the metadata endpoint of the authorization server.
 
 ##### Endpoint lifecycle and transition
 
@@ -252,6 +256,8 @@ The [NL-GF-Location profile](./StructureDefinition-nl-gf-location.html) is used 
 | address | 0..1 | The physical address. |
 | managingOrganization → Organization | 1..1 | The organization responsible for this location. |
 | partOf → Location | 0..1 | The parent location (e.g. building → floor → room). |
+
+Establishments (NL: vestigingen) registered in the KvK are imported by the LRZa Directory as Locations. The elements copied from the KvK (e.g. the vestigingsnummer `identifier`, SBI `type`, `name`, `address` and `position`) are owned by the LRZa and SHALL NOT be changed by a Data Source; a Data Source SHALL NOT add values to `alias`, `address` or `telecom` of these Locations either. See [LRZa-owned elements](lrza-owned-elements.html).
 
 
 #### OrganizationAffiliation
@@ -571,3 +577,4 @@ sequenceDiagram
 - Security specifications must be aligned with LDN 'veilig netwerk' specifications
 - Digital signing of mutations (FHIR `Provenance`) is currently optional; making it mandatory will hardening security and trustworthiness of the data 
 - Versioning of information standards / implementation guides per Endpoint (e.g. which zib release or IG package) is to be elaborated in alignment with the national choice of standards ([epic standaardenkeuze](https://github.com/minvws/generiekefuncties-architectuur/issues/876)); the NDH [fhir-ig extension](https://hl7.org/fhir/us/ndh/StructureDefinition-base-ext-fhir-ig.html) is a candidate mechanism.
+- A register/structure for coverage-area Locations (referenced by `HealthcareService.coverageArea`) is work in progress. The examples use a hierarchy of provinces, cities and postal-code areas linked via `Location.partOf`; the source, management and identification of these Locations are yet to be determined.

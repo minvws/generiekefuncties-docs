@@ -10,7 +10,7 @@ title: Care Service Directory - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown
-version: 1.0.0
+version: 1.1.0
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2026+
 releaseLabel: trial-use # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
@@ -51,6 +51,9 @@ pages:
 
   csd.md:
     title: Care Service Directory
+
+  lrza-owned-elements.md:
+    title: LRZa-owned elements
 
   signing.md:
     title: Resource signing
