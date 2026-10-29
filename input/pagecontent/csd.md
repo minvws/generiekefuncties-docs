@@ -2,6 +2,8 @@ Generic Function Care Service Directory (CSD) defines how healthcare parties can
 This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/index.html) profile and reuses the actor and transaction definitions that were defined in that specification. You should be able to read this specification without prior knowledge of IHE mCSD, but a basic understanding of the FHIR specification is preferred.
 {: .ig-lead}
 
+> **Note:** This page is based on version 1.0.0 of the Functional and Technical Design Documents of the Generic Function Addressing (Generieke Functie Adressering). The current and previous versions of this document are available at [www.generiekefuncties.nl/adressering](https://www.generiekefuncties.nl/adressering).
+
 
 ### Solution overview
 

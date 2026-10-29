@@ -2,13 +2,13 @@ Instance: SBIToOrganisatieType
 InstanceOf: ConceptMap
 Usage: #definition
 * id = "sbi-to-organisatietype"
-* url = "http://fhir.generiekefuncties.nl/csd/ConceptMap/sbi-to-organisatietype"
+* url = "http://fhir.generiekefuncties.nl/ConceptMap/sbi-to-organisatietype"
 * name = "SBIToOrganisatieType"
 * title = "SBI to OrganisatieType"
 * description = "Concept map relating health-sector Standaard Bedrijfsindeling (SBI 2025) activity codes to the Dutch OrganisatieTypeCodelijst (organization-type) codes."
 * status = #active
 * experimental = true
-* sourceUri = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-org-types-vs"
+* sourceUri = "http://fhir.generiekefuncties.nl/ValueSet/nl-gf-org-types-vs"
 * targetUri = "http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000"
 * group[+].source = "https://www.cbs.nl/standaard-bedrijfsindeling"
 * group[=].target = "http://nictiz.nl/fhir/NamingSystem/organization-type"
@@ -70,7 +70,7 @@ Usage: #definition
 * group[=].element[+].code = #86222
 * group[=].element[=].display = "Psychiatric care"
 * group[=].element[=].target[+].code = #G8
-* group[=].element[=].target[=].display = "	Psychiatriepraktijk zorg"
+* group[=].element[=].target[=].display = "Psychiatriepraktijk zorg"
 * group[=].element[=].target[=].equivalence = #equivalent
 
 // Diagnostic imaging services and medical laboratory activities -> Diagnostisch centrum / Laboratorium
@@ -85,7 +85,7 @@ Usage: #definition
 * group[=].element[+].code = #86930
 * group[=].element[=].display = "Activities of psychologists and psychotherapists, except medical doctors"
 * group[=].element[=].target[+].code = #G7
-* group[=].element[=].target[=].display = "	Psychologiepraktijk en psychotherapiepraktijk"
+* group[=].element[=].target[=].display = "Psychologiepraktijk en psychotherapiepraktijk"
 * group[=].element[=].target[=].equivalence = #equivalent
 
 // Activities of midwifes -> Verloskundigenpraktijk

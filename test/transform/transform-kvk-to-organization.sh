@@ -7,7 +7,7 @@
 # Prerequisites:
 #   - Java 17+ installed
 #   - download the FHIR Validator CLI from https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar and place it in ./input-cache/
-#   - refer to the structuredefinitions & structuremaps in the NL-GF Implementation Guide (RESOURCES_DIR="nl.generiekefuncties.csd#some-version")....
+#   - refer to the structuredefinitions & structuremaps in the NL-GF Implementation Guide (RESOURCES_DIR="nl.generiekefuncties.fhir#some-version")....
 #   - ....OR: install and run sushi (see README.md) to generate FHIR resources from the FSH definitions (RESOURCES_DIR="${PROJECT_DIR}/fsh-generated/resources")
 #
 # References:
@@ -17,7 +17,7 @@
 PROJECT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 VALIDATOR_JAR="${PROJECT_DIR}/input-cache/validator_cli.jar"
 RESOURCES_DIR="${PROJECT_DIR}/fsh-generated/resources"
-# RESOURCES_DIR="nl.generiekefuncties.csd"
+# RESOURCES_DIR="nl.generiekefuncties.fhir"
 
 INPUT_DIR="${PROJECT_DIR}/test/transform/input"
 OUTPUT_DIR="${PROJECT_DIR}/test/transform/output"
@@ -46,7 +46,7 @@ generate_narrative() {
 INPUT_FILE="${INPUT_DIR}/kvk-basisprofiel-90006623.json"
 INPUT_FILE_WITH_URA="${INPUT_DIR}/kvk-basisprofiel-90006623-with-ura.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-organization-90006623.json"
-TRANSFORM_MAP="http://fhir.generiekefuncties.nl/csd/StructureMap/KvkBasisprofielToOrganization"
+TRANSFORM_MAP="http://fhir.generiekefuncties.nl/StructureMap/KvkBasisprofielToOrganization"
 
 # Preprocess: rename _embedded → embedded (underscore prefix is reserved in FHIR JSON)
 # and add uraNummer to the basisprofiel input
@@ -78,7 +78,7 @@ java -jar "$VALIDATOR_JAR" \
 
 INPUT_FILE="${INPUT_DIR}/kvk-vestigingsprofiel-990064773193.json"
 OUTPUT_FILE="${OUTPUT_DIR}/lrza-location-990064773193.json"
-TRANSFORM_MAP="http://fhir.generiekefuncties.nl/csd/StructureMap/KvkVestigingsprofielToLocation"
+TRANSFORM_MAP="http://fhir.generiekefuncties.nl/StructureMap/KvkVestigingsprofielToLocation"
 
 # Transform the KVK Vestigingsprofiel JSON to a FHIR Location resource
 echo "======Transforming KVK Vestigingsprofiel to Location..."

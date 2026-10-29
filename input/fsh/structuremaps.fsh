@@ -80,14 +80,14 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Basispro
 
 Instance: KvkBasisprofielToOrganization
 InstanceOf: StructureMap
-Usage: #definition
+Usage: #example
 Title: "KVK Basisprofiel naar FHIR Organization"
 Description: "StructureMap die een KVK Basisprofiel API response transformeert naar een FHIR Organization resource."
 * id = "KvkBasisprofielToOrganization"
-* url = "http://fhir.generiekefuncties.nl/csd/StructureMap/KvkBasisprofielToOrganization"
+* url = "http://fhir.generiekefuncties.nl/StructureMap/KvkBasisprofielToOrganization"
 * name = "KvkBasisprofielToOrganization"
 * status = #draft
-* structure[+].url = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/KvkBasisprofiel"
+* structure[+].url = "http://fhir.generiekefuncties.nl/StructureDefinition/KvkBasisprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkBasisprofiel"
 * structure[+].url = Canonical(NlGfOrganization)
@@ -117,7 +117,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-organization"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/StructureDefinition/nl-gf-organization"
 
 // Set the resource language so generated narratives carry lang="en".
 * group[=].rule[+].name = "setLanguage"
@@ -787,14 +787,14 @@ Description: "Logical model representing the KVK (Kamer van Koophandel) Vestigin
 
 Instance: KvkVestigingsprofielToLocation
 InstanceOf: StructureMap
-Usage: #definition
+Usage: #example
 Title: "KVK Vestigingsprofiel naar FHIR Location"
 Description: "StructureMap die een KVK Vestigingsprofiel API response transformeert naar een FHIR Location resource."
 * id = "KvkVestigingsprofielToLocation"
-* url = "http://fhir.generiekefuncties.nl/csd/StructureMap/KvkVestigingsprofielToLocation"
+* url = "http://fhir.generiekefuncties.nl/StructureMap/KvkVestigingsprofielToLocation"
 * name = "KvkVestigingsprofielToLocation"
 * status = #draft
-* structure[+].url = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/KvkVestigingsprofiel"
+* structure[+].url = "http://fhir.generiekefuncties.nl/StructureDefinition/KvkVestigingsprofiel"
 * structure[=].mode = #source
 * structure[=].alias = "KvkVestigingsprofiel"
 * structure[+].url = Canonical(NlGfLocation)
@@ -824,7 +824,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "profile"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/csd/StructureDefinition/nl-gf-location"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.generiekefuncties.nl/StructureDefinition/nl-gf-location"
 
 // Set the resource language so generated narratives carry lang="en".
 * group[=].rule[+].name = "setLanguage"
@@ -1417,7 +1417,7 @@ Description: "StructureMap die een KVK Vestigingsprofiel API response transforme
 // Title: "Bundle of FHIR Logical Models and StructureMaps for KVK Basisprofiel and Vestigingsprofiel"
 // Description: "This bundle contains FHIR Logical Models and StructureMaps that define the mapping from KVK Basisprofiel and Vestigingsprofiel to FHIR Organization and Location resources, respectively. The Bundle is of type 'transaction' and includes PUT entries for each resource and mapping."
 // * type = #transaction
-// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
-// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
-// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
-// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/csd/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/StructureDefinition/,StructureDefinition, KvkBasisprofiel)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/StructureMap/,StructureMap, KvkBasisprofielToOrganization)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/StructureDefinition/,StructureDefinition, KvkVestigingsprofiel)
+// * insert BundleEntryPUT(http://fhir.generiekefuncties.nl/StructureMap/,StructureMap, KvkVestigingsprofielToLocation)

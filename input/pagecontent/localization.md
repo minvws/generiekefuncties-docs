@@ -1,6 +1,8 @@
 GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
 
+> **Note:** This page is based on version 0.9.0 of the Functional and Technical Design Documents of the Generic Function Localization (Generieke Functie Lokalisatie). The current and previous versions of this document are available at [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie).
+
 ### Scope
 
 This page specifies:
@@ -206,8 +208,8 @@ Content-Type: application/x-www-form-urlencoded
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
-&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
-&organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
+&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|medicationRequest
+&organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
 `{NVI-patient-identifier}` is the base64url-encoded PRS object described under [GF-LOC-1](#gf-loc-1-register-patient). The NVI decrypts and unblinds it to find matching Patient resources.

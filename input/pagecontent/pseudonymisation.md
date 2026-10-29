@@ -1,6 +1,8 @@
 Generic Function Pseudonymisation defines how a national Pseudonym Registration Service (PRS) is used to convert an identifier (e.g. a Burgerservicenummer, BSN) into a recipient-specific, single-use pseudonym. The goal is to allow generic functions such as [GF Localization](./localization.html) to exchange patient-bound information without ever revealing the underlying BSN to the receiving party (e.g. the Nationale Verwijs Index, NVI).
 {: .ig-lead}
 
+> **Note:** This page is based on version 0.9.0 of the Functional and Technical Design Documents of the Generic Function Localization (Generieke Functie Lokalisatie). The current and previous versions of this document are available at [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie).
+
 The PRS combines two cryptographic building blocks:
 
 - an **HKDF** key derivation (RFC 5869) that produces a deterministic but recipient-scoped pseudonym from an `Identifier`;
