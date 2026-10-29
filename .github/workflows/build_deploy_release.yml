@@ -72,12 +72,12 @@ jobs:
           tar -xzOf output/package.tgz package/package.json \
             | jq -e --arg v "$TAG" --arg url "$PUBLISH_URL" '.version == $v and .url == $url and (has("notForPublication") | not)' \
             || { echo "::error::output/package.tgz is not a publication package (expected version $TAG, url $PUBLISH_URL, no notForPublication)"; exit 1; }
-      - name: Package output as csd/<tag>/ zip
+      - name: Package output as <tag>/ zip
         run: |
-          mkdir -p "dist/csd/${TAG}"
-          cp -a ./output/. "dist/csd/${TAG}/"
-          cp publication/package-list.json dist/csd/package-list.json
-          (cd dist && zip -rq "../fhir-ig.zip" csd)
+          mkdir -p "dist/${TAG}"
+          cp -a ./output/. "dist/${TAG}/"
+          cp publication/package-list.json dist/package-list.json
+          (cd dist && zip -rq "../fhir-ig.zip" "${TAG}" package-list.json)
       - name: Attach zip to release
         env:
           GH_TOKEN: ${{ github.token }}

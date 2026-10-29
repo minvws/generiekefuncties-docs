@@ -21,7 +21,7 @@ To release version `X.Y.Z`:
 2. Update `publication-request.json`: `version`, `path` (`http://fhir.generiekefuncties.nl/X.Y.Z`), `status`, `desc`, and `first` (`true` only for the first publication). Check the 'Publication Request' section in `output/qa.html`.
 3. Add an entry for `X.Y.Z` to `publication/package-list.json` (and remove `current: true` from the previous release entry).
 4. Create a GitHub release with tag `X.Y.Z`. The workflow fails if the tag, `sushi-config.yaml`, `publication-request.json` and `publication/package-list.json` don't match, or if the package is still marked `notForPublication`.
-5. Deploy the `fhir-ig.zip` release asset to the web root of fhir.generiekefuncties.nl (it contains `csd/X.Y.Z/` and `csd/package-list.json`).
+5. Deploy the `fhir-ig.zip` release asset to the web root of fhir.generiekefuncties.nl (it contains `X.Y.Z/` and `package-list.json` at the archive root).
 6. Add the package to the [MinVWS package feed](https://code.overheid.nl/MinVWS/fhir-package-feed) and update the edition in the [FHIR IG registry](https://github.com/FHIR/ig-registry).
 
 
