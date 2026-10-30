@@ -1,4 +1,4 @@
-GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient and custodian. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
+GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient, custodian and registering client. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
 
 > **Note:** This page is based on version 0.9.0 of the Functional and Technical Design Documents of the Generic Function Localization (Generieke Functie Lokalisatie). The current and previous versions of this document are available at [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie).
@@ -26,7 +26,7 @@ This page does not specify:
 | Data user | A care provider and practitioner who search for custodians that hold relevant data for a patient. |
 | Localization Registration Client | The software, such as an EHR or PACS, that registers and maintains patients at the NVI for a custodian. |
 | Localization Search Client | The software, such as an EHR, that searches the NVI for a data user. |
-| Registration | A `Patient` resource at the NVI that states that one custodian holds data for one patient. |
+| Registration | A `Patient` resource at the NVI that states that one custodian holds data for one patient, registered by one Localization Registration Client. |
 | NVI pseudonym | The patient identifier at the NVI. The [Pseudonym Registration Service (PRS)](./pseudonymisation.html) derives it from the BSN for the NVI only. |
 | Custodian-assigned identifier | The custodian's own patient identifier. The NVI uses it to request Authorization Decisions from that custodian. |
 | Search context | The custodian properties that a data user searches on, such as care provider type or healthcare-service type. See [Search context](#search-context). |
@@ -303,7 +303,9 @@ An allow decision does not replace authorization of the actual data request. The
 
 ### Registration lifecycle
 
-The registration key is the combination of the custodian's ID (`managingOrganization.identifier`) and the custodian-assigned identifier (`system|value`).
+The registration key is the combination of the custodian's ID (`managingOrganization.identifier`), the custodian-assigned identifier (`system|value`) and the registering client (`meta.source`). After unblinding, the NVI also treats the combination of custodian ID, NVI pseudonym and registering client as unique.
+
+A custodian MAY use more than one Localization Registration Client, for example an EHR and a PACS, or an old and a new system during a migration. Each client then maintains only its own registrations, so one client never deletes a registration that another client made. A custodian with one client needs nothing extra. The registering client is never returned to data users and does not affect search results.
 
 **Register.** The Localization Registration Client SHALL register a patient ([GF-LOC-1](#gf-loc-1-register-patient)) when both conditions hold:
 - the custodian holds data for the patient in a data category it exposes;
@@ -374,7 +376,7 @@ An unreachable custodian is not an NVI failure. The NVI treats it as deny, does 
 
 #### Data Localization Patient profile
 
-The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-localization-patient.html) uses one Patient resource per combination of a patient, custodian and OAuth client:
+The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-localization-patient.html) uses one Patient resource per patient, custodian and registering client:
 - `Patient.identifier` contains the NVI pseudonym and a custodian-assigned patient identifier;
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
