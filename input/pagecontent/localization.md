@@ -265,7 +265,7 @@ For each matching custodian, the NVI asks whether the data user may access the c
 
 **Artifacts.** [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html). There is no Custodian Server CapabilityStatement yet (see [Open issues](#open-issues)).
 
-**Request.** The NVI sends a `HEAD` request to the custodian's existing FHIR API for each resource type of the requested data categories:
+**Request.** The NVI sends a `HEAD` request to the custodian's existing FHIR API. The requested data categories are the values of `organization.endpoint.payload-type` in the search. When the search specifies data categories, the NVI sends one request for each resource type of those categories. When it does not, the NVI sends one request on `Patient`:
 
 ```
 HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned identifier]
