@@ -12,6 +12,19 @@ The build-logs of this build are published on https://chat.fhir.org/#narrow/stre
 In the ./build.log you can find the build log. Validation tests are in ./output/qa.html
 
 
+## Releasing a version
+
+CI builds (GitHub Pages, build.fhir.org) are marked `"notForPublication": true` in their `package.tgz` and must not be used as a published package. A publishable package is built by the release workflow (`.github/workflows/build_deploy_release.yml`), which runs the IG Publisher with `-publish http://fhir.generiekefuncties.nl/<version>`.
+
+To release version `X.Y.Z`:
+1. Set `version: X.Y.Z` (and `releaseLabel`) in `sushi-config.yaml`.
+2. Update `publication-request.json`: `version`, `path` (`http://fhir.generiekefuncties.nl/X.Y.Z`), `status`, `desc`, and `first` (`true` only for the first publication). Check the 'Publication Request' section in `output/qa.html`.
+3. Add an entry for `X.Y.Z` to `publication/package-list.json` (and remove `current: true` from the previous release entry).
+4. Create a GitHub release with tag `X.Y.Z`. The workflow fails if the tag, `sushi-config.yaml`, `publication-request.json` and `publication/package-list.json` don't match, or if the package is still marked `notForPublication`.
+5. Deploy the `fhir-ig.zip` release asset to the web root of fhir.generiekefuncties.nl (it contains `X.Y.Z/` and `package-list.json` at the archive root).
+6. Add the package to the [MinVWS package feed](https://code.overheid.nl/MinVWS/fhir-package-feed) and update the edition in the [FHIR IG registry](https://github.com/FHIR/ig-registry).
+
+
 # Generating FSH-FHIR-resources on your desktop
 
 If you want to generate FSH FHIR-resources based on Simplifier-FHIR-profiles (like the Dutch 'nl-core' profiles) on your local desktop, you have to [install Dotnet & Firely Terminal](https://docs.fire.ly/projects/Firely-Terminal/getting_started/InstallingFirelyTerminal.html):

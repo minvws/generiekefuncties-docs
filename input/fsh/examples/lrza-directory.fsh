@@ -25,6 +25,7 @@ Description: "Example: LRZa - Organization 1 - Organization"
 * address.postalCode = "7071 PT"
 * endpoint[+] = Reference(Endpoint/d6a4678b-755e-5ae3-bd36-67db6ae3d8c4) // Endpoint of this organization (Organization 1) from Data Source 1
 * endpoint[+] = Reference(Endpoint/53c03a2e-53e9-4994-827c-98f6b4caf897) // Superseded Endpoint of the previous EHR system
+* endpoint[+] = Reference(Endpoint/5109d912-c661-455f-b4d7-69d3390a804c) // Authorization server (metadata endpoint) of Data Source 1
 
 
 
@@ -164,7 +165,7 @@ Description: "Example: Organization 1 - Endpoint"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1"
 * period.start = "2024-01-15"
@@ -183,14 +184,14 @@ Instance: a1f3c0d2-9b47-5e18-8c6a-2d4f7e1b9a03
 InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Organization 1 - Endpoint (STU3 and R4)"
-Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirVersion MIME parameter."
+Description: "Example: a single FHIR endpoint that advertises support for both FHIR STU3 (3.0) and R4 (4.0). A payload-version migration therefore does not require a separate endpoint; a Query Client selects the version it needs via the fhirversion MIME parameter."
 * language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7b2d9e64-3a1c-4f08-9d52-c1a8e0f4b7d9","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 1 (STU3 + R4)"
 * managingOrganization.identifier.system = "http://kvk.nl"
@@ -222,6 +223,23 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * contact[=].use = #work
 * address = "https://cp1-old.example.org/fhir"
 
+Instance: 5109d912-c661-455f-b4d7-69d3390a804c
+InstanceOf: NlGfEndpoint
+Usage: #example
+Title: "Organization 1 - Endpoint (authorization server)"
+Description: "Example: the authorization server that protects the FHIR endpoints of Organization 1. The connectionType identifies the OAuth 2.0 flavor (Nuts), the address points to the metadata endpoint of the authorization server, and the payloadType is none."
+* language = #en
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:6267e7bc-4fc1-41f6-9998-658bdb384ae1","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* status = #active
+* payloadType[+].coding = $endpoint-payload-type#none "None"
+* connectionType = nl-gf-authorization-server-cs#oauth-nuts "OAuth 2.0 NUTS"
+* name = "Authorization server"
+* period.start = "2024-01-15"
+* managingOrganization.identifier.system = "http://kvk.nl"
+* managingOrganization.identifier.value = "51494752"
+* managingOrganization.display = "PharmaPartners B.V."
+* address = "https://auth.cp1-test.example.org/.well-known/oauth-authorization-server"
+
 // // ----------------------------------------------------------------
 // // Resource from Data Source Organization 2
 
@@ -235,7 +253,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2"
 * managingOrganization.identifier.system = "http://kvk.nl"
@@ -294,7 +312,7 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 2 (health records)"
 * managingOrganization.identifier.system = "http://kvk.nl"
@@ -336,6 +354,8 @@ Description: "Example consultation healthcare service named Polikliniek 't Vaatj
 * type.coding[+] = NlGfZorgvragenCS#msz.chirurgie.vaatchirurgie.varices "Varicose veins"
 * type[+] = NlGfZorgvragenCS#msz.chirurgie.vaatchirurgie.perifeer-arterieel-vaatlijden-pav "Peripheral Arterial Disease (PAD)"
 * specialty[+].coding = $sct#394609007 "Surgery-general"
+* coverageArea[+] = Reference(Location/b03dbf73-23a1-4880-bda0-ee8dab1a0184) // City Gorinchem
+* coverageArea[+] = Reference(Location/0540de85-0f4b-4b5c-a6fa-256afb8c31de) // City Leerdam
 
 Instance: d5cc8cb0-9ea2-5100-bd1b-d3d60075aee2
 InstanceOf: NlGfHealthcareService
@@ -353,6 +373,8 @@ Description: "Example: Organization 2 - HealthcareService Neurochirurgie"
 * type.coding[+] = NlGfZorgvragenCS#msz.neurologie-neurochirurgie.radiculair-syndroom "Radicular syndrome"
 * type.coding[+] = NlGfZorgvragenCS#msz.neurologie-neurochirurgie.cerebrovasculaire-aandoeningen "Cerebrovascular conditions"
 * specialty[+].coding = $sct#394610002 "Surgery-Neurosurgery"
+* coverageArea[+] = Reference(Location/c87925a9-f233-476f-98bc-1fac3ab38c43) // Province Zuid-Holland
+* coverageArea[+] = Reference(Location/edcf234e-8bd0-4326-8acf-ce0bd2f87b0e) // Province Utrecht
 
 Instance: 3b09ed4b-bd16-5562-b529-1ab18082cac8
 InstanceOf: NlGfHealthcareService
@@ -481,7 +503,7 @@ Description: "Example: Organization 3 - Endpoint FHIR R4"
 * status = #active
 
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=4.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=4.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3"
 * managingOrganization.identifier.system = "http://kvk.nl"
@@ -518,7 +540,7 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * payloadType[+].coding = nl-gf-data-categories-cs#DiagnosticReport "Diagnostic Report"
 * payloadType[+].coding = nl-gf-data-categories-cs#Condition "Condition"
 * payloadType[+].coding = nl-gf-data-categories-cs#AllergyIntolerance "Allergy Intolerance"
-* payloadMimeType[+] = #"application/fhir+json; fhirVersion=3.0"
+* payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest
 * name = "FHIR Endpoint 3 (health records)"
 * managingOrganization.identifier.system = "http://kvk.nl"
@@ -563,6 +585,12 @@ Description: "Example: Organization 3 - HealthcareService Verpleging"
 * name = "Verpleging"
 * location[+] = Reference(Location/f37e7fdb-21b9-54ac-bd36-70c56f2f09c7)
 * location[+] = Reference(Location/bbec4d2a-1be2-539b-817e-f85ef6e895f2)
+* coverageArea[+] = Reference(Location/2f04ef3b-2f14-42b1-8fc4-e15083d5d5fe) // Postal code 4201 Gorinchem
+* coverageArea[+] = Reference(Location/4b613504-7582-43de-b82a-4fd7313ccffe) // Postal code 4204 Gorinchem
+* coverageArea[+] = Reference(Location/71e864ec-231d-4b8c-8c0b-6f6435099985) // Postal code 4205 Gorinchem
+* coverageArea[+] = Reference(Location/6064e2a0-e93c-4e50-8b5e-bbaf7a675c70) // Postal code 4206 Gorinchem
+* coverageArea[+] = Reference(Location/12aee287-c4d1-4c6e-90c3-a07a5280f5ef) // Postal code 4141 Leerdam
+* coverageArea[+] = Reference(Location/defc8df0-5cd5-4287-ab16-48408924c2db) // Postal code 4142 Leerdam
 * type.coding[+] = $service-type#59 "Nursing"
 * type[=].coding[+] = NlGfZorgvragenCS#verpleging-verzorging-en-thuiszorg.verpleging "Nursing"
 * type[=].extension[supportedActivityDefinitions].valueCanonical = Canonical(nl-gf-nursing-care-6VV)

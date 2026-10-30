@@ -3,14 +3,14 @@
 # │  used properties are included. For a list of all supported properties and their functions,     │
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
-id: nl.generiekefuncties.csd
-canonical: http://fhir.generiekefuncties.nl/csd
-name: NlGfCareServiceDirectory
-title: Care Service Directory - Implementation Guide
+id: nl.generiekefuncties.fhir
+canonical: http://fhir.generiekefuncties.nl
+name: NlGenericFunctions
+title: Generic Functions for data exchange - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown
-version: 1.0.0
+version: 26.0.0
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2026+
 releaseLabel: trial-use # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
@@ -29,7 +29,7 @@ dependencies:
   # nictiz.fhir.nl.r4.nl-core: 0.12.0-beta.4
   # nictiz.fhir.nl.r4.zib2020: 0.12.0-beta.4
   ihe.iti.mcsd: 4.0.0
-  hl7.fhir.eu.base: 2.0.0
+  hl7.fhir.eu.base: 2.0.1
   # hl7.fhir.eu.base: 0.1.0-ballot # Depending on discussion with Nictiz if we want to base our profiles on this or not
 #
 #
@@ -52,41 +52,29 @@ pages:
   csd.md:
     title: Care Service Directory
 
+  lrza-managed-elements.md:
+    title: LRZa-managed elements
+
   signing.md:
     title: Resource signing
 
   # identification.md:
   #   title: Identification
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
 
   # authentication.md:
   #   title: Authentication
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
 
   # authorization.md:
   #   title: Authorization
-  #   extension:
-  #       - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-  #         valueCode: draft
 
   localization.md:
     title: Data Localization
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
 
   pseudonymisation.md:
     title: Pseudonymisation
-    extension:
-        - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
-          valueCode: draft
 
-  history.md:
-    title: History
+  release-notes.md:
+    title: Release Notes
 
 #
 # The parameters property represents IG.definition.parameter. Rather
@@ -107,8 +95,6 @@ parameters:
     - http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type
     - http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000
     - http://ei.vektis.nl/codelijsten/COD016-VEKT
-    - http://fhir.generiekefuncties.nl/localization/ValueSet/zorgcontext
-    - http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs
 
 
 #   validation: [allow-any-extensions, no-broken-links]
@@ -125,14 +111,14 @@ menu:
   Home: index.html
   Care Service Directory: csd.html
   Signing: signing.html
-  # Identification (draft): identification.html
-  # Authentication (draft): authentication.html
-  # Authorization (draft): authorization.html
-  Localization (draft): localization.html
-  Pseudonymisation (draft): pseudonymisation.html
+  # Identification: identification.html
+  # Authentication: authentication.html
+  # Authorization: authorization.html
+  Localization: localization.html
+  Pseudonymisation: pseudonymisation.html
+  
   Artifacts: artifacts.html
-
-  History: history.html
+  Release Notes: release-notes.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │

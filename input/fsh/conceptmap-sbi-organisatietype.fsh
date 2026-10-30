@@ -2,13 +2,13 @@ Instance: SBIToOrganisatieType
 InstanceOf: ConceptMap
 Usage: #definition
 * id = "sbi-to-organisatietype"
-* url = "http://fhir.generiekefuncties.nl/csd/ConceptMap/sbi-to-organisatietype"
+* url = "http://fhir.generiekefuncties.nl/ConceptMap/sbi-to-organisatietype"
 * name = "SBIToOrganisatieType"
 * title = "SBI to OrganisatieType"
-* description = "Concept map relating health-sector Standaard Bedrijfsindeling (SBI 2025) activity codes to the Dutch OrganisatieTypeCodelijst (organization-type) codes. Only SBI codes that have a clear OrganisatieType equivalent are included."
+* description = "Concept map relating health-sector Standaard Bedrijfsindeling (SBI 2025) activity codes to the Dutch OrganisatieTypeCodelijst (organization-type) codes."
 * status = #active
 * experimental = true
-* sourceUri = "http://fhir.generiekefuncties.nl/csd/ValueSet/nl-gf-org-types-vs"
+* sourceUri = "http://fhir.generiekefuncties.nl/ValueSet/nl-gf-org-types-vs"
 * targetUri = "http://decor.nictiz.nl/fhir/ValueSet/2.16.840.1.113883.2.4.3.11.60.40.2.17.2.3--20200901000000"
 * group[+].source = "https://www.cbs.nl/standaard-bedrijfsindeling"
 * group[=].target = "http://nictiz.nl/fhir/NamingSystem/organization-type"
@@ -41,10 +41,7 @@ Usage: #definition
 * group[=].element[=].target[=].display = "Brandwondencentrum"
 * group[=].element[=].target[=].equivalence = #narrower
 * group[=].element[=].target[=].comment = "Brandwondencentrum is a specific subtype within the broader SBI category 'Other hospital care'."
-* group[=].element[=].target[+].code = #K9
-* group[=].element[=].target[=].display = "Zelfstandig opererende ziekenhuisapotheek"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Zelfstandig opererende ziekenhuisapotheek covers only part of the broader SBI category 'Other hospital care'."
+
 
 // Curative mental health care with overnight stay -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86104
@@ -56,20 +53,10 @@ Usage: #definition
 // General medical practice activities -> Huisartspraktijk
 * group[=].element[+].code = #8621
 * group[=].element[=].display = "General medical practice activities"
-* group[=].element[=].target[+].code = #Z3
-* group[=].element[=].target[=].display = "Huisartspraktijk (zelfstandig of groepspraktijk)"
-* group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[=].target[+].code = #H1
 * group[=].element[=].target[=].display = "Huisartsinstelling"
 * group[=].element[=].target[=].equivalence = #equivalent
-* group[=].element[=].target[+].code = #K3
-* group[=].element[=].target[=].display = "Apotheekhoudende huisartspraktijk"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Apotheekhoudende huisartspraktijk is a specialized subset of general medical practice activities."
-* group[=].element[=].target[+].code = #N6
-* group[=].element[=].target[=].display = "Huisartsenpost (t.b.v. dienstwaarneming)"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Huisartsenpost represents out-of-hours service delivery and is narrower than the full SBI category for general practice."
+
 
 // Specialised medical care without overnight stay -> Zelfstandig behandelcentrum
 * group[=].element[+].code = #86221
@@ -77,43 +64,29 @@ Usage: #definition
 * group[=].element[=].target[+].code = #Z4
 * group[=].element[=].target[=].display = "Zelfstandig behandelcentrum"
 * group[=].element[=].target[=].equivalence = #equivalent
-* group[=].element[=].target[+].code = #P4
-* group[=].element[=].target[=].display = "Polikliniek (als onderdeel van een ziekenhuis)"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Polikliniek as part of a hospital is one organizational form within broader specialised outpatient medical care."
-* group[=].element[=].target[+].code = #DIA
-* group[=].element[=].target[=].display = "Dialysecentrum"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Dialysecentrum covers a specific clinical service and is narrower than the full SBI class for specialised outpatient care."
+
 
 // Psychiatric care -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86222
 * group[=].element[=].display = "Psychiatric care"
-* group[=].element[=].target[+].code = #G5
-* group[=].element[=].target[=].display = "Geestelijke Gezondheidszorg"
-* group[=].element[=].target[=].equivalence = #wider
+* group[=].element[=].target[+].code = #G8
+* group[=].element[=].target[=].display = "Psychiatriepraktijk zorg"
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Diagnostic imaging services and medical laboratory activities -> Diagnostisch centrum / Laboratorium
 * group[=].element[+].code = #86910
 * group[=].element[=].display = "Diagnostic imaging services and medical laboratory activities"
 * group[=].element[=].target[+].code = #Z5
 * group[=].element[=].target[=].display = "Diagnostisch centrum"
-* group[=].element[=].target[=].equivalence = #wider
-* group[=].element[=].target[+].code = #L1
-* group[=].element[=].target[=].display = "Laboratorium"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Laboratorium represents one specific service type within the broader SBI category that also includes diagnostic imaging."
-* group[=].element[=].target[+].code = #B2
-* group[=].element[=].target[=].display = "Echocentrum"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Echocentrum is a specific diagnostic service and therefore narrower than the combined SBI category."
+* group[=].element[=].target[=].equivalence = #equivalent
+
 
 // Activities of psychologists and psychotherapists -> Geestelijke Gezondheidszorg
 * group[=].element[+].code = #86930
 * group[=].element[=].display = "Activities of psychologists and psychotherapists, except medical doctors"
-* group[=].element[=].target[+].code = #G5
-* group[=].element[=].target[=].display = "Geestelijke Gezondheidszorg"
-* group[=].element[=].target[=].equivalence = #wider
+* group[=].element[=].target[+].code = #G7
+* group[=].element[=].target[=].display = "Psychologiepraktijk en psychotherapiepraktijk"
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Activities of midwifes -> Verloskundigenpraktijk
 * group[=].element[+].code = #86941
@@ -127,11 +100,7 @@ Usage: #definition
 * group[=].element[=].display = "Nursing and personal care at home and maternity care"
 * group[=].element[=].target[+].code = #T2
 * group[=].element[=].target[=].display = "Thuiszorg"
-* group[=].element[=].target[=].equivalence = #wider
-* group[=].element[=].target[+].code = #K4
-* group[=].element[=].target[=].display = "Kraamzorg"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Kraamzorg is one component of this SBI category, which also includes broader home nursing and personal care."
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Preventive care -> Preventieve gezondheidszorg
 * group[=].element[+].code = #86992
@@ -139,18 +108,13 @@ Usage: #definition
 * group[=].element[=].target[+].code = #P6
 * group[=].element[=].target[=].display = "Preventieve gezondheidszorg"
 * group[=].element[=].target[=].equivalence = #equivalent
-* group[=].element[=].target[+].code = #JGZ
-* group[=].element[=].target[=].display = "Jeugdgezondheidszorg"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Jeugdgezondheidszorg is a specific subdomain of preventive care and does not cover all preventive activities in SBI 86992."
 
 // Other health care without overnight stay n.e.c. -> Revalidatiecentrum
 * group[=].element[+].code = #86999
 * group[=].element[=].display = "Other health care without overnight stay n.e.c."
 * group[=].element[=].target[+].code = #R8
 * group[=].element[=].target[=].display = "Revalidatiecentrum"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Revalidatiecentrum is a specific organization type within the broader residual SBI category for other outpatient health care."
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Residential nursing care activities -> Verpleeghuis
 * group[=].element[+].code = #8710
@@ -158,10 +122,6 @@ Usage: #definition
 * group[=].element[=].target[+].code = #R5
 * group[=].element[=].target[=].display = "Verpleeghuis"
 * group[=].element[=].target[=].equivalence = #equivalent
-* group[=].element[=].target[+].code = #H2
-* group[=].element[=].target[=].display = "Hospice"
-* group[=].element[=].target[=].equivalence = #narrower
-* group[=].element[=].target[=].comment = "Hospice is a specialized care setting and therefore narrower than the full SBI category for residential nursing care."
 
 // Residential care for persons with intellectual disabilities -> Verstandelijk gehandicaptenzorg
 * group[=].element[+].code = #87201
@@ -175,14 +135,14 @@ Usage: #definition
 * group[=].element[=].display = "Residential care for persons with non-intellectual mental illness or substance abuse"
 * group[=].element[=].target[+].code = #G5
 * group[=].element[=].target[=].display = "Geestelijke Gezondheidszorg"
-* group[=].element[=].target[=].equivalence = #wider
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Residential physical and sensory disability care -> Verplegings- of verzorgingsinstelling
 * group[=].element[+].code = #87301
 * group[=].element[=].display = "Residential physical and sensory disability care"
 * group[=].element[=].target[+].code = #X3
 * group[=].element[=].target[=].display = "Verplegings- of verzorgingsinstelling"
-* group[=].element[=].target[=].equivalence = #wider
+* group[=].element[=].target[=].equivalence = #equivalent
 
 // Residential care with personal care and assistance for the elderly -> Verzorgingstehuis
 * group[=].element[+].code = #87302
@@ -194,9 +154,6 @@ Usage: #definition
 // Retail sale of pharmaceutical products -> Openbare apotheek / Apotheekinstelling
 * group[=].element[+].code = #47730
 * group[=].element[=].display = "Retail sale of pharmaceutical products"
-* group[=].element[=].target[+].code = #J8
-* group[=].element[=].target[=].display = "Openbare apotheek"
-* group[=].element[=].target[=].equivalence = #equivalent
 * group[=].element[=].target[+].code = #A1
 * group[=].element[=].target[=].display = "Apotheekinstelling"
-* group[=].element[=].target[=].equivalence = #wider
+* group[=].element[=].target[=].equivalence = #equivalent
