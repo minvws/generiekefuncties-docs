@@ -58,6 +58,7 @@ jobs:
             -v ${{ github.workspace }}/output:/app/output \
             -v ${{ github.workspace }}/ig.ini:/app/ig.ini \
             -v ${{ github.workspace }}/sushi-config.yaml:/app/sushi-config.yaml \
+            -v ${{ github.workspace }}/publication-request.json:/app/publication-request.json \
             localhost:5000/fhir/publisher:${{ github.sha }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -12,6 +12,10 @@
 #### Significant changes/Closed issues:
 - Localization; localization records (NVI-pseudonyms) no longer contain a data-category code.
 - Localization; data users search with a search context (zoekcontext) containing custodian characteristics, and the NVI only returns relevant custodians with an allow Authorization Decision (HEAD request on the custodian's FHIR API). Localization-Patients contain a custodian-assigned patient identifier.
+- Care Services; added [LRZa-managed elements](lrza-managed-elements.html), listing the Organization and Location elements and codes copied from the KvK and Dezi-register (including the Organization and Location created from a KvK vestiging to which a URA number is linked); the LRZa Directory refuses mutations of these elements by Data Sources. Documented the resources of the ITI-130-NL CapabilityStatement accordingly.
+- Care Services; renamed the data category property `fhir-resourcetype-params` to `path-query-param`: the relative path(s) and query parameters under the base URL in `Endpoint.address` at which a payload is offered. An authorization server Endpoint (connectionType from the NL-GF Authorization Server CodeSystem) points to the metadata endpoint of the authorization server and has payloadType `none`.
+- Care Services; added the optional `HealthcareService.coverageArea`, with example coverage-area Locations (provinces, cities and postal-code areas). A register/structure for coverage-area Locations is on the roadmap.
+- Care Services; `Endpoint.connectionType` is now primarily bound (extensible) to the NL-GF Connection Types value set, instead of through an additional binding, so codes from the NL-GF Authorization Server CodeSystem (e.g. `oauth-nuts`) no longer cause a binding warning against the NL-GF-Endpoint profile.
 
 ### Version: 1.0.0
 - [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/1.0.0/)

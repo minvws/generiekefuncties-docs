@@ -211,15 +211,15 @@ check_search \
   0
 check_search \
   "organization.endpoint:Endpoint.payload-type" \
-  "organization.endpoint:Endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|MedicationRequest" \
+  "organization.endpoint:Endpoint.payload-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|MedicationRequest" \
   1
 check_search \
   "organization._has:HealthcareService:organization:service-type" \
-  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.neurologie-neurochirurgie" \
+  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.neurologie-neurochirurgie" \
   1
 check_search \
   "organization._has excludes unrelated healthcare services" \
-  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie" \
+  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie" \
   0
 
 if (( FAILURES > 0 )); then

@@ -1,6 +1,8 @@
 GF Localization enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. The Nationale Verwijs Index (NVI) stores one `Patient` resource per patient, custodian and registering client. A data user searches by the patient's NVI pseudonym and optional custodian properties, and receives only custodians that return an allow Authorization Decision.
 {: .ig-lead}
 
+> **Note:** This page is based on version 0.9.0 of the Functional and Technical Design Documents of the Generic Function Localization (Generieke Functie Lokalisatie). The current and previous versions of this document are available at [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie).
+
 ### Scope
 
 This page specifies:
@@ -206,8 +208,8 @@ Content-Type: application/x-www-form-urlencoded
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
-&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-data-categories-cs|medicationRequest
-&organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/csd/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
+&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|medicationRequest
+&organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
 `{NVI-patient-identifier}` is the base64url-encoded PRS object described under [GF-LOC-1](#gf-loc-1-register-patient). The NVI decrypts and unblinds it to find matching Patient resources.
@@ -270,7 +272,7 @@ HEAD [fhir-base-url]/[fhir-resourcetype]?patient.identifier=[custodian-assigned 
 ```
 
 - `[fhir-base-url]`: the address of an active, in-period `hl7-fhir-rest` Endpoint in the Care Service Directory replica. When the search specifies custodian Endpoint payload types, the Endpoint's `payloadType` SHALL match at least one of these types.
-- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
+- `[fhir-resourcetype]`: the FHIR resource type and search parameters mapped to the requested category by the `path-query-param` property of the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html), such as `MedicationDispense`, `MedicationAdministration`, `MedicationStatement`, and `Immunization` for code `MedicationUse`. If no data category is specified, the resource type `Patient` is used.
 - `[custodian-assigned identifier]`: the custodian-assigned patient identifier in the Patient.
 
 For a resource type of `Patient`, use `HEAD [fhir-base-url]/Patient?identifier=[custodian-assigned identifier]` instead of `patient.identifier`.
@@ -291,9 +293,9 @@ Authorization: [access token]
 - accept an access token that identifies the data user and has the NVI as acting party;
 - evaluate the request using the data user's authorization policy, including consent or access restrictions;
 - respond with `200 OK` for allow or `204 No Content` for deny;
-- respond within 10 seconds.
+- respond within 1 second.
 
-**NVI processing.** The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 10 seconds, as deny. In addition:
+**NVI processing.** The NVI treats `200 OK` as allow. It treats any other status, and any response that arrives after 1 second, as deny. In addition:
 - The NVI SHALL include a custodian when at least one of its requests returns allow.
 - Decisions SHALL only be used for the current search and SHALL NOT be cached.
 
@@ -379,7 +381,7 @@ The [NL GF Data Localization Patient profile](./StructureDefinition-nl-gf-locali
 - `Patient.managingOrganization` identifies the custodian by URA (OID 2.16.528.1.1007.3.3);
 - `Patient.meta.source` identifies the registering OAuth client.
 
-The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance.
+The custodian-assigned identifier SHALL be unique within the custodian's identifier namespace and accepted by its FHIR Endpoint as the patient search value. It SHALL NOT be the BSN and SHALL NOT be derivable from the BSN. The NVI stores it to request Authorization Decisions from that custodian. It SHALL NOT return it in data-user search responses, but MAY return it to the authorized Localization Registration Client for record maintenance. The combination of the NVI pseudonym, the custodian URA and the OAuth client id SHALL be unique.
 
 #### Search context
 

@@ -13,12 +13,12 @@ Usage: #definition
 * format[+] = #application/fhir+json
 * rest
   * mode = #server
-  * documentation = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint"
+  * documentation = "ITI-130-NL; Dutch profile of the IHE ITI-130 endpoint."
   * resource[+]
     * insert Expectation(SHALL)
     * type = #HealthcareService
     * supportedProfile = Canonical(NlGfHealthcareService)
-    * documentation = "."
+    * documentation = "Healthcare services offered by a care provider (`providedBy`), conforming to the NL-GF-HealthcareService profile."
     * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
@@ -33,7 +33,7 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #Location
     * supportedProfile[+] = Canonical(NlGfLocation)
-    * documentation = "."
+    * documentation = "Physical locations conforming to the NL-GF-Location profile."
     * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
@@ -48,7 +48,7 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #Organization
     * supportedProfile[+] = Canonical(NlGfOrganization)
-    * documentation = "."
+    * documentation = "Organizations conforming to the NL-GF-Organization profile."
     * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
@@ -63,7 +63,7 @@ Usage: #definition
     * insert Expectation(SHALL)
     * type = #Endpoint
     * supportedProfile[+] = Canonical(NlGfEndpoint)
-    * documentation = "."
+    * documentation = "Technical endpoints conforming to the NL-GF-Endpoint profile, managed by the organization in `managingOrganization` (e.g. an IT vendor)."
     * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
@@ -78,7 +78,7 @@ Usage: #definition
     * insert Expectation(MAY)
     * type = #OrganizationAffiliation
     * supportedProfile[+] = Canonical(NlGfOrganizationAffiliation)
-    * documentation = "."
+    * documentation = "Authorizations (mandates) of a care provider (`organization`) for another party, e.g. an IT vendor (`participatingOrganization`), conforming to the NL-GF-OrganizationAffiliation profile."
     * versioning = #versioned-update
     * interaction[+]
       * insert Expectation(SHALL)
@@ -92,7 +92,7 @@ Usage: #definition
   * resource[+]
     * insert Expectation(SHALL)
     * type = #Provenance
-    * documentation = "A Data Source MAY submit a signed Provenance that references the stored resource version(s). When submitted, the LRZa Directory SHALL verify the signature against the relevant trust chain (e.g. an UZI/PKIo-certificate) and reject an invalid signature with an OperationOutcome. Provenance records are stored and synchronized to local replicas (ITI-90-NL/ITI-91-NL). The LRZa Directory SHALL NOT require a signature to accept a mutation."
+    * documentation = "A Data Source MAY submit a signed Provenance that references the stored resource version(s)."
     * interaction[+]
       * insert Expectation(SHALL)
       * code = #create

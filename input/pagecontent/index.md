@@ -1,11 +1,30 @@
-This FHIR Implementation Guide specifies the technical components of the generic function Care Service Directory (in Dutch: "generieke functie Adressering"). Care Service Directory is one of the generic functions for data availabity in the Dutch Healthcare system. The generic functions are specified in a national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS).
+This FHIR Implementation Guide specifies the technical components of the generic functions (in Dutch: "generieke functies") for data availability in the Dutch healthcare system. The generic functions are specified in a national programme led by the Dutch Ministry of Health, Welfare and Sport (VWS). This guide currently covers the generic functions Care Service Directory, Localization and Pseudonymisation.
 {: .ig-lead}
 
-### Care Service Directory 
-The generic function Care Service Directory enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Service Directory](csd.html).
+### Generic functions in this guide
 
-<!--### Localization (Medical Record Localization)
-Provides a standardized framework for discovering which healthcare organizations hold relevant patient data of a specific type. Using a national Medical Record Localization Service (Nationale Verwijs Index or NVI), data holders register the presence of patient data by category, enabling healthcare professionals to efficiently locate health information while ensuring GDPR compliance through proportionality and subsidiarity principles. See [Localization](localization.html).-->
+#### Care Service Directory
+The generic function Care Service Directory (in Dutch: "Adressering") enables healthcare providers and systems to discover and retrieve up-to-date digital addresses and contact information of healthcare organizations, (physical) locations, services, and endpoints. Based on the IHE mCSD profile, it provides a standardized directory infrastructure that consolidates addressable entities from across the healthcare ecosystem, facilitating reliable care coordination and electronic data exchange. See [Care Service Directory](csd.html).
+
+
+#### Localization
+The generic function Localization (in Dutch: "Lokalisatie") enables healthcare professionals to find care providers (custodians) that hold relevant data for a patient. Custodians register their patients at the Nationale Verwijs Index (NVI) under a pseudonym. A data user searches the NVI by the patient's pseudonym and optional custodian characteristics, and only receives custodians that allow access. See [Localization](localization.html).
+
+#### Pseudonymisation
+The generic function Pseudonymisation defines how a national Pseudonym Registration Service (PRS) converts an identifier, such as a Burgerservicenummer (BSN), into a recipient-specific pseudonym. Generic functions such as Localization use these pseudonyms to exchange patient-bound information without revealing the BSN to the receiving party. See [Pseudonymisation](pseudonymisation.html).
+
+### Maturity
+
+Not all pages, or generic functions, in this guide are equally mature. Each generic function is specified in Functional and Technical requirements and design documents, and the pages in this guide are based on a specific version of those documents. The maturity of a page depends on the version it is based on. The main page of each generic function states this version in a note at the top.
+
+| Generic function | Pages | Status | Based on design documents version | Design documents |
+|---|---|---|---|---|
+| Care Service Directory (Adressering) | [Care Service Directory](csd.html), [LRZa-managed elements](lrza-managed-elements.html), [Resource signing](signing.html) | Trial use | 1.0.0 | [www.generiekefuncties.nl/adressering](https://www.generiekefuncties.nl/adressering) |
+| Localization (Lokalisatie) | [Localization](localization.html) | Draft | 0.9.0 | [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie) |
+| Pseudonymisation | [Pseudonymisation](pseudonymisation.html) | Draft | 0.9.0 (Localization) | [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie) |
+{: .grid}
+
+Pages marked as draft are based on a version of the design documents that has not yet reached 1.0.0, and may change significantly as those documents evolve. When a new version of the design documents is published, the corresponding pages are updated; see the [Release Notes](release-notes.html) for the changes per version.
 
 <!-- #### Consent
 Establishes a standardized system for managing patient consent as a legal basis for processing medical data. Supports both explicit consent (stored nationally or locally) and implicit consent, with granular control allowing patients to grant permissions to individual organizations or categories of organizations based on type, ensuring consistent and secure consent management across the healthcare ecosystem. See [Consent](consent.html).
@@ -26,7 +45,7 @@ The [Artifacts](artifacts.html) page includes a complete index of the profiles, 
 
 
 ### History
-For publication details, see [History](history.html) for release and change information.
+See the [Release Notes](release-notes.html) for the changes per version, and [History](history.html) for the publication history of this guide.
 
 
 ### Conformance Expectations

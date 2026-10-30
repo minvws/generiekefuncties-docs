@@ -1,0 +1,84 @@
+name: Build and attach static content to a GitHub release
+
+on:
+  release:
+    types: [published]
+
+  # Allows you to (re)build the asset for an existing release from the Actions tab
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name of the existing release to attach the zip to"
+        required: true
+        type: string
+
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Build and push to local registry
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: localhost:5000/fhir/publisher:${{ github.sha }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.TAG }}
+      - name: Check tag against IG version and publication files
+        run: |
+          IG_VERSION="$(yq -o=json '.' sushi-config.yaml | jq -r '.version')"
+          CANONICAL="$(yq -o=json '.' sushi-config.yaml | jq -r '.canonical')"
+          PUBLISH_URL="${CANONICAL}/${TAG}"
+          test "$IG_VERSION" = "$TAG" \
+            || { echo "::error::sushi-config.yaml version '$IG_VERSION' does not match tag '$TAG'"; exit 1; }
+          jq -e --arg v "$TAG" --arg p "$PUBLISH_URL" '.version == $v and .path == $p' publication-request.json > /dev/null \
+            || { echo "::error::publication-request.json must have version '$TAG' and path '$PUBLISH_URL'"; exit 1; }
+          jq -e --arg v "$TAG" --arg p "$PUBLISH_URL" 'any(.list[]; .version == $v and .path == $p)' publication/package-list.json > /dev/null \
+            || { echo "::error::publication/package-list.json has no entry for version '$TAG' with path '$PUBLISH_URL'"; exit 1; }
+          echo "PUBLISH_URL=$PUBLISH_URL" >> "$GITHUB_ENV"
+      - name: Build
+        # -publish builds a formal publication package: no "notForPublication" flag and url set to PUBLISH_URL
+        run: |
+          mkdir -p ./output
+          docker run --name=scp --rm \
+            -v ${{ github.workspace }}/input:/app/input \
+            -v ${{ github.workspace }}/output:/app/output \
+            -v ${{ github.workspace }}/ig.ini:/app/ig.ini \
+            -v ${{ github.workspace }}/sushi-config.yaml:/app/sushi-config.yaml \
+            -v ${{ github.workspace }}/publication-request.json:/app/publication-request.json \
+            localhost:5000/fhir/publisher:${{ github.sha }} \
+            bash _genonce.sh -publish "$PUBLISH_URL"
+      - name: Verify package is ready for publication
+        run: |
+          tar -xzOf output/package.tgz package/package.json \
+            | jq -e --arg v "$TAG" --arg url "$PUBLISH_URL" '.version == $v and .url == $url and (has("notForPublication") | not)' \
+            || { echo "::error::output/package.tgz is not a publication package (expected version $TAG, url $PUBLISH_URL, no notForPublication)"; exit 1; }
+      - name: Package output as <tag>/ zip
+        run: |
+          mkdir -p "dist/${TAG}"
+          cp -a ./output/. "dist/${TAG}/"
+          cp publication/package-list.json dist/package-list.json
+          (cd dist && zip -rq "../fhir-ig.zip" "${TAG}" package-list.json)
+      - name: Attach zip to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${TAG}" "fhir-ig.zip" --clobber --repo "${{ github.repository }}"
