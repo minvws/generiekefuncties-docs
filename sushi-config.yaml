@@ -61,8 +61,17 @@ pages:
   # identification.md:
   #   title: Identification
 
-  # authentication.md:
-  #   title: Authentication
+  authentication.md:
+    title: Authentication
+
+  authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
+    title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
+  authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:
+    title: "Vervolg harmonisatie: clientregistratie en machtiging"
+  authenticatie-en-autorisatie-security-review.md:
+    title: "Security review: client registration and mandates"
+  # authenticatie-en-autorisatie-Normanalyse-eOverdracht-BgZ-vMT-DICIO.md:
+  #   title: Normanalyse authenticatie en autorisatie
 
   # authorization.md:
   #   title: Authorization
@@ -112,7 +121,7 @@ menu:
   Care Service Directory: csd.html
   Signing: signing.html
   # Identification: identification.html
-  # Authentication: authentication.html
+  Authentication: authentication.html
   # Authorization: authorization.html
   Localization: localization.html
   Pseudonymisation: pseudonymisation.html
