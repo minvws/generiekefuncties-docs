@@ -45,7 +45,7 @@ The [Artifacts](artifacts.html) page includes a complete index of the profiles, 
 
 
 ### History
-See the [Release Notes](release-notes.html) for the changes per version, and [History](history.html) for the publication history of this guide.
+See the [Release Notes](release-notes.html) for the changes per version, and [History](https://fhir.generiekefuncties.nl/history.html) for the publication history of this guide.
 
 
 ### Conformance Expectations

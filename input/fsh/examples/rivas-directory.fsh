@@ -22,7 +22,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Rivas - Stichting Rivas Zorggroep - Organization"
 Description: "Example: care provider Stichting Rivas Zorggroep, mapped from its KVK Basisprofiel to a FHIR Organization via the KvkBasisprofielToOrganization StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk", "11044044", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "11044044", "http://kvk.nl", "50000535")
 * active = true
 * name = "Stichting Rivas Zorggroep"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
@@ -55,7 +55,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Stg. Rivas Zorggroep Hoofdvestiging - Location"
 Description: "Example: main establishment (hoofdvestiging) of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027888347", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027888347", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Stg. Rivas Zorggroep Hoofdvestiging"
@@ -84,7 +84,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas Paramedische zorg - Location"
 Description: "Example: vestiging Rivas Paramedische zorg of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000043773346", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000043773346", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas Paramedische zorg"
@@ -109,7 +109,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas Wijkverpleging - Location"
 Description: "Example: vestiging Rivas Wijkverpleging of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000043619169", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000043619169", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas Wijkverpleging"
@@ -135,7 +135,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie De Alblashof - Location"
 Description: "Example: vestiging Rivas locatie De Alblashof of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027889564", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027889564", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie De Alblashof"
@@ -162,7 +162,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie De Markt - Location"
 Description: "Example: vestiging Rivas locatie De Markt of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027900878", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027900878", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie De Markt"
@@ -185,7 +185,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie De Schutse - Location"
 Description: "Example: vestiging Rivas locatie De Schutse of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027898431", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027898431", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie De Schutse"
@@ -208,7 +208,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie GC Arkel - Location"
 Description: "Example: vestiging Rivas locatie GC Arkel (gezondheidscentrum) of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000032737807", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000032737807", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie GC Arkel"
@@ -231,7 +231,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie Het Anker - Location"
 Description: "Example: vestiging Rivas locatie Het Anker of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027889661", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027889661", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie Het Anker"
@@ -256,7 +256,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie Judith Leysterhof Rembrandthof 2 - Location"
 Description: "Example: vestiging Rivas locatie Judith Leysterhof Rembrandthof 2 of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027898695", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027898695", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie Judith Leysterhof Rembrandthof 2"
@@ -279,7 +279,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie Lingesteyn - Location"
 Description: "Example: vestiging Rivas locatie Lingesteyn of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027899926", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027899926", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie Lingesteyn"
@@ -308,7 +308,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie Waerthove - Location"
 Description: "Example: vestiging Rivas locatie Waerthove of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027902226", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027902226", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie Waerthove"
@@ -331,7 +331,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas locatie Zorgmolen - Location"
 Description: "Example: vestiging Rivas locatie Zorgmolen of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027900827", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027900827", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas locatie Zorgmolen"
@@ -356,7 +356,7 @@ InstanceOf: NlGfLocation
 Usage: #example
 Title: "Rivas - Rivas Wijkverpleging regio Brabant - Location"
 Description: "Example: vestiging Rivas Wijkverpleging regio Brabant of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
-* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/kvk-vestigingsnummer", "000027901025", "http://fhir.nl/fhir/NamingSystem/kvk", "50000535")
+* insert CustodianAssignedIdentifier("http://kvk.nl", "000027901025", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
 * name = "Rivas Wijkverpleging regio Brabant"
@@ -388,7 +388,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Rivas - HealthcareService Gynaecologie / verloskunde (Beatrixziekenhuis)"
 Description: "Example: combined gynaecology and obstetrics outpatient clinic at the Beatrixziekenhuis (Gorinchem, the Rivas hoofdvestiging). Deduplicated from the ZorgDomein referral products; HealthcareService.type is mapped to the zorgvragen offered by this service."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:b87eef71-7334-454f-ba9d-3b7287385afe", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:b87eef71-7334-454f-ba9d-3b7287385afe", "http://kvk.nl", "11044044")
 * active = true
 * name = "Gynaecologie / verloskunde"
 * providedBy = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -452,7 +452,7 @@ InstanceOf: NlGfHealthcareService
 Usage: #example
 Title: "Rivas - HealthcareService Verpleging en verzorging (Wijkverpleging)"
 Description: "Example: district nursing / home care (wijkverpleging) service of Stichting Rivas Zorggroep, delivered at the patient's home. Deduplicated from the ZorgDomein referral products; HealthcareService.type is mapped to the zorgvragen offered by this service."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d67653e3-2e83-46d7-92f0-a880e4515c9c", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d67653e3-2e83-46d7-92f0-a880e4515c9c", "http://kvk.nl", "11044044")
 * active = true
 * name = "Verpleging en verzorging"
 * providedBy = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -497,7 +497,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Rivas - HL7 v2 Endpoint (requests)"
 Description: "Example: HL7 v2 (MLLP) endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d5481a9e-c6d9-49a7-b09c-e3624bac136c", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d5481a9e-c6d9-49a7-b09c-e3624bac136c", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
 * payloadMimeType[+] = #"application/hl7-v2"
@@ -511,7 +511,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Rivas - FHIR STU3 Endpoint (requests)"
 Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:8cd9c162-cac5-4445-a097-d0c337fe1fc1", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:8cd9c162-cac5-4445-a097-d0c337fe1fc1", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
 * payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
@@ -525,7 +525,7 @@ InstanceOf: NlGfEndpoint
 Usage: #example
 Title: "Rivas - FHIR STU3 Endpoint (BGZ)"
 Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep that offers the Basisgegevensset Zorg (BGZ) across multiple data categories. Referenced from the Rivas Organization."
-* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:650bf86c-a21f-450c-a4e9-5fcb02ab2ca4", "http://fhir.nl/fhir/NamingSystem/kvk", "11044044")
+* insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:650bf86c-a21f-450c-a4e9-5fcb02ab2ca4", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
 * payloadType[+].coding = nl-gf-data-categories-cs#AdvanceDirective "Advance Directive"
