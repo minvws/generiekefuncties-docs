@@ -22,7 +22,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Rivas - Stichting Rivas Zorggroep - Organization"
 Description: "Example: care provider Stichting Rivas Zorggroep, mapped from its KVK Basisprofiel to a FHIR Organization via the KvkBasisprofielToOrganization StructureMap."
-* insert CustodianAssignedIdentifier("http://kvk.nl", "11044044", "http://kvk.nl", "50000535")
+* insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "11044044", "http://kvk.nl", "50000535")
 * active = true
 * name = "Stichting Rivas Zorggroep"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
