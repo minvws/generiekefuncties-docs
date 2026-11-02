@@ -52,6 +52,9 @@ pages:
   csd.md:
     title: Care Service Directory
 
+  csd-handbook.md:
+    title: Handboek Adressering voor zorgaanbieders
+
   lrza-managed-elements.md:
     title: LRZa-managed elements
 

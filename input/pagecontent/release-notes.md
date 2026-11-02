@@ -10,6 +10,7 @@
 - [Source code](https://github.com/minvws/generiekefuncties-docs)
 - [Compare version current to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...main)
 #### Significant changes/Closed issues:
+- Care Services; added the [Handboek Adressering voor zorgaanbieders](csd-handbook.html), a non-technical guide (in Dutch) for care providers covering the purpose of GF Addressing, its relation to other generic functions, LandelijkAfsprakenStelsel TA's (a.k.a. Twiin TA's) and existing address services, the data model with Rivas examples, the roles of IT service providers, and a step-by-step plan.
 - Localization; localization records (NVI-pseudonyms) no longer contain a data-category code.
 - Localization; data users search with a search context (zoekcontext) containing custodian characteristics, and the NVI only returns relevant custodians with an allow Authorization Decision (HEAD request on the custodian's FHIR API). Localization-Patients contain a custodian-assigned patient identifier.
 - Care Services; added [LRZa-managed elements](lrza-managed-elements.html), listing the Organization and Location elements and codes copied from the KvK and Dezi-register (including the Organization and Location created from a KvK vestiging to which a URA number is linked); the LRZa Directory refuses mutations of these elements by Data Sources. Documented the resources of the ITI-130-NL CapabilityStatement accordingly.

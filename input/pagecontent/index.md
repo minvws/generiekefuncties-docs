@@ -19,7 +19,7 @@ Not all pages, or generic functions, in this guide are equally mature. Each gene
 
 | Generic function | Pages | Status | Based on design documents version | Design documents |
 |---|---|---|---|---|
-| Care Service Directory (Adressering) | [Care Service Directory](csd.html), [LRZa-managed elements](lrza-managed-elements.html), [Resource signing](signing.html) | Trial use | 1.0.0 | [www.generiekefuncties.nl/adressering](https://www.generiekefuncties.nl/adressering) |
+| Care Service Directory (Adressering) | [Care Service Directory](csd.html), [Handboek Adressering voor zorgaanbieders](csd-handbook.html), [LRZa-managed elements](lrza-managed-elements.html), [Resource signing](signing.html) | Trial use | 1.0.0 | [www.generiekefuncties.nl/adressering](https://www.generiekefuncties.nl/adressering) |
 | Localization (Lokalisatie) | [Localization](localization.html) | Draft | 0.9.0 | [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie) |
 | Pseudonymisation | [Pseudonymisation](pseudonymisation.html) | Draft | 0.9.0 (Localization) | [www.generiekefuncties.nl/lokalisatie](https://www.generiekefuncties.nl/lokalisatie) |
 {: .grid}
