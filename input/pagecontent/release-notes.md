@@ -16,6 +16,7 @@
 - Care Services; renamed the data category property `fhir-resourcetype-params` to `path-query-param`: the relative path(s) and query parameters under the base URL in `Endpoint.address` at which a payload is offered. An authorization server Endpoint (connectionType from the NL-GF Authorization Server CodeSystem) points to the metadata endpoint of the authorization server and has payloadType `none`.
 - Care Services; added the optional `HealthcareService.coverageArea`, with example coverage-area Locations (provinces, cities and postal-code areas). A register/structure for coverage-area Locations is on the roadmap.
 - Care Services; `Endpoint.connectionType` is now primarily bound (extensible) to the NL-GF Connection Types value set, instead of through an additional binding, so codes from the NL-GF Authorization Server CodeSystem (e.g. `oauth-nuts`) no longer cause a binding warning against the NL-GF-Endpoint profile.
+- Care Services; added ConceptMaps from the health-sector SBI codes (4773, 86, 87 and 88) to the Mitz [dossierhoudende](ConceptMap-sbi-to-dossierhoudende-zorgaanbiedercategorie.html) and [raadplegende](ConceptMap-sbi-to-raadplegende-zorgaanbiedercategorie.html) zorgaanbiedercategorieën.
 
 ### Version: 1.0.0
 - [Implementation Guide](https://build.fhir.org/ig/minvws/generiekefuncties-docs/branches/1.0.0/)
