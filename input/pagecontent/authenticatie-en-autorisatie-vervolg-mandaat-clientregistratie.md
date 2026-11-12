@@ -31,7 +31,6 @@ Dit document legt de ontwerpbeslissingen vast voor de machtiging van dienstverle
   - [Blijft het een eenvoudige client-credentials-flow?](#blijft-het-een-eenvoudige-client-credentials-flow)
   - [Wat er moet gebeuren in Keycloak en Duende IdentityServer](#wat-er-moet-gebeuren-in-keycloak-en-duende-identityserver)
   - [Uitbreidbaarheid met andere attestaties](#uitbreidbaarheid-met-andere-attestaties)
-  - [Open punten](#open-punten)
 - [Bijlage A: Varianten voor de machtiging](#bijlage-a-varianten-voor-de-machtiging)
   - [M0: Dienstverlener gebruikt de UZI-sleutel van de zorgaanbieder](#m0-dienstverlener-gebruikt-de-uzi-sleutel-van-de-zorgaanbieder)
   - [M1: Vertrouwde dienstverlener geeft machtigingen uit](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit)
@@ -141,7 +140,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - Een FHIR-resource met een ondertekende `Provenance`.
 - Een SD-JWT VC.
 
-**Besluit.** Een SD-JWT VC ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)) met de zorgaanbieder (`sub`), de dienstverlener (`may_act.sub`), de machtigingscodes (`scope`), de geldigheid (`nbf`, `exp`) en een kenmerk (`jti`). Het type (`vct`) is `https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json`; het attestatieschema moet nog worden vastgelegd. De dienstverlener vraagt de machtiging aan met OpenID4VCI. De reikwijdte staat in [GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder), de geldigheid en de intrekking in [GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen).
+**Besluit.** Een SD-JWT VC ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)) met de zorgaanbieder (`sub`), de dienstverlener (`may_act.sub`), de machtigingscodes (`scope`), de geldigheid (`nbf`, `exp`) en een kenmerk (`jti`). Het type (`vct`) is `https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json`; het attestatieschema is vastgelegd in de Type Metadata die op die URL wordt gepubliceerd. De dienstverlener vraagt de machtiging aan met OpenID4VCI. De reikwijdte staat in [GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder), de geldigheid en de intrekking in [GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen).
 
 **Waarom.** SD-JWT VC is het formaat van attestaties in de EUDI-wallet, met beschikbare bibliotheken en een weg naar vaststelling. Een eigen JWT-formaat zou maatwerk zijn, en een FHIR-resource met een `Provenance` sluit niet aan op de EBW (uitgangspunt *standaarden boven maatwerk*).
 
@@ -160,7 +159,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - *Technische scopes per FHIR-resource of operatie,* zoals bij SMART on FHIR: voor een zorgaanbieder moeilijk te beoordelen, en welke resources een verzoek mag raken, bepaalt de bron per toepassing.
 - *Doel en rol:* een code `<doel>-<rol>`, met het doel uit de HL7-codelijst PurposeOfUse.
 
-**Besluit.** Doel en rol. Het doel is een code uit HL7 waardenlijst [PurposeOfUse](https://terminology.hl7.org/en/ValueSet-v3-PurposeOfUse.html): `TREAT`, `ETREAT`, `PATRQT`, `HRESCH` of `HSYSADMIN`. Deze doelen staan in de ValueSet [NL GF Purpose of Use](./ValueSet-nl-gf-purpose-of-use-vs.html). Een code geeft geen rechten voor de onderliggende codes in de hiërarchie van PurposeOfUse: een machtiging voor `TREAT` dekt dus niet ook `ETREAT`, `BTG` of `POPHLTH`, en een doel dat niet in de ValueSet staat, wordt geweigerd. `HSYSADMIN` valt in PurposeOfUse onder `HOPERAT` (*healthcare operations*). De rol is `user`, gegevens opvragen en ontvangen, doorgaans met een client, of `custodian`, als bronhouder gegevens beschikbaar stellen of registreren, doorgaans met een authorization server en een resource server. Dat geeft tien codes, zoals `TREAT-user`. Een machtiging kan meerdere codes bevatten (`scope`). De authorization server leidt de vereiste code af uit `purpose_of_use` in het RAR-object; de client controleert dat de bron de bijbehorende `custodian`-code heeft.
+**Besluit.** Doel en rol. Het doel is een code uit HL7 waardenlijst [PurposeOfUse](https://terminology.hl7.org/en/ValueSet-v3-PurposeOfUse.html): `TREAT`, `ETREAT`, `PATRQT`, `HRESCH` of `HSYSADMIN`. Deze doelen staan in de ValueSet [NL GF Purpose of Use](./ValueSet-nl-gf-purpose-of-use-vs.html). Een code geeft geen rechten voor de onderliggende codes in de hiërarchie van PurposeOfUse: een machtiging voor `TREAT` dekt dus niet ook `ETREAT`, `BTG` of `POPHLTH`, en een doel dat niet in de ValueSet staat, wordt geweigerd. De rol is `user`, gegevens opvragen en ontvangen, doorgaans met een client, of `custodian`, als bronhouder gegevens beschikbaar stellen of registreren, doorgaans met een authorization server en een resource server. Dat geeft tien codes, zoals `TREAT-user`. Een machtiging kan meerdere codes bevatten (`scope`). De authorization server leidt de vereiste code af uit `purpose_of_use` in het RAR-object; de client controleert dat de bron de bijbehorende `custodian`-code heeft.
 
 | Doel (PurposeOfUse) | Grondslag | `<doel>-user`: de dienstverlener mag namens de zorgaanbieder… | `<doel>-custodian`: de dienstverlener mag namens de zorgaanbieder… |
 |---|---|---|---|
@@ -179,9 +178,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - *Eén codelijst.* Machtiging en verzoek gebruiken dezelfde codelijst, zodat het RAR-object geen apart veld voor het machtigingstype nodig heeft.
 
 **Gevolgen.**
-- De doelen staan in de ValueSet; de machtigingscodes zelf moeten nog als codelijst worden gepubliceerd.
 - Wil een zorgaanbieder een dienstverlener zowel voor behandeling als voor spoed machtigen, dan geeft hij beide codes, bijvoorbeeld `TREAT-user` en `ETREAT-user`.
-- Of toegang tot afgeschermde gegevens bij spoed een eigen code krijgt, zoals `BTG` (*break the glass*), moet nog worden bepaald.
 - Een ander doel, zoals publieke gezondheid (`PUBHLTH`) of betaling (`HPAYMT`), kan later worden toegevoegd, met de grondslag die daarbij hoort. Krijgen vrijwel alle dienstverleners beide rollen, dan kunnen `user` en `custodian` worden samengevoegd.
 
 ## GF-AUTN-ADR-5: Intrekken of laten verlopen?
@@ -342,9 +339,6 @@ Andere attestaties over de dienstverlener kunnen op dezelfde manier als de macht
 
 Attestaties die per verzoek verschillen, zoals een bewijs van de behandelrelatie, horen niet in de metadata. eOverdracht en BgZ hebben ze niet nodig; zo nodig kan de custom token exchange uit [M1](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit) later de *client-credentials*-flow vervangen, met alleen die attestaties in het `subject_token`.
 
-## Open punten
-- **Specificatie.** Het Client ID Metadata Document is een IETF-draft, en het gebruik met *client credentials* is in de praktijk nog weinig beproefd. Een test met Authorization Server-producten van pilot-deelnemers is nodig om de haalbaarheid vast te stellen.
-- **Nog te bepalen details:** de naam van de parameter voor extra attestaties in het Client ID Metadata Document.
 
 # Bijlage A: Varianten voor de machtiging
 Alle varianten leggen dezelfde gegevens vast: de zorgaanbieder (URA), de gemachtigde dienstverlener, de machtigingscodes, de geldigheid en een uniek kenmerk. Ze verschillen in waar de machtiging staat, wie haar ondertekent, en hoe zij wordt gecontroleerd. Per variant staat wat de implementatie vraagt, en welke beveiligingsrisico's het grootst lijken ([bijlage C](#bijlage-c-beveiligingsrisicos)).
@@ -440,33 +434,33 @@ Er is geen registratie: de `client_id` is een HTTPS-URL op een domein van de beh
 - *Grootste risico's:* de beheerder van de client bepaalt het document en de URL zelf (S23). Het ophalen kan worden misbruikt voor *server-side request forgery* (S24), en het domein van de client komt in het kritieke pad van het tokenrequest (S25). De kwetsbare vergelijking op *subject DN* (S26) vervalt met `tls_client_auth_san_dns`. Met de machtiging in het document komen daar S20 en S21 bij (zie M7).
 
 # Bijlage C: Beveiligingsrisico's
-De risico's en hun ernst komen uit een beveiligingsreview van de varianten. Die review is met een AI-assistent opgesteld en is nog niet door beveiligingsexperts beoordeeld; de ernst is een eerste inschatting.
+De risico's en hun ernst komen uit een beveiligingsreview van de varianten. Die review is met een AI-assistent opgesteld en is nog niet door beveiligingsexperts beoordeeld; de ernst is een eerste inschatting. De kolom *Voorstel* geeft aan of het risico geldt voor het [voorstel](#voorstel-machtiging-in-client-id-metadata-document-en-protected-resource-metadata) (M7 met R5).
 
-| Nr. | Risico | Ernst |
-|---|---|---|
-| S1 | Een machtiging kan niet worden ingetrokken voordat zij verloopt. | Middel bij 3 maanden; hoog bij 2 jaar, laag bij minuten |
-| S2 | Het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden: bedient een authorization server meerdere zorgaanbieders, dan kan een token voor de ene bij de andere worden gebruikt. | Middel |
-| S3 | Deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd (NEN 7512, 6.1.11). | Middel |
-| S4 | De uitwisseling wordt niet ondertekend zoals NEN 7512, 6.2.7, beschrijft. | Afhankelijk van de risicoklasse |
-| S5 | Het uitvoerende systeem is niet te onderscheiden van de zorgaanbieder. | Middel |
-| S6 | Elke houder van een UZI-servercertificaat met het URA van de zorgaanbieder kan namens hem ondertekenen. | Middel |
-| S7 | De zorgaanbieder kan de sleutelhouder niet buitensluiten zonder zijn UZI-certificaat in te trekken. | Middel |
-| S8 | De goedkeuring door de zorgaanbieder kan worden misleid (*phishing*) of verkeerd begrepen. | Middel |
-| S9 | Opnieuw binden aan een nieuwe sleutel kan de tweede sleutel omzeilen. | Middel |
-| S10 | Uitgevers of sleutelhouders kunnen vertrouwensdienstverlener zijn onder eIDAS en NIS2, met de bijbehorende verplichtingen. | Middel |
-| S11 | Een uitgever kan voor elke zorgaanbieder geldige machtigingen maken. | Hoog |
-| S12 | Via ketenmachtiging, in eHerkenning of in een wallet, kan een dienstverlener zichzelf machtigen. | Middel |
-| S13 | Machtigingen in de LRZa zijn niet ondertekend. | Middel |
-| S14 | Dienstverleners kunnen identificaties in de LRZa wijzigen waarop machtigingen steunen. | Middel |
-| S15 | Een ingetrokken machtiging kan herleven door een oude handtekening opnieuw te gebruiken. | Hoog |
-| S16 | De handtekening bindt het URA van de zorgaanbieder en de identiteit van de dienstverlener niet. | Hoog |
-| S17 | Controleurs kunnen terugvallen op niet-ondertekende machtigingen. | Hoog |
-| S18 | De koppeling van KvK-nummer of EUID aan het URA loopt via wijzigbare LRZa-gegevens. | Hoog |
-| S19 | Wat wordt ondertekend of verzegeld, kan afwijken van wat werd getoond. | Hoog |
-| S20 | Een gepubliceerde machtiging kan door elke deelnemer worden gebruikt als een authorization server de controle van `may_act.sub` tegen het certificaat mist. | Hoog |
-| S21 | De sleutel van het clientcertificaat is de enige sleutel die de machtigingen beschermt. | Middel |
-| S22 | De afleiding van de client-id uit het certificaat is niet volledig vastgelegd, en alle certificaten van een organisatie leveren dezelfde client-id. | Laag |
-| S23 | Het Client ID Metadata Document en de URL ervan staan onder controle van de beheerder van de client. | Laag |
-| S24 | Het ophalen van clientmetadata kan worden misbruikt voor *server-side request forgery*. | Laag |
-| S25 | Het domein van de client komt in het kritieke pad van het tokenrequest. | Laag |
-| S26 | De vergelijking op *subject DN* is kwetsbaar door verschillen in schrijfwijze en bij certificaatvernieuwing. | Laag |
+| Nr. | Risico | Ernst | Voorstel |
+|---|---|---|---|
+| S1 | Een machtiging kan niet worden ingetrokken voordat zij verloopt. | Middel bij 3 maanden; hoog bij 2 jaar, laag bij minuten | Ja; bewuste keuze ([GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen)) |
+| S2 | Het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden: bedient een authorization server meerdere zorgaanbieders, dan kan een token voor de ene bij de andere worden gebruikt. | Middel | Ja |
+| S3 | Deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd (NEN 7512, 6.1.11). | Middel | Ja |
+| S4 | De uitwisseling wordt niet ondertekend zoals NEN 7512, 6.2.7, beschrijft. | Afhankelijk van de risicoklasse | Ja |
+| S5 | Het uitvoerende systeem is niet te onderscheiden van de zorgaanbieder. | Middel | Nee; eigen certificaat en `may_act.sub` |
+| S6 | Elke houder van een UZI-servercertificaat met het URA van de zorgaanbieder kan namens hem ondertekenen. | Middel | Ja |
+| S7 | De zorgaanbieder kan de sleutelhouder niet buitensluiten zonder zijn UZI-certificaat in te trekken. | Middel | Ja, tenzij de zorgaanbieder zelf de vertrouwde dienstverlener is |
+| S8 | De goedkeuring door de zorgaanbieder kan worden misleid (*phishing*) of verkeerd begrepen. | Middel | Ja |
+| S9 | Opnieuw binden aan een nieuwe sleutel kan de tweede sleutel omzeilen. | Middel | Nee; geen sleutelbinding |
+| S10 | Uitgevers of sleutelhouders kunnen vertrouwensdienstverlener zijn onder eIDAS en NIS2, met de bijbehorende verplichtingen. | Middel | Onduidelijk, zoals bij M1 |
+| S11 | Een uitgever kan voor elke zorgaanbieder geldige machtigingen maken. | Hoog | Deels; alleen de vertrouwde dienstverlener, voor de eigen zorgaanbieders |
+| S12 | Via ketenmachtiging, in eHerkenning of in een wallet, kan een dienstverlener zichzelf machtigen. | Middel | Nee |
+| S13 | Machtigingen in de LRZa zijn niet ondertekend. | Middel | Nee |
+| S14 | Dienstverleners kunnen identificaties in de LRZa wijzigen waarop machtigingen steunen. | Middel | Deels; alleen bij het vinden van endpoints |
+| S15 | Een ingetrokken machtiging kan herleven door een oude handtekening opnieuw te gebruiken. | Hoog | Nee; de machtiging verloopt (zie S1) |
+| S16 | De handtekening bindt het URA van de zorgaanbieder en de identiteit van de dienstverlener niet. | Hoog | Nee; `sub` en `may_act.sub` zijn ondertekend |
+| S17 | Controleurs kunnen terugvallen op niet-ondertekende machtigingen. | Hoog | Nee |
+| S18 | De koppeling van KvK-nummer of EUID aan het URA loopt via wijzigbare LRZa-gegevens. | Hoog | Nee |
+| S19 | Wat wordt ondertekend of verzegeld, kan afwijken van wat werd getoond. | Hoog | Deels; de vertrouwde dienstverlener beheert goedkeuring én ondertekening |
+| S20 | Een gepubliceerde machtiging kan door elke deelnemer worden gebruikt als een authorization server de controle van `may_act.sub` tegen het certificaat mist. | Hoog | Ja |
+| S21 | De sleutel van het clientcertificaat is de enige sleutel die de machtigingen beschermt. | Middel | Ja |
+| S22 | De afleiding van de client-id uit het certificaat is niet volledig vastgelegd, en alle certificaten van een organisatie leveren dezelfde client-id. | Laag | Nee; de `client_id` is de URL van het document |
+| S23 | Het Client ID Metadata Document en de URL ervan staan onder controle van de beheerder van de client. | Laag | Ja |
+| S24 | Het ophalen van clientmetadata kan worden misbruikt voor *server-side request forgery*. | Laag | Ja, beperkt; ophalen pas na controle van certificaat en host |
+| S25 | Het domein van de client komt in het kritieke pad van het tokenrequest. | Laag | Ja, beperkt; cache tot 24 uur |
+| S26 | De vergelijking op *subject DN* is kwetsbaar door verschillen in schrijfwijze en bij certificaatvernieuwing. | Laag | Nee; `tls_client_auth_san_dns` |
