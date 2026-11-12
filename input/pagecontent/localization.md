@@ -208,8 +208,8 @@ Content-Type: application/x-www-form-urlencoded
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
 &organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
-&organization.endpoint.payload-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|medicationRequest
-&organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
+&organization.endpoint.payload-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|medicationRequest
+&organization._has:HealthcareService:organization:service-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
 ```
 
 `{NVI-patient-identifier}` is the base64url-encoded PRS object described under [GF-LOC-1](#gf-loc-1-register-patient). The NVI decrypts and unblinds it to find matching Patient resources.

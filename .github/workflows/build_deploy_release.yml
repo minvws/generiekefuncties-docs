@@ -55,6 +55,16 @@ jobs:
           jq -e --arg v "$TAG" --arg p "$PUBLISH_URL" 'any(.list[]; .version == $v and .path == $p)' publication/package-list.json > /dev/null \
             || { echo "::error::publication/package-list.json has no entry for version '$TAG' with path '$PUBLISH_URL'"; exit 1; }
           echo "PUBLISH_URL=$PUBLISH_URL" >> "$GITHUB_ENV"
+      - name: Check SD-JWT VC Type Metadata
+        # publication/vct/<name>.json is published at https://<host>/vct/<name>.json; its vct must equal that URL
+        run: |
+          CANONICAL="$(yq -o=json '.' sushi-config.yaml | jq -r '.canonical')"
+          VCT_BASE="https://${CANONICAL#*://}/vct"
+          for f in publication/vct/*.json; do
+            VCT="${VCT_BASE}/$(basename "$f")"
+            jq -e --arg vct "$VCT" '.vct == $vct' "$f" > /dev/null \
+              || { echo "::error::$f must be a JSON object with vct '$VCT'"; exit 1; }
+          done
       - name: Build
         # -publish builds a formal publication package: no "notForPublication" flag and url set to PUBLISH_URL
         run: |
@@ -77,7 +87,8 @@ jobs:
           mkdir -p "dist/${TAG}"
           cp -a ./output/. "dist/${TAG}/"
           cp publication/package-list.json dist/package-list.json
-          (cd dist && zip -rq "../fhir-ig.zip" "${TAG}" package-list.json)
+          cp -a publication/vct dist/vct
+          (cd dist && zip -rq "../fhir-ig.zip" "${TAG}" package-list.json vct)
       - name: Attach zip to release
         env:
           GH_TOKEN: ${{ github.token }}

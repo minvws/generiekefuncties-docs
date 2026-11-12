@@ -16,7 +16,7 @@
       "version" : "26.0.0",
       "date" : "2026-10-28",
       "desc" : "First publication at http://fhir.generiekefuncties.nl. Earlier versions were only available as CI builds (up to 0.9.0-ballot as hl7.fhir.nl.gf).",
-      "path" : "http://fhir.generiekefuncties.nl/26.0.0",
+      "path" : "https://fhir.generiekefuncties.nl/26.0.0",
       "status" : "trial-use",
       "sequence" : "Publications",
       "fhirversion" : "4.0.1",

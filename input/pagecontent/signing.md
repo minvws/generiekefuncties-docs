@@ -35,7 +35,7 @@ Take the resource exactly as stored by the LRZa Directory after the create/updat
   "id": "c5d6c9d6-7562-589e-9b34-c20a3488daa1",
   "meta": {
     "profile": [
-      "http://fhir.generiekefuncties.nl/StructureDefinition/nl-gf-organizationaffiliation"
+      "https://fhir.generiekefuncties.nl/StructureDefinition/nl-gf-organizationaffiliation"
     ]
   },
   "identifier": [
@@ -60,7 +60,7 @@ Take the resource exactly as stored by the LRZa Directory after the create/updat
     "display": "ExampleSoft B.V."
   },
   "code": [
-    { "coding": [ { "code": "lrza-careprovider-admin", "system": "http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs", "display": "LRZa Care Provider Administration" } ] }
+    { "coding": [ { "code": "lrza-careprovider-admin", "system": "https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs", "display": "LRZa Care Provider Administration" } ] }
   ],
   "active": true,
   "organization": { "reference": "Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8" }
@@ -76,7 +76,7 @@ For canonicalization `#static`, recursively remove every `Resource.meta` and eve
 Canonicalize the stripped resource with the [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785). Object keys are sorted, insignificant whitespace is removed, and strings/numbers are serialized deterministically. You can reproduce this with any JCS implementation, e.g. the online [JSON Canonicalizer](https://toolsbase.dev/en/developer/json-canonicalizer). The canonical form (a single line, shown wrapped here) is:
 
 ```json
-{"active":true,"code":[{"coding":[{"code":"lrza-careprovider-admin","display":"LRZa Care Provider Administration","system":"http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs"}]}],"id":"c5d6c9d6-7562-589e-9b34-c20a3488daa1","identifier":[{"assigner":{"identifier":{"system":"urn:oid:2.16.528.1.1007.3.3","type":{"coding":[{"code":"custodian","system":"http://terminology.hl7.org/CodeSystem/provenance-participant-type"}]},"value":"22222222"}},"system":"urn:ietf:rfc:3986","use":"official","value":"urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a"}],"organization":{"reference":"Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"},"participatingOrganization":{"display":"ExampleSoft B.V.","identifier":{"system":"http://kvk.nl","value":"90001234"}},"resourceType":"OrganizationAffiliation"}
+{"active":true,"code":[{"coding":[{"code":"lrza-careprovider-admin","display":"LRZa Care Provider Administration","system":"https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs"}]}],"id":"c5d6c9d6-7562-589e-9b34-c20a3488daa1","identifier":[{"assigner":{"identifier":{"system":"urn:oid:2.16.528.1.1007.3.3","type":{"coding":[{"code":"custodian","system":"http://terminology.hl7.org/CodeSystem/provenance-participant-type"}]},"value":"22222222"}},"system":"urn:ietf:rfc:3986","use":"official","value":"urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a"}],"organization":{"reference":"Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"},"participatingOrganization":{"display":"ExampleSoft B.V.","identifier":{"system":"http://kvk.nl","value":"90001234"}},"resourceType":"OrganizationAffiliation"}
 ```
 
 This canonical text is the JWS **payload**.

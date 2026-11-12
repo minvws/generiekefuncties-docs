@@ -1,7 +1,7 @@
 {
   "package-id" : "nl.generiekefuncties.fhir",
   "version" : "26.0.0",
-  "path" : "http://fhir.generiekefuncties.nl/26.0.0",
+  "path" : "https://fhir.generiekefuncties.nl/26.0.0",
   "mode" : "milestone",
   "status" : "trial-use",
   "sequence" : "Publications",

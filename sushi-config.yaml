@@ -62,16 +62,12 @@ pages:
   #   title: Identification
 
   authentication.md:
-    title: Authentication
+    title: Authentication (V&O)
 
   authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
     title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
   authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:
     title: "Vervolg harmonisatie: clientregistratie en machtiging"
-  authenticatie-en-autorisatie-ontwerpbeslissingen.md:
-    title: "Ontwerpbeslissingen: machtiging en clientregistratie"
-  authenticatie-en-autorisatie-security-review.md:
-    title: "Security review: client registration and mandates"
   # authenticatie-en-autorisatie-Normanalyse-eOverdracht-BgZ-vMT-DICIO.md:
   #   title: Normanalyse authenticatie en autorisatie
 
