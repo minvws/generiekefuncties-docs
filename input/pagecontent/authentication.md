@@ -1,13 +1,13 @@
 GF Authentication specifies how two healthcare providers establish each other's identity, and the purpose of an exchange, when they exchange health data through their service providers. It is a national initiative led by the Dutch Ministry of Health, Welfare and Sport (VWS) and applies first to the exchanges *Basisgegevensset Zorg* (BgZ) and *eOverdracht* (nursing handover), both mandatory under the Wegiz.
 {: .ig-lead}
 
-> **Note:** This page is a draft. It is based on version 0.95 of the memo [*Harmonisatie van authenticatie en autorisatie voor de gegevensuitwisselingen BgZ en eOverdracht*](./authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html), approved by MT DICIO on 18 August 2026, and on version 0.4.0 (draft, 12 November 2026) of the follow-up memo [*Vervolg harmonisatie: clientregistratie en machtiging*](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html), whose [proposal](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html#voorstel-machtiging-in-client-id-metadata-document-en-protected-resource-metadata) it specifies. The memos explain the choices; this page only specifies what is needed to implement them. A basic understanding of OAuth 2.0 and FHIR is assumed.
+> **Note:** This page is a draft. It is based on version 0.95 of the memo [*Harmonisatie van authenticatie en autorisatie voor de gegevensuitwisselingen BgZ en eOverdracht*](./authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html), approved by MT DICIO on 18 August 2026, and on version 0.5.0 (draft, 16 November 2026) of the follow-up memo [*Vervolg harmonisatie: clientregistratie en machtiging*](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html), whose [proposal](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html#voorstel-machtiging-in-het-tokenrequest-en-de-protected-resource-metadata) it specifies. The memos explain the choices; this page only specifies what is needed to implement them. A basic understanding of OAuth 2.0 and FHIR is assumed.
 
 ### Scope
 
 This page specifies:
 - how a care provider mandates a service provider to act on its behalf, and how that mandate is issued, renewed and verified;
-- how a service provider publishes its mandates as OAuth client metadata, authenticates to the authorization server of another service provider, and obtains an access token for a care provider;
+- how a service provider publishes its OAuth client metadata, authenticates to the authorization server of another service provider, and obtains an access token for a care provider by presenting its mandate;
 - how the requesting service provider establishes, before it sends a request, that the endpoint belongs to the source care provider and its mandated service provider;
 - how the resource server validates each request.
 
@@ -29,7 +29,7 @@ The exchanges in scope are the targeted *sending* of health data between two car
 | Mandate | A signed statement in which a care provider authorizes a service provider to act on its behalf for one or more mandate codes (*machtiging*). |
 | Mandate code | The scope of a mandate, as `<purpose>-<role>`, for example `TREAT-user`. See [Mandate codes](#mandate-codes). |
 | Source | The care provider that holds the requested data (custodian), and its service provider. |
-| `client_id` | The identifier of a service provider as OAuth client on behalf of one care provider: the HTTPS URL of its Client ID Metadata Document. See [Client ID Metadata Document](#client-id-metadata-document). |
+| `client_id` | The identifier of a service provider as OAuth client: the HTTPS URL of its Client ID Metadata Document. See [Client ID Metadata Document](#client-id-metadata-document). |
 | Client ID Metadata Document | A JSON document with the metadata of an OAuth client, which the client publishes at the URL that is its `client_id` ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)). |
 | Service provider identifier | The identifier of a service provider, derived from its certificate. See [Service provider identifier](#service-provider-identifier). |
 | GIS | *Gezondheidsinformatiestelsel*, the national health information system under which this specification is agreed. |
@@ -41,9 +41,9 @@ The legal framework, the federated trust model and the requirements are describe
 The process:
 1. Each care provider designates one trusted service provider in the LRZa, with the endpoint of its Mandate Issuer.
 2. Each service provider of the care provider, on the requesting and on the source side, obtains a mandate from that Mandate Issuer. The care provider approves the mandate once; the Mandate Issuer renews it every 3 months as long as the approval stands.
-3. The requesting service provider publishes its mandate in a Client ID Metadata Document for that care provider. The source's resource server publishes its own mandate in its Protected Resource Metadata.
+3. The requesting service provider publishes a Client ID Metadata Document with its client metadata. The source's resource server publishes its mandate in its Protected Resource Metadata.
 4. Before an exchange, the requesting service provider finds the source's endpoint in its Care Service Directory replica, and verifies the source's mandate.
-5. The requesting service provider requests an access token at the source's authorization server with the client credentials grant, over mTLS. It sends the URL of its document as `client_id`, and a RAR object that states the care provider and the purpose. The authorization server retrieves the document and verifies the mandate in it.
+5. The requesting service provider requests an access token at the source's authorization server with a token exchange, over mTLS. It presents its mandate as subject token, sends the URL of its document as `client_id`, and a RAR object that states the care provider and the purpose. The authorization server verifies the mandate, and that the client is the mandated service provider.
 6. The requesting service provider sends its FHIR requests with the access token, over mTLS with the same certificate. The resource server validates the token, its binding to the certificate, and the request.
 
 ```mermaid
@@ -76,11 +76,11 @@ The source's service provider obtains its own mandate (`TREAT-custodian`) from t
 
 #### Standards
 
-- OAuth 2.0 ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) with the client credentials grant (§4.4) and the security measures of the [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0-final.html);
+- OAuth 2.0 ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) and OAuth 2.0 Token Exchange with delegation semantics ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)), with the security measures of the [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0-final.html);
 - mTLS client authentication (`tls_client_auth`) and certificate-bound access tokens ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705));
 - Rich Authorization Requests ([RFC 9396](https://www.rfc-editor.org/rfc/rfc9396));
 - Authorization Server Metadata ([RFC 8414](https://www.rfc-editor.org/rfc/rfc8414)) and Protected Resource Metadata ([RFC 9728](https://www.rfc-editor.org/rfc/rfc9728));
-- OAuth Client ID Metadata Document ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)), with the mandate as software statement ([RFC 7591](https://www.rfc-editor.org/rfc/rfc7591), §2.3);
+- OAuth Client ID Metadata Document ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/));
 - SD-JWT VC ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)) for the mandate, issued with [OpenID4VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html).
 
 ### Actors
@@ -106,18 +106,18 @@ A Mandate Issuer SHALL NOT issue mandates for a care provider that has not desig
 
 #### Authorization Client
 
-The Authorization Client is the OAuth client of the requesting service provider. It holds a mandate with the code `<purpose>-user` for each care provider it acts for, publishes a [Client ID Metadata Document](#client-id-metadata-document) with that mandate for each of them, and SHALL support [GF-AUTN-1](#gf-autn-1-discover-mandate-issuer) to [GF-AUTN-6](#gf-autn-6-get-client-metadata).
+The Authorization Client is the OAuth client of the requesting service provider. It holds a mandate with the code `<purpose>-user` for each care provider it acts for, presents it in [GF-AUTN-4](#gf-autn-4-request-access-token), publishes one [Client ID Metadata Document](#client-id-metadata-document), and SHALL support [GF-AUTN-1](#gf-autn-1-discover-mandate-issuer) to [GF-AUTN-6](#gf-autn-6-get-client-metadata).
 
 #### Authorization Server
 
 The Authorization Server is operated by the source's service provider, and can serve many care providers. It SHALL support [GF-AUTN-4](#gf-autn-4-request-access-token) and [GF-AUTN-6](#gf-autn-6-get-client-metadata), and publish its metadata ([RFC 8414](https://www.rfc-editor.org/rfc/rfc8414)), with at least:
 - `token_endpoint_auth_methods_supported`: `["tls_client_auth"]`;
 - `tls_client_certificate_bound_access_tokens`: `true`;
-- `grant_types_supported`: including `client_credentials`;
+- `grant_types_supported`: including `urn:ietf:params:oauth:grant-type:token-exchange`;
 - `authorization_details_types_supported`: `["nl-gis-v1"]`;
 - `client_id_metadata_document_supported`: `true`.
 
-Common authorization server products need an extension that loads the client from the Client ID Metadata Document, performs the checks in [Validation by the authorization server](#validation-by-the-authorization-server), and adds the claims to the access token; no custom grant is needed. The follow-up memo describes this work for Keycloak and Duende IdentityServer ([Wat er moet gebeuren in Keycloak en Duende IdentityServer](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html#wat-er-moet-gebeuren-in-keycloak-en-duende-identityserver)).
+Common authorization server products need an extension that loads the client from the Client ID Metadata Document, and an extension for the token exchange that performs the checks in [Validation by the authorization server](#validation-by-the-authorization-server) and adds the claims to the access token. Out of the box, they only accept subject tokens that they issued themselves. The follow-up memo describes this work for Keycloak and Duende IdentityServer ([Wat er moet gebeuren in Keycloak en Duende IdentityServer](./authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html#wat-er-moet-gebeuren-in-keycloak-en-duende-identityserver)).
 
 #### Resource Server
 
@@ -159,7 +159,7 @@ The Mandate Issuer:
 2. issues the mandate immediately if an approval for this service provider and these codes applies; otherwise it asks the care provider for approval, for example in its own application, and issues the mandate after approval;
 3. returns the [mandate](#mandate), with `may_act.sub` equal to the service provider identifier.
 
-The requesting service provider publishes the mandate in the [Client ID Metadata Document](#client-id-metadata-document) for that care provider. The source's service provider publishes it in its Protected Resource Metadata ([GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata)).
+The requesting service provider presents the mandate in each token request ([GF-AUTN-4](#gf-autn-4-request-access-token)). The source's service provider publishes it in its Protected Resource Metadata ([GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata)).
 
 #### GF-AUTN-3: Get Protected Resource Metadata
 
@@ -172,7 +172,7 @@ Before it requests a token, the Authorization Client establishes that the endpoi
    Host: fhir.dienstverlener-b.nl
    ```
 
-3. It verifies the mandate of the source care provider in the metadata, as in [Validation by the authorization server](#validation-by-the-authorization-server), steps 4 and 5, and checks that:
+3. It verifies the mandate of the source care provider in the metadata, as in [Validation by the authorization server](#validation-by-the-authorization-server), steps 5 and 6, and checks that:
    - `sub` is the URA of the source care provider from step 1;
    - `scope` contains the code `<purpose>-custodian` for the purpose of the request;
    - `may_act.sub` equals the service provider identifier derived from the resource server's TLS server certificate ([Service provider identifier](#service-provider-identifier));
@@ -194,34 +194,41 @@ The Authorization Client MAY cache the metadata as indicated by its `Cache-Contr
 
 #### GF-AUTN-4: Request Access Token
 
-The Authorization Client requests an access token with the client credentials grant ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), §4.4), over mTLS with its certificate (`tls_client_auth`). The `client_id` is the URL of the [Client ID Metadata Document](#client-id-metadata-document) for the care provider on whose behalf it acts. The request does not contain the mandate: the authorization server takes it from the document ([GF-AUTN-6](#gf-autn-6-get-client-metadata)).
+The Authorization Client requests an access token with a token exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)), with delegation semantics: the [mandate](#mandate) is the subject token, and the client itself is the actor. It authenticates over mTLS with its certificate (`tls_client_auth`). The `client_id` is the URL of its [Client ID Metadata Document](#client-id-metadata-document).
 
 ```
 POST /token HTTP/1.1
 Host: as.dienstverlener-b.nl
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=client_credentials
-&client_id=https%3A%2F%2Fdienstverlener-a.nl%2Foauth%2Fclients%2Fura-11111111
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
+&client_id=https%3A%2F%2Fdienstverlener-a.nl%2Foauth%2Fclient
+&subject_token=<mandate of care provider 11111111>
+&subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Ajwt
 &authorization_details=%5B%7B%22type%22%3A%22nl-gis-v1%22...%7D%5D
 ```
 
 | Parameter | Value |
 |---|---|
-| `grant_type` | `client_credentials` |
-| `client_id` | The URL of the Client ID Metadata Document for the care provider (RFC 8705 requires the parameter). |
+| `grant_type` | `urn:ietf:params:oauth:grant-type:token-exchange` |
+| `client_id` | The URL of the Client ID Metadata Document of the service provider (RFC 8705 requires the parameter). |
+| `subject_token` | The [mandate](#mandate) of the care provider on whose behalf the client acts: the JWT signed by the Mandate Issuer, without the `~` that ends an SD-JWT. |
+| `subject_token_type` | `urn:ietf:params:oauth:token-type:jwt` |
 | `authorization_details` | The [RAR object](#rar-object). |
 
-The request has no `scope`: the mandate codes come from the mandate, and the purpose from the RAR object. The authorization server validates the request as described in [Validation by the authorization server](#validation-by-the-authorization-server). On success it returns a sender-constrained access token:
+The request has no `actor_token`: the client that authenticates with mTLS is the actor, and the authorization server checks it against `may_act` in the mandate (RFC 8693, §4.4). It has no `scope`: the mandate codes come from the mandate, and the purpose from the RAR object. The authorization server validates the request as described in [Validation by the authorization server](#validation-by-the-authorization-server). On success it returns a sender-constrained access token:
 
 ```json
 {
   "access_token": "<opaque to the client>",
+  "issued_token_type": "urn:ietf:params:oauth:token-type:access_token",
   "token_type": "Bearer",
   "expires_in": 300,
   "authorization_details": [ { "type": "nl-gis-v1", "...": "..." } ]
 }
 ```
+
+The authorization server SHALL NOT issue a refresh token. When the access token expires, the client requests a new one with the same mandate.
 
 #### GF-AUTN-5: Access Resource
 
@@ -238,7 +245,7 @@ Authorization: Bearer <access token>
 When the authorization server receives a token request with a `client_id` for which it has no valid copy of the Client ID Metadata Document, it retrieves the document at that URL ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/), §6). It does so only after it has validated the client certificate and checked that the host of the `client_id` is in that certificate ([Validation by the authorization server](#validation-by-the-authorization-server), steps 1 and 2).
 
 ```
-GET /oauth/clients/ura-11111111 HTTP/1.1
+GET /oauth/client HTTP/1.1
 Host: dienstverlener-a.nl
 Accept: application/json
 ```
@@ -247,8 +254,8 @@ The authorization server SHALL:
 - use mTLS with its own certificate, and accept only a server certificate that meets the requirements in [Transport and certificates](#transport-and-certificates);
 - not follow redirects, and treat any status other than `200` as an error;
 - not connect to addresses that resolve to special-use IP addresses ([RFC 6890](https://www.rfc-editor.org/rfc/rfc6890));
-- stop reading after 32 kilobytes, and treat a larger document as invalid. A document with a mandate and its certificate chain is about 12 kilobytes, more than the 5 kilobytes that the draft recommends;
-- cache a valid document as indicated by the `Cache-Control` header of the response, for at most 24 hours, and for 1 hour if the response has no cache directive. It never caches beyond `exp` of the mandate in the document, and does not cache errors or invalid documents;
+- stop reading after 32 kilobytes, and treat a larger document as invalid. This is more than the 5 kilobytes that the draft recommends, to leave room for attestations about the service provider;
+- cache a valid document as indicated by the `Cache-Control` header of the response, for at most 24 hours, and for 1 hour if the response has no cache directive. It does not cache errors or invalid documents;
 - on a transient failure, keep using a cached valid document for at most 24 hours after it was retrieved, and otherwise return HTTP status `503`; for an invalid document, return `invalid_client` (draft, §6.1).
 
 ### Validation
@@ -260,24 +267,24 @@ The authorization server SHALL reject the token request if any of these checks f
 2. **Client identifier.** The `client_id` is a URL as described in [Client ID Metadata Document](#client-id-metadata-document), and its host equals a `dNSName` in the `subjectAltName` of the client certificate.
 3. **Client metadata.** The authorization server has a valid copy of the document, from its cache or from [GF-AUTN-6](#gf-autn-6-get-client-metadata), in which:
    - `client_id` equals the `client_id` parameter, by simple string comparison;
-   - `token_endpoint_auth_method` is `tls_client_auth`, and `grant_types` contains `client_credentials`;
+   - `token_endpoint_auth_method` is `tls_client_auth`, and `grant_types` contains `urn:ietf:params:oauth:grant-type:token-exchange`;
    - `tls_client_auth_san_dns` equals the host of the `client_id` ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705), §2.1.2);
-   - `software_statement` contains a mandate.
-4. **Mandate signature.**
+4. **Subject token.** `subject_token_type` is `urn:ietf:params:oauth:token-type:jwt`, the request has no `actor_token`, and the `subject_token` is a JWT with `typ` `dc+sd-jwt`.
+5. **Mandate signature.**
    - The signature is valid for the certificate in `x5c`, which chains to the UZI register CA.
    - The certificate is a UZI server certificate (card type `S`), and its revocation status is good.
    - The URA in the certificate equals `sub`.
-5. **Mandate content.**
+6. **Mandate content.**
    - `vct` is `https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json`.
    - The current time is between `nbf` and `exp`, and `exp` minus `nbf` is at most 3 months (92 days).
-6. **Mandated service provider.** `may_act.sub` equals the service provider identifier derived from the client certificate ([Service provider identifier](#service-provider-identifier)).
-7. **Care provider and purpose.**
+7. **Mandated service provider.** `may_act.sub` equals the service provider identifier derived from the client certificate ([Service provider identifier](#service-provider-identifier)); the client is the actor that the mandate authorizes (RFC 8693, §4.4).
+8. **Care provider and purpose.**
    - The `authorization_details` parameter contains exactly one RAR object, of type `nl-gis-v1`.
    - `subject_organization_id` equals `sub` of the mandate.
    - `purpose_of_use` is a code from the [NL GF Purpose of Use ValueSet](./ValueSet-nl-gf-purpose-of-use-vs.html), and `scope` of the mandate contains the code `<purpose>-user` for exactly that code (see [Mandate codes](#mandate-codes)).
    - `locations_organization_id` and `locations` refer to a care provider and resource server that this authorization server serves.
 
-The authorization server MAY verify the signature and certificate chain of the mandate (step 4) when it retrieves the document, and keep the result while it caches the document. It SHALL perform all other checks for each token request, including the validity period of the mandate and the revocation status of its signing certificate. It SHALL take the care provider from `sub` of the mandate, never from the `client_id` URL.
+The authorization server MAY keep the result of the signature and chain verification in step 5 for a mandate that it has verified before, identified by its hash. It SHALL perform all other checks for each token request, including the validity period of the mandate and the revocation status of its signing certificate. It SHALL take the care provider from `sub` of the mandate.
 
 The access token is opaque to the client. It SHALL record on whose behalf access is granted (`sub`, the URA from the mandate), which service provider acts (`client_id`, and the service provider identifier in `act.sub` as in RFC 8693, §4.1), the `jti` of the mandate, the `authorization_details`, and the hash of the client certificate (`cnf.x5t#S256`, RFC 8705). How the authorization server and resource server exchange it, as a signed token or through token introspection ([RFC 7662](https://www.rfc-editor.org/rfc/rfc7662)), is up to them.
 
@@ -301,40 +308,37 @@ It identifies the service provider in `may_act.sub` of the mandate and in the lo
 
 #### Client ID Metadata Document
 
-The Authorization Client publishes a Client ID Metadata Document ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)) for each care provider that has mandated it, with the mandate as `software_statement` ([RFC 7591](https://www.rfc-editor.org/rfc/rfc7591), §2.3). Each document is a separate OAuth client, which stands for "service provider A on behalf of care provider X". There is no document for a care provider without a mandate.
+The Authorization Client publishes one Client ID Metadata Document ([draft-ietf-oauth-client-id-metadata-document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)) for the service provider. It describes the service provider as OAuth client, and contains no mandates: the client presents its mandate in each token request. A service provider MAY publish a separate document per system.
 
 The `client_id`, which is the URL of the document:
 - SHALL meet the requirements of the draft (§3): the `https` scheme, a path other than `/`, and no userinfo, query or fragment;
-- SHALL have a host that is a `dNSName` in the `subjectAltName` of the service provider's certificate. Wildcards are not allowed, so a service provider uses one host, with a path per care provider, for example `https://dienstverlener-a.nl/oauth/clients/ura-11111111`;
-- MAY contain the URA in its path for readability. The authorization server does not use it.
+- SHALL have a host that is a `dNSName` in the `subjectAltName` of the service provider's certificate. Wildcards are not allowed. For example `https://dienstverlener-a.nl/oauth/client`.
 
 | Property | Value |
 |---|---|
 | `client_id` | The URL of the document. |
-| `client_name` | Optional and informative, for example `Dienstverlener A namens zorgaanbieder 11111111`. |
-| `grant_types` | `["client_credentials"]` |
+| `client_name` | Optional and informative, for example `Dienstverlener A`. |
+| `grant_types` | `["urn:ietf:params:oauth:grant-type:token-exchange"]` |
 | `token_endpoint_auth_method` | `tls_client_auth` |
 | `tls_client_auth_san_dns` | The host of the `client_id`, which is a `dNSName` in the service provider's certificate. |
 | `tls_client_certificate_bound_access_tokens` | `true` |
 | `authorization_details_types` | `["nl-gis-v1"]` |
-| `software_statement` | The [mandate](#mandate) for this care provider: the JWT signed by the Mandate Issuer, without the `~` that ends an SD-JWT. |
 
 ```json
 {
-  "client_id": "https://dienstverlener-a.nl/oauth/clients/ura-11111111",
-  "client_name": "Dienstverlener A namens zorgaanbieder 11111111",
-  "grant_types": ["client_credentials"],
+  "client_id": "https://dienstverlener-a.nl/oauth/client",
+  "client_name": "Dienstverlener A",
+  "grant_types": ["urn:ietf:params:oauth:grant-type:token-exchange"],
   "token_endpoint_auth_method": "tls_client_auth",
   "tls_client_auth_san_dns": "dienstverlener-a.nl",
   "tls_client_certificate_bound_access_tokens": true,
-  "authorization_details_types": ["nl-gis-v1"],
-  "software_statement": "<mandate of care provider 11111111>"
+  "authorization_details_types": ["nl-gis-v1"]
 }
 ```
 
-The document SHALL NOT contain secrets or private keys (draft, §4.1), and its content SHALL NOT depend on the request, such as its headers or the authorization server that requests it (draft, §4.5). Values in the `software_statement` take precedence over the same values in the document (RFC 7591, §2.3).
+The document SHALL NOT contain secrets or private keys (draft, §4.1), and its content SHALL NOT depend on the request, such as its headers or the authorization server that requests it (draft, §4.5).
 
-When the mandate is renewed, the service provider replaces it in the document (see [Validity and renewal](#validity-and-renewal)). A renewed certificate requires no change to the document, as long as it contains the same host. A service provider that stops acting for a care provider removes the document.
+A renewed certificate requires no change to the document, as long as it contains the same host. The document does not change when the service provider obtains, renews or loses a mandate.
 
 An authorization server SHALL NOT require any other registration of a client. The authorization server MAY block a service provider or a `client_id` locally.
 
@@ -368,11 +372,13 @@ Example payload of a mandate with a validity of 90 days:
 }
 ```
 
+The Authorization Client presents its mandate as subject token in [GF-AUTN-4](#gf-autn-4-request-access-token); the Resource Server publishes its mandate in its [Protected Resource Metadata](#gf-autn-3-get-protected-resource-metadata).
+
 A mandate has no `cnf`. It is not presented with a key binding JWT, but bound to the certificate of the service provider through `may_act.sub` (see [Binding to the certificate](#binding-to-the-certificate)).
 
 #### Validity and renewal
 
-A mandate is valid for at most 3 months. While the care provider's approval applies, the Mandate Issuer issues a new mandate in time, for example one month before the current one expires, and the service provider retrieves it with OpenID4VCI without a new approval. Service providers SHALL renew automatically. The service provider publishes the new mandate in its [Client ID Metadata Document](#client-id-metadata-document) or [Protected Resource Metadata](#gf-autn-3-get-protected-resource-metadata) at least 24 hours before the current one expires.
+A mandate is valid for at most 3 months. While the care provider's approval applies, the Mandate Issuer issues a new mandate in time, for example one month before the current one expires, and the service provider retrieves it with OpenID4VCI without a new approval. Service providers SHALL renew automatically. The Authorization Client uses the new mandate from its next token request. The Resource Server publishes the new mandate in its [Protected Resource Metadata](#gf-autn-3-get-protected-resource-metadata) at least 24 hours before the current one expires.
 
 When a care provider withdraws its approval, the mandate is not renewed and expires at the end of its validity. A mandate cannot be withdrawn earlier, except by revoking a certificate:
 - revoking the certificate of a service provider closes it off for all care providers;
@@ -428,9 +434,9 @@ The authorization server derives the required code from `purpose_of_use`: a requ
 
 | Status | Error | Cause | Client action |
 |---|---|---|---|
-| `400` | `invalid_request` | A required parameter is missing or malformed. | Correct the request. |
+| `400` | `invalid_request` | A required parameter is missing or malformed, or the mandate in `subject_token` is invalid, expired or not for this service provider (RFC 8693, §2.2.2). | Correct the request; obtain a new mandate (GF-AUTN-2) if it has expired. Do not retry unchanged. |
 | `400` | `invalid_authorization_details` | The RAR object is invalid, `subject_organization_id` does not equal the care provider of the mandate, or the mandate does not contain the code for `purpose_of_use` (RFC 9396). | Correct the request; check the mandate codes. |
-| `401` | `invalid_client` | The client certificate is invalid or revoked; the host of the `client_id` is not in the certificate; or the Client ID Metadata Document is invalid, does not match the certificate, or contains a mandate that is invalid, expired or not for this service provider. | Check the certificate and the document; obtain a new mandate (GF-AUTN-2) if it has expired. Do not retry unchanged. |
+| `401` | `invalid_client` | The client certificate is invalid or revoked; the host of the `client_id` is not in the certificate; or the Client ID Metadata Document is invalid or does not match the certificate. | Check the certificate and the document. Do not retry unchanged. |
 | `401` | `invalid_token` | The access token is missing, expired, invalid, or not bound to the client certificate (resource server). | Obtain a new access token (GF-AUTN-4) and retry once. |
 | `403` | `insufficient_scope` | The request is not allowed for this care provider or purpose (resource server). | Do not retry. |
 | `503` | (none) | The authorization server could not retrieve the Client ID Metadata Document (GF-AUTN-6). | Check that the document is available; retry later. |
@@ -452,9 +458,9 @@ The security risks of this specification and its alternatives are listed in [Bij
 
 #### Binding to the certificate
 
-The token request contains no signed proof. A published mandate is bound to the service provider only through the client certificate ([Validation by the authorization server](#validation-by-the-authorization-server), steps 2, 3 and 6), and the access token is bound to the same certificate. Therefore:
+The token request contains no signed proof. A mandate is bound to the service provider only through `may_act.sub` and the client certificate ([Validation by the authorization server](#validation-by-the-authorization-server), step 7), and the access token is bound to the same certificate. Therefore:
 - the private key of the service provider's certificate SHALL be non-exportable, for example in an HSM, also where a proxy or gateway in the service provider's own domain terminates TLS;
-- authorization servers SHOULD be tested with negative cases before they are admitted (see [Open issues](#open-issues)): one that omits one of these checks lets any participant use the published mandates of others;
+- authorization servers SHOULD be tested with negative cases before they are admitted (see [Open issues](#open-issues)): one that omits step 7 lets a party that has seen a mandate, such as another authorization server to which the client presented it, use it;
 - the authorization server SHALL log the token request (see [Logging](#logging)).
 
 #### Logging
@@ -468,7 +474,7 @@ The Mandate Issuer SHALL log each approval and issuance.
 
 #### Privacy considerations
 
-A mandate contains only organization identifiers. The Client ID Metadata Documents and the Protected Resource Metadata show which care providers have mandated which service provider; they are only available over mTLS. The Mandate Issuer records personal data of the employee who approves a mandate, and processes it for the care provider.
+A mandate contains only organization identifiers. The Protected Resource Metadata shows which care providers have mandated the source's service provider, and is only available over mTLS. The Client ID Metadata Documents contain no mandates; an authorization server only sees the mandates that clients present to it. The Mandate Issuer records personal data of the employee who approves a mandate, and processes it for the care provider.
 
 ### Example use cases
 
@@ -491,12 +497,12 @@ sequenceDiagram
     CPA->>MI: Approve: service provider A,<br/>codes, approval period
     MI->>MI: Record approval<br/>sign with UZI key of URA-A
     MI-->>SPA: Mandate (SD-JWT VC),<br/>valid for at most 3 months,<br/>may_act = service provider A
-    SPA->>SPA: Publish Client ID Metadata Document<br/>for URA-A with the mandate
+    SPA->>SPA: Store the mandate for URA-A
 
     Note over SPA,MI: About one month before expiry,<br/>while the approval applies
     SPA->>MI: GF-AUTN-2: credential request (mTLS)
     MI-->>SPA: New mandate, without new approval
-    SPA->>SPA: Replace the mandate in the document
+    SPA->>SPA: Use the new mandate<br/>from the next token request
 ```
 
 #### Use case: Retrieving a nursing handover
@@ -520,11 +526,11 @@ sequenceDiagram
     AC->>RS: GF-AUTN-3: GET /.well-known/<br/>oauth-protected-resource/...
     RS-->>AC: authorization_servers and<br/>mandate of URA-B (TREAT-custodian)
     AC->>AC: Mandate of URA-B valid?<br/>may_act matches server certificate?<br/>AS listed?
-    AC->>AS: GF-AUTN-4: POST /token (mTLS)<br/>client credentials, client_id =<br/>document for URA-A, RAR: URA-A, TREAT
+    AC->>AS: GF-AUTN-4: POST /token (mTLS)<br/>token exchange, subject_token =<br/>mandate of URA-A, RAR: URA-A, TREAT
     AS->>AS: Client certificate valid?<br/>Host of client_id in certificate?
     opt No valid copy in the cache
         AS->>AC: GF-AUTN-6: GET client metadata (mTLS)
-        AC-->>AS: Client ID Metadata Document<br/>with mandate of URA-A
+        AC-->>AS: Client ID Metadata Document<br/>of service provider A
     end
     AS->>AS: tls_client_auth_san_dns =<br/>host of client_id?<br/>Mandate signed with UZI key of URA-A?<br/>Valid, at most 3 months?<br/>may_act = identifier of A?<br/>URA-A = sub? TREAT-user in scope?
     AS-->>AC: Access token (sub = URA-A,<br/>bound to certificate A)
@@ -542,8 +548,8 @@ sequenceDiagram
 
 #### Open issues
 
-- **Test suite.** Positive and negative tests for authorization servers, including a published mandate used by another service provider, a `client_id` whose host is not in the certificate, a revoked UZI certificate, and a `subject_organization_id` that differs from `sub`.
-- **Standards status.** SD-JWT VC and the Client ID Metadata Document are IETF drafts, and the Client ID Metadata Document has hardly been used with the client credentials grant. A test with the authorization server products of pilot participants has to establish the feasibility.
+- **Test suite.** Positive and negative tests for authorization servers, including a mandate presented by another service provider, a `client_id` whose host is not in the certificate, a revoked UZI certificate, and a `subject_organization_id` that differs from `sub`.
+- **Standards status.** SD-JWT VC and the Client ID Metadata Document are IETF drafts, and the Client ID Metadata Document has hardly been used outside the authorization code flow. Authorization server products only accept subject tokens in a token exchange that they issued themselves. A test with the authorization server products of pilot participants has to establish the feasibility.
 
 ### Appendix: Deriving the service provider identifier
 
