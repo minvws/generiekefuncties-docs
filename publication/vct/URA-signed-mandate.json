@@ -52,8 +52,8 @@
       "mandatory": true,
       "sd": "never",
       "display": [
-        { "locale": "en", "label": "Mandate codes", "description": "Mandate codes <purpose>-<role>, separated by spaces. The purpose is a code from http://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; the role is user or custodian." },
-        { "locale": "nl", "label": "Machtigingscodes", "description": "Machtigingscodes <doel>-<rol>, gescheiden door spaties. Het doel is een code uit http://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; de rol is user of custodian." }
+        { "locale": "en", "label": "Mandate codes", "description": "Mandate codes <purpose>-<role>, separated by spaces. The purpose is a code from https://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; the role is user or custodian." },
+        { "locale": "nl", "label": "Machtigingscodes", "description": "Machtigingscodes <doel>-<rol>, gescheiden door spaties. Het doel is een code uit https://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; de rol is user of custodian." }
       ]
     },
     {
