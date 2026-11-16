@@ -3,6 +3,8 @@ This specification is based on the [IHE mCSD](https://profiles.ihe.net/ITI/mCSD/
 {: .ig-lead}
 
 > **Note:** This page is based on version 1.0.0 of the Functional and Technical Design Documents of the Generic Function Addressing (Generieke Functie Adressering). The current and previous versions of this document are available at [www.generiekefuncties.nl/adressering](https://www.generiekefuncties.nl/adressering).
+>
+> **Care providers:** for a non-technical guide (in Dutch) on preparing, registering and maintaining your addressing data, see the [Handboek Adressering voor zorgaanbieders](csd-handbook.html).
 
 
 ### Solution overview
