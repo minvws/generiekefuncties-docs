@@ -1,0 +1,7 @@
+          {{site.data.stringsBase[include.lang]['Links']}}: <a style="color: var(--footer-hyperlink-text-color)" href="{{site.data.info.assets}}toc.html">{{site.data.stringsBase[include.lang]['TableOfContents']}}</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="../qa.html">{{site.data.stringsBase[include.lang]['QAReport']}}</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="{{site.data.fhir.canonical}}/history.html">Directory of published versions</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="https://github.com/minvws/generiekefuncties-docs/issues">Propose a change / get involved</a>
+                 {% for feedbacklink in site.data.features.feedback %}{% if feedbacklink.dashboard %} | <a style="color: var(--footer-hyperlink-text-color)" target="_blank" href="{{feedbacklink.dashboard.url}}">{{feedbacklink.dashboard.label}}</a>{% endif %}{% endfor %}
+          <br/>
+          License: this implementation guide is dedicated to the public domain under <a style="color: var(--footer-hyperlink-text-color)" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal (CC0-1.0)</a>.

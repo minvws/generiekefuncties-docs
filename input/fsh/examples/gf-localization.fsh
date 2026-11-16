@@ -8,10 +8,10 @@ Description: "Example localization Patient record for one custodian, containing 
 * identifier[custodian].use = #official
 * identifier[custodian].system = "https://fhir.datahouder-22222222.example/identifier/patient"
 * identifier[custodian].value = "9fd244dc-6b35-4a7d-843d-ac77591cb14d"
-* identifier[custodian].assigner.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* identifier[custodian].assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * identifier[custodian].assigner.identifier.value = "22222222"
 * identifier[custodian].assigner.identifier.type.coding.system = "http://terminology.hl7.org/CodeSystem/provenance-participant-type"
 * identifier[custodian].assigner.identifier.type.coding.code = #custodian
-* managingOrganization.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * managingOrganization.identifier.value = "22222222"
 * meta.source = "urn:generiekefuncties:nvi:client-id:ehr-client-org2"

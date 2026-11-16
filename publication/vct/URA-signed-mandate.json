@@ -1,0 +1,96 @@
+{
+  "vct": "https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json",
+  "name": "URA-signed mandate",
+  "description": "SD-JWT VC Type Metadata (draft-ietf-oauth-sd-jwt-vc) of the mandate in which a care provider, identified by its URA, authorizes a service provider to act on its behalf for one or more mandate codes. The mandate is signed with the key of the care provider's UZI server certificate (card type S), which is included with its chain in the x5c header. It has no selectively disclosable claims and no cnf. Specified on the page Authentication of the Implementation Guide nl.generiekefuncties.fhir (Generic Functions for data exchange).",
+  "display": [
+    {
+      "locale": "en",
+      "name": "Mandate of a care provider",
+      "description": "A care provider authorizes a service provider to act on its behalf."
+    },
+    {
+      "locale": "nl",
+      "name": "Machtiging van een zorgaanbieder",
+      "description": "Een zorgaanbieder machtigt een dienstverlener om namens hem te handelen."
+    }
+  ],
+  "claims": [
+    {
+      "path": ["iss"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Mandate Issuer", "description": "URL of the Mandate Issuer." },
+        { "locale": "nl", "label": "Uitgever van de machtiging", "description": "URL van de uitgever van de machtiging." }
+      ]
+    },
+    {
+      "path": ["sub"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Care provider", "description": "URA of the care provider, as urn:oid:2.16.528.1.1007.3.3.<URA>." },
+        { "locale": "nl", "label": "Zorgaanbieder", "description": "URA van de zorgaanbieder, als urn:oid:2.16.528.1.1007.3.3.<URA>." }
+      ]
+    },
+    {
+      "path": ["may_act"],
+      "mandatory": true,
+      "sd": "never"
+    },
+    {
+      "path": ["may_act", "sub"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Service provider", "description": "Service provider identifier of the mandated service provider, derived from its certificate." },
+        { "locale": "nl", "label": "Dienstverlener", "description": "Identificatie van de gemachtigde dienstverlener, afgeleid van zijn certificaat." }
+      ]
+    },
+    {
+      "path": ["scope"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Mandate codes", "description": "Mandate codes <purpose>-<role>, separated by spaces. The purpose is a code from https://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; the role is user or custodian." },
+        { "locale": "nl", "label": "Machtigingscodes", "description": "Machtigingscodes <doel>-<rol>, gescheiden door spaties. Het doel is een code uit https://fhir.generiekefuncties.nl/ValueSet/nl-gf-purpose-of-use-vs; de rol is user of custodian." }
+      ]
+    },
+    {
+      "path": ["jti"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Mandate identifier" },
+        { "locale": "nl", "label": "Kenmerk van de machtiging" }
+      ]
+    },
+    {
+      "path": ["iat"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Issued at" },
+        { "locale": "nl", "label": "Uitgegeven op" }
+      ]
+    },
+    {
+      "path": ["nbf"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Valid from" },
+        { "locale": "nl", "label": "Geldig vanaf" }
+      ]
+    },
+    {
+      "path": ["exp"],
+      "mandatory": true,
+      "sd": "never",
+      "display": [
+        { "locale": "en", "label": "Valid until", "description": "At most 3 months after nbf, and not later than the expiry of the signing certificate." },
+        { "locale": "nl", "label": "Geldig tot", "description": "Uiterlijk 3 maanden na nbf, en niet later dan het verlopen van het ondertekeningscertificaat." }
+      ]
+    }
+  ]
+}

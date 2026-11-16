@@ -183,21 +183,21 @@ put_resource "${TEMP_DIR}/identifier-only-patient.json" Patient "${IDENTIFIER_ON
 echo "Testing Patient searches against the IG's Organization 2 examples:"
 check_search \
   "organization:identifier" \
-  "organization:identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization:identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1
 check_search \
   "organization.identifier (requires a resolvable literal reference)" \
-  "organization.identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization.identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1
 check_search \
   "organization:identifier (profile-conformant identifier-only reference)" \
-  "organization:identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization:identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1 \
   "${IDENTIFIER_ONLY_PATIENT_ID}" \
   "${NVI_IDENTIFIER_SYSTEM}|${IDENTIFIER_ONLY_NVI_VALUE}"
 check_search \
   "organization.identifier does not match identifier-only reference" \
-  "organization.identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization.identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   0 \
   "${IDENTIFIER_ONLY_PATIENT_ID}" \
   "${NVI_IDENTIFIER_SYSTEM}|${IDENTIFIER_ONLY_NVI_VALUE}"
@@ -211,15 +211,15 @@ check_search \
   0
 check_search \
   "organization.endpoint:Endpoint.payload-type" \
-  "organization.endpoint:Endpoint.payload-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|MedicationRequest" \
+  "organization.endpoint:Endpoint.payload-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|MedicationRequest" \
   1
 check_search \
   "organization._has:HealthcareService:organization:service-type" \
-  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.neurologie-neurochirurgie" \
+  "organization._has:HealthcareService:organization:service-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.neurologie-neurochirurgie" \
   1
 check_search \
   "organization._has excludes unrelated healthcare services" \
-  "organization._has:HealthcareService:organization:service-type=http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie" \
+  "organization._has:HealthcareService:organization:service-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie" \
   0
 
 if (( FAILURES > 0 )); then

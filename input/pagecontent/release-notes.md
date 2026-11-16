@@ -5,10 +5,21 @@
 </div>
 
 
-### Version: current
-- [Implementation Guide](https://minvws.github.io/generiekefuncties-docs/)
-- [Source code](https://github.com/minvws/generiekefuncties-docs)
-- [Compare version current to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...main)
+### Version: 26.1.0
+- [Implementation Guide](https://fhir.generiekefuncties.nl/26.1.0)
+- [Source code](https://github.com/minvws/generiekefuncties-docs/tree/26.1.0)
+- [Compare this version to 26.0.0](https://github.com/minvws/generiekefuncties-docs/compare/26.0.0...26.1.0)
+#### Significant changes/Closed issues:
+- Authentication; added the [GF Authentication](authentication.html) specification (draft): how two healthcare providers establish each other's identity, and the purpose of an exchange, when exchanging health data through their service providers. It specifies URA-signed mandates (machtigingen) issued as SD-JWT Verifiable Credentials, OAuth 2.0 client authentication with Client ID Metadata Documents, token requests, and validation by the authorization and resource servers. The underlying memos ([Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht](authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html), approved by MT DICIO, and [Vervolg harmonisatie: clientregistratie en machtiging](authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.html)) are included as pages.
+- Authentication; added the `URA-signed-mandate` SD-JWT VC Type Metadata (published under `/vct/`), the `URA-signed-mandate` code to the NL GF Authorization Types CodeSystem and the NL GF Payload Types value set, the `openid4vci` connectionType code (Credential Issuer endpoints) to the NL GF Authorization Server CodeSystem, and the NL GF Purpose of Use value set.
+- Localization; the registration key now includes the registering client (`meta.source`): the NVI stores one `Patient` resource per patient, custodian and Localization Registration Client. A custodian MAY use more than one registration client (e.g., an EHR and a PACS); each client maintains only its own registrations. The registering client is never returned to data users and does not affect search results.
+- Localization; Authorization Decision: the NVI timeout for the custodian's response is lowered from 10 seconds to 1 second, and the requested data categories are clarified to be the `organization.endpoint.payload-type` values in the search; when the search specifies no data categories, the NVI sends one `HEAD` request on `Patient`.
+- General; the canonical URL of this guide changed from `http://fhir.generiekefuncties.nl` to `https://fhir.generiekefuncties.nl`.
+
+### Version: 26.0.0
+- [Implementation Guide](https://fhir.generiekefuncties.nl/26.0.0)
+- [Source code](https://github.com/minvws/generiekefuncties-docs/tree/26.0.0)
+- [Compare this version to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...26.0.0)
 #### Significant changes/Closed issues:
 - Care Services; added the [Handboek Adressering voor zorgaanbieders](csd-handbook.html), a non-technical guide (in Dutch) for care providers covering an introduction to the generic functions and GF Addressing, its relation to other generic functions (including data retrieval with Localization), LandelijkAfsprakenStelsel TA's (a.k.a. Twiin TA's) and existing address services, the data model with fictional care provider examples, the roles of IT service providers, and a step-by-step plan.
 - Localization; localization records (NVI-pseudonyms) no longer contain a data-category code.
