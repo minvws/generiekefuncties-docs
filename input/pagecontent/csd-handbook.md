@@ -69,7 +69,7 @@ De generieke functie Adressering zorgt voor landelijk gestandaardiseerde en comp
 
 U hoeft uw adresgegevens dus niet meer voor elk platform of elke dienst apart in te voeren en bij te houden. Meer hierover leest u in [Architectuur](#architectuur).
 
-*Voorbeeld:* een huisarts wil een patiënt verwijzen naar de wijkverpleging. In het eigen huisartsinformatiesysteem (HIS) zoekt de huisarts op 'wijkverpleging' en de woonplaats van de patiënt. Het HIS toont de zorgaanbieders die deze zorg daar leveren, bijvoorbeeld de zorgdienst 'Verpleging en verzorging' van Rivas (een fictief voorbeeld). De huisarts kiest deze zorgdienst, en het HIS stuurt de verwijzing naar het digitale adres dat Rivas aan deze zorgdienst heeft gekoppeld.
+*Voorbeeld:* een huisarts wil een patiënt verwijzen naar de wijkverpleging. In het eigen huisartsinformatiesysteem (HIS) zoekt de huisarts op 'wijkverpleging' en de woonplaats van de patiënt. Het HIS toont de zorgaanbieders die deze zorg daar leveren, bijvoorbeeld de zorgdienst 'Verpleging en verzorging' van Zorggroep Duinzicht. De huisarts kiest deze zorgdienst, en het HIS stuurt de verwijzing naar het digitale adres dat Zorggroep Duinzicht aan deze zorgdienst heeft gekoppeld.
 
 
 ### Relatie met andere functies en voorzieningen
@@ -141,8 +141,7 @@ flowchart LR
     HS -- "gebruikt" --> EP
 ```
 
-> **Let op: voorbeeldgegevens.** De voorbeelden in dit handboek gebruiken Stichting Rivas Zorggroep en Nedap. De organisatie en vestigingen van Rivas zijn gebaseerd op het KvK Handelsregister, en de zorgdiensten op de verwijsproducten van Rivas in ZorgDomein. Het zijn **voorbeelden, geen echte of actuele gegevens**: ze zijn vereenvoudigd, kunnen verouderd zijn en geven niet weer hoe Rivas of Nedap Adressering werkelijk gebruiken.
-{: #voorbeeldgegevens}
+> **Voorbeelden:** de namen zijn fictief.
 
 #### Organisaties en locaties: de basis
 
@@ -166,8 +165,8 @@ Maak alleen extra organisatieonderdelen en locaties aan als iemand anders ze nod
 
 Voorbeelden:
 
-- [Stichting Rivas Zorggroep](Organization-7d5ae4d9-ca42-4bc7-b51c-58d48412c213.html): de organisatie, overgenomen uit het KvK-basisprofiel;
-- vestigingen van Rivas als locatie, overgenomen uit de KvK, zoals de [hoofdvestiging in Gorinchem](Location-e4c09d6e-bf14-49f5-a14b-ff7514f9c6fc.html), [Rivas Wijkverpleging](Location-5cc69e99-b69b-4536-abd8-5d0c0701df44.html) en [Rivas locatie Lingesteyn](Location-46a0e08a-50f0-44fd-b685-4ddd4927ef5e.html);
+- [Stichting Zorggroep Duinzicht](Organization-7d5ae4d9-ca42-4bc7-b51c-58d48412c213.html): de organisatie;
+- locaties van Zorggroep Duinzicht, zoals de [hoofdvestiging in Gorinchem](Location-e4c09d6e-bf14-49f5-a14b-ff7514f9c6fc.html), [wijkverpleging](Location-5cc69e99-b69b-4536-abd8-5d0c0701df44.html) en [locatie 7](Location-46a0e08a-50f0-44fd-b685-4ddd4927ef5e.html);
 - een zelf aangemaakt organisatieonderdeel: de [afdeling verpleging van een voorbeeldorganisatie](Organization-e1ce0872-8a80-5fdd-8b30-a3b2203ef46b.html).
 
 #### Zorgdiensten
@@ -185,11 +184,11 @@ Organisaties leveren zorgdiensten, op een of meer locaties en/of voor een geogra
 | Digitaal bereikbaar via | De digitale adressen waarop u verwijzingen, opdrachten of notificaties voor deze zorgdienst ontvangt. | `endpoint` |
 {: .grid}
 
-**Vuistregel voor de indeling.** Maak een aparte zorgdienst als de locatie, het werkgebied, de contactgegevens, de beschikbaarheid of de digitale adressen verschillen. Verschillen alleen de zorgvragen, voeg die dan toe aan dezelfde zorgdienst. In het voorbeeld van Rivas zijn de vele zorgvragen samengevoegd tot één zorgdienst per zorgcluster.
+**Vuistregel voor de indeling.** Maak een aparte zorgdienst als de locatie, het werkgebied, de contactgegevens, de beschikbaarheid of de digitale adressen verschillen. Verschillen alleen de zorgvragen, voeg die dan toe aan dezelfde zorgdienst. In het voorbeeld zijn de zorgvragen samengevoegd tot één zorgdienst per zorgcluster.
 
 Voorbeelden:
 
-- [Gynaecologie / verloskunde](HealthcareService-68f0a8c4-35dc-4c6c-a466-71a5d59a8647.html): een polikliniek op de hoofdvestiging van Rivas, met zorgvragen voor gynaecologie en verloskunde, de toegestane verwijzers en de digitale adressen waarop Rivas verwijzingen ontvangt;
+- [Gynaecologie / verloskunde](HealthcareService-68f0a8c4-35dc-4c6c-a466-71a5d59a8647.html): een polikliniek op de hoofdvestiging van Zorggroep Duinzicht, met zorgvragen voor gynaecologie en verloskunde, de toegestane verwijzers en de digitale adressen waarop de zorgdienst verwijzingen ontvangt;
 - [Verpleging en verzorging (wijkverpleging)](HealthcareService-9af72573-912c-43fd-81b6-058a6e46b622.html): zorg bij de cliënt thuis, met als werkgebied de plaatsen Gorinchem en Leerdam en postcodegebieden daarbinnen.
 
 Een register voor werkgebieden (provincies, gemeenten, wijken, postcodegebieden) is nog in ontwikkeling; zie de [roadmap](csd.html#roadmap-for-care-service-directory).
@@ -202,10 +201,10 @@ De IT-dienstverlener die een systeem beheert, registreert de digitale adressen v
 
 U als zorgaanbieder koppelt digitale adressen aan:
 
-- **uw organisatie**: waar andere zorgaanbieders patiënt- of cliëntgegevens bij u kunnen opvragen. Rivas koppelt bijvoorbeeld een [adres waarop de basisgegevens van een patiënt kunnen worden opgevraagd](Endpoint-6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b.html), zoals medicatie, allergieën en aandoeningen.
-- **uw zorgdiensten**: waar andere zorgaanbieders verwijzingen, opdrachten of notificaties naartoe sturen. De zorgdiensten van Rivas gebruiken bijvoorbeeld [twee](Endpoint-c40c117e-c6d9-4724-97af-1b6b6b788c9d.html) [adressen](Endpoint-93b44d3e-e358-4f39-b9b6-6f97ac21e891.html) voor het ontvangen van verwijzingen en opdrachten, zodat verwijzers met verschillende soorten systemen ze kunnen bereiken.
+- **uw organisatie**: waar andere zorgaanbieders patiënt- of cliëntgegevens bij u kunnen opvragen. Zorggroep Duinzicht koppelt bijvoorbeeld een [adres waarop de basisgegevens van een patiënt kunnen worden opgevraagd](Endpoint-6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b.html), zoals medicatie, allergieën en aandoeningen.
+- **uw zorgdiensten**: waar andere zorgaanbieders verwijzingen, opdrachten of notificaties naartoe sturen. De zorgdiensten van Zorggroep Duinzicht gebruiken bijvoorbeeld [twee](Endpoint-c40c117e-c6d9-4724-97af-1b6b6b788c9d.html) [adressen](Endpoint-93b44d3e-e358-4f39-b9b6-6f97ac21e891.html) voor het ontvangen van verwijzingen en opdrachten, zodat verwijzers met verschillende soorten systemen ze kunnen bereiken.
 
-In het voorbeeld beheert Rivas deze adressen zelf. Meestal doet een IT-dienstverlener dat, zoals bij een [(voorbeeld-)adres voor het opvragen van wilsverklaringen](Endpoint-1034376c-cc6e-5518-b292-e6dc24a68826.html) en een [(voorbeeld-)adres voor het opvragen van medische beelden](Endpoint-30d6d76b-389f-58b8-9d40-4311a52bdf57.html), die hier door Nedap worden beheerd. Nogmaals, deze digitale adressen van Rivas en Nedap zijn voorbeelden, geen echte adressen.
+In het voorbeeld beheert Zorggroep Duinzicht deze adressen zelf. Meestal doet een IT-dienstverlener dat, zoals bij een [adres voor het opvragen van wilsverklaringen](Endpoint-1034376c-cc6e-5518-b292-e6dc24a68826.html) en een [adres voor het opvragen van medische beelden](Endpoint-30d6d76b-389f-58b8-9d40-4311a52bdf57.html), die hier door Zorgsoftware Midden worden beheerd.
 
 Bij een digitaal adres staat:
 
@@ -213,7 +212,7 @@ Bij een digitaal adres staat:
 - **welke technische standaard het systeem gebruikt** (bijvoorbeeld HL7 v2, CDA, FHIR of DICOM), zodat het systeem van de verzender weet hoe het met het adres moet communiceren. Dit regelt uw IT-dienstverlener;
 - **of het adres in gebruik is**, en vanaf en tot wanneer.
 
-> **Let op:** bij een digitaal adres staat **niet** voor welke gegevensdienst of informatiestandaard (zoals BgZ, Medicatieoverdracht of eOverdracht) het wordt gebruikt, alleen welke soorten gegevens het ondersteunt. Zo kan hetzelfde adres voor meerdere toepassingen worden gebruikt. Rivas registreert dus geen 'BgZ-adres', maar een adres met de soorten gegevens die in de BgZ zitten. Welke afspraken gelden voor het gebruik van een adres, volgt uit het afsprakenstelsel waarbinnen de uitwisseling plaatsvindt.
+> **Let op:** bij een digitaal adres staat **niet** voor welke gegevensdienst of informatiestandaard (zoals BgZ, Medicatieoverdracht of eOverdracht) het wordt gebruikt, alleen welke soorten gegevens het ondersteunt. Zo kan hetzelfde adres voor meerdere toepassingen worden gebruikt. Een zorgaanbieder registreert dus geen 'BgZ-adres', maar een adres met de soorten gegevens die in de BgZ zitten. Welke afspraken gelden voor het gebruik van een adres, volgt uit het afsprakenstelsel waarbinnen de uitwisseling plaatsvindt.
 
 Stapt u over naar een ander systeem? Dan krijgt het oude adres een einddatum en het nieuwe adres een startdatum op hetzelfde overstapmoment. Zo is altijd duidelijk welk adres op welk moment geldt. Stem dit overstapmoment af met beide IT-dienstverleners. Zij vinden de technische uitwerking in [Endpoint lifecycle and transition](csd.html#endpoint-lifecycle-and-transition).
 
@@ -314,13 +313,13 @@ Voorbeeld van een inventarisatie:
 - Gebruik de [vuistregel voor de indeling](#zorgdiensten) om te bepalen hoeveel zorgdiensten u nodig heeft.
 
 
-*Voorbeeld (fictieve gegevens):* de zorgdienst [Verpleging en verzorging](HealthcareService-9af72573-912c-43fd-81b6-058a6e46b622.html) van Rivas:
+*Voorbeeld:* de zorgdienst [Verpleging en verzorging](HealthcareService-9af72573-912c-43fd-81b6-058a6e46b622.html) van Zorggroep Duinzicht:
 
 | Gegeven | Waarde |
 |---|---|
 | Naam | Verpleging en verzorging |
-| Geleverd door | Stichting Rivas Zorggroep |
-| Locaties | Rivas Wijkverpleging; Rivas Wijkverpleging regio Brabant |
+| Geleverd door | Stichting Zorggroep Duinzicht |
+| Locaties | Duinzicht Wijkverpleging; Duinzicht Wijkverpleging locatie 2 |
 | Werkgebied | Gorinchem en Leerdam, en postcodegebieden daarbinnen |
 | Zorgvragen | o.a. verpleging, persoonlijke verzorging, specialistische verpleging, palliatieve zorg |
 | Toegestane verwijzers | o.a. huisarts, specialist ouderengeneeskunde, verpleegkundig specialist, transfermedewerker |
@@ -335,13 +334,13 @@ Voorbeeld van een inventarisatie:
 - Heeft een zorgdienst (nog) geen digitaal adres? Dan kunnen anderen de zorgdienst wel vinden, maar moeten zij u op een andere manier benaderen, bijvoorbeeld telefonisch.
 - Stapt u over naar een ander systeem? Spreek dan met beide IT-dienstverleners een overstapmoment af (zie [Endpoints: digitale adressen](#endpoints-digitale-adressen)).
 
-*Voorbeeld (fictieve gegevens):* Rivas koppelt het [adres voor het opvragen van basisgegevens](Endpoint-6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b.html) aan de organisatie, en de [twee](Endpoint-c40c117e-c6d9-4724-97af-1b6b6b788c9d.html) [adressen](Endpoint-93b44d3e-e358-4f39-b9b6-6f97ac21e891.html) voor het ontvangen van verwijzingen aan de zorgdiensten.
+*Voorbeeld:* Zorggroep Duinzicht koppelt het [adres voor het opvragen van basisgegevens](Endpoint-6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b.html) aan de organisatie, en de [twee](Endpoint-c40c117e-c6d9-4724-97af-1b6b6b788c9d.html) [adressen](Endpoint-93b44d3e-e358-4f39-b9b6-6f97ac21e891.html) voor het ontvangen van verwijzingen aan de zorgdiensten.
 
 #### Stap 4 (optioneel): Overige registraties
 
 Afhankelijk van uw situatie registreert u ook:
 
-- **eigen digitale adressen**, als u zelf systemen beheert (zoals in het voorbeeld van Rivas);
+- **eigen digitale adressen**, als u zelf systemen beheert;
 - **organisatieonderdelen**, bijvoorbeeld een business unit om zorgdiensten te clusteren;
 - **sub-locaties**, bijvoorbeeld een afdeling of kamer binnen een vestiging, of een locatie die niet als KvK-vestiging is ingeschreven. Ook openingstijden van locaties kunt u toevoegen;
 - **samenwerkingsverbanden** met andere zorgaanbieders. Deze zijn in de pilot nog niet nodig.

@@ -8,7 +8,7 @@ Title: "LRZa - Organization 1 - Organization"
 Description: "Example: LRZa - Organization 1 - Organization"
 * language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3","11111111","http://kvk.nl", "50000535")
-* name = "example General Practice"
+* name = "Huisartsenpraktijk De Linde"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8621 "General medical practice activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+3131599991"
@@ -36,7 +36,7 @@ Title: "LRZa - Organization 2 - Organization"
 Description: "Example: LRZa - Organization 2 - Organization"
 * language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "22222222", "http://kvk.nl", "50000535")
-* name = "example Hospital"
+* name = "Duinzicht Ziekenhuis"
 * type[+].coding[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8610 "Hospital activities"
 * type[=].coding[+] = $sct#22232009 "Hospital"
 * telecom[0].system = #phone
@@ -64,7 +64,7 @@ Title: "LRZa - Organization 3 - Organization"
 Description: "Example: LRZa - Organization 3 - Organization"
 * language = #en
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "33333333", "http://kvk.nl", "50000535")
-* name = "example Care Institution"
+* name = "Zorgcentrum De Horizon"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#8710 "Residential nursing care activities"
 * telecom[0].system = #phone
 * telecom[=].value = "+31301234567"
@@ -85,15 +85,15 @@ Description: "Example: LRZa - Organization 3 - Organization"
 Instance: fe43d49a-4748-5c42-a731-e40d614be8f9
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
-Title: "Authorization: Organization 1 authorizes PharmaPartners"
-Description: "Example: Authorization: Organization 1 authorizes PharmaPartners"
+Title: "Authorization: Organization 1 authorizes ZorgICT Noord"
+Description: "Example: Authorization: Organization 1 authorizes ZorgICT Noord"
 * language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:a7f6cdb4-c6c5-4dc4-b5a9-b0f95f682f01","urn:oid:2.16.528.1.1007.3.3", "11111111")
 * active = true
 * organization = Reference(Organization/8e18530e-2ce1-5dc2-b34b-7d5de91a5c07)
 * participatingOrganization.identifier.system = "http://kvk.nl"
 * participatingOrganization.identifier.value = "51494752"
-* participatingOrganization.display = "PharmaPartners B.V."
+* participatingOrganization.display = "ZorgICT Noord B.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 Instance: c5d6c9d6-7562-589e-9b34-c20a3488daa1
@@ -139,15 +139,15 @@ Description: "Example: digital signature over the OrganizationAffiliation mandat
 Instance: 8ee51b54-bafb-562d-87d1-9429f8bbfc1b
 InstanceOf: NlGfOrganizationAffiliation
 Usage: #example
-Title: "Authorization: Organization 3 authorizes Gerimedica"
-Description: "Example: Authorization: Organization 3 authorizes Gerimedica"
+Title: "Authorization: Organization 3 authorizes Zorgdata Zuid B.V."
+Description: "Example: Authorization: Organization 3 authorizes Zorgdata Zuid B.V."
 * language = #en
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986","urn:uuid:7f420cc6-8f8a-4c8f-b0d9-bc6f121d83f4","urn:oid:2.16.528.1.1007.3.3", "33333333")
 * active = true
 * organization = Reference(Organization/7c98f969-6c3b-5dd3-a18e-e9cf02c8497d)
 * participatingOrganization.identifier.system = "http://kvk.nl"
 * participatingOrganization.identifier.value = "34270859"
-* participatingOrganization.display = "Gerimedica"
+* participatingOrganization.display = "Zorgdata Zuid B.V."
 * code = NlGfAuthorizationTypeCS#lrza-careprovider-admin "LRZa Care Provider Administration"
 
 
@@ -171,7 +171,7 @@ Description: "Example: Organization 1 - Endpoint"
 * period.start = "2024-01-15"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "51494752"
-* managingOrganization.display = "PharmaPartners B.V."
+* managingOrganization.display = "ZorgICT Noord B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -196,7 +196,7 @@ Description: "Example: a single FHIR endpoint that advertises support for both F
 * name = "FHIR Endpoint 1 (STU3 + R4)"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "51494752"
-* managingOrganization.display = "PharmaPartners B.V."
+* managingOrganization.display = "ZorgICT Noord B.V."
 * address = "https://cp1-test.example.org/fhir"
 
 
@@ -217,7 +217,7 @@ Description: "Example: superseded Endpoint of the previous EHR system of Organiz
 * period.end = "2024-01-14"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "51494752"
-* managingOrganization.display = "PharmaPartners B.V."
+* managingOrganization.display = "ZorgICT Noord B.V."
 * contact[0].system = #email
 * contact[=].value = "info@cp1.example.org"
 * contact[=].use = #work
@@ -237,7 +237,7 @@ Description: "Example: the authorization server that protects the FHIR endpoints
 * period.start = "2024-01-15"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "51494752"
-* managingOrganization.display = "PharmaPartners B.V."
+* managingOrganization.display = "ZorgICT Noord B.V."
 * address = "https://auth.cp1-test.example.org/.well-known/oauth-authorization-server"
 
 // // ----------------------------------------------------------------
@@ -258,7 +258,7 @@ Description: "Example: Organization 2 - Endpoint FHIR R4"
 * name = "FHIR Endpoint 2"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "08013836"
-* managingOrganization.display = "Nedap N.V."
+* managingOrganization.display = "Zorgsoftware Midden B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -280,7 +280,7 @@ Description: "Example: Organization 2 - Endpoint DICOM-WADO-RS"
 * name = "DICOM-WADO-RS Endpoint"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "08013836"
-* managingOrganization.display = "Nedap N.V."
+* managingOrganization.display = "Zorgsoftware Midden B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -317,7 +317,7 @@ Description: "Example: Organization 2 - Endpoint FHIR STU3"
 * name = "FHIR Endpoint 2 (health records)"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "08013836"
-* managingOrganization.display = "Nedap N.V."
+* managingOrganization.display = "Zorgsoftware Midden B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -508,7 +508,7 @@ Description: "Example: Organization 3 - Endpoint FHIR R4"
 * name = "FHIR Endpoint 3"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "34270859"
-* managingOrganization.display = "Gerimedica"
+* managingOrganization.display = "Zorgdata Zuid B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work
@@ -545,7 +545,7 @@ Description: "Example: Organization 3 - Endpoint FHIR STU3"
 * name = "FHIR Endpoint 3 (health records)"
 * managingOrganization.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.value = "34270859"
-* managingOrganization.display = "Gerimedica"
+* managingOrganization.display = "Zorgdata Zuid B.V."
 * contact[0].system = #phone
 * contact[=].value = "+3131599991"
 * contact[=].use = #work

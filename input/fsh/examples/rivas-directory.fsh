@@ -1,17 +1,6 @@
 // // ----------------------------------------------------------------
-// // Care provider example: Stichting Rivas Zorggroep
-// //
-// // These instances illustrate the result of applying the StructureMaps in
-// // input/fsh/structuremaps.fsh to Chamber of Commerce (KVK) source data:
-// //   - KvkBasisprofielToOrganization      → NlGfOrganization (the care provider)
-// //   - KvkVestigingsprofielToLocation     → NlGfLocation (its vestigingen)
-// //
-// // Source data (organization + vestigingen) obtained from the CIBG
-// // Zorgaanbiedersportaal:
-// //   https://zoeken.zorgaanbiedersportaal.nl/zorgaanbieder/stichting-rivas-zorggroep/11044044 (using API https://zoeken.zorgaanbiedersportaal.nl/api/v1/Organisatie/{orgId} and https://zoeken.zorgaanbiedersportaal.nl/api/v1/Vestiging/{orgId}/{vestigingsnummer})
-// // KVK number 11044044; vestigingsnummers and addresses as listed on that page.
-// // A representative subset of the 57 vestigingen is included; the remaining
-// // vestigingen follow the same mapping pattern.
+// // Example care provider: Stichting Zorggroep Duinzicht
+// // The names are fictional. Physical and digital addresses are retained.
 // // ----------------------------------------------------------------
 
 // // ----------------------------------------------------------------
@@ -20,11 +9,11 @@
 Instance: 7d5ae4d9-ca42-4bc7-b51c-58d48412c213
 InstanceOf: NlGfOrganization
 Usage: #example
-Title: "Rivas - Stichting Rivas Zorggroep - Organization"
-Description: "Example: care provider Stichting Rivas Zorggroep, mapped from its KVK Basisprofiel to a FHIR Organization via the KvkBasisprofielToOrganization StructureMap."
+Title: "Duinzicht - Stichting Zorggroep Duinzicht - Organization"
+Description: "Example: care provider Stichting Zorggroep Duinzicht represented as a FHIR Organization."
 * insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "11044044", "http://kvk.nl", "50000535")
 * active = true
-* name = "Stichting Rivas Zorggroep"
+* name = "Stichting Zorggroep Duinzicht"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#69209 "Other bookkeeping services"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#78202 "Activities of temporary secondment agencies"
@@ -53,12 +42,12 @@ Description: "Example: care provider Stichting Rivas Zorggroep, mapped from its 
 Instance: e4c09d6e-bf14-49f5-a14b-ff7514f9c6fc
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Stg. Rivas Zorggroep Hoofdvestiging - Location"
-Description: "Example: main establishment (hoofdvestiging) of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Zorggroep Duinzicht Hoofdvestiging - Location"
+Description: "Example: main establishment (hoofdvestiging) of Stichting Zorggroep Duinzicht represented as a FHIR Location."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027888347", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Stg. Rivas Zorggroep Hoofdvestiging"
+* name = "Zorggroep Duinzicht Hoofdvestiging"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#69209 "Other bookkeeping services"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#78202 "Activities of temporary secondment agencies"
@@ -82,12 +71,12 @@ Description: "Example: main establishment (hoofdvestiging) of Stichting Rivas Zo
 Instance: 13f2707e-6c96-42e3-bf97-2e042204bdc3
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas Paramedische zorg - Location"
-Description: "Example: vestiging Rivas Paramedische zorg of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht Paramedische zorg - Location"
+Description: "Example: location Duinzicht Paramedische zorg of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000043773346", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas Paramedische zorg"
+* name = "Duinzicht Paramedische zorg"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86950 "Physiotherapy activities"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -107,12 +96,12 @@ Description: "Example: vestiging Rivas Paramedische zorg of Stichting Rivas Zorg
 Instance: 5cc69e99-b69b-4536-abd8-5d0c0701df44
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas Wijkverpleging - Location"
-Description: "Example: vestiging Rivas Wijkverpleging of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht Wijkverpleging - Location"
+Description: "Example: location Duinzicht Wijkverpleging of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000043619169", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas Wijkverpleging"
+* name = "Duinzicht Wijkverpleging"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86994 "Other paramedical care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88991 "Support and asistance for young people without overnight stay (including day time activities)"
@@ -133,12 +122,12 @@ Description: "Example: vestiging Rivas Wijkverpleging of Stichting Rivas Zorggro
 Instance: 9f8dc0c4-d0aa-49a0-a433-42c2c523d63d
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie De Alblashof - Location"
-Description: "Example: vestiging Rivas locatie De Alblashof of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 1 - Location"
+Description: "Example: location 1 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027889564", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie De Alblashof"
+* name = "Duinzicht locatie 1"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86221 "Specialised medical care without overnight stay (not psychiatric care)"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
@@ -160,12 +149,12 @@ Description: "Example: vestiging Rivas locatie De Alblashof of Stichting Rivas Z
 Instance: aeeec7c3-bae1-4e13-b474-cc4334db299a
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie De Markt - Location"
-Description: "Example: vestiging Rivas locatie De Markt of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 2 - Location"
+Description: "Example: location 2 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027900878", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie De Markt"
+* name = "Duinzicht locatie 2"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87302 "Residential care with personal care and assistance for the elderly"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -183,12 +172,12 @@ Description: "Example: vestiging Rivas locatie De Markt of Stichting Rivas Zorgg
 Instance: fec375a2-1e4d-4c8b-9605-d5b47c3cd8ea
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie De Schutse - Location"
-Description: "Example: vestiging Rivas locatie De Schutse of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 3 - Location"
+Description: "Example: location 3 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027898431", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie De Schutse"
+* name = "Duinzicht locatie 3"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87302 "Residential care with personal care and assistance for the elderly"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -206,12 +195,12 @@ Description: "Example: vestiging Rivas locatie De Schutse of Stichting Rivas Zor
 Instance: ac20e246-8bd8-4778-ad5f-e8fe671fe6cd
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie GC Arkel - Location"
-Description: "Example: vestiging Rivas locatie GC Arkel (gezondheidscentrum) of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 4 - Location"
+Description: "Example: location 4 (health centre) of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000032737807", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie GC Arkel"
+* name = "Duinzicht locatie 4"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -229,12 +218,12 @@ Description: "Example: vestiging Rivas locatie GC Arkel (gezondheidscentrum) of 
 Instance: 217c9c8c-2e6d-4d71-a3c7-a19a915caea2
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie Het Anker - Location"
-Description: "Example: vestiging Rivas locatie Het Anker of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 5 - Location"
+Description: "Example: location 5 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027889661", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie Het Anker"
+* name = "Duinzicht locatie 5"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88991 "Support and asistance for young people without overnight stay (including day time activities)"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88992 "Social welfare work"
@@ -254,12 +243,12 @@ Description: "Example: vestiging Rivas locatie Het Anker of Stichting Rivas Zorg
 Instance: ccb5c241-069a-44b3-a575-a64965ee433b
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie Judith Leysterhof Rembrandthof 2 - Location"
-Description: "Example: vestiging Rivas locatie Judith Leysterhof Rembrandthof 2 of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 6 - Location"
+Description: "Example: location 6 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027898695", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie Judith Leysterhof Rembrandthof 2"
+* name = "Duinzicht locatie 6"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -277,12 +266,12 @@ Description: "Example: vestiging Rivas locatie Judith Leysterhof Rembrandthof 2 
 Instance: 46a0e08a-50f0-44fd-b685-4ddd4927ef5e
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie Lingesteyn - Location"
-Description: "Example: vestiging Rivas locatie Lingesteyn of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 7 - Location"
+Description: "Example: location 7 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027899926", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie Lingesteyn"
+* name = "Duinzicht locatie 7"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86102 "General hospital care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
@@ -306,12 +295,12 @@ Description: "Example: vestiging Rivas locatie Lingesteyn of Stichting Rivas Zor
 Instance: e4eb40b9-85af-4740-a7b3-0d820c12646e
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie Waerthove - Location"
-Description: "Example: vestiging Rivas locatie Waerthove of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 8 - Location"
+Description: "Example: location 8 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027902226", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie Waerthove"
+* name = "Duinzicht locatie 8"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
 * physicalType = $location-physical-type#bu "Building"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
@@ -329,12 +318,12 @@ Description: "Example: vestiging Rivas locatie Waerthove of Stichting Rivas Zorg
 Instance: bde544b0-c967-419c-b31a-0734f99a727e
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas locatie Zorgmolen - Location"
-Description: "Example: vestiging Rivas locatie Zorgmolen of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht locatie 9 - Location"
+Description: "Example: location 9 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027900827", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas locatie Zorgmolen"
+* name = "Duinzicht locatie 9"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88991 "Support and asistance for young people without overnight stay (including day time activities)"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88992 "Social welfare work"
@@ -354,12 +343,12 @@ Description: "Example: vestiging Rivas locatie Zorgmolen of Stichting Rivas Zorg
 Instance: adb8ac46-cb8b-4e99-ab68-4e641549cda9
 InstanceOf: NlGfLocation
 Usage: #example
-Title: "Rivas - Rivas Wijkverpleging regio Brabant - Location"
-Description: "Example: vestiging Rivas Wijkverpleging regio Brabant of Stichting Rivas Zorggroep, mapped from its KVK Vestigingsprofiel to a FHIR Location via the KvkVestigingsprofielToLocation StructureMap."
+Title: "Duinzicht - Duinzicht Wijkverpleging locatie 2 - Location"
+Description: "Example: district nursing location 2 of Stichting Zorggroep Duinzicht."
 * insert CustodianAssignedIdentifier("http://kvk.nl", "000027901025", "http://kvk.nl", "50000535")
 * status = #active
 * mode = #instance
-* name = "Rivas Wijkverpleging regio Brabant"
+* name = "Duinzicht Wijkverpleging locatie 2"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88991 "Support and asistance for young people without overnight stay (including day time activities)"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#86942 "Nursing and personal care at home and maternity care"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#88992 "Social welfare work"
@@ -377,17 +366,14 @@ Description: "Example: vestiging Rivas Wijkverpleging regio Brabant of Stichting
 * address.use = #work
 
 // // ----------------------------------------------------------------
-// // HealthcareServices (deduplicated from the ZorgDomein referral products;
-// // each CSV row is a referral "zorgproduct", collapsed here to one
-// // HealthcareService per care cluster. HealthcareService.type is mapped to
-// // the zorgvragen offered by the service. providedBy references the Rivas
-// // Organization; location references the relevant Location example(s).)
+// // HealthcareServices representing care clusters. HealthcareService.type
+// // contains the care questions offered by each service.
 
 Instance: 68f0a8c4-35dc-4c6c-a466-71a5d59a8647
 InstanceOf: NlGfHealthcareService
 Usage: #example
-Title: "Rivas - HealthcareService Gynaecologie / verloskunde (Beatrixziekenhuis)"
-Description: "Example: combined gynaecology and obstetrics outpatient clinic at the Beatrixziekenhuis (Gorinchem, the Rivas hoofdvestiging). Deduplicated from the ZorgDomein referral products; HealthcareService.type is mapped to the zorgvragen offered by this service."
+Title: "Duinzicht - HealthcareService Gynaecologie / verloskunde (Duinzicht Medisch Centrum)"
+Description: "Example: combined gynaecology and obstetrics outpatient clinic at the Duinzicht Medisch Centrum. HealthcareService.type describes the care questions offered by this service."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:b87eef71-7334-454f-ba9d-3b7287385afe", "http://kvk.nl", "11044044")
 * active = true
 * name = "Gynaecologie / verloskunde"
@@ -450,8 +436,8 @@ Description: "Example: combined gynaecology and obstetrics outpatient clinic at 
 Instance: 9af72573-912c-43fd-81b6-058a6e46b622
 InstanceOf: NlGfHealthcareService
 Usage: #example
-Title: "Rivas - HealthcareService Verpleging en verzorging (Wijkverpleging)"
-Description: "Example: district nursing / home care (wijkverpleging) service of Stichting Rivas Zorggroep, delivered at the patient's home. Deduplicated from the ZorgDomein referral products; HealthcareService.type is mapped to the zorgvragen offered by this service."
+Title: "Duinzicht - HealthcareService Verpleging en verzorging (Wijkverpleging)"
+Description: "Example: district nursing / home care (wijkverpleging) service of Stichting Zorggroep Duinzicht, delivered at the patient's home."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d67653e3-2e83-46d7-92f0-a880e4515c9c", "http://kvk.nl", "11044044")
 * active = true
 * name = "Verpleging en verzorging"
@@ -471,7 +457,7 @@ Description: "Example: district nursing / home care (wijkverpleging) service of 
 * eligibility[+].code.text = "Jeugdarts"
 * eligibility[+].code.text = "Huisarts (waarnemend)"
 * eligibility[+].code.text = "Specialist ouderengeneeskunde"
-// Coverage area: province -> city -> postal-code hierarchy (see rivas-coverage-areas.fsh)
+// Coverage area: province -> city -> postal-code hierarchy.
 * coverageArea[+] = Reference(Location/b03dbf73-23a1-4880-bda0-ee8dab1a0184)
 * coverageArea[+] = Reference(Location/0540de85-0f4b-4b5c-a6fa-256afb8c31de)
 * coverageArea[+] = Reference(Location/2f04ef3b-2f14-42b1-8fc4-e15083d5d5fe)
@@ -490,41 +476,41 @@ Description: "Example: district nursing / home care (wijkverpleging) service of 
 * type[+] = NlGfZorgvragenCS#hulpmiddelen.overige-hulpmiddelen "Other assistive devices"
 
 // // ----------------------------------------------------------------
-// // Endpoints (managed by Rivas)
+// // Endpoints (managed by Duinzicht)
 
 Instance: c40c117e-c6d9-4724-97af-1b6b6b788c9d
 InstanceOf: NlGfEndpoint
 Usage: #example
-Title: "Rivas - HL7 v2 Endpoint (requests)"
-Description: "Example: HL7 v2 (MLLP) endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
+Title: "Duinzicht - HL7 v2 Endpoint (requests)"
+Description: "Example: HL7 v2 (MLLP) endpoint managed by Stichting Zorggroep Duinzicht for receiving requests, transfers and orders. Referenced from the Duinzicht HealthcareServices."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:d5481a9e-c6d9-49a7-b09c-e3624bac136c", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
 * payloadMimeType[+] = #"application/hl7-v2"
 * connectionType = $endpoint-connection-type#hl7v2-mllp "HL7 v2 MLLP"
-* name = "Rivas HL7 v2 requests endpoint"
+* name = "Duinzicht HL7 v2 requests endpoint"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
 * address = "mllp://hl7v2.rivas.example.org:2575"
 
 Instance: 93b44d3e-e358-4f39-b9b6-6f97ac21e891
 InstanceOf: NlGfEndpoint
 Usage: #example
-Title: "Rivas - FHIR STU3 Endpoint (requests)"
-Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep for receiving requests, transfers and orders. Referenced from the Rivas HealthcareServices."
+Title: "Duinzicht - FHIR STU3 Endpoint (requests)"
+Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Zorggroep Duinzicht for receiving requests, transfers and orders. Referenced from the Duinzicht HealthcareServices."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:8cd9c162-cac5-4445-a097-d0c337fe1fc1", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Request "Requests, transfers and orders"
 * payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest "HL7 FHIR"
-* name = "Rivas FHIR STU3 requests endpoint"
+* name = "Duinzicht FHIR STU3 requests endpoint"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
 * address = "https://fhir-stu3.rivas.example.org/requests"
 
 Instance: 6358e7a0-d8ef-4f92-bdc5-ad02cc088b5b
 InstanceOf: NlGfEndpoint
 Usage: #example
-Title: "Rivas - FHIR STU3 Endpoint (BGZ)"
-Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas Zorggroep that offers the Basisgegevensset Zorg (BGZ) across multiple data categories. Referenced from the Rivas Organization."
+Title: "Duinzicht - FHIR STU3 Endpoint (BGZ)"
+Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Zorggroep Duinzicht that offers the Basisgegevensset Zorg (BGZ) across multiple data categories. Referenced from the Duinzicht Organization."
 * insert CustodianAssignedIdentifier("urn:ietf:rfc:3986", "urn:uuid:650bf86c-a21f-450c-a4e9-5fcb02ab2ca4", "http://kvk.nl", "11044044")
 * status = #active
 * payloadType[+].coding = nl-gf-data-categories-cs#Patient "Patient"
@@ -542,8 +528,6 @@ Description: "Example: FHIR STU3 (3.0) REST endpoint managed by Stichting Rivas 
 * payloadType[+].coding = nl-gf-data-categories-cs#Nutrition "Nutrition"
 * payloadMimeType[+] = #"application/fhir+json; fhirversion=3.0"
 * connectionType = $endpoint-connection-type#hl7-fhir-rest "HL7 FHIR"
-* name = "Rivas BGZ FHIR STU3 endpoint"
+* name = "Duinzicht BGZ FHIR STU3 endpoint"
 * managingOrganization = Reference(Organization/7d5ae4d9-ca42-4bc7-b51c-58d48412c213)
 * address = "https://fhir-stu3.rivas.example.org/bgz"
-
-
