@@ -50,7 +50,7 @@ Description: "HealthcareService profile aligned with IHE mCSD HealthcareService 
 * specialty ^binding.extension[=].extension[+].url = "purpose"
 * specialty ^binding.extension[=].extension[=].valueCode = #extensible
 * specialty ^binding.extension[=].extension[+].url = "valueSet"
-* specialty ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/ValueSet/nl-gf-healthcare-specialty-vs"
+* specialty ^binding.extension[=].extension[=].valueCanonical = "https://fhir.generiekefuncties.nl/ValueSet/nl-gf-healthcare-specialty-vs"
 
 
 Profile: NlGfLocation
@@ -77,7 +77,7 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 * type ^binding.extension[=].extension[+].url = "purpose"
 * type ^binding.extension[=].extension[=].valueCode = #extensible
 * type ^binding.extension[=].extension[+].url = "valueSet"
-* type ^binding.extension[=].extension[=].valueCanonical = "http://fhir.generiekefuncties.nl/ValueSet/nl-gf-location-type-vs"
+* type ^binding.extension[=].extension[=].valueCanonical = "https://fhir.generiekefuncties.nl/ValueSet/nl-gf-location-type-vs"
 
 * status 1.. //compliance to https://profiles.ihe.net/ITI/mCSD/StructureDefinition/IHE.mCSD.Location
 * managingOrganization 1..
@@ -87,17 +87,17 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 
 Invariant:   ura-identifier-or-partof
 Description: "an Organization instance must either have an identifier of type URA or KVK, or must be 'partOf' some other instance that is an nl-gf-organization instance."
-Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or identifier.where(system='http://kvk.nl').exists() or partOf.exists()"
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or identifier.where(system='http://kvk.nl').exists() or partOf.exists()"
 Severity:    #error
 
 Invariant:   assigner-identifier-system
 Description: "The assigner identifier system must be either URA or KVK."
-Expression:  "system = 'urn:oid:2.16.528.1.1007.3.3' or system = 'http://kvk.nl'"
+Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http://kvk.nl'"
 Severity:    #error
 
 Invariant:   only-ura-identified-organization-can-refer-to-an-endpoint
 Description: "an Organization instance must have a URA-identifier in order to be able to refer to an Endpoint instance."
-Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or endpoint.empty()"
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or endpoint.empty()"
 Severity:    #error
 
 Profile: NlGfOrganization
@@ -187,17 +187,17 @@ Description: """An (unique) identifier ***that was assigned by the original cust
 
 Invariant: nl-gf-connectiontype-req
 Description: "The connectionType SHALL be from a code system of the NL GF Connection Types value set (HL7 endpoint-connection-type, NL GF Authorization Server, or Koppeltaal hti-smart-on-fhir)."
-Expression:  "system = 'http://terminology.hl7.org/CodeSystem/endpoint-connection-type' or system = 'http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-server-cs' or (system = 'http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type' and code = 'hti-smart-on-fhir')"
+Expression:  "system = 'http://terminology.hl7.org/CodeSystem/endpoint-connection-type' or system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-server-cs' or (system = 'http://vzvz.nl/fhir/CodeSystem/koppeltaal-endpoint-connection-type' and code = 'hti-smart-on-fhir')"
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
-Description: "At least one payloadType coding SHALL be from a code system of the NL GF Payload Type value set (HL7 endpoint-payload-type, NL GF Data Categories); additional codes from other code systems are also allowed."
-Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs').exists()"
+Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set (HL7 endpoint-payload-type, NL GF Data Categories, or URA-signed-mandate from NL GF Authorization Types); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs' or (system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs' and code = 'URA-signed-mandate')).exists()"
 Severity:    #error
 
 Invariant: nl-gf-servicetype-req
 Description: "At least one type coding SHALL be from a code system of the NL GF Service Types value set (HL7 service-type or NL GF Zorgvragen); additional codes from other code systems are also allowed."
-Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/service-type' or system = 'http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs').exists()"
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/service-type' or system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs').exists()"
 Severity:    #error
 
 Invariant: nl-gf-specialty-req
@@ -217,5 +217,5 @@ Severity:    #error
 
 Invariant: nl-gf-affiliationcode-req
 Description: "At least one code coding SHALL be from a code system of the NL GF Affiliation Type value set (NL GF Authorization Types or HL7 organization-role); additional codes from other code systems are also allowed."
-Expression:  "coding.where(system = 'http://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs' or system = 'http://hl7.org/fhir/organization-role').exists()"
+Expression:  "coding.where(system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs' or system = 'http://hl7.org/fhir/organization-role').exists()"
 Severity:    #error

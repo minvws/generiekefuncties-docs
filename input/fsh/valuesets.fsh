@@ -54,6 +54,7 @@ Description: "The data exchange capabilities supported"
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
 * include codes from system NlGfDataCategoriesCS
+* NlGfAuthorizationTypeCS#URA-signed-mandate "URA-signed mandate"
 
 
 ValueSet: NlGfAffiliationTypeVS
@@ -64,3 +65,15 @@ Description: "Authorization types supported by NL Generic Functions."
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
 * include codes from system http://hl7.org/fhir/organization-role
+
+ValueSet: NlGfPurposeOfUseVS
+Id: nl-gf-purpose-of-use-vs
+Title: "NL GF Purpose of Use ValueSet"
+Description: "The purposes of use supported by GF Authentication: the allowed values of `purpose_of_use` in the RAR object, and the purpose part of mandate codes (`<purpose>-<role>`). The codes come from HL7 v3 ActReason (PurposeOfUse). Only the listed codes are allowed, and each code stands only for itself: a mandate for a code does not grant rights for its child codes in the ActReason hierarchy. A mandate for `TREAT`, for example, does not cover `ETREAT`, `BTG` or `POPHLTH`."
+* ^status = #active
+* ^experimental = true
+* $v3-ActReason#TREAT "treatment"
+* $v3-ActReason#ETREAT "Emergency Treatment"
+* $v3-ActReason#PATRQT "patient requested"
+* $v3-ActReason#HRESCH "healthcare research"
+* $v3-ActReason#HSYSADMIN "health system administration"

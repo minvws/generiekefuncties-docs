@@ -5,7 +5,7 @@ Title: "Patient Jaantje Merkens"
 * language = #en
 * identifier[+].system = "urn:oid:2.16.840.1.113883.2.4.6.3"
 * identifier[=].value = "111222333"
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/patients","128447d2-e153-4c93-8ac6-6c357555f3db","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/patients","128447d2-e153-4c93-8ac6-6c357555f3db","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * name
   * given[0] = "Jaantje"
   * family = "Merkens"
@@ -18,7 +18,7 @@ Title: "Patient Jaantje Merkens"
 * address.line = "Kerkstraat 18"
 * address.postalCode = "7071 WZ"
 * address.city = "Ulft"
-* managingOrganization.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * managingOrganization.identifier.value = "11111111"
 * managingOrganization.identifier.assigner.identifier.system = "http://kvk.nl"
 * managingOrganization.identifier.assigner.identifier.value = "50000535"
@@ -32,7 +32,7 @@ Title: "CustodianAssignedIdentifier for a Condition at care provider with URA 11
 * system = "https://cp1-test.example.org/Condition"
 * value = "8cdd8f8d-f75b-4285-851e-ff302dad46fb"
 * use = #official
-* assigner.identifier.system = "urn:oid:2.16.528.1.1007.3.3"
+* assigner.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura"
 * assigner.identifier.value = "11111111"
 * assigner.identifier.type = $provenance-participant-type#custodian
 
@@ -43,7 +43,7 @@ Title: "Condition General Weakness"
 * language = #en
 * meta.lastUpdated = "2024-09-03T12:00:00Z"
 * identifier = 607bc9c7-8a3b-47e6-ac72-8a50e97d6ae2
-//* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","urn:oid:2.16.528.1.1007.3.3", "11111111")
+//* insert CustodianAssignedIdentifier("https://cp1-test.example.org/Condition","8cdd8f8d-f75b-4285-851e-ff302dad46fb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * clinicalStatus = $condition-clinical#active
 * verificationStatus = $condition-ver-status#provisional
 * code = $sct#13791008 "General weakness"
@@ -63,7 +63,7 @@ InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Vascular medicine"
 * language = #en
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","73f4bffe-eac4-4863-8e4a-852c578f95dd","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","73f4bffe-eac4-4863-8e4a-852c578f95dd","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
@@ -82,7 +82,7 @@ InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Neurological Diagnostics"
 * language = #en
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","d2f1d123-9bfb-485f-8b6f-2db411c4884e","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","d2f1d123-9bfb-485f-8b6f-2db411c4884e","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
@@ -101,7 +101,7 @@ InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Orthopedic Diagnostics"
 * language = #en
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","4e4215a2-d6ff-4e53-8737-d9810a4cc3eb","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","4e4215a2-d6ff-4e53-8737-d9810a4cc3eb","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
@@ -120,7 +120,7 @@ InstanceOf: ServiceRequest
 Usage: #inline
 Title: "ServiceRequest Internal medicine"
 * language = #en
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","3cb7873f-c222-4196-b441-02b3790ec97e","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/ServiceRequest","3cb7873f-c222-4196-b441-02b3790ec97e","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * intent = #order
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db) "Patient Jaantje Merkens"
@@ -139,7 +139,7 @@ InstanceOf: MedicationStatement
 Usage: #inline
 Title: "MedicationStatement Urokinase"
 * language = #en
-* insert CustodianAssignedIdentifier("https://cp1-test.example.org/MedicationStatement","98f9d4a7-d58d-4889-8e63-0cb2d4e35144","urn:oid:2.16.528.1.1007.3.3", "11111111")
+* insert CustodianAssignedIdentifier("https://cp1-test.example.org/MedicationStatement","98f9d4a7-d58d-4889-8e63-0cb2d4e35144","http://fhir.nl/fhir/NamingSystem/ura", "11111111")
 * status = #active
 * medicationCodeableConcept = $atc#B01AD04 "urokinase"
 * subject = Reference(Patient/128447d2-e153-4c93-8ac6-6c357555f3db)

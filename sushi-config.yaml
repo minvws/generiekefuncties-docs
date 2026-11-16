@@ -4,13 +4,13 @@
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 id: nl.generiekefuncties.fhir
-canonical: http://fhir.generiekefuncties.nl
+canonical: https://fhir.generiekefuncties.nl
 name: NlGenericFunctions
 title: Generic Functions for data exchange - Implementation Guide
 language: en-US
 # description: Example Implementation Guide for getting started with SUSHI
 status: active # draft | active | retired | unknown
-version: 26.0.0
+version: 26.1.0
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2026+
 releaseLabel: trial-use # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
@@ -61,8 +61,15 @@ pages:
   # identification.md:
   #   title: Identification
 
-  # authentication.md:
-  #   title: Authentication
+  authentication.md:
+    title: Authentication (V&O)
+
+  authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
+    title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
+  authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:
+    title: "Vervolg harmonisatie: clientregistratie en machtiging"
+  # authenticatie-en-autorisatie-Normanalyse-eOverdracht-BgZ-vMT-DICIO.md:
+  #   title: Normanalyse authenticatie en autorisatie
 
   # authorization.md:
   #   title: Authorization
@@ -110,13 +117,13 @@ parameters:
 menu:
   Home: index.html
   Care Service Directory: csd.html
-  Signing: signing.html
+  # Signing: signing.html
   # Identification: identification.html
-  # Authentication: authentication.html
   # Authorization: authorization.html
   Localization: localization.html
   Pseudonymisation: pseudonymisation.html
-  
+  Authentication: authentication.html
+
   Artifacts: artifacts.html
   Release Notes: release-notes.html
 

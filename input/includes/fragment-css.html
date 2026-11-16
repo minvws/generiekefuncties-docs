@@ -90,6 +90,24 @@ body {
 	line-height: 1.2;
 }
 
+/* Small FHIR icon on the right of the logo bar (required by fhir.org hosting) */
+#header-logos {
+	position: relative;
+}
+
+#fhir-logo-header {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	line-height: 0;
+}
+
+#fhir-logo-header img {
+	height: 30px;
+	width: auto;
+}
+
 /* One continuous blue band holding the IG title, menu and breadcrumb
    (like generiekefuncties.nl) */
 #stripe {
@@ -292,6 +310,10 @@ body {
 
 	#rijkslogo-text {
 		font-size: 0.75rem;
+	}
+
+	#fhir-logo-header img {
+		height: 24px;
 	}
 
 	#segment-content > .container {
