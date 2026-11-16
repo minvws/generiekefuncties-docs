@@ -183,21 +183,21 @@ put_resource "${TEMP_DIR}/identifier-only-patient.json" Patient "${IDENTIFIER_ON
 echo "Testing Patient searches against the IG's Organization 2 examples:"
 check_search \
   "organization:identifier" \
-  "organization:identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization:identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1
 check_search \
   "organization.identifier (requires a resolvable literal reference)" \
-  "organization.identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization.identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1
 check_search \
   "organization:identifier (profile-conformant identifier-only reference)" \
-  "organization:identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization:identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   1 \
   "${IDENTIFIER_ONLY_PATIENT_ID}" \
   "${NVI_IDENTIFIER_SYSTEM}|${IDENTIFIER_ONLY_NVI_VALUE}"
 check_search \
   "organization.identifier does not match identifier-only reference" \
-  "organization.identifier=urn:oid:2.16.528.1.1007.3.3|22222222" \
+  "organization.identifier=http://fhir.nl/fhir/NamingSystem/ura|22222222" \
   0 \
   "${IDENTIFIER_ONLY_PATIENT_ID}" \
   "${NVI_IDENTIFIER_SYSTEM}|${IDENTIFIER_ONLY_NVI_VALUE}"

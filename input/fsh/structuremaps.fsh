@@ -214,7 +214,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].rule[=].rule[=].rule[=].rule[=].target[=].parameter[+].valueString = "custodian"
 
 
-// Rule: uraNummer → identifier (system: urn:oid:2.16.528.1.1007.3.3)
+// Rule: uraNummer → identifier (system: http://fhir.nl/fhir/NamingSystem/ura)
 * group[=].rule[+].name = "uraNummer"
 * group[=].rule[=].source[+].context = "src"
 * group[=].rule[=].source[=].element = "uraNummer"
@@ -236,7 +236,7 @@ Description: "StructureMap die een KVK Basisprofiel API response transformeert n
 * group[=].rule[=].rule[=].target[=].contextType = #variable
 * group[=].rule[=].rule[=].target[=].element = "system"
 * group[=].rule[=].rule[=].target[=].transform = #copy
-* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "urn:oid:2.16.528.1.1007.3.3"
+* group[=].rule[=].rule[=].target[=].parameter[+].valueString = "http://fhir.nl/fhir/NamingSystem/ura"
 * group[=].rule[=].rule[+].name = "uraValue"
 * group[=].rule[=].rule[=].source[+].context = "uraNum"
 * group[=].rule[=].rule[=].target[+].context = "uraId"

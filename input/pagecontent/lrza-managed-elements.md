@@ -30,7 +30,7 @@ The following identifier systems and code systems are managed by the LRZa in **e
 |---|---|---|---|---|
 | `http://kvk.nl` | NamingSystem | `Organization.identifier` | KvK | KvK-nummer (8 digits) of the organization, or the vestigingsnummer (12 digits) for an Organization created from a vestiging with a linked URA number. |
 | `http://kvk.nl` | NamingSystem | `Location.identifier` | KvK | Vestigingsnummer (12 digits) of the establishment (NL: vestiging). |
-| `urn:oid:2.16.528.1.1007.3.3` | NamingSystem | `Organization.identifier`, `Location.identifier` | Dezi-register | URA number of the care provider. In a `Location` only when the URA number is linked to the vestiging. |
+| `http://fhir.nl/fhir/NamingSystem/ura` | NamingSystem | `Organization.identifier`, `Location.identifier` | Dezi-register | URA number of the care provider. In a `Location` only when the URA number is linked to the vestiging. |
 
 
 - A Data Source SHALL NOT add an `Organization.identifier` or `Location.identifier` with one of these identifier systems, and SHALL NOT modify or remove such an identifier.
@@ -43,7 +43,7 @@ A [KvK-sourced](#scope-of-ownership) `Organization` is created from a KvK Basisp
 | Element | Source register | Value and remarks |
 |---|---|---|
 | `identifier` (system `http://kvk.nl`) | KvK | `use` = `official`, `value` = KvK-nummer. For an Organization created from a vestiging: `value` = vestigingsnummer. For an Organization created from a KvK Basisprofiel without a URA number: `assigner.identifier` = KvK-nummer `50000535` (CIBG) with `type` = `custodian` ([provenance-participant-type](http://terminology.hl7.org/CodeSystem/provenance-participant-type)); this identifier is then the custodian-assigned identifier (`identifier:AssignedId`) of the Organization. |
-| `identifier` (system `urn:oid:2.16.528.1.1007.3.3`) | Dezi-register | `use` = `official`, `value` = URA number, `assigner.identifier` = KvK-nummer `50000535` (CIBG) with `type` = `custodian` ([provenance-participant-type](http://terminology.hl7.org/CodeSystem/provenance-participant-type)). When present, this is the custodian-assigned identifier (`identifier:AssignedId`) of the Organization. |
+| `identifier` (system `http://fhir.nl/fhir/NamingSystem/ura`) | Dezi-register | `use` = `official`, `value` = URA number, `assigner.identifier` = KvK-nummer `50000535` (CIBG) with `type` = `custodian` ([provenance-participant-type](http://terminology.hl7.org/CodeSystem/provenance-participant-type)). When present, this is the custodian-assigned identifier (`identifier:AssignedId`) of the Organization. |
 | `active` | LRZa | Set to `true` by the LRZa Directory. |
 | `name` | KvK | |
 | `alias` | KvK | One `alias` per registered name (statutory name and trade names). |
@@ -59,7 +59,7 @@ A [KvK-sourced](#scope-of-ownership) `Location` is created from a KvK vestiging.
 | Element | Value and remarks |
 |---|---|
 | `identifier` (system `http://kvk.nl`) | `use` = `official`, `value` = vestigingsnummer, `assigner.identifier` = KvK-nummer `50000535` (CIBG) with `type` = `custodian` ([provenance-participant-type](http://terminology.hl7.org/CodeSystem/provenance-participant-type)). This is the custodian-assigned identifier (`identifier:AssignedId`) of the Location. |
-| `identifier` (system `urn:oid:2.16.528.1.1007.3.3`) | Only when a URA number is linked to the vestiging: `use` = `official`, `value` = URA number. |
+| `identifier` (system `http://fhir.nl/fhir/NamingSystem/ura`) | Only when a URA number is linked to the vestiging: `use` = `official`, `value` = URA number. |
 | `status` | Set to `active` by the LRZa Directory. |
 | `mode` | Set to `instance` by the LRZa Directory. |
 | `name` | |

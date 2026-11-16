@@ -206,7 +206,7 @@ Authorization: [localization client access token]
 Content-Type: application/x-www-form-urlencoded
 
 identifier=http://generiekefuncties.nl/nvi/identifier|{NVI-patient-identifier}
-&organization:identifier=urn:oid:2.16.528.1.1007.3.3|123,urn:oid:2.16.528.1.1007.3.3|456,urn:oid:2.16.528.1.1007.3.3|789,urn:oid:2.16.528.1.1007.3.3|012
+&organization:identifier=http://fhir.nl/fhir/NamingSystem/ura|123,http://fhir.nl/fhir/NamingSystem/ura|456,http://fhir.nl/fhir/NamingSystem/ura|789,http://fhir.nl/fhir/NamingSystem/ura|012
 &organization.type=https://www.cbs.nl/standaard-bedrijfsindeling|8610
 &organization.endpoint.payload-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs|medicationRequest
 &organization._has:HealthcareService:organization:service-type=https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-zorgvragen-cs|msz.cardiologie
@@ -246,7 +246,7 @@ Example response:
         },
         "managingOrganization": {
           "identifier": {
-            "system": "urn:oid:2.16.528.1.1007.3.3",
+            "system": "http://fhir.nl/fhir/NamingSystem/ura",
             "value": "123"
           }
         }

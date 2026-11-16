@@ -42,7 +42,7 @@ Take the resource exactly as stored by the LRZa Directory after the create/updat
     {
       "assigner": {
         "identifier": {
-          "system": "urn:oid:2.16.528.1.1007.3.3",
+          "system": "http://fhir.nl/fhir/NamingSystem/ura",
           "value": "22222222",
           "type": { "coding": [ { "code": "custodian", "system": "http://terminology.hl7.org/CodeSystem/provenance-participant-type" } ] }
         }
@@ -76,7 +76,7 @@ For canonicalization `#static`, recursively remove every `Resource.meta` and eve
 Canonicalize the stripped resource with the [JSON Canonicalization Scheme (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785). Object keys are sorted, insignificant whitespace is removed, and strings/numbers are serialized deterministically. You can reproduce this with any JCS implementation, e.g. the online [JSON Canonicalizer](https://toolsbase.dev/en/developer/json-canonicalizer). The canonical form (a single line, shown wrapped here) is:
 
 ```json
-{"active":true,"code":[{"coding":[{"code":"lrza-careprovider-admin","display":"LRZa Care Provider Administration","system":"https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs"}]}],"id":"c5d6c9d6-7562-589e-9b34-c20a3488daa1","identifier":[{"assigner":{"identifier":{"system":"urn:oid:2.16.528.1.1007.3.3","type":{"coding":[{"code":"custodian","system":"http://terminology.hl7.org/CodeSystem/provenance-participant-type"}]},"value":"22222222"}},"system":"urn:ietf:rfc:3986","use":"official","value":"urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a"}],"organization":{"reference":"Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"},"participatingOrganization":{"display":"ExampleSoft B.V.","identifier":{"system":"http://kvk.nl","value":"90001234"}},"resourceType":"OrganizationAffiliation"}
+{"active":true,"code":[{"coding":[{"code":"lrza-careprovider-admin","display":"LRZa Care Provider Administration","system":"https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs"}]}],"id":"c5d6c9d6-7562-589e-9b34-c20a3488daa1","identifier":[{"assigner":{"identifier":{"system":"http://fhir.nl/fhir/NamingSystem/ura","type":{"coding":[{"code":"custodian","system":"http://terminology.hl7.org/CodeSystem/provenance-participant-type"}]},"value":"22222222"}},"system":"urn:ietf:rfc:3986","use":"official","value":"urn:uuid:6a41ef31-c95a-4894-a6ef-4c39d8ea3e2a"}],"organization":{"reference":"Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"},"participatingOrganization":{"display":"ExampleSoft B.V.","identifier":{"system":"http://kvk.nl","value":"90001234"}},"resourceType":"OrganizationAffiliation"}
 ```
 
 This canonical text is the JWS **payload**.
@@ -179,7 +179,7 @@ The signature is carried by a `Provenance` that targets the signed resource. Per
     {
       "who": {
         "identifier": {
-          "system": "urn:oid:2.16.528.1.1007.3.3",
+          "system": "http://fhir.nl/fhir/NamingSystem/ura",
           "value": "22222222"
         },
         "reference": "Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"
@@ -205,7 +205,7 @@ The signature is carried by a `Provenance` that targets the signed resource. Per
       ],
       "who": {
         "identifier": {
-          "system": "urn:oid:2.16.528.1.1007.3.3",
+          "system": "http://fhir.nl/fhir/NamingSystem/ura",
           "value": "22222222"
         },
         "reference": "Organization/ca56444f-f98c-5d9b-aad2-65a0729ac8f8"
@@ -220,7 +220,7 @@ The signature is carried by a `Provenance` that targets the signed resource. Per
 }
 ```
 
-Both `agent.who` and `signature.who` carry a `reference` to the Organization **and** an `identifier` (URA `22222222`, system `urn:oid:2.16.528.1.1007.3.3`). Its OID‑URN form `urn:oid:2.16.528.1.1007.3.3.22222222` equals the certificate's Subject Alternative Name, satisfying the FHIR rule that `Signature.who` SHALL contain an identifier that is also found in the X.509 certificate.
+Both `agent.who` and `signature.who` carry a `reference` to the Organization **and** an `identifier` (URA `22222222`, system `http://fhir.nl/fhir/NamingSystem/ura`). Its OID‑URN form `urn:oid:2.16.528.1.1007.3.3.22222222` equals the certificate's Subject Alternative Name, satisfying the FHIR rule that `Signature.who` SHALL contain an identifier that is also found in the X.509 certificate.
 
 The rendered resource is [Provenance b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e](Provenance-b7d9e2a1-4c3f-5a6b-8e0d-1f2a3b4c5d6e.html).
 

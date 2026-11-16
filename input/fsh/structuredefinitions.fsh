@@ -87,17 +87,17 @@ Description: "Location profile based on NL Core Location and aligned with IHE mC
 
 Invariant:   ura-identifier-or-partof
 Description: "an Organization instance must either have an identifier of type URA or KVK, or must be 'partOf' some other instance that is an nl-gf-organization instance."
-Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or identifier.where(system='http://kvk.nl').exists() or partOf.exists()"
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or identifier.where(system='http://kvk.nl').exists() or partOf.exists()"
 Severity:    #error
 
 Invariant:   assigner-identifier-system
 Description: "The assigner identifier system must be either URA or KVK."
-Expression:  "system = 'urn:oid:2.16.528.1.1007.3.3' or system = 'http://kvk.nl'"
+Expression:  "system = 'http://fhir.nl/fhir/NamingSystem/ura' or system = 'http://kvk.nl'"
 Severity:    #error
 
 Invariant:   only-ura-identified-organization-can-refer-to-an-endpoint
 Description: "an Organization instance must have a URA-identifier in order to be able to refer to an Endpoint instance."
-Expression:  "identifier.where(system='urn:oid:2.16.528.1.1007.3.3').exists() or endpoint.empty()"
+Expression:  "identifier.where(system='http://fhir.nl/fhir/NamingSystem/ura').exists() or endpoint.empty()"
 Severity:    #error
 
 Profile: NlGfOrganization

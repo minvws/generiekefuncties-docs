@@ -47,7 +47,7 @@ Demographic and clinical Patient data is not part of this profile."""
 * managingOrganization.reference ..0
 * managingOrganization.identifier 1..1
 * managingOrganization.identifier.system 1..1
-* managingOrganization.identifier.system = "urn:oid:2.16.528.1.1007.3.3" (exactly)
+* managingOrganization.identifier.system = "http://fhir.nl/fhir/NamingSystem/ura" (exactly)
 * managingOrganization.identifier.value 1..1
 * link ..0
 * meta.source 1..1

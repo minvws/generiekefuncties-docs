@@ -49,11 +49,11 @@
 // CodeSystem: NlGfPrsOrganizationIdentifierSystemCS
 // Id: nl-gf-prs-org-identifier-system-cs
 // Title: "NL GF PRS Organization Identifier System CodeSystem"
-// Description: "Valid identifier system URIs for the recipient organization in a PRS evaluate request. The identifier system determines the prefix used in the HKDF info string (e.g. system `urn:oid:2.16.528.1.1007.3.3` maps to prefix `ura:`)."
+// Description: "Valid identifier system URIs for the recipient organization in a PRS evaluate request. The identifier system determines the prefix used in the HKDF info string (e.g. system `http://fhir.nl/fhir/NamingSystem/ura` maps to prefix `ura:`)."
 // * ^status = #active
 // * ^experimental = true
 // * ^caseSensitive = true
-// * #ura "URA" "Unified Registration for Abonnees (URA): the Dutch national identifier for healthcare organizations. System URI: urn:oid:2.16.528.1.1007.3.3"
+// * #ura "URA" "Unified Registration for Abonnees (URA): the Dutch national identifier for healthcare organizations. System URI: http://fhir.nl/fhir/NamingSystem/ura"
 
 // ValueSet: NlGfPrsOrganizationIdentifierSystemVS
 // Id: nl-gf-prs-org-identifier-system-vs
@@ -104,12 +104,12 @@
 // Description: """Identifier for the recipient organization passed to the PRS evaluate request as `recipient_organization`.
 
 // The HKDF info string prefix is determined by the identifier system:
-// - System `urn:oid:2.16.528.1.1007.3.3` → prefix `ura:` (e.g. `ura:90000901`)
+// - System `http://fhir.nl/fhir/NamingSystem/ura` → prefix `ura:` (e.g. `ura:90000901`)
 
 // Only URA identifiers are currently supported as a recipient organization identifier for the NVI."""
 // * ^experimental = true
 // * system 1..1
-// * system = "urn:oid:2.16.528.1.1007.3.3" (exactly)
+// * system = "http://fhir.nl/fhir/NamingSystem/ura" (exactly)
 // * value 1..1
 
 
