@@ -6,5 +6,21 @@
   "title" : "Narrative Conformance Statements",
   "status" : "active",
   "experimental" : false,
-  "description" : "Conformance statements found throughout the narrative of the IG consolidated into this computable resource for traceability purposes"
+  "description" : "Conformance statements found throughout the narrative of the IG consolidated into this computable resource for traceability purposes",
+  "statement" : [{
+    "extension" : [{
+      "url" : "http://hl7.org/fhir/tools/StructureDefinition/requirements-statementshallnot",
+      "valueBoolean" : true
+    }],
+    "key" : "1",
+    "requirement" : "4.1), and its content SHALL NOT depend on the request, such as its headers or the authorization server that requests it (draft,"
+  },
+  {
+    "extension" : [{
+      "url" : "http://hl7.org/fhir/tools/StructureDefinition/requirements-statementshallnot",
+      "valueBoolean" : true
+    }],
+    "key" : "2",
+    "requirement" : "4.1), and its content SHALL NOT depend on the request, such as its headers or the authorization server that requests it (draft,"
+  }]
 }

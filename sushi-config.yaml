@@ -117,13 +117,13 @@ parameters:
 menu:
   Home: index.html
   Care Service Directory: csd.html
-  Signing: signing.html
+  # Signing: signing.html
   # Identification: identification.html
-  Authentication: authentication.html
   # Authorization: authorization.html
   Localization: localization.html
   Pseudonymisation: pseudonymisation.html
-  
+  Authentication: authentication.html
+
   Artifacts: artifacts.html
   Release Notes: release-notes.html
 
