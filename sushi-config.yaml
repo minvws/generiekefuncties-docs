@@ -83,6 +83,9 @@ pages:
   pseudonymisation.md:
     title: Pseudonymisation
 
+  identification-sg.md:
+    title: Identificatie voor Secundair Gebruik
+
   release-notes.md:
     title: Release Notes
 
