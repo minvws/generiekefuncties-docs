@@ -3,6 +3,11 @@ This FHIR Implementation Guide specifies the technical components of the generic
 
 ### Generic functions and exchange patterns
 
+<div class="dragon" markdown="1">
+**DRAFT — work in progress.** The goal of this overview is to illustrate the bigger picture of the Generic Functions in the Dutch *Gezondheidsinformatiestelsel* (GIS): the roles of actors, generic functions and exchange patterns, and how they depend on each other. Some elements and dependencies are still being developed, discussed or validated. The diagrams are illustrative, not a complete or agreed architecture, an implementation specification or evidence that the depicted capabilities are already available. Refer to the individual specifications and their maturity statements for implementable requirements.
+</div>
+
+
 The combined overview shows actors, access services, exchange patterns and their dependencies. Smaller diagrams below explain each actor's perspective and shared functions. **Arrows point from a consumer to the function, service or pattern it uses**, not in the direction in which health data travels. Dashed arrows indicate a conditional dependency or an optional follow-up, as labelled. A function can appear in more than one diagram or box; these are repeated views of the same function, not additional services. This is an architectural overview, not an additional set of conformance requirements.
 
 The [dependency table](#dependencies-and-boundaries) describes each function. Pseudonyms are always scoped to one specific service or organization: Pseudo-BSN (NVI) and Pseudo-BSN (MGO), for example, are distinct identifiers for the same person and are not interchangeable.
@@ -13,7 +18,7 @@ The [dependency table](#dependencies-and-boundaries) describes each function. Ps
 flowchart TB
     subgraph Actors["Actors and access services"]
         Citizen([Citizen or representative])
-        MGO["MGO<br/>EHDS Article 4 access service"]
+        MGO["PGO/MGO<br/>EHDS Article 4 access service"]
         CareProvider([Care provider / professional])
         EHR["EHR / care-provider system"]
         Researcher([Researcher])
@@ -76,7 +81,7 @@ flowchart TB
     Localization -->|"Pseudo-BSN for NVI"| PRS
     Consent -.->|"custodians unable to process BSN"| PRS
     MGO --> VAD
-    MGO -->|"Pseudo-BSN for MGO"| PRS
+    MGO -->|"Pseudo-BSN for the specific PGO/MGO service"| PRS
     MGO --> Localization
     MGO -->|"manage preferences"| Consent
     VAD -->|"VAD-specific pseudonym and RID"| PRS
@@ -84,7 +89,7 @@ flowchart TB
     CSD --> DirectorySync["Directory publication and synchronization"]
 ```
 
-Care providers act through their EHRs or other systems; citizens and representatives use MGO; researchers work with data made available in a Secure Processing Environment (SPE), under HDAB governance. Custodians provide data and enforce access decisions. Consent preferences and HDAB permits are different policy inputs, not interchangeable permissions: neither replaces authentication or the applicable access checks. Bulk export is population-level retrieval using an asynchronous FHIR Bulk Data operation, polling and NDJSON output, rather than a series of ordinary per-patient requests. Data holders apply secondary-use opt-outs when activating or refreshing the cohort and minimize and de-identify the output before it becomes readable in the designated SPE. Data minimization includes selecting only necessary records and fields; pseudonymisation alone is not sufficient. This is not unrestricted download by a researcher.
+Care providers act through their EHRs or other systems; citizens and representatives use PGO/MGO; researchers work with data made available in a Secure Processing Environment (SPE), under HDAB governance. Custodians provide data and enforce access decisions. Consent preferences and HDAB permits are different policy inputs, not interchangeable permissions: neither replaces authentication or the applicable access checks. Bulk export is population-level retrieval using an asynchronous FHIR Bulk Data operation, polling and NDJSON output, rather than a series of ordinary per-patient requests. Data holders apply secondary-use opt-outs when activating or refreshing the cohort and minimize and de-identify the output before it becomes readable in the designated SPE. Data minimization includes selecting only necessary records and fields; pseudonymisation alone is not sufficient. This is not unrestricted download by a researcher.
 
 #### Care-provider and professional access
 
@@ -173,14 +178,14 @@ The data holder excludes opted-out subjects before returning counts or exporting
 
 #### Citizen and representative access
 
-MGO combines generic functions to provide the EHDS Article 4 access service. It also provides access history and enables citizens to receive notifications about access to their health data, as required by EHDS Article 9. These logging notifications are distinct from clinical workflow notifications; showing the Notifications dependency does not prescribe the same delivery protocol. Each pseudonym is scoped to one specific service or organization: Pseudo-BSN (MGO), Pseudo-BSN (NVI) and the VAD-specific pseudonym are not interchangeable. The two PRS boxes below show uses of the same function for different recipients.
+PGO/MGO combines generic functions to support the EHDS Article 4 access service. The depicted role also includes access history and notifications about access to health data, as required by EHDS Article 9. These logging notifications are distinct from clinical workflow notifications; showing the Notifications dependency does not prescribe the same delivery protocol. Each pseudonym is scoped to one specific service or organization: a PGO-specific pseudonym, Pseudo-BSN (MGO), Pseudo-BSN (NVI) and the VAD-specific pseudonym are not interchangeable. The two PRS boxes below show uses of the same function for different recipients.
 
 ```mermaid
 flowchart LR
     Citizen([Citizen or representative]) --> MGO
-    MGO["MGO / Mijn Gezondheidsoverzicht<br/>access for natural persons and representatives"]
+    MGO["PGO/MGO<br/>access for natural persons and representatives"]
     MGO -->|"citizen authentication"| VAD["VAD / Trusted Authentication Service"]
-    MGO -->|"Pseudo-BSN for MGO"| MgoPRS["Pseudonymisation / PRS"]
+    MGO -->|"Pseudo-BSN for the specific PGO/MGO service"| MgoPRS["Pseudonymisation / PRS"]
     MGO -->|"find data sources"| Localization["Data-localization / NVI"]
     MGO -->|"view and manage preferences"| Consent["Consent"]
     MGO -->|"retrieve health data"| Pull["Pull<br/>custodian authorizes each request"]
@@ -200,19 +205,19 @@ flowchart LR
 | Authorization | Evaluates the request against policy using authenticated identities, consent where applicable, and other relevant attributes such as roles, purpose and care context. The responding party remains responsible for the access decision. |
 | HDAB (Health Data Access Body) | Governs access to health data for secondary use and issues data permits whose conditions authorize research data provisioning, including bulk exports into an SPE. Authorization enforces the applicable permit conditions and legal restrictions. HDAB is a governance body and permission source, not a replacement for Consent or a generic transport function. Its permit and bulk-export protocols are not specified by this IG. |
 | Data minimization | Restricts research provisioning to the records and fields necessary for the permitted purpose. It uses pseudonymisation to replace identifying data where appropriate, with pseudonyms scoped to the intended service or organization. Pseudonymisation does not itself reduce an unnecessarily broad dataset to the necessary scope, and is not anonymisation. |
-| Logging and Notifications | Custodians record access to health data. MGO makes access history available and enables notifications about access under EHDS Article 9. Logging supplies the access events; Notifications supports informing the citizen. This overview does not specify their delivery or subscription protocol. |
-| [Pseudonymisation](pseudonymisation.html) | Supports Localization, Consent and citizen access through MGO/VAD, with a separate pseudonym scope for each service or organization. Pseudo-BSN (NVI) is used at the NVI; Pseudo-BSN (MGO) is used at MGO and is not reused as the NVI identifier. This guide currently specifies the NVI-scoped pseudonym protocol; it does not yet specify every conversion needed for these other uses. The PRS does not locate custodians or grant access to their data. |
-| VAD (Vertrouwde Authenticatie Dienst) | A generic authentication function used by MGO for citizen login and identity information. The [VAD implementation](https://github.com/minvws/nl-mgo-max-vad/blob/main/README.md) is an OpenID Connect provider and authorization server, integrating DigiD login, BRP identity enrichment and the PRS. It obtains a VAD-specific pseudonym and a reference ID (RID) that a client can exchange once for a pseudonym. The documented implementation currently uses a mock PRS integration. VAD is distinct from the care-provider/service-provider mandate protocol on the Authentication page. |
-| MGO (Mijn Gezondheidsoverzicht) | The Dutch implementation direction for the electronic health data access service for natural persons and their representatives required by EHDS Article 4. It uses VAD for citizen authentication, pseudonymisation for patient identifier protection, Localization and CSD for discovery, and Consent for viewing and managing preferences. Custodians still authorize data access. Representation requires verification of the representative's authority; login alone does not establish that authority. |
+| Logging and Notifications | Custodians record access to health data. The PGO/MGO role includes making access history available and enabling notifications about access under EHDS Article 9. Logging supplies the access events; Notifications supports informing the citizen. This overview does not specify their delivery or subscription protocol. |
+| [Pseudonymisation](pseudonymisation.html) | Supports Localization, Consent and citizen access through PGO/MGO and VAD, with a separate pseudonym scope for each service or organization. Each PGO or MGO service uses its own scope; its pseudonym is not reused as the NVI identifier. This guide currently specifies the NVI-scoped pseudonym protocol; it does not yet specify every conversion needed for these other uses. The PRS does not locate custodians or grant access to their data. |
+| VAD (Vertrouwde Authenticatie Dienst) | A generic authentication function depicted as a dependency of PGO/MGO for citizen login and identity information. The [MGO VAD implementation](https://github.com/minvws/nl-mgo-max-vad/blob/main/README.md) is an OpenID Connect provider and authorization server, integrating DigiD login, BRP identity enrichment and the PRS. It obtains a VAD-specific pseudonym and a reference ID (RID) that a client can exchange once for a pseudonym. The documented implementation currently uses a mock PRS integration. VAD is distinct from the care-provider/service-provider mandate protocol on the Authentication page. |
+| PGO/MGO | Citizen-facing access through a Persoonlijke Gezondheidsomgeving or Mijn Gezondheidsoverzicht, depicted in the context of the EHDS Article 4 access service for natural persons and their representatives. Dependencies shown are VAD for citizen authentication, service-specific pseudonymisation, Localization and CSD for discovery, Consent for preference management, and Logging and Notifications for access transparency. The precise integration and supported capabilities depend on the implementation and remain partly work in progress. Custodians still authorize data access. Representation requires verification of the representative's authority; login alone does not establish that authority. |
 {: .grid}
 
-Authentication and authorization apply across healthcare exchanges, but **the current Authentication specification only details targeted BgZ and eOverdracht exchanges following a referral, handover or registration**. Its protocol must not be assumed to cover untargeted Pull, citizen access or secondary use without further specification. Consent, Authorization, VAD and MGO are shown here at architectural level; this overview does not specify their complete protocols. In particular, MGO's use of Localization needs citizen and representative access rules beyond the healthcare-professional flow currently specified on that page. Identification underpins identities and identifiers; logging provides accountability across exchanges.
+Authentication and authorization apply across healthcare exchanges, but **the current Authentication specification only details targeted BgZ and eOverdracht exchanges following a referral, handover or registration**. Its protocol must not be assumed to cover untargeted Pull, citizen access or secondary use without further specification. Consent, Authorization, VAD and PGO/MGO are shown here at architectural level; this overview does not specify their complete protocols. In particular, PGO/MGO use of Localization needs citizen and representative access rules beyond the healthcare-professional flow currently specified on that page. Identification underpins identities and identifiers; logging provides accountability across exchanges.
 
 #### Exchange pattern overview
 
 | Pattern | How it uses the generic functions |
 |---|---|
-| Citizen and representative access through MGO | VAD authenticates the citizen; pseudonymisation protects patient identifiers. MGO discovers sources through Localization/CSD, retrieves data subject to custodian authorization, and enables consent preference management. Representative access additionally requires the appropriate authority. This is an access-service composition, not a separate transport protocol or a use of the targeted BgZ/eOverdracht authentication protocol. |
+| Citizen and representative access through PGO/MGO | The depicted PGO/MGO role uses VAD for authentication and service-specific pseudonymisation, discovers sources through Localization/CSD, retrieves data subject to custodian authorization, enables consent preference management, and provides access history and notifications. Representative access additionally requires the appropriate authority. This is an access-service composition, not a separate transport protocol or a use of the targeted BgZ/eOverdracht authentication protocol. |
 | Routing of referrals and orders | CSD finds the destination healthcare service and its endpoint. Authentication and authorization establish who is acting and whether the operation is allowed, taking applicable consent into account. See [TA Routering](https://nuts-foundation.github.io/nl-generic-functions-ig/routing.html). |
 | Notifications | CSD locates the recipient's notification endpoint. Delivery of an event or reference is distinct from access to the referenced data, which requires its own access decision. See [TA Notifications](https://ontwikkelsupplement.twiin.nl/actueel/10-3-1-1-ta-notifications-v0-10). |
 | Workflow | Coordinates the progress of referrals, orders and handovers. CSD identifies the participating services and endpoints; authentication and authorization protect the task and status operations. See [TA Workflow](https://ontwikkelsupplement.twiin.nl/actueel/10-3-1-2-ta-workflow-v0-3). |
