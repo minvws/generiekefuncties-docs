@@ -45,7 +45,7 @@ flowchart TB
     MGO --> Logging["Logging<br/>access history"]
     SPE -->|"access provisioned research data"| Bulk
     SPE -->|"named researcher identity"| VAD
-    Bulk -->|"discover datasets and export endpoints"| Catalogue["HDAB dataset catalogue"]
+    Bulk -->|"discover datasets and export endpoints"| Catalogue["Dataset catalogue"]
     Catalogue -.->|"optional endpoint resolution"| CSD
 
     Exchange["Address and secure exchanges"]
@@ -55,8 +55,8 @@ flowchart TB
     Pull --> Exchange
     Bulk -->|"population-level retrieval"| Pull
     Bulk -->|"check secondary-use opt-out"| Consent
-    Bulk --> Minimization["Data minimization<br/>only necessary records and fields"]
-    Minimization -->|"pseudonymise identifying data"| PRS
+    Bulk --> Deidentification["De-identification"]
+    Deidentification -->|"pseudonymise identifying data"| PRS
 
     subgraph Functions["Generic functions and governance"]
         CSD["CSD / Addressing"]
@@ -66,14 +66,14 @@ flowchart TB
         Localization["Localization / NVI"]
         PRS["Pseudonymisation / PRS<br/>service- or organization-specific"]
         VAD["VAD<br/>citizen authentication"]
-        HDAB["HDAB<br/>research data permits and governance"]
+        Governance["Research governance bodies<br/>secondary-use permits and oversight"]
     end
     Exchange --> CSD
     Exchange --> Authentication
     Exchange --> Authorization
     Authorization -->|"requires verified identity"| Authentication
     Authorization -.->|"healthcare consent / secondary-use opt-out"| Consent
-    Authorization -.->|"research permit"| HDAB
+    Authorization -.->|"research permit"| Governance
     Authentication -->|"discover Mandate Issuer"| CSD
     Pull -.->|"custodian not already known"| Localization
     Localization --> CSD
@@ -85,11 +85,11 @@ flowchart TB
     MGO --> Localization
     MGO -->|"manage preferences"| Consent
     VAD -->|"VAD-specific pseudonym and RID"| PRS
-    SPE -->|"permit and oversight"| HDAB
+    SPE -->|"permit and oversight"| Governance
     CSD --> DirectorySync["Directory publication and synchronization"]
 ```
 
-Care providers act through their EHRs or other systems; citizens and representatives use PGO/MGO; researchers work with data made available in a Secure Processing Environment (SPE), under HDAB governance. Custodians provide data and enforce access decisions. Consent preferences and HDAB permits are different policy inputs, not interchangeable permissions: neither replaces authentication or the applicable access checks. Bulk export is population-level retrieval using an asynchronous FHIR Bulk Data operation, polling and NDJSON output, rather than a series of ordinary per-patient requests. Data holders apply secondary-use opt-outs when activating or refreshing the cohort and minimize and de-identify the output before it becomes readable in the designated SPE. Data minimization includes selecting only necessary records and fields; pseudonymisation alone is not sufficient. This is not unrestricted download by a researcher.
+Care providers act through their EHRs or other systems; citizens and representatives use PGO/MGO; researchers work with data made available in a Secure Processing Environment (SPE), subject to applicable research governance. Custodians provide data and enforce access decisions. Consent preferences and secondary-use permits are different policy inputs, not interchangeable permissions: neither replaces authentication or the applicable access checks. Bulk export is population-level retrieval using an asynchronous FHIR Bulk Data operation, polling and NDJSON output, rather than a series of ordinary per-patient requests. Data holders apply secondary-use opt-outs when activating or refreshing the cohort and de-identify the output before it becomes readable in the designated SPE. This is not unrestricted download by a researcher.
 
 #### Care-provider and professional access
 
@@ -122,20 +122,20 @@ flowchart TB
     Server --> Localization["Data-localization / NVI<br/>maintain patient registrations"]
     Server --> Logging["Logging<br/>record access for citizen transparency"]
     Server -.->|"research cohort activation and refresh"| Consent["Consent<br/>secondary-use opt-out"]
-    Server -.->|"research output"| Minimization["Data minimization and de-identification"]
-    Minimization --> PRS["Pseudonymisation / PRS"]
+    Server -.->|"research output"| Deidentification["De-identification"]
+    Deidentification --> PRS["Pseudonymisation / PRS"]
 ```
 
 #### Access control and supporting functions
 
-Authorization uses verified identity information and the applicable policy inputs: consent and access restrictions for healthcare, and HDAB-issued data permits together with secondary-use opt-out checks for research bulk exports. The Consent function provides those opt-out preferences; a permit is not patient consent. Bulk retrieval also applies data minimization, including pseudonymisation, before data is made available in the SPE. Addressing provides endpoints, not permission to access data. Directory synchronization is a supporting pattern, not a clinical data exchange.
+Authorization uses verified identity information and the applicable policy inputs: consent and access restrictions for healthcare, and permits issued by applicable research governance bodies together with secondary-use opt-out checks for research bulk exports. The Consent function provides those opt-out preferences; a permit is not patient consent. Bulk retrieval also applies de-identification, including pseudonymisation where appropriate, before data is made available in the SPE. Addressing provides endpoints, not permission to access data. Directory synchronization is a supporting pattern, not a clinical data exchange.
 
 ```mermaid
 flowchart TB
     Authorization["Authorization<br/>evaluate access policy"]
     Authorization -->|"requires verified identity"| Authentication["Authentication<br/>identities and mandates"]
     Authorization -.->|"healthcare consent / secondary-use opt-out"| Consent["Consent<br/>preferences and restrictions"]
-    Authorization -.->|"research permit"| HDAB["HDAB<br/>Health Data Access Body"]
+    Authorization -.->|"research permit"| Governance["Research governance bodies<br/>secondary-use permits"]
     CSD["CSD / Addressing<br/>organizations, services and endpoints"]
     Authentication -->|"discover Mandate Issuer"| CSD
     CSD --> DirectorySync["Directory publication and synchronization<br/>feed, initial load and incremental updates"]
@@ -156,21 +156,21 @@ flowchart TB
 
 #### Researcher access and bulk export
 
-The working Bulk Export design on the `bulk-export` branch uses an HDAB catalogue to discover datasets and Bulk Export Server endpoints; CSD can optionally resolve addressing information. A feasibility permit allows cohort counts, while an export permit additionally authorizes delivery into a designated SPE. The Bulk Export Client authenticates the named researcher through VAD and the organization/system through the applicable authentication protocol.
+The working Bulk Export design uses a dataset catalogue to discover datasets and Bulk Export Server endpoints; CSD can optionally resolve addressing information. Applicable research governance bodies provide permits: a feasibility permit allows cohort counts, while an export permit additionally authorizes delivery into a designated SPE. The Bulk Export Client authenticates the named researcher and/or the organization/system through the applicable authentication protocol.
 
 ```mermaid
 flowchart TB
     Researcher([Researcher]) --> SPE["SPE and Bulk Export Client"]
     SPE -->|"named researcher identity"| VAD["VAD"]
     SPE -->|"organization and system identity"| Authentication["Authentication"]
-    SPE -->|"feasibility and export permits"| HDAB["HDAB"]
-    SPE --> Catalogue["HDAB dataset catalogue<br/>datasets and export endpoints"]
+    SPE -->|"feasibility and export permits"| Governance["Research governance bodies"]
+    SPE --> Catalogue["Dataset catalogue<br/>datasets and export endpoints"]
     Catalogue -.->|"optional endpoint resolution"| CSD["CSD / Addressing"]
     SPE --> Bulk["Bulk export / population-level Pull<br/>kick-off, polling and NDJSON output"]
     Bulk --> Authorization["Authorization<br/>enforce permit scope and destination"]
     Bulk --> Consent["Consent<br/>custodian checks secondary-use opt-out<br/>at cohort activation and refresh"]
-    Bulk --> Minimization["Data minimization and de-identification"]
-    Minimization --> PRS["Pseudonymisation / PRS<br/>recipient: designated SPE"]
+    Bulk --> Deidentification["De-identification"]
+    Deidentification --> PRS["Pseudonymisation / PRS<br/>recipient: designated SPE"]
 ```
 
 The data holder excludes opted-out subjects before returning counts or exporting the activated cohort; the opt-out is not a researcher-side filter. Permit constraints bound cohort criteria, resource types, filters, elements and destination. De-identification also addresses indirect identifiers, for example through date shifting and disclosure thresholds. SPE output checking governs which research results may leave the environment.
@@ -203,11 +203,12 @@ flowchart LR
 | Consent | Supplies consent preferences or a consent decision to authorization, and secondary-use opt-out preferences for research cohort activation and refresh. The current working model distinguishes national Mitz preferences, locally recorded consent and implicit consent made explicit by the care provider. Some custodians, particularly outside healthcare in secondary use, are not permitted to process the BSN. They must be able to use a pseudonym; if the consent register uses the BSN internally, the register arranges conversion through the PRS without disclosing the BSN to those custodians. This is an architectural requirement for the future consent register, not a capability specified by the current Mitz model. |
 | [Authentication](authentication.html) | Establishes identities and mandates; uses CSD to discover the trusted service provider's Mandate Issuer and the source endpoint. Authentication alone does not establish a right to access patient data. |
 | Authorization | Evaluates the request against policy using authenticated identities, consent where applicable, and other relevant attributes such as roles, purpose and care context. The responding party remains responsible for the access decision. |
-| HDAB (Health Data Access Body) | Governs access to health data for secondary use and issues data permits whose conditions authorize research data provisioning, including bulk exports into an SPE. Authorization enforces the applicable permit conditions and legal restrictions. HDAB is a governance body and permission source, not a replacement for Consent or a generic transport function. Its permit and bulk-export protocols are not specified by this IG. |
-| Data minimization | Restricts research provisioning to the records and fields necessary for the permitted purpose. It uses pseudonymisation to replace identifying data where appropriate, with pseudonyms scoped to the intended service or organization. Pseudonymisation does not itself reduce an unnecessarily broad dataset to the necessary scope, and is not anonymisation. |
+| Dataset catalogue | Supports discovery of datasets and Bulk Export Server endpoints for secondary use; CSD can optionally resolve addressing information. The catalogue does not itself grant access to data. |
+| Research governance bodies | Govern secondary use and provide applicable permits for research data provisioning, including bulk exports into an SPE. A Health Data Access Body (HDAB) is one such governing body. Authorization enforces applicable permit conditions and legal restrictions; permits do not replace Consent. Permit and bulk-export protocols are not specified by this IG. |
+| De-identification | Reduces identification and re-identification risks in research data, for example through pseudonymisation of identifying data and measures addressing indirect identifiers. Pseudonyms are scoped to the intended service or organization. Pseudonymisation is not anonymisation. |
 | Logging and Notifications | Custodians record access to health data. The PGO/MGO role includes making access history available and enabling notifications about access under EHDS Article 9. Logging supplies the access events; Notifications supports informing the citizen. This overview does not specify their delivery or subscription protocol. |
 | [Pseudonymisation](pseudonymisation.html) | Supports Localization, Consent and citizen access through PGO/MGO and VAD, with a separate pseudonym scope for each service or organization. Each PGO or MGO service uses its own scope; its pseudonym is not reused as the NVI identifier. This guide currently specifies the NVI-scoped pseudonym protocol; it does not yet specify every conversion needed for these other uses. The PRS does not locate custodians or grant access to their data. |
-| VAD (Vertrouwde Authenticatie Dienst) | A generic authentication function depicted as a dependency of PGO/MGO for citizen login and identity information. The [MGO VAD implementation](https://github.com/minvws/nl-mgo-max-vad/blob/main/README.md) is an OpenID Connect provider and authorization server, integrating DigiD login, BRP identity enrichment and the PRS. It obtains a VAD-specific pseudonym and a reference ID (RID) that a client can exchange once for a pseudonym. The documented implementation currently uses a mock PRS integration. VAD is distinct from the care-provider/service-provider mandate protocol on the Authentication page. |
+| VAD (Vertrouwde Authenticatie Dienst) | A generic authentication function depicted as a dependency of PGO/MGO for citizen login and identity information. The [MGO VAD implementation](https://github.com/minvws/nl-mgo-max-vad/blob/main/README.md) is an OpenID Connect provider and authorization server, integrating DigiD login, BRP identity enrichment and the PRS. It obtains a VAD-specific pseudonym and a reference ID (RID) that a client can exchange once for a pseudonym. VAD is distinct from the care-provider/service-provider mandate protocol on the Authentication page. |
 | PGO/MGO | Citizen-facing access through a Persoonlijke Gezondheidsomgeving or Mijn Gezondheidsoverzicht, depicted in the context of the EHDS Article 4 access service for natural persons and their representatives. Dependencies shown are VAD for citizen authentication, service-specific pseudonymisation, Localization and CSD for discovery, Consent for preference management, and Logging and Notifications for access transparency. The precise integration and supported capabilities depend on the implementation and remain partly work in progress. Custodians still authorize data access. Representation requires verification of the representative's authority; login alone does not establish that authority. |
 {: .grid}
 
@@ -223,7 +224,7 @@ Authentication and authorization apply across healthcare exchanges, but **the cu
 | Workflow | Coordinates the progress of referrals, orders and handovers. CSD identifies the participating services and endpoints; authentication and authorization protect the task and status operations. See [TA Workflow](https://ontwikkelsupplement.twiin.nl/actueel/10-3-1-2-ta-workflow-v0-3). |
 | Pull from a known custodian | CSD resolves the data endpoint; the custodian authenticates and authorizes retrieval, using applicable consent and other policy inputs. No NVI search is needed when the custodian is already known. See [TA Pull](https://ontwikkelsupplement.twiin.nl/actueel/10-3-3-tta-fhir-pull) (concept). |
 | Pull after data-localization | Localization first finds permitted custodians using PRS pseudonyms, CSD and custodian Authorization Decisions. Actual data retrieval then follows the known-custodian Pull pattern, with a new access decision. See [Localization](localization.html#solution-overview). |
-| Research bulk export to an SPE | Uses asynchronous FHIR Bulk Data access for population-level retrieval: kick-off, status polling and NDJSON output into the permitted SPE. The working design depends on the HDAB catalogue and permits, organization/system authentication, named-researcher authentication through VAD, custodian-side secondary-use opt-out checks at cohort activation and refresh, and data minimization/de-identification using SPE-scoped pseudonyms. This does not imply unrestricted export from the SPE to the researcher. This design is on the `bulk-export` branch and is not yet a published specification in this guide. |
+| Research bulk export to an SPE | Uses asynchronous FHIR Bulk Data access for population-level retrieval: kick-off, status polling and NDJSON output into the permitted SPE. The working design depends on a dataset catalogue and permits from applicable research governance bodies, organization/system authentication, named-researcher authentication , custodian-side secondary-use opt-out checks at cohort activation and refresh, and de-identification using SPE-scoped pseudonyms. This does not imply unrestricted export from the SPE to the researcher.  |
 | Directory publication and synchronization | A supporting pattern rather than clinical data exchange: authorized sources publish directory records; update clients load and periodically pull changes into local replicas. Runtime discovery uses those replicas. See [CSD](csd.html#solution-overview). |
 {: .grid}
 
