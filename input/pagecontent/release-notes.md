@@ -4,6 +4,12 @@
 
 </div>
 
+### Version: 26.1.1
+- [Implementation Guide](index.html)
+- [Source code](https://github.com/minvws/generiekefuncties-docs/tree/26.1.1)
+- [Compare this version to 26.1.0](https://github.com/minvws/generiekefuncties-docs/compare/26.1.0...26.1.1)
+#### Significant changes:
+- IG Publication improvements
 
 ### Version: 26.1.0
 - [Implementation Guide](https://fhir.generiekefuncties.nl/26.1.0/en/index.html)
