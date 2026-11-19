@@ -21,7 +21,7 @@ To release version `X.Y.Z`:
 2. Update `publication-request.json`: `version`, `path` (`https://fhir.generiekefuncties.nl/X.Y.Z`), `status`, `desc`, and `first` (`true` only for the first publication). Check the 'Publication Request' section in `output/qa.html`.
 3. Add an entry for `X.Y.Z` to `publication/package-list.json` (and remove `current: true` from the previous release entry).
 4. Create a GitHub release with tag `X.Y.Z`. The workflow fails if the tag, `sushi-config.yaml`, `publication-request.json` and `publication/package-list.json` don't match, or if the package is still marked `notForPublication`.
-5. Deploy the `fhir-ig.zip` release asset to the web root of fhir.generiekefuncties.nl (it contains `X.Y.Z/`, `package-list.json` and `vct/` at the archive root).
+5. Deploy the `fhir-ig.zip` release asset to the web root of fhir.generiekefuncties.nl (it contains `X.Y.Z/`, an Apache `.htaccess` redirecting unversioned paths to that release, and `package-list.json` and `vct/` at the archive root). The web server must allow `.htaccess` overrides and have `mod_rewrite` enabled.
 6. Add the package to the [MinVWS package feed](https://code.overheid.nl/MinVWS/fhir-package-feed) and update the edition in the [FHIR IG registry](https://github.com/FHIR/ig-registry).
 
 ### SD-JWT VC Type Metadata
