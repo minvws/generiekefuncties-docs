@@ -13,14 +13,23 @@
       "current" : true
     },
     {
+      "version" : "26.1.1",
+      "date" : "2026-11-19",
+      "desc" : "Adds publication history and redirects to the current release",
+      "path" : "https://fhir.generiekefuncties.nl/26.1.1",
+      "status" : "trial-use",
+      "sequence" : "Publications",
+      "fhirversion" : "4.0.1",
+      "current" : true
+    },
+    {
       "version" : "26.1.0",
       "date" : "2026-11-16",
       "desc" : "Added the draft GF Authentication specification (URA-signed mandates, client authentication and token requests) with supporting terminology and VC Type Metadata. Localization: registering client added to the registration key, Authorization Decision timeout lowered to 1 second. Canonical changed to https.",
       "path" : "https://fhir.generiekefuncties.nl/26.1.0",
       "status" : "trial-use",
       "sequence" : "Publications",
-      "fhirversion" : "4.0.1",
-      "current" : true
+      "fhirversion" : "4.0.1"
     },
     {
       "version" : "26.0.0",
