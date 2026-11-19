@@ -11,7 +11,7 @@ InstanceOf: NlGfOrganization
 Usage: #example
 Title: "Duinzicht - Stichting Zorggroep Duinzicht - Organization"
 Description: "Example: care provider Stichting Zorggroep Duinzicht represented as a FHIR Organization."
-* insert CustodianAssignedIdentifier("urn:oid:2.16.528.1.1007.3.3", "11044044", "http://kvk.nl", "50000535")
+* insert CustodianAssignedIdentifier("http://fhir.nl/fhir/NamingSystem/ura", "11044044", "http://kvk.nl", "50000535")
 * active = true
 * name = "Stichting Zorggroep Duinzicht"
 * type[+] = https://www.cbs.nl/standaard-bedrijfsindeling#87100 "Residential nursing care activities"
