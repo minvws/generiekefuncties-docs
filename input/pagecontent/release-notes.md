@@ -6,7 +6,7 @@
 
 
 ### Version: 26.1.0
-- [Implementation Guide](https://fhir.generiekefuncties.nl/26.1.0)
+- [Implementation Guide](https://fhir.generiekefuncties.nl/26.1.0/en/index.html)
 - [Source code](https://github.com/minvws/generiekefuncties-docs/tree/26.1.0)
 - [Compare this version to 26.0.0](https://github.com/minvws/generiekefuncties-docs/compare/26.0.0...26.1.0)
 #### Significant changes/Closed issues:
@@ -17,7 +17,7 @@
 - General; the canonical URL of this guide changed from `http://fhir.generiekefuncties.nl` to `https://fhir.generiekefuncties.nl`.
 
 ### Version: 26.0.0
-- [Implementation Guide](https://fhir.generiekefuncties.nl/26.0.0)
+- [Implementation Guide](https://fhir.generiekefuncties.nl/26.0.0/en/index.html)
 - [Source code](https://github.com/minvws/generiekefuncties-docs/tree/26.0.0)
 - [Compare this version to 1.0.0](https://github.com/minvws/generiekefuncties-docs/compare/1.0.0...26.0.0)
 #### Significant changes/Closed issues:
