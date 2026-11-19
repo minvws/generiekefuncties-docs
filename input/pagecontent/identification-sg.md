@@ -1,4 +1,4 @@
-GF Identificatie voor Secundair Gebruik (SG) beschrijft hoe deelnemers bij secundair gebruik van gezondheidsgegevens betrouwbaar geïdentificeerd en over bronnen heen gekoppeld worden met een pseudo-BSN. Partijen die het BSN niet mogen verwerken, krijgen een pseudo-BSN via de Vertrouwde Authenticatiedienst (VAD). BSN-verwerkende bronnen laten het BSN zelf pseudonimiseren. Per communicatiepatroon geeft deze pagina aan welke partijen het BSN verwerken.
+GF Identificatie voor Secundair Gebruik (SG) beschrijft hoe deelnemers bij secundair gebruik van gezondheidsgegevens betrouwbaar geïdentificeerd en over bronnen heen gekoppeld worden met een pseudo-BSN. Partijen die het BSN niet mogen verwerken, krijgen een pseudo-BSN via een vertrouwde authenticatieservice (VAD). BSN-verwerkende bronnen laten het BSN zelf pseudonimiseren. Per communicatiepatroon geeft deze pagina aan welke partijen het BSN verwerken.
 {: .ig-lead}
 
 > **Let op:** Deze pagina is een conceptuitwerking. De [aannames](#aannames) zijn nog niet juridisch bevestigd en de communicatiepatronen zijn nog niet technisch gespecificeerd. Zie de [roadmap](#roadmap-voor-gf-identificatie-voor-sg) voor de openstaande punten.
@@ -12,12 +12,14 @@ Deze pagina beschrijft:
 - de controle van het zeggenschapsregister bij datauitgifte;
 - re-identificatie van een deelnemer na een nevenbevinding;
 - per patroon welke partijen het BSN verwerken en welke alleen een pseudo-BSN;
-- in een [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs) de functies van de PRS voor omkeerbare pseudoniemen, die nog niet in [GF Pseudonymisation](./pseudonymisation.html) staan.
+- in een [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs) een voorbeeldimplementatie van functies voor omkeerbare pseudoniemen, die nog niet in [GF Pseudonymisation](./pseudonymisation.html) staan.
 
 Deze pagina beschrijft niet:
-- de cryptografie van de PRS. Zie [GF Pseudonymisation](./pseudonymisation.html) voor de OPRF-functie en de [pseudoniemendienst](https://github.com/minvws/gfmodules-pseudoniemendienst) voor de omkeerbare pseudoniemen;
+- de cryptografie van pseudonimisering. Zie [GF Pseudonymisation](./pseudonymisation.html) voor de OPRF-functie en de [pseudoniemendienst](https://github.com/minvws/gfmodules-pseudoniemendienst) als voorbeeld voor omkeerbare pseudoniemen;
 - de identificatie van patiënten in het zorgproces (primair gebruik);
-- de koppelvlakken van DigiD, de SBV-Z, het zeggenschapsregister, de HDAB en de SPE.
+- de koppelvlakken van de authenticatievoorziening, de BSN-voorziening, het zeggenschapsregister, de HDAB en de SPE.
+
+De genoemde services en voorzieningen beschrijven rollen in de patronen, geen verplichte keuze voor een specifieke implementatie. Een implementatie moet wel de benodigde functies en bevoegdheden bieden. De bijlage beschrijft één mogelijke invulling van de pseudoniemenservice.
 
 ### Terminologie
 
@@ -33,15 +35,15 @@ Deze pagina beschrijft niet:
 | Niet-BSN-verwerkende partij | Een partij die het BSN niet mag verwerken, zoals een wellness-app of een onderzoekscohort. Deze partij gebruikt bij SG een pseudo-BSN. |
 | Tussenpartij | Een partij die identificerende kenmerken van deelnemers uit meerdere bronnen ontvangt om die bronnen te koppelen. |
 | Regulier proces | Het eigen proces waarin een partij of bron de deelnemer registreert, los van SG. Bij een zorgaanbieder is dat het zorgproces. |
-| Datauitgifte | Het leveren van gegevens door een partij of bron aan de SPE, na een dataverzoek van de HDAB. |
+| Datauitgifte | Het leveren van gegevens door een partij of bron aan de SPE, na een dataverzoek van de gebruiker. |
 | Re-identificatie | Het terugvinden van de deelnemer bij een pseudo-BSN, bijvoorbeeld om de deelnemer te informeren over een nevenbevinding. |
-| HDAB | Health Data Access Body. Beoordeelt onder de European Health Data Space (EHDS) dataverzoeken voor SG en vraagt partijen en bronnen om gegevens. |
+| HDAB | Health Data Access Body. Beoordeelt onder de European Health Data Space (EHDS) dataverzoeken voor SG. |
 | SPE | Secure Processing Environment, de beveiligde verwerkingsomgeving (EHDS artikel 73). De gebruiker krijgt alleen in de SPE toegang tot uitgegeven gegevens. |
 | Zeggenschapsregister (ZR) | Het register waarin de burger vastlegt of hij bezwaar maakt tegen secundair gebruik van zijn gegevens (opt-out, EHDS artikel 71). |
-| VAD | Vertrouwde Authenticatiedienst. Laat de burger inloggen met DigiD, of zoekt het BSN op via de SBV-Z, en levert de partij een pseudo-BSN in plaats van het BSN. |
-| DigiD | Het inlogmiddel van de overheid voor burgers. Geeft na het inloggen een SAML-assertie terug, met het BSN versleuteld voor de PRS. |
-| SBV-Z | Sectorale Berichtenvoorziening in de Zorg. Zorgpartijen gebruiken de SBV-Z om het BSN op te vragen en te controleren. |
-| PRS | Pseudoniemendienst (Pseudonym Registration Service). Maakt van een BSN een pseudo-BSN, zet een pseudo-BSN om naar een pseudo-BSN voor een andere ontvanger, en zet een pseudo-BSN terug naar het BSN. Zie [PRS](#prs) en de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs). |
+| VAD | Een vertrouwde authenticatieservice. Ondersteunt authenticatie van de burger of zoekt het BSN op via een BSN-voorziening, en levert de partij een pseudo-BSN in plaats van het BSN. |
+| Authenticatievoorziening | Authenticeert de burger en levert een authenticatiebewijs met het BSN voor de PRS. DigiD is een mogelijke invulling. |
+| BSN-voorziening | Een voorziening voor het opvragen of controleren van een BSN. Voorbeelden zijn de SBV-Z en de [BV BRP](https://www.digitaleoverheid.nl/overzicht-van-alle-onderwerpen/stelsel-van-basisregistraties/10-basisregistraties/brp/), afhankelijk van de beschikbare functies en bevoegdheden. |
+| PRS | Een vertrouwde pseudoniemenservice (Pseudonym Registration Service). Maakt van een BSN een pseudo-BSN, zet een pseudo-BSN om naar een pseudo-BSN voor een andere ontvanger, en zet een pseudo-BSN terug naar het BSN. Zie [PRS](#prs) en de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs). |
 
 ### Achtergrond
 
@@ -89,29 +91,29 @@ Door aanname 2 is van belang welke partijen het BSN verwerken, in beide richting
 Elk communicatiepatroon heeft twee fasen:
 
 1. **Regulier proces:** de partij of bron registreert de deelnemer voor haar eigen doel.
-2. **Datauitgifte:** de HDAB stuurt een dataverzoek. De partij of bron haalt twee pseudo-BSN's op: het pseudo-BSN (ZR) en het pseudo-BSN (SPE). Met het pseudo-BSN (ZR) controleert zij in het zeggenschapsregister of de deelnemer bezwaar heeft. Gegevens van deelnemers zonder bezwaar levert zij met het pseudo-BSN (SPE) aan de SPE. Gegevens van deelnemers met bezwaar verlaten de partij of bron niet.
+2. **Datauitgifte:** de gebruiker stuurt een dataverzoek. De partij of bron haalt twee pseudo-BSN's op: het pseudo-BSN (ZR) en het pseudo-BSN (SPE). Met het pseudo-BSN (ZR) controleert zij in het zeggenschapsregister of de deelnemer bezwaar heeft. Gegevens van deelnemers zonder bezwaar levert zij met het pseudo-BSN (SPE) aan de SPE. Gegevens van deelnemers met bezwaar verlaten de partij of bron niet.
 
 De patronen verschillen in hoe de partij of bron aan de pseudo-BSN's komt:
 
-1. [SG-ID-1](#sg-id-1-pseudo-bsn-via-vad-met-digid): via de VAD, nadat de burger met DigiD heeft ingelogd bij de partij. Bij datauitgifte laat de partij haar eigen pseudo-BSN door de PRS omzetten.
-2. [SG-ID-2](#sg-id-2-pseudo-bsn-via-vad-met-persoonskenmerken): via de VAD, op basis van persoonskenmerken en de SBV-Z.
+1. [SG-ID-1](#sg-id-1-pseudo-bsn-via-vad-met-digid): via de VAD, nadat de burger via een authenticatievoorziening, bijvoorbeeld DigiD, heeft ingelogd bij de partij. Bij datauitgifte laat de partij haar eigen pseudo-BSN door de PRS omzetten.
+2. [SG-ID-2](#sg-id-2-pseudo-bsn-via-vad-met-persoonskenmerken): via de VAD, op basis van persoonskenmerken en een BSN-voorziening.
 3. [SG-ID-3](#sg-id-3-pseudo-bsn-via-bsn-verwerkende-bron): de BSN-verwerkende bron laat het BSN zelf pseudonimiseren.
 
 [SG-ID-4](#sg-id-4-re-identificatie) beschrijft hoe een pseudo-BSN na een nevenbevinding terugleidt naar de deelnemer.
 
-In alle patronen maakt de PRS van het BSN een omkeerbaar pseudo-BSN. De PRS ontvangt daarvoor het BSN, en kan het pseudo-BSN later omzetten of terugzetten naar het BSN. Daardoor verwerkt de PRS het BSN. Zie [PRS](#prs).
+In alle patronen maakt de PRS van het BSN een omkeerbaar pseudo-BSN. De PRS ontvangt daarvoor het BSN, en kan het pseudo-BSN later omzetten of terugzetten naar het BSN. Daardoor verwerkt de PRS het BSN. De patronen gaan uit van de toegangs- en ontvangerregels uit de voorbeeldimplementatie in de bijlage; een andere invulling moet gelijkwaardige waarborgen bieden. Zie [PRS](#prs).
 
 In de diagrammen op deze pagina zijn partijen gekleurd naar wat ze verwerken:
 - **rood:** verwerkt het BSN;
 - **groen:** verwerkt geen BSN.
 
-Het overzicht hieronder toont hoe het BSN en de pseudo-BSN's tussen de partijen stromen. De VAD staat in het rode kader, omdat zij in SG-ID-2 het BSN verwerkt. In SG-ID-1 stuurt zij het BSN alleen versleuteld door. De HDAB en de BSN-check bij de SBV-Z staan alleen in de [communicatiepatronen](#communicatiepatronen).
+Het overzicht hieronder toont hoe het BSN en de pseudo-BSN's tussen de partijen stromen. De VAD staat in het rode kader, omdat zij in SG-ID-2 het BSN verwerkt. In SG-ID-1 stuurt zij het BSN alleen versleuteld door. De HDAB en de BSN-check bij de BSN-voorziening staan alleen in de [communicatiepatronen](#communicatiepatronen).
 
 ```mermaid
 flowchart LR
     subgraph bsn["Verwerkt BSN"]
-        digid["DigiD"]
-        sbvz["SBV-Z"]
+        digid["Authenticatievoorziening<br/>bijv. DigiD"]
+        sbvz["BSN-voorziening"]
         vad["VAD"]
         prs["PRS"]
         bron["BSN-verwerkende bron<br/>bijv. ziekenhuis"]
@@ -149,17 +151,18 @@ flowchart LR
 | [Burger](#burger) | Logt in bij een partij, meldt zich aan bij een partij, of schrijft zich in bij een bron | n.v.t. (eigen BSN) | SG-ID-1 tot en met SG-ID-4 |
 | [Niet-BSN-verwerkende partij](#niet-bsn-verwerkende-partij) | Registreert de deelnemer zonder BSN, laat in SG-ID-1 haar pseudo-BSN omzetten, en levert gegevens met pseudo-BSN aan de SPE | Nee | SG-ID-1, SG-ID-2 |
 | [BSN-verwerkende bron](#bsn-verwerkende-bron) | Registreert de deelnemer met BSN, levert gegevens met pseudo-BSN aan de SPE en informeert de deelnemer bij een nevenbevinding | **Ja** | SG-ID-3, SG-ID-4 |
-| [VAD](#vad) | Laat de burger inloggen met DigiD of zoekt het BSN op via de SBV-Z, en levert pseudo-BSN's | **Ja**, alleen in SG-ID-2 | SG-ID-1, SG-ID-2 |
-| [DigiD](#digid) | Authenticeert de burger en geeft het BSN versleuteld voor de PRS terug | **Ja** | SG-ID-1 |
-| [SBV-Z](#sbv-z) | Geeft het BSN terug of controleert het | **Ja** | SG-ID-2, SG-ID-3 |
+| [VAD](#vad) | Ondersteunt authenticatie of zoekt het BSN op via een BSN-voorziening, en levert pseudo-BSN's | **Ja**, alleen in SG-ID-2 | SG-ID-1, SG-ID-2 |
+| [Authenticatievoorziening](#authenticatievoorziening) | Authenticeert de burger en geeft het BSN versleuteld voor de PRS terug | **Ja** | SG-ID-1 |
+| [BSN-voorziening](#bsn-voorziening) | Geeft het BSN terug of controleert het | **Ja** | SG-ID-2, SG-ID-3 |
 | [PRS](#prs) | Maakt van een BSN een pseudo-BSN, zet pseudo-BSN's om en zet ze terug naar het BSN | **Ja** | SG-ID-1 tot en met SG-ID-4 |
 | [Zeggenschapsregister](#zeggenschapsregister) | Geeft aan of de deelnemer bezwaar heeft tegen SG | Nee | SG-ID-1, SG-ID-2, SG-ID-3 |
-| [HDAB](#hdab) | Stuurt dataverzoeken en handelt nevenbevindingen af | Nee | SG-ID-1 tot en met SG-ID-4 |
+| Gebruiker (secundair gebr.) | Stuurt dataverzoeken en meldt nevenbevindingen | Nee | SG-ID-1 tot en met SG-ID-4 |
+| [HDAB](#hdab) | Beoordeelt dataverzoeken en handelt nevenbevindingen af | Nee | SG-ID-4 |
 | [SPE](#spe) | Ontvangt gegevens met pseudo-BSN. De gebruiker meldt vanuit de SPE nevenbevindingen | Nee | SG-ID-1 tot en met SG-ID-4 |
 
 #### Burger
 
-De burger is de deelnemer. In SG-ID-1 logt de burger met DigiD in bij een partij. In SG-ID-2 meldt de burger zich met persoonskenmerken aan bij een partij. In SG-ID-3 schrijft de burger zich als patiënt of cliënt in bij een bron. In SG-ID-4 wordt de burger geïnformeerd over een nevenbevinding.
+De burger is de deelnemer. In SG-ID-1 logt de burger via een authenticatievoorziening in bij een partij. In SG-ID-2 meldt de burger zich met persoonskenmerken aan bij een partij. In SG-ID-3 schrijft de burger zich als patiënt of cliënt in bij een bron. In SG-ID-4 wordt de burger geïnformeerd over een nevenbevinding.
 
 #### Niet-BSN-verwerkende partij
 
@@ -171,29 +174,27 @@ Een partij die het BSN mag verwerken, zoals een zorgaanbieder. De bron heeft het
 
 #### VAD
 
-De Vertrouwde Authenticatiedienst levert een niet-BSN-verwerkende partij een pseudo-BSN. De partij ontvangt nooit het BSN.
-- In SG-ID-1 logt de burger via de VAD in met DigiD. De VAD stuurt de SAML-assertie van DigiD door naar de PRS. Het BSN in die assertie is versleuteld voor de PRS, dus de VAD kan het niet lezen.
-- In SG-ID-2 vraagt de VAD met persoonskenmerken het BSN op bij de SBV-Z, en laat de PRS er pseudo-BSN's van maken. Hier verwerkt de VAD het BSN. Volgens [aanname 2](#aannames) vraagt dat een aanpassing van wetgeving.
+Een vertrouwde authenticatieservice (VAD) levert een niet-BSN-verwerkende partij een pseudo-BSN. De partij ontvangt nooit het BSN.
+- In SG-ID-1 logt de burger via de VAD in bij een authenticatievoorziening, bijvoorbeeld DigiD. In de uitgewerkte variant stuurt de VAD een SAML-assertie door naar de PRS. Het BSN in die assertie is versleuteld voor de PRS, dus de VAD kan het niet lezen.
+- In SG-ID-2 vraagt de VAD met persoonskenmerken het BSN op bij een BSN-voorziening, en laat de PRS er pseudo-BSN's van maken. Hier verwerkt de VAD het BSN. Volgens [aanname 2](#aannames) vraagt dat een aanpassing van wetgeving.
 
-#### DigiD
+#### Authenticatievoorziening
 
-DigiD authenticeert de burger en geeft de VAD een SAML-assertie, met het BSN versleuteld voor de PRS.
+De authenticatievoorziening authenticeert de burger. SG-ID-1 werkt DigiD als voorbeeld uit: in die variant geeft de voorziening de VAD een SAML-assertie met het BSN versleuteld voor de PRS. Deze uitwisseling is een aanname voor het patroon, geen garantie dat DigiD of een andere voorziening dit al ondersteunt.
 
-#### SBV-Z
+#### BSN-voorziening
 
-De SBV-Z geeft bij persoonskenmerken het BSN aan de VAD (SG-ID-2), en controleert het BSN voor de bron (SG-ID-3).
+Een BSN-voorziening kan, waar ondersteund en toegestaan, bij persoonskenmerken het BSN aan de VAD geven (SG-ID-2), of het BSN voor de bron controleren (SG-ID-3). De SBV-Z en de [BV BRP](https://www.digitaleoverheid.nl/overzicht-van-alle-onderwerpen/stelsel-van-basisregistraties/10-basisregistraties/brp/) zijn voorbeelden. Welke functies een voorziening biedt en welke partijen deze mogen gebruiken, moet voor de gekozen invulling worden vastgesteld; een controlefunctie betekent niet automatisch dat opvragen mogelijk is.
 
 #### PRS
 
-De pseudoniemendienst (PRS) heeft twee soorten functies:
-- **OPRF-evaluatie** ([GF-PSD-1](./pseudonymisation.html#gf-psd-1-evaluate-blinded-input)): de invoer is geblindeerd, de PRS ziet het BSN niet, en het resultaat is niet omkeerbaar. De [NVI](./localization.html#nvi) gebruikt deze functie.
-- **Uitwisselfuncties voor omkeerbare pseudoniemen:** de PRS ontvangt het BSN en maakt er een pseudo-BSN van voor één ontvanger. Later kan de PRS dat pseudo-BSN omzetten naar een pseudo-BSN voor een andere ontvanger (SG-ID-1, datauitgifte), of terugzetten naar het BSN (SG-ID-4). Deze functies staan nog niet in [GF Pseudonymisation](./pseudonymisation.html). Zie de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs).
+Een vertrouwde pseudoniemenservice (PRS) maakt een pseudo-BSN voor één ontvanger. De service kan dat pseudo-BSN later omzetten naar een pseudo-BSN voor een andere ontvanger (SG-ID-1, datauitgifte), of terugzetten naar het BSN (SG-ID-4). Deze omkeerbare functies staan nog niet in [GF Pseudonymisation](./pseudonymisation.html). De [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs) beschrijft de pseudoniemendienst als mogelijke invulling.
 
-SG gebruikt de uitwisselfuncties. De twee soorten functies gebruiken verschillende sleutels. Een OPRF-pseudoniem van de NVI komt daarom niet overeen met een pseudo-BSN voor SG.
+De [NVI](./localization.html#nvi) gebruikt daarnaast niet-omkeerbare OPRF-evaluatie ([GF-PSD-1](./pseudonymisation.html#gf-psd-1-evaluate-blinded-input)). Deze staat los van de omkeerbare pseudoniemen voor SG. In de voorbeeldimplementatie gebruiken beide functies verschillende sleutels en komen hun pseudoniemen niet overeen.
 
 Daarmee verwerkt de PRS het BSN:
 - De PRS ontvangt het BSN, niet geblindeerd, als een partij of bron er een pseudo-BSN van laat maken. In SG-ID-1 ontsleutelt de PRS het BSN zelf uit de SAML-assertie van DigiD.
-- Alleen de PRS kan een pseudo-BSN terugzetten naar het BSN. De sleutels staan in een HSM van de PRS. Volgens EHDS artikel 66, lid 3, mag die mogelijkheid alleen bij de HDAB of een vertrouwde derde partij liggen.
+- Alleen de PRS kan een pseudo-BSN terugzetten naar het BSN. De sleutels moeten daarvoor beschermd worden; de voorbeeldimplementatie gebruikt een HSM. Volgens EHDS artikel 66, lid 3, mag die mogelijkheid alleen bij de HDAB of een vertrouwde derde partij liggen.
 
 #### Zeggenschapsregister
 
@@ -201,7 +202,7 @@ Het zeggenschapsregister legt vast of een deelnemer bezwaar heeft tegen SG. Het 
 
 #### HDAB
 
-De Health Data Access Body stuurt dataverzoeken aan partijen en bronnen. Bij een nevenbevinding laat de HDAB het pseudo-BSN (SPE) door de PRS terugzetten, en informeert zij de bron (SG-ID-4). De PRS zet een pseudo-BSN alleen terug voor de organisatie waaraan het is uitgegeven. Het pseudo-BSN (SPE) is daarom uitgegeven aan de HDAB, met de SPE als scope. De HDAB biedt de SPE aan (EHDS artikel 73). De HDAB ontvangt het BSN alleen versleuteld voor de bron, en kan het niet lezen.
+De Health Data Access Body beoordeelt dataverzoeken voor secundair gebruik. Bij een nevenbevinding laat de HDAB het pseudo-BSN (SPE) door de PRS terugzetten, en informeert zij de bron (SG-ID-4). De PRS zet een pseudo-BSN alleen terug voor de organisatie waaraan het is uitgegeven. Het pseudo-BSN (SPE) is daarom uitgegeven aan de HDAB, met de SPE als scope. De HDAB biedt de SPE aan (EHDS artikel 73). De HDAB ontvangt het BSN alleen versleuteld voor de bron, en kan het niet lezen.
 
 #### SPE
 
@@ -213,18 +214,18 @@ De diagrammen groeperen de partijen in gekleurde kaders. Het rode kader **Verwer
 
 #### SG-ID-1: Pseudo-BSN via VAD met DigiD
 
-Een burger logt met DigiD in bij een niet-BSN-verwerkende partij, bijvoorbeeld een wellness-app.
+Een burger logt bij een niet-BSN-verwerkende partij in via een authenticatievoorziening. Dit patroon werkt DigiD en een SAML-assertie als voorbeeld uit; andere invullingen zijn mogelijk als ze de vereiste veilige uitwisseling ondersteunen.
 
 ##### Regulier proces
 
 1. De burger logt in bij de partij.
 2. De partij stuurt de burger door naar de VAD, en de VAD stuurt de burger door naar DigiD.
-3. De burger logt in met DigiD. DigiD geeft de VAD een SAML-assertie, met het BSN versleuteld voor de PRS. De VAD kan het BSN niet lezen.
+3. De burger logt in met DigiD. In deze voorbeeldvariant geeft DigiD de VAD een SAML-assertie, met het BSN versleuteld voor de PRS. De VAD kan het BSN niet lezen.
 4. De VAD stuurt de SAML-assertie naar de PRS, en vraagt om het pseudo-BSN (partij).
 5. De PRS controleert de handtekening van DigiD, ontsleutelt het BSN en maakt het pseudo-BSN (partij).
 6. De VAD geeft het pseudo-BSN (partij) aan de partij. De partij registreert de deelnemer met dit pseudo-BSN.
 
-> **Let op:** De PRS biedt deze SAML-uitwisseling (`/saml-exchange/reversible-pseudonym`) nu nog alleen als mock aan. Zie de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs).
+> **Let op:** De voorbeeldimplementatie van de PRS biedt deze SAML-uitwisseling (`/saml-exchange/reversible-pseudonym`) nu nog alleen als mock aan. De ondersteuning door de authenticatievoorziening moet ook worden vastgesteld. Zie de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs).
 
 ```mermaid
 sequenceDiagram
@@ -234,7 +235,7 @@ sequenceDiagram
         participant vad as VAD
     end
     box rgb(248,215,218) Verwerkt BSN
-        participant digid as DigiD
+        participant digid as Authenticatievoorziening<br/>(bijv. DigiD)
         participant prs as PRS
     end
 
@@ -254,7 +255,7 @@ sequenceDiagram
 
 ##### Datauitgifte
 
-1. De HDAB stuurt een dataverzoek aan de partij.
+1. De gebruiker stuurt een dataverzoek aan de partij.
 2. De partij vraagt de PRS om haar pseudo-BSN (partij) om te zetten naar het pseudo-BSN (ZR) en het pseudo-BSN (SPE).
 3. De PRS controleert de bevoegdheden, zet het pseudo-BSN (partij) intern terug naar het BSN, en maakt daarvan het pseudo-BSN (ZR) en het pseudo-BSN (SPE). De partij ziet het BSN niet.
 4. De partij vraagt het zeggenschapsregister met het pseudo-BSN (ZR) of de deelnemer bezwaar heeft.
@@ -263,7 +264,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     box rgb(209,231,221) Verwerkt geen BSN
-        participant hdab as HDAB
+        participant gebruiker as Gebruiker<br/>(secundair gebr.)
         participant partij as Niet-BSN-verwerkende<br/>partij
     end
     box rgb(248,215,218) Verwerkt BSN
@@ -274,7 +275,7 @@ sequenceDiagram
         participant spe as SPE
     end
 
-    hdab->>partij: Dataverzoek
+    gebruiker->>partij: Dataverzoek
     partij->>prs: Zet pseudo-BSN (partij) om<br/>voor ZR en SPE
     prs->>prs: Controleer bevoegdheden<br/>pseudo-BSN (partij) → BSN<br/>→ pseudo-BSN (ZR) en (SPE)
     prs-->>partij: Pseudo-BSN (ZR) en (SPE)
@@ -285,7 +286,7 @@ sequenceDiagram
     end
 ```
 
-**BSN-verwerkers:** DigiD en PRS. De VAD stuurt het BSN alleen versleuteld door. In de datauitgifte verwerkt alleen de PRS het BSN.
+**BSN-verwerkers:** authenticatievoorziening en PRS. De VAD stuurt het BSN alleen versleuteld door. In de datauitgifte verwerkt alleen de PRS het BSN.
 
 #### SG-ID-2: Pseudo-BSN via VAD met persoonskenmerken
 
@@ -309,9 +310,9 @@ sequenceDiagram
 
 ##### Datauitgifte
 
-1. De HDAB stuurt een dataverzoek aan de partij.
+1. De gebruiker stuurt een dataverzoek aan de partij.
 2. De partij vraagt de VAD om het pseudo-BSN (ZR) en het pseudo-BSN (SPE). De partij stuurt geboortedatum, geboortenaam en geslacht van de deelnemer mee.
-3. De VAD vraagt met deze kenmerken het BSN op bij de SBV-Z.
+3. De VAD vraagt met deze kenmerken het BSN op bij een BSN-voorziening die dit ondersteunt en waarvoor de VAD bevoegd is.
 4. De VAD laat het BSN via de PRS omzetten naar het pseudo-BSN (ZR) en het pseudo-BSN (SPE).
 5. De VAD geeft beide pseudo-BSN's aan de partij.
 6. De partij vraagt het zeggenschapsregister met het pseudo-BSN (ZR) of de deelnemer bezwaar heeft.
@@ -320,12 +321,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     box rgb(209,231,221) Verwerkt geen BSN
-        participant hdab as HDAB
+        participant gebruiker as Gebruiker<br/>(secundair gebr.)
         participant partij as Niet-BSN-verwerkende<br/>partij
     end
     box rgb(248,215,218) Verwerkt BSN
         participant vad as VAD
-        participant sbvz as SBV-Z
+        participant sbvz as BSN-voorziening
         participant prs as PRS
     end
     box rgb(209,231,221) Verwerkt geen BSN
@@ -333,7 +334,7 @@ sequenceDiagram
         participant spe as SPE
     end
 
-    hdab->>partij: Dataverzoek
+    gebruiker->>partij: Dataverzoek
     partij->>vad: Vraag pseudo-BSN (ZR) en (SPE)<br/>(geboortedatum, geboortenaam, geslacht)
     vad->>sbvz: Vraag BSN<br/>(geboortedatum, geboortenaam, geslacht)
     sbvz-->>vad: BSN
@@ -347,7 +348,7 @@ sequenceDiagram
     end
 ```
 
-**BSN-verwerkers:** SBV-Z, VAD en PRS, alleen in de datauitgifte.
+**BSN-verwerkers:** BSN-voorziening, VAD en PRS, alleen in de datauitgifte.
 
 #### SG-ID-3: Pseudo-BSN via BSN-verwerkende bron
 
@@ -358,14 +359,14 @@ Een BSN-verwerkende bron, zoals een zorgaanbieder, heeft het BSN al vanuit het z
 Het reguliere proces is het zorgproces:
 
 1. De patiënt of cliënt schrijft zich in bij de bron met BSN.
-2. De bron controleert het BSN via de SBV-Z.
+2. De bron controleert het BSN via een BSN-voorziening die dit ondersteunt en waarvoor de bron bevoegd is.
 
 ```mermaid
 sequenceDiagram
     actor patient as Patiënt/cliënt
     box rgb(248,215,218) Verwerkt BSN
         participant bron as BSN-verwerkende bron<br/>(bijv. ziekenhuis)
-        participant sbvz as SBV-Z
+        participant sbvz as BSN-voorziening
     end
 
     patient->>bron: Inschrijven met BSN
@@ -375,7 +376,7 @@ sequenceDiagram
 
 ##### Datauitgifte
 
-1. De HDAB stuurt een dataverzoek aan de bron.
+1. De gebruiker stuurt een dataverzoek aan de bron.
 2. De bron laat het BSN via de PRS omzetten naar het pseudo-BSN (ZR) en het pseudo-BSN (SPE).
 3. De bron vraagt het zeggenschapsregister met het pseudo-BSN (ZR) of de deelnemer bezwaar heeft.
 4. Als de deelnemer geen bezwaar heeft, levert de bron de gegevens met het pseudo-BSN (SPE) aan de SPE.
@@ -385,7 +386,7 @@ Stap 2 vraagt volgens [aanname 2](#aannames) een aanpassing van wetgeving.
 ```mermaid
 sequenceDiagram
     box rgb(209,231,221) Verwerkt geen BSN
-        participant hdab as HDAB
+        participant gebruiker as Gebruiker<br/>(secundair gebr.)
     end
     box rgb(248,215,218) Verwerkt BSN
         participant bron as BSN-verwerkende bron<br/>(bijv. ziekenhuis)
@@ -396,7 +397,7 @@ sequenceDiagram
         participant spe as SPE
     end
 
-    hdab->>bron: Dataverzoek
+    gebruiker->>bron: Dataverzoek
     bron->>prs: Pseudonimiseer BSN<br/>voor ZR en SPE
     prs-->>bron: Pseudo-BSN (ZR) en (SPE)
     bron->>zr: Bezwaar?<br/>pseudo-BSN (ZR)
@@ -406,7 +407,7 @@ sequenceDiagram
     end
 ```
 
-**BSN-verwerkers:** BSN-verwerkende bron, SBV-Z en PRS.
+**BSN-verwerkers:** BSN-verwerkende bron, BSN-voorziening en PRS.
 
 #### SG-ID-4: Re-identificatie
 
@@ -449,8 +450,8 @@ sequenceDiagram
 
 | Partij | SG-ID-1 (VAD met DigiD) | SG-ID-2 (VAD met persoonskenmerken) | SG-ID-3 (bron) | SG-ID-4 (re-identificatie) |
 |---|---|---|---|---|
-| DigiD | **BSN** | – | – | – |
-| SBV-Z | – | **BSN** | **BSN** | – |
+| Authenticatievoorziening | **BSN** | – | – | – |
+| BSN-voorziening | – | **BSN** | **BSN** | – |
 | VAD | versleuteld BSN | **BSN** | – | – |
 | PRS | **BSN** | **BSN** | **BSN** | **BSN** |
 | BSN-verwerkende bron | – | – | **BSN** | **BSN** |
@@ -464,7 +465,7 @@ Het zeggenschapsregister en de NVI bevatten volgens [aanname 3](#aannames) allee
 ### Privacy- en beveiligingsoverwegingen
 
 - **Verzameling identificerende gegevens:** een verzameling identificerende gegevens (wie is bekend bij welke bron) is een interessant doelwit voor kwaadwillenden. Dat geldt voor een tussenpartij die kenmerken uit alle bronnen opslaat. Ook de VAD ziet voor welke partij een pseudo-BSN wordt gemaakt.
-- **PRS als sleutelhouder:** de PRS kan elk pseudo-BSN terugzetten naar het BSN. De PRS voert daarom een dubbele bevoegdheidscontrole uit: de aanvrager moet het gevraagde type mogen aanvragen, en de ontvanger moet het mogen ontvangen. De beheerders van de PRS stellen deze bevoegdheden in, niet de organisaties zelf. De PRS logt elke omzetting met de betrokken organisaties, maar niet het BSN of het pseudo-BSN.
+- **PRS als sleutelhouder:** de PRS kan elk pseudo-BSN terugzetten naar het BSN. Daarom is een dubbele bevoegdheidscontrole nodig: de aanvrager moet het gevraagde type mogen aanvragen, en de ontvanger moet het mogen ontvangen. De voorbeeldimplementatie laat beheerders deze bevoegdheden instellen en logt elke omzetting met de betrokken organisaties, maar niet het BSN of het pseudo-BSN.
 - **Zeggenschapsregister:** bij elke controle ziet het zeggenschapsregister welke partij of bron naar welk pseudo-BSN (ZR) vraagt. Het register kan daarmee afleiden welke deelnemers bij welke partij of bron bekend zijn.
 - **Bezwaar blijft bij de bron:** de partij of bron controleert het zeggenschapsregister vóór levering. Gegevens van deelnemers met bezwaar verlaten de partij of bron niet.
 - **Andere identificerende kenmerken:** in SG-ID-2 stuurt de partij geboortedatum, geboortenaam en geslacht naar de VAD. Deze kenmerken zijn geen BSN, maar wel identificerend.
@@ -479,8 +480,9 @@ Het zeggenschapsregister en de NVI bevatten volgens [aanname 3](#aannames) allee
 - **Versleuteld BSN.** Geldt het doorsturen van een versleuteld BSN door de VAD (SG-ID-1) en de HDAB (SG-ID-4) als verwerking van het BSN?
 - **Vertrouwde derde partij.** Is de PRS de vertrouwde derde partij uit EHDS artikel 66, lid 3, of vervult de HDAB die rol zelf?
 - **PRS in GF Pseudonymisation.** De uitwisselfuncties van de PRS moeten worden beschreven in [GF Pseudonymisation](./pseudonymisation.html). Deze pagina beschrijft ze voorlopig in de [bijlage](#bijlage-omkeerbare-pseudoniemen-in-de-prs).
-- **DigiD SAML-uitwisseling.** De SAML-uitwisseling van de PRS is nog een mock. Totdat die beschikbaar is, ontvangt de VAD in SG-ID-1 het BSN zelf van DigiD.
-- **Sleutelrotatie.** Een pseudo-BSN hangt af van de sleutelversie van de ontvanger. Na een rotatie maakt de PRS van hetzelfde BSN een ander pseudo-BSN. Na het vernietigen van een sleutelversie kan de PRS een oud pseudo-BSN niet meer omzetten of terugzetten. Dat raakt partijen en registers die pseudo-BSN's lang bewaren, zoals het zeggenschapsregister.
+- **Authenticatie en SAML-uitwisseling.** De SAML-uitwisseling in de voorbeeldimplementatie van de PRS is nog een mock. Ook moet worden vastgesteld of de authenticatievoorziening het BSN versleuteld voor de PRS kan leveren. Als de VAD het BSN zelf ontvangt, verwerkt zij het BSN en wijkt SG-ID-1 af van het getoonde patroon.
+- **BSN-voorziening.** Welke voorziening ondersteunt het opvragen en controleren van een BSN voor de betrokken partijen, en onder welke bevoegdheden?
+- **Sleutelrotatie.** In de voorbeeldimplementatie hangt een pseudo-BSN af van de sleutelversie van de ontvanger. Na een rotatie maakt de PRS van hetzelfde BSN een ander pseudo-BSN. Na het vernietigen van een sleutelversie kan de PRS een oud pseudo-BSN niet meer omzetten of terugzetten. Dat raakt partijen en registers die pseudo-BSN's lang bewaren, zoals het zeggenschapsregister.
 - **Logging.** Er zijn nog geen eisen aan logging bij de VAD, de PRS en het zeggenschapsregister.
 - **Scope van het pseudo-BSN (SPE).** Wordt het pseudo-BSN (SPE) per SPE of per datavergunning aan de HDAB uitgegeven? Binnen één datavergunning moet het voor alle partijen en bronnen gelijk zijn, anders kan de gebruiker niet koppelen.
 - **Nevenbevinding bij meerdere bronnen.** Welke bron informeert de HDAB als de gegevens van de deelnemer uit meerdere bronnen komen?
@@ -489,7 +491,7 @@ Het zeggenschapsregister en de NVI bevatten volgens [aanname 3](#aannames) allee
 
 ### Bijlage: omkeerbare pseudoniemen in de PRS
 
-Deze bijlage beschrijft de functies van de [pseudoniemendienst](https://github.com/minvws/gfmodules-pseudoniemendienst) die deze pagina gebruikt. De functies staan nog niet in [GF Pseudonymisation](./pseudonymisation.html). De bron is de documentatie van de pseudoniemendienst: [endpoints](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/endpoints.md), [cryptografie](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/component-crypto.md) en [vertrouwensmodel](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/trust-model.md).
+Deze bijlage beschrijft de [pseudoniemendienst](https://github.com/minvws/gfmodules-pseudoniemendienst) als voorbeeldimplementatie van de PRS-rol en de functies die de patronen kunnen gebruiken. Andere implementaties zijn mogelijk; de onderstaande endpoints, cryptografie en regels zijn geen generieke eigenschappen van elke pseudoniemenservice. De functies voor omkeerbare pseudoniemen staan nog niet in [GF Pseudonymisation](./pseudonymisation.html). De bron is de documentatie van de pseudoniemendienst: [endpoints](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/endpoints.md), [cryptografie](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/component-crypto.md) en [vertrouwensmodel](https://github.com/minvws/gfmodules-pseudoniemendienst/blob/main/docs/trust-model.md).
 
 #### Functies
 
