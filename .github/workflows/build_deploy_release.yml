@@ -82,13 +82,19 @@ jobs:
           tar -xzOf output/package.tgz package/package.json \
             | jq -e --arg v "$TAG" --arg url "$PUBLISH_URL" '.version == $v and .url == $url and (has("notForPublication") | not)' \
             || { echo "::error::output/package.tgz is not a publication package (expected version $TAG, url $PUBLISH_URL, no notForPublication)"; exit 1; }
-      - name: Package output as <tag>/ zip
+      - name: Package output with latest-version redirects
         run: |
           mkdir -p "dist/${TAG}"
           cp -a ./output/. "dist/${TAG}/"
           cp publication/package-list.json dist/package-list.json
           cp -a publication/vct dist/vct
-          (cd dist && zip -rq "../fhir-ig.zip" "${TAG}" package-list.json vct)
+          cat > dist/.htaccess <<EOF
+          RewriteEngine On
+          RewriteRule ^${TAG}(/|$) - [L]
+          RewriteRule ^(?:package-list\.json|vct(?:/|$)) - [L]
+          RewriteRule ^(.*)$ /${TAG}/\$1 [R=302,L]
+          EOF
+          (cd dist && zip -rq "../fhir-ig.zip" .)
       - name: Attach zip to release
         env:
           GH_TOKEN: ${{ github.token }}
