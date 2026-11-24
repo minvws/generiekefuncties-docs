@@ -269,3 +269,8 @@ Description: "Local code system for data categories in NL Generic Functions, use
   * ^designation[=].value = "Subscriptions"
   * ^property[+].code = #path-query-param
   * ^property[=].valueString = "Subscription"
+* #URA-signed-mandate "URA-signed mandate" "Mandates of a care provider, signed with the key of its UZI server certificate (identified by its URA). Used as Endpoint.payloadType: the Endpoint issues these mandates. Not used as OrganizationAffiliation.code. The mandates are SD-JWT VCs with vct https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json."
+  * ^designation[0].language = #nl-NL
+  * ^designation[=].value = "URA-ondertekende machtiging"
+  * ^designation[+].language = #en-US
+  * ^designation[=].value = "URA-signed mandate"
