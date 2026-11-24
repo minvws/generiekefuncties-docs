@@ -54,7 +54,6 @@ Description: "The data exchange capabilities supported"
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
 * include codes from system NlGfDataCategoriesCS
-* NlGfAuthorizationTypeCS#URA-signed-mandate "URA-signed mandate"
 
 
 ValueSet: NlGfAffiliationTypeVS

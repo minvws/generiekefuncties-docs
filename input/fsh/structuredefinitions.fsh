@@ -191,8 +191,8 @@ Expression:  "system = 'http://terminology.hl7.org/CodeSystem/endpoint-connectio
 Severity:    #error
 
 Invariant: nl-gf-payloadtype-req
-Description: "At least one payloadType coding SHALL be from the NL GF Payload Type value set (HL7 endpoint-payload-type, NL GF Data Categories, or URA-signed-mandate from NL GF Authorization Types); additional codes from other code systems are also allowed."
-Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs' or (system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs' and code = 'URA-signed-mandate')).exists()"
+Description: "At least one payloadType coding SHALL be from a code system of the NL GF Payload Type value set (HL7 endpoint-payload-type or NL GF Data Categories); additional codes from other code systems are also allowed."
+Expression:  "coding.where(system = 'http://terminology.hl7.org/CodeSystem/endpoint-payload-type' or system = 'https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs').exists()"
 Severity:    #error
 
 Invariant: nl-gf-servicetype-req

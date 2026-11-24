@@ -67,6 +67,12 @@ pages:
   authentication.md:
     title: Authentication (V&O)
 
+  authentication-mandate.md:
+    title: "Authentication: obtaining a mandate"
+
+  authentication-bgz-eoverdracht.md:
+    title: Authentication for BgZ and eOverdracht
+
   authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.md:
     title: Harmonisatie van authenticatie en autorisatie voor BgZ en eOverdracht
   authenticatie-en-autorisatie-vervolg-mandaat-clientregistratie.md:

@@ -78,7 +78,7 @@ Creates a request, adds necessary attributes/claims about itself and sends it to
 
 #### Responding party (Data holder)
 Acquires attributes/claims about requesting party and e.g. the patient consent. Evaluates the request.
-May have recorded resource-level access for data user while sending notification (TA Notified Pull mechanism)
+May have recorded resource-level access for data user while sending notification (Twiin TA: the source notifies, the receiver retrieves)
 Implementers are not required to use the Rego-policy-language (nor the OpenID AuthZen API) in production systems, but the outcome of their authorization decisions SHALL match the outcome using the original, specified authorization policy. 
 
 
