@@ -21,4 +21,3 @@ Description: "Local code system for authorization types used in NL Generic Funct
 * #lrza-endpoint-admin "LRZa Care Provider Endpoint Administration" "Authorization to manage references to (owned) Endpoint at care provider entities."
   * ^property[+].code = #smart-on-fhir-scope
   * ^property[=].valueString = "system/Endpoint.crus"
-* #URA-signed-mandate "URA-signed mandate" "Mandates of a care provider, signed with the key of its UZI server certificate (identified by its URA). Used as Endpoint.payloadType: the Endpoint issues these mandates. Not used as OrganizationAffiliation.code. The mandates are SD-JWT VCs with vct https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json."

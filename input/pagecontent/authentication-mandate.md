@@ -31,7 +31,7 @@ How the Mandate Issuer protects the key and organises approval is not specified 
 
 A care provider SHOULD publish the Mandate Issuer of each trusted service provider in the LRZa, so that service providers can find it in their local replica ([GF Care Service Directory](./csd.html)). It publishes it as an `Endpoint` that its `Organization` refers to in `Organization.endpoint`, with:
 - connectionType `openid4vci` from the [NL GF Authorization Server CodeSystem](./CodeSystem-nl-gf-authorization-server-cs.html);
-- payloadType `URA-signed-mandate` from the [NL GF Authorization Type CodeSystem](./CodeSystem-nl-gf-authorization-type-cs.html);
+- payloadType `URA-signed-mandate` from the [NL GF Data Categories CodeSystem](./CodeSystem-nl-gf-data-categories-cs.html);
 - `managingOrganization`: the trusted service provider;
 - as address the OpenID4VCI Credential Issuer Identifier of the Mandate Issuer.
 
@@ -59,7 +59,7 @@ Example: the `Endpoint` of the Mandate Issuer of Zorggroep Duinzicht, operated b
     {
       "coding": [
         {
-          "system": "https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-authorization-type-cs",
+          "system": "https://fhir.generiekefuncties.nl/CodeSystem/nl-gf-data-categories-cs",
           "code": "URA-signed-mandate"
         }
       ]

@@ -54,7 +54,6 @@ Description: "The data exchange capabilities supported"
 * ^experimental = true
 * include codes from valueset http://hl7.org/fhir/ValueSet/endpoint-payload-type
 * include codes from system NlGfDataCategoriesCS
-* NlGfAuthorizationTypeCS#URA-signed-mandate "URA-signed mandate"
 
 
 ValueSet: NlGfAffiliationTypeVS
@@ -65,7 +64,6 @@ Description: "Authorization types supported by NL Generic Functions."
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
 * include codes from system http://hl7.org/fhir/organization-role
-* exclude NlGfAuthorizationTypeCS#URA-signed-mandate
 
 ValueSet: NlGfPurposeOfUseVS
 Id: nl-gf-purpose-of-use-vs
