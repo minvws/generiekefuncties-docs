@@ -654,7 +654,7 @@ Elke maatregel in deze bijlage levert ten minste één negatieve test op: een ve
 [err]: ./authentication.html#error-handling
 [autn4]: ./authentication.html#gf-autn-4-request-access-token
 [autn6]: ./authentication.html#gf-autn-6-get-client-metadata
-[bgz3]: ./authentication-bgz-eoverdracht.html#gf-autn-3-get-protected-resource-metadata
-[bgzpriv]: ./authentication-bgz-eoverdracht.html#privacy-considerations
+[bgz3]: ./authentication.html#gf-autn-3-get-protected-resource-metadata
+[bgzpriv]: ./authentication.html#privacy-considerations
 [bgzauth]: ./authentication-bgz-eoverdracht.html#authorization-by-the-resource-server
-[bgzas]: ./authentication-bgz-eoverdracht.html#choosing-the-authorization-server
+[bgzas]: ./authentication.html#choosing-the-authorization-server

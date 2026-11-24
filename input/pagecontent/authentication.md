@@ -8,7 +8,7 @@ GF Authentication specifies how two healthcare providers establish each other's 
 This page specifies:
 - how a care provider mandates a service provider to act on its behalf, and how that mandate is issued, renewed and verified;
 - how a service provider publishes its OAuth client metadata, authenticates to the authorization server of another service provider, and obtains an access token for a care provider by presenting its mandate;
-- what the requesting service provider verifies about the source before it requests a token;
+- how a client finds the authorization server and the mandate of the other party, and what it verifies before it requests a token;
 - how the resource server validates each request.
 
 This page does not specify:
@@ -16,7 +16,7 @@ This page does not specify:
 - the authorization decision of the source beyond the checks on this page, such as patient consent;
 - how endpoints and organizations are published. See [GF Care Service Directory](./csd.html);
 - how a service provider obtains and renews a mandate, and finds the Mandate Issuer. See [Obtaining a mandate](./authentication-mandate.html);
-- how the requesting service provider finds the authorization server and the mandate of the source. Each use case specifies that. For BgZ and eOverdracht, see [Authentication for BgZ and eOverdracht](./authentication-bgz-eoverdracht.html).
+- APIs that are not HTTPS APIs, such as DICOM DIMSE or HL7 v2 over MLLP.
 
 The exchanges in scope are the targeted *sending* of health data between two care providers within BgZ and eOverdracht, where a referral, handover or *aanmelding* precedes the exchange (see [Afbakening](./authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html#3-afbakening) in the memo). Queries without a preceding referral, and exchanges that do not run between two care providers (for example from a PGO or a research institution), are out of scope.
 
@@ -24,7 +24,7 @@ The exchanges in scope are the targeted *sending* of health data between two car
 
 This page specifies what BgZ and eOverdracht need now. It is designed to be extended for other use cases without changing what is specified here. The extension points are:
 - **Scope of access.** A use case MAY define `scope` ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), §3.3) in the token request, the token response and the access token, and MAY add fields to the `nl-gis-v1` object or other types to `authorization_details` ([RFC 9396](https://www.rfc-editor.org/rfc/rfc9396)) in the assertion. BgZ and eOverdracht use neither (see [GF-AUTN-4](#gf-autn-4-request-access-token)).
-- **Discovery.** Each use case specifies how the client finds the authorization server and the mandate of the source (see [Verification of the source](#verification-of-the-source)). BgZ and eOverdracht use the Protected Resource Metadata.
+- **Finding the other party.** Each use case specifies how the client finds the URL of the resource and the URA of the care provider it wants to reach. It then finds the authorization server and the mandate with [GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata).
 - **Attestations.** The assertion carries attestations per attestation type. Other attestation types can be added next to the mandate; a verifier ignores types it does not use.
 - **Purposes.** Each use case specifies which `purpose_of_use` codes it accepts. BgZ and eOverdracht accept only `TREAT`.
 - **Mandate codes.** Other purposes and roles can be added; a verifier ignores codes it does not recognise (see [Mandate codes](#mandate-codes)).
@@ -32,7 +32,7 @@ This page specifies what BgZ and eOverdracht need now. It is designed to be exte
 
 These pages specify the parts that differ per use case or that concern publication:
 - [Obtaining a mandate](./authentication-mandate.html): the Mandate Issuer, how a care provider publishes it in the LRZa (GF-AUTN-1), and how a service provider obtains and renews a mandate (GF-AUTN-2);
-- [Authentication for BgZ and eOverdracht](./authentication-bgz-eoverdracht.html): how the client finds the authorization server and the mandate of the source (GF-AUTN-3), and the checks of the resource server.
+- [Authentication for BgZ and eOverdracht](./authentication-bgz-eoverdracht.html): how the client finds the other party, the purpose and mandate codes, and the checks of the resource server.
 
 ### Terminology
 
@@ -87,7 +87,7 @@ flowchart LR
     RS -.-> OCSP
 ```
 
-The source's service provider obtains its own mandate (`TREAT-custodian`) from the trusted service provider of care provider B in the same way (GF-AUTN-2); this is not shown in the figure. GF-AUTN-3 is specified per use case.
+The source's service provider obtains its own mandate (`TREAT-custodian`) from the trusted service provider of care provider B in the same way (GF-AUTN-2); this is not shown in the figure.
 
 #### Standards
 
@@ -122,7 +122,7 @@ Common authorization server products need an extension that loads the client fro
 
 #### Resource Server
 
-The Resource Server is the API of the source, for example a FHIR API. It MAY serve any content type. It holds a mandate with the code `<purpose>-custodian` for each care provider it serves (`<purpose>-user` when it receives requests from the source side, see [Mandate codes](#mandate-codes)), which it obtains through [GF-AUTN-2](./authentication-mandate.html#gf-autn-2-obtain-mandate). It makes the mandate and its authorization server available to clients as the use case specifies; for BgZ and eOverdracht in its Protected Resource Metadata ([GF-AUTN-3](./authentication-bgz-eoverdracht.html#gf-autn-3-get-protected-resource-metadata)).
+The Resource Server is the HTTPS API of the source, for example a FHIR API or DICOMweb. It MAY serve any content type. It holds a mandate with the code `<purpose>-custodian` for each care provider it serves (`<purpose>-user` when it receives requests from the source side, see [Mandate codes](#mandate-codes)), which it obtains through [GF-AUTN-2](./authentication-mandate.html#gf-autn-2-obtain-mandate). It publishes the mandate and its authorization servers in its Protected Resource Metadata ([GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata)).
 
 ### Transactions
 
@@ -130,12 +130,56 @@ The Resource Server is the API of the source, for example a FHIR API. It MAY ser
 |---|---|---|---|
 | GF-AUTN-1 | [Discover Mandate Issuer](./authentication-mandate.html#gf-autn-1-discover-mandate-issuer) | Authorization Client or Resource Server | Care Service Directory (local replica) |
 | GF-AUTN-2 | [Obtain Mandate](./authentication-mandate.html#gf-autn-2-obtain-mandate) | Authorization Client or Resource Server | Mandate Issuer |
-| GF-AUTN-3 | [Get Protected Resource Metadata](./authentication-bgz-eoverdracht.html#gf-autn-3-get-protected-resource-metadata) (BgZ and eOverdracht) | Authorization Client | Resource Server |
+| GF-AUTN-3 | [Get Protected Resource Metadata](#gf-autn-3-get-protected-resource-metadata) | Authorization Client | Resource Server |
 | GF-AUTN-4 | [Request Access Token](#gf-autn-4-request-access-token) | Authorization Client | Authorization Server |
 | GF-AUTN-5 | [Access Resource](#gf-autn-5-access-resource) | Authorization Client | Resource Server |
 | GF-AUTN-6 | [Get Client Metadata](#gf-autn-6-get-client-metadata) | Authorization Server | Authorization Client |
 
-All transactions SHALL use mTLS with the certificates of the service providers (see [Transport and certificates](#transport-and-certificates)). GF-AUTN-1 and GF-AUTN-2 run in advance and on renewal; GF-AUTN-3 to GF-AUTN-5 run for each exchange. GF-AUTN-6 runs during GF-AUTN-4 when the authorization server has no valid copy of the client's document in its cache. GF-AUTN-1 and GF-AUTN-2 are specified in [Obtaining a mandate](./authentication-mandate.html), and GF-AUTN-3 in [Authentication for BgZ and eOverdracht](./authentication-bgz-eoverdracht.html); other use cases MAY replace GF-AUTN-3.
+All transactions SHALL use mTLS with the certificates of the service providers (see [Transport and certificates](#transport-and-certificates)). GF-AUTN-1 and GF-AUTN-2 run in advance and on renewal; GF-AUTN-3 to GF-AUTN-5 run for each exchange. GF-AUTN-6 runs during GF-AUTN-4 when the authorization server has no valid copy of the client's document in its cache. GF-AUTN-1 and GF-AUTN-2 are specified in [Obtaining a mandate](./authentication-mandate.html).
+
+#### GF-AUTN-3: Get Protected Resource Metadata
+
+The Authorization Client finds the authorization server and the mandate of the other party in the Protected Resource Metadata of the resource. How it finds the URL of the resource and the URA of the care provider is specified per use case; for BgZ and eOverdracht in [Finding the other party](./authentication-bgz-eoverdracht.html#finding-the-other-party).
+
+Before it requests a token, the Authorization Client retrieves the metadata of the resource ([RFC 9728](https://www.rfc-editor.org/rfc/rfc9728)). RFC 9728 inserts the well-known path between the host and the path of the resource. For `https://fhir.zorgict-noord.example/weidevelde/fhir` the request is:
+
+```
+GET /.well-known/oauth-protected-resource/weidevelde/fhir HTTP/1.1
+Host: fhir.zorgict-noord.example
+```
+
+The resource server SHALL publish, besides the RFC 9728 parameters `resource` and `authorization_servers`, the mandates of the care providers that the resource serves. They are published in `attestations`: an object with a list of attestations per attestation type, as in the [assertion](#assertion). A mandate is published as an SD-JWT VC without disclosures and without key binding JWT, which ends in `~`.
+
+```json
+{
+  "resource": "https://fhir.zorgict-noord.example/weidevelde/fhir",
+  "authorization_servers": ["https://as.zorgict-noord.example"],
+  "tls_client_certificate_bound_access_tokens": true,
+  "attestations": { "URA-signed-mandate": ["<mandate of Ziekenhuis Weidevelde for ZorgICT Noord>~"] }
+}
+```
+
+If the resource server does not accept the client certificate, the TLS handshake fails. If it has no valid mandate for a care provider, for example during renewal, `attestations` contains none for that care provider. The client treats a missing or invalid mandate as a failed [verification of the source](#verification-of-the-source), and requests no token.
+
+The Authorization Client checks that `resource` equals the URL of the resource (RFC 9728, §3.3). It then verifies the source as specified in [Verification of the source](#verification-of-the-source), with the mandate from `attestations` whose `sub` is the URA of the care provider it wants to reach.
+
+##### One document or one per care provider
+
+RFC 9728 gives each resource URL its own metadata document. A service provider that registers one address for all its care providers therefore publishes one document with the mandates of all of them. A service provider that registers an address per care provider publishes a document per care provider. It can generate those documents from one service, based on the path.
+
+A resource server MAY serve several care providers with one document. Each mandate contains its certificate chain and takes several kilobytes. A document with the mandates of a thousand care providers takes several megabytes, and every client retrieves it.
+
+##### Caching and renewal
+
+The Authorization Client MAY cache the metadata as indicated by its `Cache-Control` header, for at most 24 hours. It SHALL check the validity of the cached mandate before each use.
+
+The resource server publishes a renewed mandate as specified in [Validity and renewal](#validity-and-renewal).
+
+##### Choosing the authorization server
+
+The Authorization Client uses an authorization server from `authorization_servers`. It retrieves its metadata ([RFC 8414](https://www.rfc-editor.org/rfc/rfc8414)) to find the token endpoint.
+
+If the client knows an authorization server for the source in another way, for example from an `Endpoint` in the LRZa, it uses it only if it is listed in `authorization_servers`.
 
 #### GF-AUTN-4: Request Access Token
 
@@ -208,7 +252,7 @@ Before it requests a token, the Authorization Client SHALL establish that the re
 - the mandate of the resource server's service provider for that care provider;
 - the authorization servers that the resource designates.
 
-How the client obtains them is specified per use case; for BgZ and eOverdracht in [Authentication for BgZ and eOverdracht](./authentication-bgz-eoverdracht.html). The client verifies the mandate as in [Validation by the authorization server](#validation-by-the-authorization-server), steps 5 and 6, and checks that:
+It obtains them with [GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata). The client verifies the mandate as in [Validation by the authorization server](#validation-by-the-authorization-server), steps 5 and 6, and checks that:
 - `sub` is the URA of the care provider it wants to reach;
 - `scope` contains the code for the purpose of the request and the opposite side: `<purpose>-custodian` if the client requests data, `<purpose>-user` if the client acts on the source side ([Mandate codes](#mandate-codes));
 - `may_act.sub` equals the service provider identifier derived from the resource server's TLS server certificate ([Service provider identifier](#service-provider-identifier));
@@ -337,7 +381,7 @@ Example payload of that mandate for Zorgsoftware Midden, with a validity of 90 d
 }
 ```
 
-The Authorization Client presents its mandate in the [assertion](#assertion) of each token request ([GF-AUTN-4](#gf-autn-4-request-access-token)); the Resource Server makes its mandate available as the use case specifies ([Verification of the source](#verification-of-the-source)).
+The Authorization Client presents its mandate in the [assertion](#assertion) of each token request ([GF-AUTN-4](#gf-autn-4-request-access-token)); the Resource Server publishes its mandate in its Protected Resource Metadata ([GF-AUTN-3](#gf-autn-3-get-protected-resource-metadata)).
 
 A mandate has no `iss`. Its issuer is the care provider in the signing certificate ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/), §2.5), whose URA equals `sub`. An `iss` would not be bound to that certificate, and an `iss` with an HTTPS URL would make a verifier retrieve keys from the Mandate Issuer. The URL of the Mandate Issuer is in its `Endpoint` (see [GF-AUTN-1](./authentication-mandate.html#gf-autn-1-discover-mandate-issuer)). A verifier SHALL reject a mandate that contains `iss`.
 
@@ -481,7 +525,7 @@ The `jti` values link the two logs.
 
 #### Privacy considerations
 
-A mandate contains only organization identifiers. Where a use case publishes the source's mandates, they show which care providers have mandated the source's service provider. The Client ID Metadata Documents contain no mandates; an authorization server only sees the mandates that clients present to it. The Mandate Issuer records personal data of the employee who approves a mandate, and processes it for the care provider.
+A mandate contains only organization identifiers. The Protected Resource Metadata shows which care providers have mandated the source's service provider. It is only available over mTLS. With one document for all care providers, a client sees all of them at once. This adds little: the care providers that a service provider serves can already be found in GF Adressering, through the `Endpoint` resources that it manages. The Client ID Metadata Documents contain no mandates; an authorization server only sees the mandates that clients present to it. The Mandate Issuer records personal data of the employee who approves a mandate, and processes it for the care provider.
 
 ### Example use cases
 
