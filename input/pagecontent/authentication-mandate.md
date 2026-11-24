@@ -149,7 +149,7 @@ Cache-Control: no-store
 { "transaction_id": "8xLOxBtZp8", "interval": 5 }
 ```
 
-The requesting service provider presents the mandate in each token request ([GF-AUTN-4](./authentication.html#gf-autn-4-request-access-token)). The source's service provider makes it available as the use case specifies.
+The requesting service provider presents the mandate in each token request ([GF-AUTN-4](./authentication.html#gf-autn-4-request-access-token)). The source's service provider publishes it in its Protected Resource Metadata ([GF-AUTN-3](./authentication.html#gf-autn-3-get-protected-resource-metadata)).
 
 ### Renewal
 
