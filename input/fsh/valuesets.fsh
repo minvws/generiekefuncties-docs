@@ -65,6 +65,7 @@ Description: "Authorization types supported by NL Generic Functions."
 * ^experimental = true
 * include codes from system NlGfAuthorizationTypeCS
 * include codes from system http://hl7.org/fhir/organization-role
+* exclude NlGfAuthorizationTypeCS#URA-signed-mandate
 
 ValueSet: NlGfPurposeOfUseVS
 Id: nl-gf-purpose-of-use-vs

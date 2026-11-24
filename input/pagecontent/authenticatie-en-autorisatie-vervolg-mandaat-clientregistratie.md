@@ -1,4 +1,4 @@
-**Concept** · 16 november 2026
+**Concept** · 23 november 2026
 
 Dit document legt de ontwerpbeslissingen vast voor de machtiging van dienstverleners en de registratie van OAuth-clients bij de gegevensuitwisselingen BgZ en eOverdracht, en sluit af met een voorstel. Het bouwt voort op de notitie [*Harmonisatie van authenticatie en autorisatie voor de gegevensuitwisselingen BgZ en eOverdracht*](./authenticatie-en-autorisatie-eOverdracht-BgZ-vMT-DICIO-20260818.html) (versie 0.95, hierna: de notitie), en past de technische keuzes uit hoofdstuk 6 van die notitie aan. Per beslissing staan de vraag, de opties, het besluit, de reden en de gevolgen. De bijlagen beschrijven de onderzochte alternatieven, met wat de implementatie vraagt en de grootste beveiligingsrisico's.
 {: .ig-lead}
@@ -12,6 +12,7 @@ Dit document legt de ontwerpbeslissingen vast voor de machtiging van dienstverle
 | 0.3.0 | Concept | 5 november 2026 | VWS | toevoeging variant M6 n.a.v. email/voorstel Nuts van 4 november |
 | 0.4.0 | Concept | 12 november 2026 | VWS | presentatie van de machtiging als `vp_token` in M1, uitbreidbaar naar meer attestaties; opties R3, R4 en R5 voor clientregistratie; variant M7; analyse impact op authorization servers; herstructurering/invoegen van ontwerpbeslissingen  |
 | 0.5.0 | Concept | 16 november 2026 | VWS | grant gewijzigd in de JWT bearer grant (RFC 7523): de client ondertekent per tokenrequest een assertion met de machtiging en de velden van het RAR-object (variant M8); token exchange met delegatie als optie in ADR-7; één Client ID Metadata Document per dienstverlener, zonder machtiging; R3 gesplitst in R3a en R3b |
+| 0.6.0 | Concept | 23 november 2026 | VWS | verwerking van de feedback op versie 0.5.0: machtiging in de LRZa via een `Endpoint`; identificaties als `URA-` en `NTRNL-`; geen eisen aan de interne inrichting van partijen; vaste set voorbeeldorganisaties; bijlage C als koppeling van dreiging, maatregel en restrisico |
 
 # Inhoudsopgave
 
@@ -22,6 +23,7 @@ Dit document legt de ontwerpbeslissingen vast voor de machtiging van dienstverle
   - [GF-AUTN-ADR-1: Waar staat de machtiging?](#gf-autn-adr-1-waar-staat-de-machtiging)
   - [GF-AUTN-ADR-2: Wie ondertekent de machtiging?](#gf-autn-adr-2-wie-ondertekent-de-machtiging)
   - [GF-AUTN-ADR-3: Hoe ziet de machtiging eruit?](#gf-autn-adr-3-hoe-ziet-de-machtiging-eruit)
+  - [GF-AUTN-ADR-8: Hoe vraagt een dienstverlener een machtiging aan?](#gf-autn-adr-8-hoe-vraagt-een-dienstverlener-een-machtiging-aan)
   - [GF-AUTN-ADR-4: Wat mag de dienstverlener namens de zorgaanbieder?](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder)
   - [GF-AUTN-ADR-5: Intrekken of laten verlopen?](#gf-autn-adr-5-intrekken-of-laten-verlopen)
   - [GF-AUTN-ADR-6: Hoe worden clients geregistreerd?](#gf-autn-adr-6-hoe-worden-clients-geregistreerd)
@@ -52,6 +54,13 @@ Dit document legt de ontwerpbeslissingen vast voor de machtiging van dienstverle
   - [R4: Registratie met een toegekende client-id](#r4-registratie-met-een-toegekende-client-id)
   - [R5: Client ID Metadata Document (voorstel)](#r5-client-id-metadata-document-voorstel)
 - [Bijlage C: Beveiligingsrisico's](#bijlage-c-beveiligingsrisicos)
+  - [C.1 Dreigingen uit de standaarden](#c1-dreigingen-uit-de-standaarden)
+  - [C.2 STRIDE per transactie](#c2-stride-per-transactie)
+  - [C.3 OWASP API Security Top 10 (2023)](#c3-owasp-api-security-top-10-2023)
+  - [C.4 FAPI 2.0 Attacker Model](#c4-fapi-20-attacker-model)
+  - [C.5 Risico's van dit stelsel](#c5-risicos-van-dit-stelsel)
+  - [C.6 Restrisico's](#c6-restrisicos)
+  - [C.7 Testsuite](#c7-testsuite)
 
 # Aanleiding
 Op het concept van de notitie hebben onder meer Silizo, ChipSoft, Twiin, UMCG, Nedap, de Nuts Kring Techniek, VZVZ (AORTA/LSP) en RSO Nederland gereageerd. Twee punten kwamen in vrijwel alle inhoudelijke reacties terug:
@@ -73,7 +82,7 @@ Het juridisch kader, de eisen en de GISA-uitgangspunten uit de notitie (hoofdstu
 | Zorgaanbieder | De organisatie die zorg verleent en verwerkingsverantwoordelijke is voor de gezondheidsgegevens; geïdentificeerd met het URA. |
 | URA | UZI-Register Abonneenummer: de identificatie van een zorgaanbieder in het UZI-register. Het URA staat in het UZI-servercertificaat van de zorgaanbieder. |
 | Dienstverlener | De organisatie die technische voorzieningen levert en beheert voor zorgaanbieders, zoals een EPD-leverancier, SaaS-platform of knooppunt. Hij heeft een eigen certificaat, bijvoorbeeld een PKIoverheid-servercertificaat met zijn KvK-nummer of OIN, en handelt doorgaans namens veel zorgaanbieders. Een dienstverlener beheert bijvoorbeeld een client, of een authorization server en een resource server, maar dat is niet altijd zo: een zorgaanbieder kan die ook zelf beheren. |
-| Vertrouwde dienstverlener | De dienstverlener die een zorgaanbieder aanwijst om namens hem machtigingen uit te geven, met de sleutel van zijn UZI-servercertificaat. De zorgaanbieder kan die rol ook zelf invullen. De vertrouwde dienstverlener is uitgever van machtigingen, en hoeft zelf geen client te beheren. Het kan een IT-leverancier zijn, maar ook een stelselpartij, zoals Twiin, Nuts of VZVZ. |
+| Vertrouwde dienstverlener | De partij die een zorgaanbieder aanwijst om namens hem machtigingen uit te geven, met de sleutel van een van zijn UZI-servercertificaten. De zorgaanbieder kan die rol ook zelf invullen, bijvoorbeeld met zijn eigen IT-afdeling. Een zorgaanbieder wijst er ten minste één aan. De vertrouwde dienstverlener is uitgever van machtigingen, en hoeft zelf geen client te beheren. Het kan een IT-leverancier zijn, maar ook een stelselpartij, zoals Twiin, Nuts of VZVZ. |
 | Machtiging | Een ondertekende verklaring waarmee een zorgaanbieder een dienstverlener toestaat namens hem te handelen, voor een of meer machtigingscodes. |
 | Machtigingscode | De reikwijdte van een machtiging, als `<doel>-<rol>`, bijvoorbeeld `TREAT-user` ([GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder)). |
 | Client | De OAuth-client die namens een zorgaanbieder een access token aanvraagt en gegevens opvraagt; in GF Authentication de *Authorization Client*. Hij authenticeert zich met mTLS, met het certificaat van de organisatie die hem beheert, meestal een dienstverlener. |
@@ -84,16 +93,17 @@ Het juridisch kader, de eisen en de GISA-uitgangspunten uit de notitie (hoofdstu
 | GIS | Het Gezondheidsinformatiestelsel: het landelijke stelsel waaronder de afspraken vallen, en waaronder stelselpartijen zoals Nuts, VZVZ (LSP) en Twiin opereren. |
 | Client ID Metadata Document | Een JSON-document met de metadata van een OAuth-client, dat de client publiceert op de URL die zijn `client_id` is ([IETF-draft](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/)). |
 | *Protected Resource Metadata* | De metadata van een resource server, met onder meer de authorization servers die bij het endpoint horen ([RFC 9728](https://www.rfc-editor.org/rfc/rfc9728)). |
-| Assertion | Het JWT dat de client bij elk tokenrequest ondertekent ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523)), met de zorgaanbieder (`sub`), het doel (`purpose_of_use`), de bron en de machtiging, en met het type `nl-gf-jwt-bearer-assertion+jwt`. Het vervangt het RAR-object (`authorization_details`) uit de notitie. |
+| Assertion | Het JWT dat de client bij elk tokenrequest ondertekent ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523)), met de zorgaanbieder (`sub`), het RAR-object (`authorization_details`, type `nl-gis-v1`) met het doel (`purpose_of_use`) en de bron, en de machtiging, en met het type `nl-gf-jwt-bearer-assertion+jwt`. |
 
 # Ontwerpbeslissingen
-Hieronder staan zeven ontwerpbeslissingen (*architecture decision records*). Elke beslissing beschrijft de vraag, de opties, het besluit, de reden en de gevolgen. De opties verwijzen naar de onderzochte varianten: M0 tot en met M8 voor de machtiging ([bijlage A](#bijlage-a-varianten-voor-de-machtiging)) en R1 tot en met R5 voor de clientregistratie ([bijlage B](#bijlage-b-opties-voor-clientregistratie)). Daar staan per variant de werking, wat de implementatie vraagt en de grootste beveiligingsrisico's; die risico's zijn genummerd S1 tot en met S26 ([bijlage C](#bijlage-c-beveiligingsrisicos)). De tabel vat de besluiten samen.
+Hieronder staan acht ontwerpbeslissingen (*architecture decision records*). GF-AUTN-ADR-8 staat direct na GF-AUTN-ADR-3, omdat het daarop aansluit. Elke beslissing beschrijft de vraag, de opties, het besluit, de reden en de gevolgen. De opties verwijzen naar de onderzochte varianten: M0 tot en met M8 voor de machtiging ([bijlage A](#bijlage-a-varianten-voor-de-machtiging)) en R1 tot en met R5 voor de clientregistratie ([bijlage B](#bijlage-b-opties-voor-clientregistratie)). Daar staan per variant de werking, wat de implementatie vraagt en de grootste beveiligingsrisico's; die risico's zijn genummerd S1 tot en met S27 ([bijlage C](#bijlage-c-beveiligingsrisicos)). De tabel vat de besluiten samen.
 
 | ADR | Vraag | Besluit |
 |---|---|---|
 | [GF-AUTN-ADR-1](#gf-autn-adr-1-waar-staat-de-machtiging) | Waar staat de machtiging? | Bij de gemachtigde dienstverlener, niet in een centraal register |
 | [GF-AUTN-ADR-2](#gf-autn-adr-2-wie-ondertekent-de-machtiging) | Wie ondertekent de machtiging? | De vertrouwde dienstverlener (of de zorgaanbieder zelf), met de sleutel van het UZI-servercertificaat van de zorgaanbieder; de zorgaanbieder kan die rol ook zelf invullen |
-| [GF-AUTN-ADR-3](#gf-autn-adr-3-hoe-ziet-de-machtiging-eruit) | Hoe ziet de machtiging eruit? | Een SD-JWT VC, uitgegeven met OpenID4VCI |
+| [GF-AUTN-ADR-3](#gf-autn-adr-3-hoe-ziet-de-machtiging-eruit) | Hoe ziet de machtiging eruit? | Een SD-JWT VC |
+| [GF-AUTN-ADR-8](#gf-autn-adr-8-hoe-vraagt-een-dienstverlener-een-machtiging-aan) | Hoe vraagt een dienstverlener een machtiging aan? | Met OpenID4VCI, over mTLS |
 | [GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder) | Wat mag de dienstverlener namens de zorgaanbieder? | Machtigingscodes `<doel>-<rol>`, met het doel uit PurposeOfUse en de rol `user` of `custodian` |
 | [GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen) | Hoe wordt een machtiging ingetrokken? | Door haar te laten verlopen: ten hoogste 3 maanden geldig, en vernieuwd zolang de goedkeuring geldt; geen statuslijst |
 | [GF-AUTN-ADR-6](#gf-autn-adr-6-hoe-worden-clients-geregistreerd) | Hoe worden clients geregistreerd? | Met één Client ID Metadata Document per dienstverlener. |
@@ -116,7 +126,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 
 
 **Gevolgen.**
-- De LRZa wordt alleen gebruikt om de vertrouwde dienstverlener van een zorgaanbieder te vinden, bij wie machtigingen kunnen worden aangevraagd. De zorgaanbieder wijst hem aan met een `OrganizationAffiliation` met de code `URA-signed-mandate`, die verwijst naar het `Endpoint` waar machtigingen worden aangevraagd, met connectionType `openid4vci` en payloadType `URA-signed-mandate`.
+- De LRZa wordt alleen gebruikt om de vertrouwde dienstverlener van een zorgaanbieder te vinden, bij wie machtigingen kunnen worden aangevraagd, als de dienstverlener hem niet al kent. De zorgaanbieder publiceert bij voorkeur het `Endpoint` waar machtigingen worden aangevraagd, met connectionType `openid4vci` en payloadType `URA-signed-mandate`, en verwijst ernaar vanuit zijn `Organization`.
 
 ## GF-AUTN-ADR-2: Wie ondertekent de machtiging?
 **Vraag.** Wie geeft de machtiging uit, en met welke sleutel wordt zij ondertekend?
@@ -127,13 +137,15 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - een identiteitsattestatie met de UZI-sleutel naast een machtiging van een onafhankelijke notaris ([M6](#m6-identiteit-en-machtiging-als-twee-attestaties)). 
 - de zorgaanbieder zelf vanuit de EBW (later).
 
-**Besluit.** De vertrouwde dienstverlener ([M1](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit)). De zorgaanbieder wijst hem aan in de LRZa en keurt elke machtiging bij de vertrouwde dienstverlener goed. Een zorgaanbieder die zijn UZI-servercertificaat zelf beheert, kan deze rol ook zelf invullen.
+**Besluit.** De vertrouwde dienstverlener ([M1](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit)). De zorgaanbieder wijst ten minste één vertrouwde dienstverlener aan, publiceert hem bij voorkeur in de LRZa, en keurt elke machtiging bij hem goed. Dat kan ook de zorgaanbieder zelf zijn, bijvoorbeeld zijn eigen IT-afdeling. Een zorgaanbieder met meer UZI-servercertificaten, bijvoorbeeld bij verschillende leveranciers, kan er meer aanwijzen.
 
 **Waarom.** Dit lijkt in Q1 2027 haalbaar: er is geen nieuwe partij of erkenning nodig, het vertrouwen steunt op het wettelijk verankerde UZI-register, en veel zorgaanbieders laten hun UZI-servercertificaat nu al beheren door één leverancier.
 
 **Gevolgen.**
 - De vertrouwde dienstverlener kan zichzelf en anderen machtigen. Het vertrouwen in hem is even groot als nu, nu hij de UZI-sleutel beheert. Vult de zorgaanbieder de rol zelf in, dan beheert geen dienstverlener zijn sleutel en kan geen dienstverlener zichzelf machtigen.
+- Een verifier raadpleegt de aanwijzing niet, maar controleert alleen de UZI-handtekening. Elke partij die een UZI-sleutel van de zorgaanbieder beheert, kan dus een geldige machtiging maken. De aanwijzing maakt de uitgever vindbaar; zij beperkt niet wie kan ondertekenen.
 - [M6](#m6-identiteit-en-machtiging-als-twee-attestaties) blijft een mogelijke vervolgstap om zelfmachtiging uit te sluiten.
+- Er komt geen apart toezicht op de vertrouwde dienstverlener vanuit het GIS. De specificatie stelt ook geen eigen eisen aan sleutelbeheer of goedkeuring. Die volgen uit de voorwaarden van PKIoverheid en het UZI-register, uit de wet, en uit de overeenkomst tussen de zorgaanbieder en de dienstverlener. De zorgaanbieder is verantwoordelijk voor het gebruik van zijn UZI-servercertificaat. Gaat het mis, dan laat hij dat certificaat intrekken.
 
 ## GF-AUTN-ADR-3: Hoe ziet de machtiging eruit?
 **Vraag.** Welk formaat heeft de machtiging, en bereidt dat voor op de EBW?
@@ -143,7 +155,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - Een FHIR-resource met een ondertekende `Provenance`.
 - Een SD-JWT VC.
 
-**Besluit.** Een SD-JWT VC ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)) met de zorgaanbieder (`sub`), de dienstverlener (`may_act.sub`), de machtigingscodes (`scope`), de geldigheid (`nbf`, `exp`) en een kenmerk (`jti`). Het type (`vct`) is `https://fhir.generiekefuncties.nl/vct/URA-signed-mandate.json`; het attestatieschema is vastgelegd in de Type Metadata die op die URL wordt gepubliceerd. De dienstverlener vraagt de machtiging aan met OpenID4VCI. De reikwijdte staat in [GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder), de geldigheid en de intrekking in [GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen).
+**Besluit.** Een SD-JWT VC ([draft-ietf-oauth-sd-jwt-vc](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)). De machtiging noemt de zorgaanbieder, de gemachtigde dienstverlener, de machtigingscodes en de geldigheid. De uitgever volgt uit het ondertekenende certificaat: dat is de zorgaanbieder. De machtiging is gebonden aan de dienstverlener, niet aan een sleutel van de dienstverlener. Verifiers zijn alleen afhankelijk van dit formaat, niet van de manier waarop de machtiging is verkregen; die staat in [GF-AUTN-ADR-8](#gf-autn-adr-8-hoe-vraagt-een-dienstverlener-een-machtiging-aan). De claims, het type en de Type Metadata staan in de specificatie ([Mandate](./authentication.html#mandate)). De reikwijdte staat in [GF-AUTN-ADR-4](#gf-autn-adr-4-wat-mag-de-dienstverlener-namens-de-zorgaanbieder), de geldigheid en de intrekking in [GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen).
 
 **Waarom.** SD-JWT VC is het formaat van attestaties in de EUDI-wallet, met beschikbare bibliotheken en een weg naar vaststelling. Een eigen JWT-formaat zou maatwerk zijn, en een FHIR-resource met een `Provenance` sluit niet aan op de EBW (uitgangspunt *standaarden boven maatwerk*).
 
@@ -151,7 +163,30 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - De EUDI-wallet gebruikt volgens het *Architecture and Reference Framework* SD-JWT VC of ISO mdoc, met OpenID4VCI en OpenID4VP. Omdat een EBW attestaties moet kunnen uitwisselen met EUDI-wallets, ligt het voor de hand dat de EBW dezelfde standaarden gebruikt, maar deze standaarden liggen nog niet vast. 
 - Bij de overstap veranderen in elk geval de ondertekenaar (de wallet van de zorgaanbieder), het vertrouwensanker (de Europese vertrouwenslijsten, met een koppeling van KvK-nummer of EUID aan het URA) en de intrekking (een statuslijst). Het formaat en het schema kunnen gelijk blijven.
 
-**Gevolgen.** SD-JWT VC is een IETF-draft; bibliotheken zijn beschikbaar, onder meer uit de EUDI-referentie-implementatie.
+**Gevolgen.**
+- SD-JWT VC is een IETF-draft; bibliotheken zijn beschikbaar, onder meer uit de EUDI-referentie-implementatie.
+- De machtiging heeft geen eigen uitgever-claim (`iss`). Volgens SD-JWT VC is de uitgever dan het subject van het ondertekenende certificaat. Een aparte uitgever-claim zou niet aan dat certificaat gebonden zijn.
+- De machtiging is via de identificatie van de dienstverlener aan hem gebonden, niet via een sleutel (`cnf`). Zo blijft zij geldig als de dienstverlener zijn certificaat vernieuwt; met `cnf` zou elke vernieuwing nieuwe machtigingen voor al zijn zorgaanbieders vragen. Een *key binding*-JWT voegt niets toe, omdat de assertion al met de sleutel van het clientcertificaat is ondertekend, voor één authorization server en eenmalig. Andere attestatietypen kunnen wel `cnf` gebruiken ([uitbreidbaarheid](#uitbreidbaarheid-met-andere-attestaties)). Overstappen op `cnf` voor de machtiging kan later, als incompatibele wijziging met een nieuw `vct`.
+
+## GF-AUTN-ADR-8: Hoe vraagt een dienstverlener een machtiging aan?
+**Vraag.** Hoe vraagt een dienstverlener een machtiging aan bij de vertrouwde dienstverlener van een zorgaanbieder, en ontvangt hij haar?
+
+**Opties.**
+- *Buiten het stelsel:* dienstverlener en uitgever spreken het onderling af.
+- *Een eigen API,* door het GIS gespecificeerd.
+- *OpenID4VCI* ([OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)).
+
+**Besluit.** OpenID4VCI. De dienstverlener authenticeert zich met zijn certificaat (mTLS), en vraagt een machtiging aan voor een zorgaanbieder en een of meer machtigingscodes. De uitgever leidt de identificatie van de dienstverlener af uit het certificaat en neemt die op in `may_act.sub`.
+
+**Waarom.**
+- *Een koppelvlak tussen partijen.* Dienstverlener en vertrouwde dienstverlener zijn vaak verschillende organisaties. Zonder afspraak bouwt elke uitgever een eigen API, en moet elke dienstverlener er per uitgever een koppeling voor maken.
+- *Standaard boven maatwerk.* OpenID4VCI is een vastgestelde specificatie voor de uitgifte van SD-JWT VC's, met bibliotheken, onder meer uit de EUDI-referentie-implementatie. Een eigen API zou door het GIS moeten worden gespecificeerd en onderhouden.
+- *Groeipad naar de EBW.* Wallets ontvangen attestaties met OpenID4VCI.
+
+**Gevolgen.**
+- OpenID4VCI geldt alleen tussen de dienstverlener en de uitgever. Verifiers merken er niets van ([GF-AUTN-ADR-3](#gf-autn-adr-3-hoe-ziet-de-machtiging-eruit)).
+- Is de dienstverlener zelf de vertrouwde dienstverlener, dan is er geen aanvraag nodig.
+- Wacht de uitgever nog op goedkeuring van de zorgaanbieder, dan geeft hij de machtiging later uit; OpenID4VCI kent daarvoor uitgestelde uitgifte (*deferred issuance*).
 
 ## GF-AUTN-ADR-4: Wat mag de dienstverlener namens de zorgaanbieder?
 **Vraag.** Hoe legt een machtiging vast wat de dienstverlener namens de zorgaanbieder mag?
@@ -160,9 +195,10 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - *Geen reikwijdte:* een machtiging geldt voor alle uitwisselingen. Eenvoudig, maar alle dienstverleners van een zorgaanbieder krijgen dezelfde rechten.
 - *Een code per zorgtoepassing,* zoals eOverdracht of BgZ: fijnmazig, maar de zorgaanbieder moet zijn machtigingen bij elke nieuwe toepassing aanpassen.
 - *Technische scopes per FHIR-resource of operatie,* zoals bij SMART on FHIR: voor een zorgaanbieder moeilijk te beoordelen, en welke resources een verzoek mag raken, bepaalt de bron per toepassing.
+- *Systeemrol binnen een zorgtoepassing,* zoals "medicatieverstrekkend systeem": toetsbaar binnen een afsprakenstelsel, maar het beschrijft wat een systeem doet, niet namens wie de dienstverlener optreedt. Een systeem kan ook voor meer worden gebruikt dan de zorgaanbieder wil; dat regelt de zorgaanbieder in zijn afspraken met de leverancier.
 - *Doel en rol:* een code `<doel>-<rol>`, met het doel uit de HL7-codelijst PurposeOfUse.
 
-**Besluit.** Doel en rol. Het doel is een code uit HL7 waardenlijst [PurposeOfUse](https://terminology.hl7.org/en/ValueSet-v3-PurposeOfUse.html): `TREAT`, `ETREAT`, `PATRQT`, `HRESCH` of `HSYSADMIN`. Deze doelen staan in de ValueSet [NL GF Purpose of Use](./ValueSet-nl-gf-purpose-of-use-vs.html). Een code geeft geen rechten voor de onderliggende codes in de hiërarchie van PurposeOfUse: een machtiging voor `TREAT` dekt dus niet ook `ETREAT`, `BTG` of `POPHLTH`, en een doel dat niet in de ValueSet staat, wordt geweigerd. De rol is `user`, gegevens opvragen en ontvangen, doorgaans met een client, of `custodian`, als bronhouder gegevens beschikbaar stellen of registreren, doorgaans met een authorization server en een resource server. Dat geeft tien codes, zoals `TREAT-user`. Een machtiging kan meerdere codes bevatten (`scope`). De authorization server leidt de vereiste code af uit `purpose_of_use` in de assertion; de client controleert dat de bron de bijbehorende `custodian`-code heeft.
+**Besluit.** Doel en rol. Het doel is een code uit HL7 waardenlijst [PurposeOfUse](https://terminology.hl7.org/en/ValueSet-v3-PurposeOfUse.html): `TREAT`, `ETREAT`, `PATRQT`, `HRESCH` of `HSYSADMIN`. Deze doelen staan in de ValueSet [NL GF Purpose of Use](./ValueSet-nl-gf-purpose-of-use-vs.html). Een code geeft geen rechten voor de onderliggende codes in de hiërarchie van PurposeOfUse: een machtiging voor `TREAT` dekt dus niet ook `ETREAT`, `BTG` of `POPHLTH`, en een doel dat niet in de ValueSet staat, wordt geweigerd. De rol is `user`, gegevens opvragen en ontvangen, doorgaans met een client, of `custodian`, als bronhouder gegevens beschikbaar stellen of registreren, doorgaans met een authorization server en een resource server. De rol zegt aan welke kant van de uitwisseling de dienstverlener namens de zorgaanbieder staat, als aanvrager of als bronhouder; niet of hij gegevens leest of schrijft. De namen volgen de termen *data user* en *custodian* uit GF Localization. Dat geeft tien codes, zoals `TREAT-user`. Een machtiging kan meerdere codes bevatten (`scope`), en bevat alleen machtigingscodes. De authorization server leidt de vereiste code af uit `purpose_of_use` in de assertion; de client controleert dat de bron de bijbehorende `custodian`-code heeft. Een controleur kijkt alleen of de vereiste code aanwezig is. Andere codes, ook codes die hij niet kent, zijn geen reden om de machtiging te weigeren en geven geen rechten. Zo kunnen later codes worden toegevoegd zonder dat bestaande controleurs aangepast hoeven te worden.
 
 | Doel (PurposeOfUse) | Grondslag | `<doel>-user`: de dienstverlener mag namens de zorgaanbieder… | `<doel>-custodian`: de dienstverlener mag namens de zorgaanbieder… |
 |---|---|---|---|
@@ -177,6 +213,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - *Spoed apart.* `ETREAT` heeft een eigen code: de grondslag is die van `TREAT`, maar de EHDS staat bij spoed, ter bescherming van de vitale belangen van de patiënt, toegang toe tot gegevens die hij heeft afgeschermd, en mogelijk ondanks een opt-out. De bron kan voor spoed dus andere regels toepassen. Een zorgaanbieder kan een dienstverlener zo ook alleen voor spoed machtigen.
 - *Doelbinding.* Een dienstverlener die gegevens uitgeeft voor onderzoek (`HRESCH-custodian`), kan geen gegevens verzamelen onder de noemer behandeling ([AVG](https://eur-lex.europa.eu/eli/reg/2016/679/oj), art. 5 lid 1 onder b).
 - *Beperkte gevolgen.* Een viewer krijgt alleen `TREAT-user`, een archief alleen `TREAT-custodian`, zodat een fout of inbraak bij zo'n dienstverlener alleen die rol raakt. Een EPD-leverancier krijgt beide codes in één machtiging, zonder extra administratie.
+- *Taakverdeling.* De machtiging zegt namens wie en voor welk doel de dienstverlener optreedt. Welke gegevens worden opgehaald, beslist de bron per verzoek; bij BgZ en eOverdracht alleen wat bij een Task hoort. Wat de zorgaanbieder met een systeem wil doen, regelt hij met de leverancier. Een fijnere reikwijdte in de machtiging, zoals een systeemrol, verkleint bij BgZ en eOverdracht het risico niet: wie de sleutel heeft, kan binnen die rol hetzelfde doen. Elke zorgtoepassing legt vast welke doelcodes zij accepteert; BgZ en eOverdracht accepteren alleen `TREAT`.
 - *Begrijpelijk en stabiel.* Eén code dekt alle zorgtoepassingen met hetzelfde doel, zodat een zorgaanbieder zijn machtigingen niet bij elke nieuwe toepassing hoeft aan te passen.
 - *Eén codelijst.* Machtiging en verzoek gebruiken dezelfde codelijst, zodat de assertion geen apart veld voor het machtigingstype nodig heeft.
 
@@ -230,7 +267,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - Er is geen registratie-transactie/endpoint/state, en client en authorization server hoeven niets over elkaar op te slaan.
 - Het is een standaard, zij het een draft, in plaats van een eigen profielregel per product (uitgangspunt *standaarden boven maatwerk*).
 - Wie de client beheert, beheert ook zijn metadata. Het document verandert zelden omdat het geen zorgaanbieder specifieke content en omdat certificaatvernieuwing geen impact geeft zolang de host gelijk blijft.
-- Het document voegt weinig toe aan het certificaat: het vertrouwen steunt op de host in het certificaat en op `may_act.sub` in de machtiging. Het levert wel een standaard `client_id` zonder registratie.
+- Het document is geen beveiligingsmaatregel: het vertrouwen steunt op het certificaat en de machtiging. Het levert de geregistreerde client die OAuth-producten verwachten, zonder registratie en zonder maatwerk om een client uit een certificaat af te leiden.
 
 **Gevolgen.**
 - De host van de `client_id` staat als DNS-naam in het clientcertificaat, en het document noemt die host in `tls_client_auth_san_dns` ([RFC 8705](https://www.rfc-editor.org/rfc/rfc8705), §2.1.2) in plaats van de *subject DN*. Zo speelt de schrijfwijze van de *subject DN* geen rol (S26), en verandert het document niet bij een certificaatvernieuwing. De authorization server cachet het document hoogstens 24 uur en leest hoogstens 32 kB.
@@ -243,17 +280,18 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 
 **Opties.**
 - *Client credentials* ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), paragraaf 4.4): de machtiging staat in een Client ID Metadata Document per zorgaanbieder ([M7](#m7-machtiging-in-de-oauth-metadata)), en het verzoek bevat alleen mTLS en een RAR-object.
+- *Client credentials met de machtiging in `client_assertion`* ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523), paragraaf 2.2): de machtiging dient als clientauthenticatie. Bezwaar: bij clientauthenticatie moet `sub` de client zijn, niet de zorgaanbieder (RFC 7523, paragraaf 3), en de client is al met mTLS geauthenticeerd. Per verzoek mag maar één methode worden gebruikt (RFC 6749, paragraaf 2.3). De machtiging zegt namens wie de client optreedt; dat is een *authorization grant*, geen authenticatie.
 - *Token exchange met delegatie* ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)): de machtiging is het `subject_token`, en de client, die zich met mTLS authenticeert, is de *actor*.
 - *Token exchange met een `vp_token`* ([M1](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit)): de machtiging en eventuele andere attestaties reizen mee in het `subject_token`, elk met een *key binding*-JWT.
 - *JWT bearer* ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523), [M8](#m8-machtiging-in-een-jwt-bearer-grant-voorstel)): de client ondertekent per verzoek een assertion voor één authorization server, met de machtiging en de context van het verzoek.
 
-**Besluit.** *JWT bearer* ([M8](#m8-machtiging-in-een-jwt-bearer-grant-voorstel)). De client ondertekent bij elk tokenrequest een assertion met de sleutel van zijn certificaat. De assertion bevat de zorgaanbieder (`sub`), het doel en de bron (de velden die de notitie in het RAR-object had), en de machtiging, in een object met per attestatietype een lijst. Zij geldt voor één authorization server (`aud`), hoogstens 5 minuten en één keer (`jti`). Het type `nl-gf-jwt-bearer-assertion+jwt` in de header (`typ`) maakt haar herkenbaar naast andere verzoeken met de JWT bearer grant ([RFC 8725](https://www.rfc-editor.org/rfc/rfc8725), paragraaf 3.11). De authorization server controleert de assertion, de machtiging en `may_act.sub` tegen het certificaat, en legt in het access token de zorgaanbieder vast in `sub` en de dienstverlener in `act` ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693), paragraaf 4.1).
+**Besluit.** *JWT bearer* ([M8](#m8-machtiging-in-een-jwt-bearer-grant-voorstel)). De client ondertekent bij elk tokenrequest een assertion met de sleutel van zijn certificaat. De assertion noemt de zorgaanbieder, het doel en de bron, en bevat de machtiging. Zij geldt voor één authorization server, kort en één keer. De authorization server controleert de assertion en de machtiging, en legt in het access token vast namens welke zorgaanbieder en door welke dienstverlener toegang is verleend. De claims staan in de specificatie ([Assertion](./authentication.html#assertion)).
 
 **Waarom.**
 - *Geen interactieve gebruiker.* De zorgverlener is in het eigen domein geauthenticeerd, en de uitwisseling verloopt van systeem tot systeem. De notitie noemde FAPI 2.0 als reden voor *client credentials*, maar FAPI 2.0 sluit andere grants niet uit.
 - *Ondertekend verzoek.* De zorgaanbieder, het doel, de bron en de gepresenteerde machtiging zijn door de client ondertekend. De authorization server kan aan derden laten zien wat de dienstverlener heeft gevraagd. Dat ondervangt S4 deels: het verzoek is ondertekend, de gegevens niet.
 - *Uitbreidbaar.* Andere attestaties, ook attestaties die per verzoek verschillen, kunnen in dezelfde assertion mee, zonder andere grant ([uitbreidbaarheid](#uitbreidbaarheid-met-andere-attestaties)). De handtekening legt vast welke attestaties bij welk verzoek horen.
-- *Machtiging zoals uitgegeven.* De machtiging staat ongewijzigd in de assertion, als SD-JWT VC, net als in de *Protected Resource Metadata*. Er is geen eigen tokentype en geen aangepaste serialisatie nodig.
+- *Machtiging zoals uitgegeven.* De machtiging staat ongewijzigd in de assertion, als SD-JWT VC, net als in de *Protected Resource Metadata*. Er is geen eigen tokentype en geen aangepaste serialisatie nodig. Een JWT VP (W3C VC Data Model) past niet: bij SD-JWT VC is de presentatie de SD-JWT zelf, zonder omhulsel. De ondertekende assertion bindt de attestaties aan het verzoek.
 - *Vastgestelde standaard.* RFC 7523 is vastgesteld. Eigen zijn het type en de claims van de assertion, zoals ook het RAR-type `nl-gis-v1` uit de notitie een eigen profiel was; RFC 7521 (paragraaf 7) gaat ervan uit dat deelnemers zulke afspraken maken.
 - *Machtigingen niet openbaar.* Alleen de authorization servers waar de client een token aanvraagt, zien zijn machtiging. Bij *client credentials* met de machtiging in de metadata (M7) is zij voor alle deelnemers leesbaar (S20), en toont de metadata welke zorgaanbieders welke dienstverlener hebben gemachtigd.
 - *Eenvoudige registratie.* De zorgaanbieder komt uit de assertion, zodat één client per dienstverlener volstaat ([GF-AUTN-ADR-6](#gf-autn-adr-6-hoe-worden-clients-geregistreerd)).
@@ -264,7 +302,7 @@ Daarnaast veranderen enkele andere technische keuzes uit de notitie ([overige te
 - De client ondertekent elk tokenrequest met de sleutel van zijn certificaat, met een unieke `jti`. De authorization server houdt gebruikte `jti`-waarden bij zolang de assertion geldig is.
 - De sleutel van het clientcertificaat blijft de enige sleutel die de machtigingen beschermt (S21): zij authenticeert de verbinding en ondertekent de assertion.
 - De authorization servers waar de client tokens aanvraagt, zien zijn machtigingen. Mist een andere authorization server de controle van `may_act.sub`, dan kan zo'n server een machtiging daar gebruiken (S20).
-- Het RAR-object (`authorization_details`) uit de notitie vervalt; de velden staan in de assertion.
+- Het RAR-object (`authorization_details`) staat in de assertion, niet als parameter van het tokenrequest. Zo is het samen met de machtiging ondertekend. RFC 9396 beschrijft `authorization_details` als parameter van het verzoek en als claim van het access token, niet in een assertion; deze plek is een eigen profielkeuze, vergelijkbaar met verzoekparameters in een ondertekend request object ([RFC 9101](https://www.rfc-editor.org/rfc/rfc9101)). De structuur volgt RFC 9396; `locations` is een standaardveld (RFC 9396, paragraaf 2.2).
 - Gangbare producten ondersteunen de JWT bearer grant niet, of alleen met een vooraf ingestelde vertrouwensrelatie per uitgever. De grant is daarom in elk product maatwerk ([voorstel](#wat-er-moet-gebeuren-in-keycloak-en-duende-identityserver)).
 - De authorization server geeft geen *refresh token* uit ([RFC 7521](https://www.rfc-editor.org/rfc/rfc7521), paragraaf 4.1): na het verlopen van het access token vraagt de client een nieuw aan, met een nieuwe assertion.
 
@@ -275,44 +313,50 @@ De notitie koos in hoofdstuk 6 voor OAuth 2.0 met de beveiligingsmaatregelen uit
 |---|---|---|
 | Clientauthenticatie | mTLS met het eigen certificaat van de organisatie die de client beheert (`tls_client_auth`, [RFC 8705](https://www.rfc-editor.org/rfc/rfc8705)), in plaats van `private_key_jwt`. Het access token is aan dat certificaat gebonden, in plaats van met DPoP. | De notitie koos `private_key_jwt` omdat het transportcertificaat de zorgaanbieder niet altijd identificeert. Nu de client het certificaat van zijn eigen beheerder gebruikt, meestal een dienstverlener, identificeert het certificaat juist de partij die verantwoordelijk is voor de verbinding, en de machtiging de zorgaanbieder. Eén mechanisme voor transport, clientauthenticatie en tokenbinding; FAPI 2.0 staat het toe. |
 | Access token | De authorization server van de bron geeft het uit, met zijn eigen sleutel. Het is ondoorzichtig (*opaque*) voor de client, en legt de zorgaanbieder, de client, de dienstverlener die hem beheert en de context uit de assertion vast. | In de notitie ondertekent de bronhoudende zorgaanbieder het access token met zijn UZI-sleutel. Dat wijkt af van gangbare standaarden (IHE IUA: "The token is opaque to the Authorization Client"), en een authorization server voor veel zorgaanbieders zou dan per zorgaanbieder een UZI-sleutel moeten beheren. |
-| Context van het verzoek | In de ondertekende assertion: het URA van de zorgaanbieder (`sub`), het doel (`purpose_of_use`) en de bron (`locations_organization_id`, `locations`), in plaats van in een RAR-object van het type `nl-gis-v1`. | De authorization server toetst de zorgaanbieder en `purpose_of_use` aan de machtiging. In de assertion zijn ze samen met de machtiging ondertekend. |
-| Vaststellen van de bron | De client controleert vóór het verzoek de machtiging van de bron in de *Protected Resource Metadata* van de resource server, en of het servercertificaat van de resource server bij de gemachtigde dienstverlener hoort. | Zo blijft eis 1 uit de notitie vervuld: het wederzijds vaststellen van de identiteit van de zorgaanbieder. |
-| Intrekking en TLS-terminatie | De authorization server en de resource server controleren de intrekkingsstatus van het clientcertificaat, en weigeren als die onbekend is. Alleen de bron, dat wil zeggen de zorgaanbieder of zijn dienstverlener met een *custodian*-machtiging, of een voorziening in hun eigen domein, zoals een load balancer, beëindigt de TLS-verbinding en geeft het certificaat door volgens [RFC 9440](https://www.rfc-editor.org/rfc/rfc9440). Een andere tussenpartij doet dat niet. Een tussenpartij aan de kant van de aanvrager is zelf de client, met een eigen certificaat en een eigen machtiging. | RFC 8705 laat de intrekkingscontrole aan de server over. Een doorgegeven certificaat bewijst niet dat de afzender de bijbehorende sleutel heeft: wie het doorgeeft, kan zich voordoen als elke dienstverlener. Dat is alleen aanvaardbaar bij een partij waarvoor de bron verantwoordelijk is. |
+| Context van het verzoek | In de ondertekende assertion: het URA van de zorgaanbieder (`sub`), en het RAR-object van het type `nl-gis-v1` met het doel (`purpose_of_use`) en de bron (`locations_organization_id`, `locations`). | De authorization server toetst de zorgaanbieder en `purpose_of_use` aan de machtiging. In de assertion zijn ze samen met de machtiging ondertekend. |
+| Reikwijdte van de toegang | Het tokenverzoek bevat voor BgZ en eOverdracht geen `scope`, patiënt of `authorization_base`, en het RAR-object alleen `purpose_of_use` en de bron. De bron neemt zijn autorisatiebesluit op basis van de zorgaanbieder (`sub`), `purpose_of_use` en de Task die hij aan de ontvanger heeft gekoppeld. Een zorgtoepassing kan later `scope`, of velden of typen in `authorization_details`, toevoegen; de specificatie laat daar ruimte voor. | Bij BgZ en eOverdracht ligt bij de bron al vast wat de ontvanger mag ophalen: de Task is aan hem gekoppeld en bepaalt welke gegevens hij mag ophalen. Een verwijzing of scope in het token voegt daar niets aan toe. |
+| Vaststellen van de bron | De client controleert vóór het verzoek de machtiging van de bron, of het servercertificaat van de resource server bij de gemachtigde dienstverlener hoort, en of de resource de authorization server aanwijst. Hoe de client die gegevens vindt, bepaalt de use case. Bij BgZ en eOverdracht staan ze in de *Protected Resource Metadata* van de resource server. Een bestaand OAuth-endpoint in de LRZa mag blijven, maar de client gebruikt het alleen als het ook in `authorization_servers` staat. | Zo blijft eis 1 uit de notitie vervuld: het wederzijds vaststellen van de identiteit van de zorgaanbieder. Andere uitwisselingen kunnen de bron anders vinden, bijvoorbeeld via de CapabilityStatement van de FHIR-server, zonder dat de kern verandert. |
+| Intrekking | De authorization server en de resource server controleren de intrekkingsstatus van het clientcertificaat, en weigeren als die onbekend is. Een tussenpartij aan de kant van de aanvrager is zelf de client, met een eigen certificaat en een eigen machtiging. Waar de bron de TLS-verbinding beëindigt en hoe zij het certificaat intern doorgeeft, regelt de specificatie niet. | RFC 8705 laat de intrekkingscontrole aan de server over. De inrichting van het eigen netwerk valt onder de verantwoordelijkheid van de zorgaanbieder en zijn wettelijke verplichtingen; een eis daarover is van buiten niet te controleren. |
 
 # Voorstel: machtiging in het tokenrequest en de Protected Resource Metadata
-Het voorstel combineert de zeven beslissingen. De client presenteert de machtiging van de opvragende zorgaanbieder bij elk tokenrequest, in een assertion die hij zelf ondertekent (JWT bearer, RFC 7523); de resource server publiceert de machtiging van de bronhoudende zorgaanbieder in zijn *Protected Resource Metadata*. De client heeft één Client ID Metadata Document (per dienstverlener, zonder zorgaanbieder-specifieke content). De specificatie staat in [GF Authentication (V&O)](./authentication.html); de grootste risico's staan bij [M8](#m8-machtiging-in-een-jwt-bearer-grant-voorstel) en [R5](#r5-client-id-metadata-document-voorstel) in de bijlagen.
+Het voorstel combineert de acht beslissingen. De client presenteert de machtiging van de opvragende zorgaanbieder bij elk tokenrequest, in een assertion die hij zelf ondertekent (JWT bearer, RFC 7523); de resource server publiceert de machtiging van de bronhoudende zorgaanbieder in zijn *Protected Resource Metadata*. De client heeft één Client ID Metadata Document (per dienstverlener, zonder zorgaanbieder-specifieke content). De specificatie staat in [GF Authentication (V&O)](./authentication.html); de grootste risico's staan bij [M8](#m8-machtiging-in-een-jwt-bearer-grant-voorstel) en [R5](#r5-client-id-metadata-document-voorstel) in de bijlagen.
 
 ## Werking
 1. **Uitgifte.** De dienstverlener die de client beheert, vraagt een machtiging aan (OpenID4VCI) bij de vertrouwde dienstverlener van zijn zorgaanbieder, of bij de zorgaanbieder zelf als die deze rol invult. De zorgaanbieder keurt goed, en de machtiging wordt ondertekend met zijn UZI-sleutel.
-2. **Clientmetadata.** De dienstverlener publiceert één Client ID Metadata Document, bijvoorbeeld op `https://dienstverlener-a.nl/oauth/client`, op een host die in zijn certificaat staat. Het document noemt onder meer de grant `urn:ietf:params:oauth:grant-type:jwt-bearer` en `tls_client_auth_san_dns`, en bevat geen machtigingen.
+2. **Clientmetadata.** De dienstverlener publiceert één Client ID Metadata Document, bijvoorbeeld op `https://zorgsoftware-midden.example/oauth/client`, op een host die in zijn certificaat staat. Het document noemt onder meer de grant `urn:ietf:params:oauth:grant-type:jwt-bearer` en `tls_client_auth_san_dns`, en bevat geen machtigingen.
 3. **Publicatie door de bron.** De resource server publiceert de machtiging van de bronhoudende zorgaanbieder in zijn *Protected Resource Metadata*.
-4. **Controle van de bron.** De client vindt het endpoint van de bron in zijn LRZa-replica, haalt de *Protected Resource Metadata* op en controleert de machtiging van de bron (`TREAT-custodian`, met `may_act.sub` tegen het servercertificaat).
+4. **Controle van de bron.** De client haalt het adres van de bron uit de notificatie, haalt de *Protected Resource Metadata* op en controleert de machtiging van de bron (`TREAT-custodian`, met `may_act.sub` tegen het servercertificaat). Hij gebruikt alleen een authorization server uit `authorization_servers`. Dit deel is specifiek voor BgZ en eOverdracht en staat in een aparte pagina.
 5. **Tokenrequest.**
 
    ```
-   POST /token HTTP/1.1                      (mTLS met het certificaat van dienstverlener A)
-   Host: as.dienstverlener-b.nl
+   POST /token HTTP/1.1                      (mTLS met het certificaat van Zorgsoftware Midden)
+   Host: as.zorgict-noord.example
    Content-Type: application/x-www-form-urlencoded
 
    grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer
-   &client_id=https%3A%2F%2Fdienstverlener-a.nl%2Foauth%2Fclient                  (zie stap 2)
-   &assertion=<assertion, ondertekend met de sleutel van het certificaat van dienstverlener A>
+   &client_id=https%3A%2F%2Fzorgsoftware-midden.example%2Foauth%2Fclient                  (zie stap 2)
+   &assertion=<assertion, ondertekend met de sleutel van het certificaat van Zorgsoftware Midden>
    ```
 
-   De header van de assertion bevat `typ` `nl-gf-jwt-bearer-assertion+jwt` en het certificaat van dienstverlener A in `x5c`; de payload:
+   De header van de assertion bevat `typ` `nl-gf-jwt-bearer-assertion+jwt` en het certificaat van Zorgsoftware Midden in `x5c`; de payload:
 
    ```json
    {
-     "iss": "https://dienstverlener-a.nl/oauth/client",
-     "sub": "urn:oid:2.16.528.1.1007.3.3.11111111",
-     "aud": "https://as.dienstverlener-b.nl",
-     "iat": 1792108800,
-     "exp": 1792109100,
+     "iss": "https://zorgsoftware-midden.example/oauth/client",
+     "sub": "URA-11044044",
+     "aud": "https://as.zorgict-noord.example",
+     "iat": 1793836800,
+     "exp": 1793837100,
      "jti": "0b6d9c2e-7f4a-4c1d-8e3b-5a9f2c7d1e64",
-     "purpose_of_use": "http://terminology.hl7.org/CodeSystem/v3-ActReason|TREAT",
-     "locations_organization_id": "urn:oid:2.16.528.1.1007.3.3.12345678",
-     "locations": ["https://fhir.dienstverlener-b.nl/zorgaanbieder-b/fhir"],
-     "attestations": { "URA-signed-mandate": ["<machtiging van zorgaanbieder A>~"] }
+     "authorization_details": [
+       {
+         "type": "nl-gis-v1",
+         "purpose_of_use": "http://terminology.hl7.org/CodeSystem/v3-ActReason|TREAT",
+         "locations_organization_id": "URA-01234567",
+         "locations": ["https://fhir.zorgict-noord.example/weidevelde/fhir"]
+       }
+     ],
+     "attestations": { "URA-signed-mandate": ["<machtiging van Zorggroep Duinzicht voor Zorgsoftware Midden>~"] }
    }
    ```
 
@@ -325,7 +369,7 @@ Het voorstel combineert de zeven beslissingen. De client presenteert de machtigi
 - `tls_client_auth` en certificaatgebonden tokens (RFC 8705);
 - een `client_id` uit een Client ID Metadata Document. De draft beschrijft vooral de autorisatiecodeflow, maar sluit andere grants niet uit: hij beperkt de grants tot wat document en server allebei ondersteunen, en beschrijft de foutafhandeling bij het token-endpoint.
 
-Eigen zijn het type van de assertion (`nl-gf-jwt-bearer-assertion+jwt`) en de claims erin: de velden die de notitie in het RAR-object had, en het object met attestaties.
+Eigen zijn het type van de assertion (`nl-gf-jwt-bearer-assertion+jwt`), de plek van het RAR-object in de assertion, het RAR-type `nl-gis-v1`, en het object met attestaties.
 
 **Voor de client: één ondertekening per verzoek.** De client maakt per tokenrequest een JWT met een unieke `jti`, en ondertekent het met de sleutel van zijn certificaat, met een standaard JOSE-bibliotheek. Staat die sleutel in een HSM, dan ondertekent de HSM ook de assertion.
 
@@ -355,7 +399,7 @@ Aan de kant van de client is weinig bijzonders nodig: de beheerder haalt machtig
 
 ## Uitbreidbaarheid met andere attestaties
 Andere attestaties kunnen naast de machtiging in de assertion mee, zonder dat de grant verandert. Voorbeelden zijn een verklaring van deelname aan een afsprakenstelsel, waarmee een bron vóór elke uitwisseling kan controleren of de dienstverlener is aangesloten (S3), de identiteitsattestatie uit [M6](#m6-identiteit-en-machtiging-als-twee-attestaties), of, voor toekomstige toepassingen, een attestatie die per verzoek verschilt, zoals een bewijs van de behandelrelatie.
-- De assertion bevat daarvoor één object met per attestatietype een lijst van attestaties, met dezelfde indeling als in de *Protected Resource Metadata*. De machtiging is daarin het type `URA-signed-mandate`.
+- De assertion bevat daarvoor één object met per attestatietype een lijst van attestaties, met dezelfde indeling als in de *Protected Resource Metadata*. Die indeling volgt `vp_token` uit OpenID4VP 1.0, met het attestatietype als sleutel. De naam is niet `vp_token`, omdat het geen antwoord op een OpenID4VP-verzoek is: er is geen query en geen *nonce*, en hetzelfde object staat in de *Protected Resource Metadata*. De machtiging is daarin het type `URA-signed-mandate`.
 - Een attestatie noemt de dienstverlener met de identificatie uit zijn certificaat. De authorization server controleert de uitgever, en vergelijkt die identificatie met het certificaat, zoals bij `may_act.sub` in de machtiging. Attestatietypen die hij niet gebruikt, negeert hij.
 - De client ondertekent de assertion, zodat vastligt welke attestaties hij bij welk verzoek heeft gepresenteerd. Een attestatie die aan een sleutel van de client gebonden is (`cnf`), zoals de machtiging bij [M1](#m1-vertrouwde-dienstverlener-geeft-machtigingen-uit), vraagt daarnaast een eigen *key binding*-JWT.
 - De assertion gaat alleen naar de authorization server waarvoor zij bedoeld is (`aud`), zodat ook attestaties met persoonsgegevens erin passen, anders dan in openbare metadata.
@@ -363,7 +407,7 @@ Andere attestaties kunnen naast de machtiging in de assertion mee, zonder dat de
 # Bijlage A: Varianten voor de machtiging
 Alle varianten leggen dezelfde gegevens vast: de zorgaanbieder (URA), de gemachtigde dienstverlener, de machtigingscodes, de geldigheid en een uniek kenmerk. Ze verschillen in waar de machtiging staat, wie haar ondertekent, en hoe zij wordt gecontroleerd. Per variant staat wat de implementatie vraagt, en welke beveiligingsrisico's het grootst lijken ([bijlage C](#bijlage-c-beveiligingsrisicos)).
 
-Voor alle varianten gelden daarnaast deze risico's: het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden (S2); deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd (S3); en de uitwisseling zelf wordt niet ondertekend zoals NEN 7512, 6.2.7, beschrijft (S4).
+Voor alle varianten gelden daarnaast deze risico's: het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden (S2); deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd (S3); en de uitwisseling zelf wordt niet ondertekend (S4).
 
 ## M0: Dienstverlener gebruikt de UZI-sleutel van de zorgaanbieder
 De zorgaanbieder laat de sleutel van zijn UZI-servercertificaat beheren door de dienstverlener, die daarmee optreedt *als* de zorgaanbieder. Dit is de opzet uit de notitie; de meeste reacties maken er bezwaar tegen.
@@ -371,8 +415,8 @@ De zorgaanbieder laat de sleutel van zijn UZI-servercertificaat beheren door de 
 - *Grootste risico's:* de grootste blootstelling van alle varianten. De dienstverlener handelt met alle rechten van de zorgaanbieder en is niet van hem te onderscheiden (S5). Een compromittering raakt al zijn zorgaanbieders, en alleen intrekking van het UZI-certificaat stopt misbruik (S6, S7).
 
 ## M1: Vertrouwde dienstverlener geeft machtigingen uit
-De zorgaanbieder wijst in de LRZa één vertrouwde dienstverlener aan, of vult die rol zelf in. Die beheert het UZI-servercertificaat van de zorgaanbieder, en geeft daarmee machtigingen uit aan zichzelf en aan de andere dienstverleners van de zorgaanbieder, na goedkeuring door de zorgaanbieder. De machtiging is een SD-JWT VC, gebonden aan een sleutel van de client (`cnf`). De client presenteert haar bij elk tokenrequest in een token exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)), met een *key binding*-JWT die ook het RAR-object ondertekent.
-- *Implementatie:* de vertrouwde dienstverlener bouwt de uitgifte: OpenID4VCI, goedkeuring, ondertekening met de sleutel in een HSM, en vernieuwing. Elke client moet de machtiging kunnen ophalen, vernieuwen en presenteren. Elke authorization server heeft een uitbreiding voor de token exchange nodig: in Keycloak op een intern uitbreidingspunt, in Duende IdentityServer met een gedocumenteerde *extension grant*, en in de Nuts-node in de node zelf.
+De zorgaanbieder wijst ten minste één vertrouwde dienstverlener aan, of vult die rol zelf in. Die beheert het UZI-servercertificaat van de zorgaanbieder, en geeft daarmee machtigingen uit aan zichzelf en aan de andere dienstverleners van de zorgaanbieder, na goedkeuring door de zorgaanbieder. De machtiging is een SD-JWT VC, gebonden aan een sleutel van de client (`cnf`). De client presenteert haar bij elk tokenrequest in een token exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)), met een *key binding*-JWT die ook het RAR-object ondertekent.
+- *Implementatie:* de vertrouwde dienstverlener bouwt de uitgifte: OpenID4VCI, goedkeuring, ondertekening met de UZI-sleutel, en vernieuwing. Elke client moet de machtiging kunnen ophalen, vernieuwen en presenteren. Elke authorization server heeft een uitbreiding voor de token exchange nodig: in Keycloak op een intern uitbreidingspunt, in Duende IdentityServer met een gedocumenteerde *extension grant*, en in de Nuts-node in de node zelf.
 - *Grootste risico's:* de vertrouwde dienstverlener kan zichzelf en anderen machtigen, en beheert ook de goedkeuring (S6, S7, S8), tenzij de zorgaanbieder de rol zelf invult. Een machtiging kan niet worden ingetrokken voordat zij verloopt (S1). Opnieuw binden aan een nieuwe sleutel kan de tweede sleutel omzeilen (S9). Onduidelijk is of de sleutelhouder een vertrouwensdienstverlener onder eIDAS wordt (S10). Een compromittering van de LRZa kan geen geldige machtigingen maken.
 
 ## M2: Erkende uitgevers geven machtigingen uit
@@ -406,7 +450,7 @@ De machtiging wordt uitgegeven zoals bij M1, maar zonder sleutel van de client. 
 - *Grootste risico's:* de machtiging is voor alle deelnemers leesbaar. Mist een authorization server de controle van `may_act.sub` tegen het certificaat, dan kan elke deelnemer haar gebruiken (S20). De TLS-sleutel is de enige sleutel die de machtigingen beschermt (S21). Daarnaast de risico's van het Client ID Metadata Document (zie R5), en die van M1 rond de sleutelhouder en de intrekking (S6, S7, S8, S1).
 
 ## M8: Machtiging in een JWT bearer grant (voorstel)
-De machtiging wordt uitgegeven zoals bij M7, zonder sleutel van de client. De client vraagt een token aan met de JWT bearer grant ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523)), met een assertion die hij bij elk tokenrequest ondertekent met de sleutel van zijn certificaat, zoals bij UDAP het *software statement* ([R1](#r1-registratie-volgens-udap)). De assertion bevat de machtiging, ongewijzigd als SD-JWT VC, en de velden van het RAR-object uit de notitie: de zorgaanbieder (`sub`), het doel en de bron. Zij geldt voor één authorization server (`aud`), hoogstens 5 minuten en één keer (`jti`), en heeft het type `nl-gf-jwt-bearer-assertion+jwt` (`typ`). Andere attestaties, ook attestaties die per verzoek verschillen, kunnen in dezelfde assertion mee. De client heeft één Client ID Metadata Document per dienstverlener, zonder machtiging ([R5](#r5-client-id-metadata-document-voorstel)). De resource server van de bron publiceert de machtiging van zijn zorgaanbieder in zijn *Protected Resource Metadata*, zoals bij M7. Zie het [voorstel](#voorstel-machtiging-in-het-tokenrequest-en-de-protected-resource-metadata).
+De machtiging wordt uitgegeven zoals bij M7, zonder sleutel van de client. De client vraagt een token aan met de JWT bearer grant ([RFC 7523](https://www.rfc-editor.org/rfc/rfc7523)), met een assertion die hij bij elk tokenrequest ondertekent met de sleutel van zijn certificaat, zoals bij UDAP het *software statement* ([R1](#r1-registratie-volgens-udap)). De assertion bevat de machtiging, ongewijzigd als SD-JWT VC, de zorgaanbieder (`sub`), en het RAR-object uit de notitie met het doel en de bron. Zij geldt voor één authorization server (`aud`), hoogstens 5 minuten en één keer (`jti`), en heeft het type `nl-gf-jwt-bearer-assertion+jwt` (`typ`). Andere attestaties, ook attestaties die per verzoek verschillen, kunnen in dezelfde assertion mee. De client heeft één Client ID Metadata Document per dienstverlener, zonder machtiging ([R5](#r5-client-id-metadata-document-voorstel)). De resource server van de bron publiceert de machtiging van zijn zorgaanbieder in zijn *Protected Resource Metadata*, zoals bij M7. Zie het [voorstel](#voorstel-machtiging-in-het-tokenrequest-en-de-protected-resource-metadata).
 - *Implementatie:* de uitgifte zoals bij M1, zonder sleutelbinding. De beheerder van de client publiceert één document; de client ondertekent per verzoek een JWT met een JOSE-bibliotheek. Elke authorization server heeft maatwerk nodig voor het laden van de client uit het document, en een eigen grant die de assertion en de machtiging controleert en gebruikte `jti`-waarden bijhoudt ([Keycloak en Duende](#wat-er-moet-gebeuren-in-keycloak-en-duende-identityserver)).
 - *Grootste risico's:* zoals bij M7, maar kleiner, omdat de machtiging niet openbaar is. Alleen de authorization servers waar de client een token aanvraagt, zien haar; mist een andere authorization server de controle van `may_act.sub`, dan kan zo'n server haar daar gebruiken (S20). De TLS-sleutel is de enige sleutel die de machtigingen beschermt, en ondertekent ook de assertion (S21). Het verzoek is ondertekend, wat S4 deels ondervangt. Daarnaast de risico's van het Client ID Metadata Document, in mindere mate (zie R5), en die van M1 rond de sleutelhouder en de intrekking (S6, S7, S8, S1).
 
@@ -430,7 +474,7 @@ Geen variant is dus volledig zonder centrale afhankelijkheid. Bij M1, M2 en M6 t
 Alle opties gebruiken dezelfde eisen aan certificaten: alleen servercertificaten van een vastgelegde lijst van uitgevende CA's (PKIoverheid en UZI), met de *extended key usage* `clientAuth`, en geen persoonsgebonden certificaten. De beveiligingsreview gaat uit van R2a, en beoordeelt R5 als onderdeel van M7; R1, R2b, R3a, R3b en R4 zijn daar niet beoordeeld.
 
 ## R1: Registratie volgens UDAP
-De client registreert zich bij elke authorization server met Dynamic Client Registration ([RFC 7591](https://www.rfc-editor.org/rfc/rfc7591)), volgens het HL7 [UDAP Security IG](https://hl7.org/fhir/us/udap-security/STU2/). Hij ondertekent een *software statement* met de sleutel van zijn certificaat, en krijgt een `client_id`. UDAP wordt gebruikt in de Verenigde Staten, onder meer in TEFCA. Een *software statement* is niet nodig voor de logging volgens NEN 7513, en niet voor de conformiteit van de software, die de EHDS bij de fabrikant legt ([Verordening (EU) 2025/327](https://eur-lex.europa.eu/eli/reg/2025/327/oj), art. 39 lid 5).
+De client registreert zich bij elke authorization server met Dynamic Client Registration ([RFC 7591](https://www.rfc-editor.org/rfc/rfc7591)), volgens het HL7 [UDAP Security IG](https://hl7.org/fhir/us/udap-security/STU2/). Hij ondertekent een *software statement* met de sleutel van zijn certificaat, en krijgt een `client_id`. UDAP wordt gebruikt in de Verenigde Staten, onder meer in TEFCA. Een *software statement* is niet nodig voor de logging, en niet voor de conformiteit van de software, die de EHDS bij de fabrikant legt ([Verordening (EU) 2025/327](https://eur-lex.europa.eu/eli/reg/2025/327/oj), art. 39 lid 5).
 - *Implementatie:* UDAP is in Keycloak en Duende IdentityServer niet ingebouwd. Elke client bouwt de registratie, bewaart per authorization server een `client_id`, en registreert opnieuw bij certificaatvernieuwing.
 - *Grootste risico's:* niet beoordeeld in de beveiligingsreview.
 
@@ -465,33 +509,152 @@ Er is geen registratie: de `client_id` is een HTTPS-URL op een domein van de beh
 - *Grootste risico's:* de beheerder van de client bepaalt het document en de URL zelf (S23). Het ophalen kan worden misbruikt voor *server-side request forgery* (S24), en het domein van de client komt in het kritieke pad van het tokenrequest (S25). De kwetsbare vergelijking op *subject DN* (S26) vervalt met `tls_client_auth_san_dns`. Met de machtiging in het document komen daar S20 en S21 bij (zie M7). Bij M8 wordt het ene document zelden opgehaald, wat S24 en S25 beperkt.
 
 # Bijlage C: Beveiligingsrisico's
-De risico's en hun ernst komen uit een beveiligingsreview van de varianten. Die review is met een AI-assistent opgesteld en is nog niet door beveiligingsexperts beoordeeld; de ernst is een eerste inschatting. De kolom *Voorstel* geeft aan of het risico geldt voor het [voorstel](#voorstel-machtiging-in-het-tokenrequest-en-de-protected-resource-metadata) (M8 met R5).
+Deze bijlage koppelt elke dreiging aan een maatregel in [GF Authentication](./authentication.html) en aan het restrisico. De dreigingen komen uit gepubliceerde lijsten, zodat na te gaan is welke dreigingen zijn bekeken:
+- de beveiligingsparagrafen van de gebruikte standaarden ([C.1](#c1-dreigingen-uit-de-standaarden));
+- STRIDE per transactie ([C.2](#c2-stride-per-transactie));
+- de OWASP API Security Top 10 (2023) ([C.3](#c3-owasp-api-security-top-10-2023));
+- het FAPI 2.0 Attacker Model, zonder de aanvallers op browserflows ([C.4](#c4-fapi-20-attacker-model)).
+
+[C.5](#c5-risicos-van-dit-stelsel) bevat de risico's die specifiek zijn voor dit stelsel, met hun S-nummer, ook voor de varianten die niet zijn gekozen. [C.6](#c6-restrisicos) vat de restrisico's samen, en [C.7](#c7-testsuite) beschrijft hoe de testsuite de maatregelen controleert.
+
+Verwijzingen naar stappen gebruiken deze afkortingen:
+- *AS n*: stap n van [Validation by the authorization server][as];
+- *RS n*: stap n van [Validation by the resource server][rs];
+- *Bron*: [Verification of the source][bron].
+
+*n.v.t.* betekent dat de dreiging niet kan optreden, omdat het voorstel het onderdeel niet gebruikt.
+
+## C.1 Dreigingen uit de standaarden
+
+| Bron | Dreiging | Maatregel | Restrisico |
+|---|---|---|---|
+| RFC 9700, §4.4 | *Mix-up*: de client stuurt zijn verzoek naar een authorization server van een aanvaller. | De client gebruikt alleen een authorization server die de resource aanwijst ([Bron][bron]). De assertion geldt voor één authorization server (`aud`, [AS 4][as]). | Die authorization server ziet de machtiging; zie S20. |
+| RFC 9700, §4.9 en §4.10 | Een access token lekt bij de resource server, of wordt gestolen en elders gebruikt. | Het token is gebonden aan het clientcertificaat (`cnf.x5t#S256`, [RS 2][rs]) en 5 minuten geldig. | Geen, zolang de sleutel van het certificaat geheim blijft; zie S21. |
+| RFC 9700, §4.13; RFC 8705, §7 | Een TLS-terminerende proxy geeft het clientcertificaat onveilig door aan de achterliggende systemen. | Valt onder de [verantwoordelijkheid van de zorgaanbieder][ver]. | De specificatie stelt geen eis. Elke partij draagt het risico van haar eigen inrichting. |
+| RFC 9700, §4.14 | Een refresh token wordt gestolen. | Er zijn geen refresh tokens ([GF-AUTN-4][autn4]). | Geen. |
+| RFC 9700, §4.15 | Een client kiest een identificatie die wordt verward met die van een zorgaanbieder. | `sub` komt uit de machtiging, die met het UZI-certificaat is ondertekend ([AS 5][as], [AS 8][as]). `client_id` is een URL; `sub` begint met `URA-`. | Geen. |
+| RFC 9700, overige paragrafen van §4 | Aanvallen via redirects, de browser, de autorisatiecode, PKCE of *clickjacking*. | n.v.t.: het voorstel gebruikt geen autorisatie-endpoint en geen browser. | Geen. |
+| RFC 8725, §2.1 | Een ontbrekende of zwakke handtekening, of verwisseling van algoritmen (`none`, of HS256 met een publieke sleutel). | De assertion gebruikt PS256 of ES256 ([AS 4][as]). Voor de machtiging gelden dezelfde algoritmen, met een geldig UZI-servercertificaat ([AS 5][as]). | Geen. |
+| RFC 8725, §2.2 tot en met §2.5 | Zwakke symmetrische sleutels en zwakke versleuteling. | n.v.t.: alleen asymmetrische handtekeningen, geen versleutelde JWT's. | Geen. |
+| RFC 8725, §2.6 | Verschillende JSON-coderingen van hetzelfde token. | De verificateur controleert de handtekening over de ontvangen bytes. | Laag. |
+| RFC 8725, §2.7 | Een token voor de ene ontvanger wordt bij een andere gebruikt. | De assertion heeft `aud` ([AS 4][as]). De machtiging heeft geen `aud`, maar is gebonden aan de dienstverlener (`may_act.sub`, [AS 7][as]). | Zie S20. |
+| RFC 8725, §2.8 | Een JWT van de ene soort wordt als een andere soort aangeboden. | Expliciete typering: `nl-gf-jwt-bearer-assertion+jwt` ([AS 4][as]), en `dc+sd-jwt` met een vaste `vct` ([AS 6][as]). | Geen. |
+| RFC 8725, §2.9 | De verificateur haalt sleutels op via `jku`, `x5u` of `iss`. | Sleutels komen alleen uit `x5c` en ketenen naar de vertrouwenslijst. Een header met `jku`, `x5u` of `jwk` wordt afgewezen ([AS 4][as], [AS 5][as]), en een machtiging met `iss` ook ([AS 6][as]). | Geen. |
+| RFC 7521, §8.1 | Een vervalste assertion. | De assertion is ondertekend met de sleutel van het clientcertificaat van de verbinding ([AS 4][as]). | Geen. |
+| RFC 7521, §8.2; RFC 7523, §3 | Een gestolen of opnieuw gebruikte assertion. | mTLS met hetzelfde certificaat ([AS 1][as], [AS 4][as]); `aud`; `iat` niet in de toekomst; `exp` hoogstens 5 minuten na `iat`; `jti` maar één keer bruikbaar. | Geen. |
+| RFC 7521, §8.3 | Persoonsgegevens in de assertion. | De assertion bevat alleen gegevens van organisaties, geen gegevens van patiënten of zorgverleners. | Geen. |
+| RFC 8705, §7 | Een gebonden token wordt ongeldig bij een nieuw certificaat. | Het token is 5 minuten geldig. De machtiging is gebonden aan de identificatie van de dienstverlener, niet aan één certificaat. | Geen. |
+| RFC 8705, §7 | Een aanvaller laat een certificaat maken met de naam van een ander, of misbruikt fouten bij het verwerken van certificaten. | Alleen certificaten van de [vertrouwenslijst][tr]; vaste [afleidingsregels][afl]; vergelijking op `tls_client_auth_san_dns` ([AS 3][as]). | Afhankelijk van de X.509-bibliotheek; zie S22. |
+| RFC 9901 | Gemanipuleerde of weggelaten *disclosures*. | De machtiging heeft geen selectief vrij te geven claims en wordt zonder disclosures aangeboden ([AS 4][as]). | Geen. |
+| RFC 9901 | Een machtiging wordt door een andere houder aangeboden. | Geen *key binding JWT*, maar binding via `may_act.sub` aan het clientcertificaat ([AS 7][as]); de assertion is met de sleutel van dat certificaat ondertekend. | Zie S20. |
+| SD-JWT VC | De verificateur vertrouwt een verkeerde uitgever, of haalt sleutels of metadata op bij de uitgever. | De uitgever is de zorgaanbieder in het UZI-certificaat, en `sub` is gelijk aan het URA daarin ([AS 5][as]). Geen `iss` en geen ophalen ([AS 6][as]). | Geen. |
+| SD-JWT VC | Een machtiging blijft geldig nadat de goedkeuring is ingetrokken. | Geldigheid van hoogstens 3 maanden ([AS 6][as]); geen statuslijst. | Ja; zie S1. |
+| Client ID Metadata Document | Het ophalen van het document wordt misbruikt om interne adressen te bereiken (*server-side request forgery*). | Pas ophalen na [AS 1][as] en [AS 2][as]; geen redirects, geen speciale IP-adressen, hoogstens 32 kB ([GF-AUTN-6][autn6]). | Laag; zie S24. |
+| Client ID Metadata Document | Een client gebruikt het document van een andere client. | De host van de `client_id` staat in het clientcertificaat ([AS 2][as], [AS 3][as]). | Geen. |
+| Client ID Metadata Document | Het domein van de client is niet bereikbaar. | Cache tot 24 uur; bij een tijdelijke storing hoogstens 24 uur verder gebruiken ([GF-AUTN-6][autn6]). | Laag; zie S25. |
+| Client ID Metadata Document | Een kwaadwillende `redirect_uri` in het document. | n.v.t.: geen autorisatie-endpoint. | Geen. |
+
+## C.2 STRIDE per transactie
+
+STRIDE staat voor *Spoofing* (zich voordoen als een ander), *Tampering* (wijzigen), *Repudiation* (ontkennen), *Information disclosure* (lekken), *Denial of service* (onbeschikbaar maken) en *Elevation of privilege* (meer rechten krijgen).
+
+| Transactie | S | T | R | I | D | E |
+|---|---|---|---|---|---|---|
+| GF-AUTN-1: Mandate Issuer vinden | Een vals `Endpoint` in de LRZa: registratie volgens GF Adressering; de publicatie geeft geen rechten. | Idem. | n.v.t.: alleen lezen. | Openbare gegevens van organisaties. | Lokale replica. | n.v.t.: een machtiging vraagt goedkeuring van de zorgaanbieder. |
+| GF-AUTN-2: Machtiging aanvragen | mTLS; identificatie uit het certificaat ([afleiding][afl]). | De machtiging is ondertekend. | Goedkeuring door de zorgaanbieder; vastlegging is aan de zorgaanbieder. | Geen persoonsgegevens. | Verlenging ruim voor het verlopen ([Validity and renewal][geldig]). | Goedkeuring door de zorgaanbieder; zie S8, S11 en S19. |
+| GF-AUTN-3: Metadata van de resource (BgZ en eOverdracht) | De client controleert het servercertificaat en de machtiging van de bron ([Bron][bron]). | `resource` is gelijk aan de URL ([BgZ en eOverdracht][bgz3]). | n.v.t.: alleen lezen. | De lijst van zorgaanbieders is zichtbaar voor deelnemers met mTLS ([privacy][bgzpriv]). | Cache tot 24 uur; document per zorgaanbieder. | n.v.t. |
+| GF-AUTN-4: Access token aanvragen | [AS 1][as] tot en met [AS 3][as] en [AS 7][as]. | De assertion is ondertekend ([AS 4][as]). | De authorization server logt de assertion ([Logging][log]). | Alleen over mTLS; geen persoonsgegevens. | Geen grenzen voor het aantal verzoeken; zie C.6. | De code `<purpose>-user` is vereist ([AS 8][as]). |
+| GF-AUTN-5: Resource opvragen | [RS 2][rs] en [RS 3][rs]. | mTLS. | De resource server logt elk verzoek ([Logging][log]). | [RS 4][rs] en de regels van de use case. | Geen grenzen voor het aantal verzoeken; zie C.6. | [RS 4][rs]. |
+| GF-AUTN-6: Clientmetadata ophalen | Servercertificaat van de client ([GF-AUTN-6][autn6]). | mTLS. | n.v.t.: alleen lezen. | Geen gevoelige gegevens. | Cache, 32 kB, geen redirects. | n.v.t. |
+
+## C.3 OWASP API Security Top 10 (2023)
+
+| Nr. | Dreiging | Maatregel | Restrisico |
+|---|---|---|---|
+| API1 | *Broken Object Level Authorization*: een client vraagt gegevens op van een andere zorgaanbieder of patiënt. | De resource server beslist op `sub`, `purpose_of_use` en de regels van de use case ([RS 4][rs]). Voor BgZ en eOverdracht alleen gegevens uit een notificatie aan `sub` ([BgZ en eOverdracht][bgzauth]). | De uitvoering ligt bij de resource server, buiten GF Authentication. |
+| API2 | *Broken Authentication*. | mTLS met vertrouwenslijst, assertion en machtiging ([AS 1][as] tot en met [AS 8][as]). | Zie C.1. |
+| API3 | *Broken Object Property Level Authorization*: te veel velden in een antwoord. | n.v.t. voor GF Authentication: volgt uit de informatiestandaard. | Buiten deze specificatie. |
+| API4 | *Unrestricted Resource Consumption*: overbelasting door veel verzoeken of grote documenten. | Grenzen voor het Client ID Metadata Document ([GF-AUTN-6][autn6]). | Ja; grenzen voor het aantal verzoeken zijn aan de partijen. |
+| API5 | *Broken Function Level Authorization*: een client voert een functie uit waarvoor hij niet is gemachtigd. | Machtigingscode per doel en rol ([AS 8][as]); de client controleert de rol `custodian` van de bron ([Bron][bron]). | Fijnere rechten volgen uit de use case. |
+| API6 | *Unrestricted Access to Sensitive Business Flows*: misbruik van een proces, zoals massaal notificaties sturen. | Geen in GF Authentication. | Ja; zie S27. |
+| API7 | *Server Side Request Forgery*. | Authorization server: de regels van [GF-AUTN-6][autn6]. Client: haalt de metadata op bij een URL uit de notificatie, alleen over mTLS met een servercertificaat van de vertrouwenslijst. | Laag; zie C.6. |
+| API8 | *Security Misconfiguration*, zoals het gebruik van de standaard trust store. | Een eigen [vertrouwenslijst][tr] in plaats van die van het systeem; afwijzen als de intrekkingsstatus onbekend is ([Error handling][err]). | De testsuite controleert dit. |
+| API9 | *Improper Inventory Management*: oude of onbekende versies van een API. | Versies staan in `nl-gis-v1`, `vct` en `typ`. | Buiten deze specificatie voor de FHIR-API zelf. |
+| API10 | *Unsafe Consumption of APIs*: een partij vertrouwt antwoorden van een andere API te snel. | De client controleert de metadata en de machtiging van de bron ([Bron][bron]); de authorization server controleert het Client ID Metadata Document ([AS 3][as]). | Geen. |
+
+## C.4 FAPI 2.0 Attacker Model
+
+Het [FAPI 2.0 Attacker Model](https://openid.net/specs/fapi-attacker-model-2_0-final.html) beschrijft aanvallers op OAuth. De aanvallers op browserflows zijn niet van toepassing: het voorstel heeft geen browserflow.
+
+| Aanvaller | Maatregel | Restrisico |
+|---|---|---|
+| Webaanvaller die deelneemt met een eigen geldig certificaat en eigen machtigingen | Hij kan alleen handelen voor zorgaanbieders die hem hebben gemachtigd ([AS 7][as], [AS 8][as]). | Zie S11 en S27. |
+| Aanvaller die een authorization server beheert | Een assertion geldt alleen voor die authorization server (`aud`); een machtiging is alleen bruikbaar met het certificaat van de gemachtigde ([AS 7][as]); de client gebruikt alleen een aangewezen authorization server ([Bron][bron]). | Hij ziet de machtiging; zie S20. |
+| Netwerkaanvaller | mTLS met een vertrouwenslijst; tokens zijn gebonden aan het certificaat. | Geen. |
+| Aanvaller die autorisatieverzoeken of -antwoorden leest of wijzigt | n.v.t.: geen browserflow. | Geen. |
+| Aanvaller die tokenverzoeken leest, bijvoorbeeld in logbestanden | Zonder de sleutel van het certificaat is de assertion niet bruikbaar; `jti` en een geldigheid van 5 minuten. | Hij ziet de machtiging; zie S20. |
+| Aanvaller die verzoeken aan de resource server leest | Het token is gebonden aan het certificaat ([RS 2][rs]). | Geen. |
+
+## C.5 Risico's van dit stelsel
+
+De ernst is een inschatting. De kolom *Voorstel* geeft aan of het risico geldt voor het [voorstel](#voorstel-machtiging-in-het-tokenrequest-en-de-protected-resource-metadata) (M8 met R5), en met welke maatregel.
 
 | Nr. | Risico | Ernst | Voorstel |
 |---|---|---|---|
-| S1 | Een machtiging kan niet worden ingetrokken voordat zij verloopt. | Middel bij 3 maanden; hoog bij 2 jaar, laag bij minuten | Ja; bewuste keuze ([GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen)) |
-| S2 | Het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden: bedient een authorization server meerdere zorgaanbieders, dan kan een token voor de ene bij de andere worden gebruikt. | Middel | Ja |
-| S3 | Deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd (NEN 7512, 6.1.11). | Middel | Ja |
-| S4 | De uitwisseling wordt niet ondertekend zoals NEN 7512, 6.2.7, beschrijft. | Afhankelijk van de risicoklasse | Deels; het tokenrequest is ondertekend, de gegevens niet |
-| S5 | Het uitvoerende systeem is niet te onderscheiden van de zorgaanbieder. | Middel | Nee; eigen certificaat en `may_act.sub` |
-| S6 | Elke houder van een UZI-servercertificaat met het URA van de zorgaanbieder kan namens hem ondertekenen. | Middel | Ja |
-| S7 | De zorgaanbieder kan de sleutelhouder niet buitensluiten zonder zijn UZI-certificaat in te trekken. | Middel | Ja, tenzij de zorgaanbieder zelf de vertrouwde dienstverlener is |
+| S1 | Een machtiging kan niet worden ingetrokken voordat zij verloopt. | Middel bij 3 maanden; hoog bij 2 jaar, laag bij minuten | Ja; bewuste keuze ([GF-AUTN-ADR-5](#gf-autn-adr-5-intrekken-of-laten-verlopen)). Een certificaat intrekken werkt wel ([Validity and renewal][geldig]). |
+| S2 | Het access token is niet expliciet aan de bronhoudende zorgaanbieder gebonden: bedient een authorization server meerdere zorgaanbieders, dan kan een token voor de ene bij de andere worden gebruikt. | Middel | Deels; de assertion noemt de bron (`locations_organization_id`, [AS 8][as]) en het token legt dat vast. Voor BgZ en eOverdracht beperkt de notificatie de toegang ([BgZ en eOverdracht][bgzauth]). |
+| S3 | Deelname aan het afsprakenstelsel wordt niet vóór elke uitwisseling gecontroleerd. | Middel | Ja |
+| S4 | De uitwisseling zelf wordt niet ondertekend. | Afhankelijk van de risicoklasse | Deels; het tokenrequest is ondertekend, de gegevens niet. |
+| S5 | Het uitvoerende systeem is niet te onderscheiden van de zorgaanbieder. | Middel | Nee; eigen certificaat en `may_act.sub` ([AS 7][as]). |
+| S6 | Elke houder van een UZI-servercertificaat met het URA van de zorgaanbieder kan namens hem ondertekenen. | Middel | Ja; [verantwoordelijkheid van de zorgaanbieder][ver]. |
+| S7 | De zorgaanbieder kan de sleutelhouder niet buitensluiten zonder zijn UZI-certificaat in te trekken. | Middel | Ja, tenzij de zorgaanbieder zelf de vertrouwde dienstverlener is. |
 | S8 | De goedkeuring door de zorgaanbieder kan worden misleid (*phishing*) of verkeerd begrepen. | Middel | Ja |
-| S9 | Opnieuw binden aan een nieuwe sleutel kan de tweede sleutel omzeilen. | Middel | Nee; geen sleutelbinding |
-| S10 | Uitgevers of sleutelhouders kunnen vertrouwensdienstverlener zijn onder eIDAS en NIS2, met de bijbehorende verplichtingen. | Middel | Onduidelijk, zoals bij M1 |
-| S11 | Een uitgever kan voor elke zorgaanbieder geldige machtigingen maken. | Hoog | Deels; alleen de vertrouwde dienstverlener, voor de eigen zorgaanbieders |
+| S9 | Opnieuw binden aan een nieuwe sleutel kan de tweede sleutel omzeilen. | Middel | Nee; geen sleutelbinding. |
+| S10 | Uitgevers of sleutelhouders kunnen vertrouwensdienstverlener zijn onder eIDAS en NIS2, met de bijbehorende verplichtingen. | Middel | Onduidelijk, zoals bij M1. |
+| S11 | Een uitgever kan voor elke zorgaanbieder geldige machtigingen maken. | Hoog | Deels; alleen de vertrouwde dienstverlener, voor de eigen zorgaanbieders ([AS 5][as]). |
 | S12 | Via ketenmachtiging, in eHerkenning of in een wallet, kan een dienstverlener zichzelf machtigen. | Middel | Nee |
 | S13 | Machtigingen in de LRZa zijn niet ondertekend. | Middel | Nee |
-| S14 | Dienstverleners kunnen identificaties in de LRZa wijzigen waarop machtigingen steunen. | Middel | Deels; alleen bij het vinden van endpoints |
-| S15 | Een ingetrokken machtiging kan herleven door een oude handtekening opnieuw te gebruiken. | Hoog | Nee; de machtiging verloopt (zie S1) |
-| S16 | De handtekening bindt het URA van de zorgaanbieder en de identiteit van de dienstverlener niet. | Hoog | Nee; `sub` en `may_act.sub` zijn ondertekend |
+| S14 | Dienstverleners kunnen identificaties in de LRZa wijzigen waarop machtigingen steunen. | Middel | Nee; de LRZa wijst alleen de Mandate Issuer aan en geeft geen rechten. Een authorization server uit de LRZa wordt alleen gebruikt als de resource hem aanwijst ([BgZ en eOverdracht][bgzas]). |
+| S15 | Een ingetrokken machtiging kan herleven door een oude handtekening opnieuw te gebruiken. | Hoog | Nee; de machtiging verloopt (zie S1). |
+| S16 | De handtekening bindt het URA van de zorgaanbieder en de identiteit van de dienstverlener niet. | Hoog | Nee; `sub` en `may_act.sub` zijn ondertekend ([AS 5][as], [AS 7][as]). |
 | S17 | Controleurs kunnen terugvallen op niet-ondertekende machtigingen. | Hoog | Nee |
 | S18 | De koppeling van KvK-nummer of EUID aan het URA loopt via wijzigbare LRZa-gegevens. | Hoog | Nee |
-| S19 | Wat wordt ondertekend of verzegeld, kan afwijken van wat werd getoond. | Hoog | Deels; de vertrouwde dienstverlener beheert goedkeuring én ondertekening |
-| S20 | Een gepubliceerde machtiging kan door elke deelnemer worden gebruikt als een authorization server de controle van `may_act.sub` tegen het certificaat mist. | Hoog | Deels; de machtiging is niet openbaar, maar de authorization servers waar de client een token aanvraagt, zien haar |
-| S21 | De sleutel van het clientcertificaat is de enige sleutel die de machtigingen beschermt. | Middel | Ja; deze sleutel ondertekent ook de assertion |
-| S22 | De afleiding van de client-id uit het certificaat is niet volledig vastgelegd, en alle certificaten van een organisatie leveren dezelfde client-id. | Laag | Deels; de `client_id` is de URL van het document, maar `may_act.sub` is voor alle certificaten van een organisatie gelijk |
-| S23 | Het Client ID Metadata Document en de URL ervan staan onder controle van de beheerder van de client. | Laag | Ja |
-| S24 | Het ophalen van clientmetadata kan worden misbruikt voor *server-side request forgery*. | Laag | Ja, beperkt; ophalen pas na controle van certificaat en host, en zelden |
-| S25 | Het domein van de client komt in het kritieke pad van het tokenrequest. | Laag | Ja, beperkt; één document per dienstverlener, met een cache tot 24 uur |
-| S26 | De vergelijking op *subject DN* is kwetsbaar door verschillen in schrijfwijze en bij certificaatvernieuwing. | Laag | Nee; `tls_client_auth_san_dns` |
+| S19 | Wat wordt ondertekend of verzegeld, kan afwijken van wat werd getoond. | Hoog | Deels; de vertrouwde dienstverlener beheert goedkeuring én ondertekening. |
+| S20 | Een machtiging kan door een andere deelnemer worden gebruikt als een authorization server de controle van `may_act.sub` tegen het certificaat mist. | Hoog | Deels; [AS 7][as]. De machtiging van de bron is zichtbaar voor deelnemers met mTLS, die van de client voor de authorization servers waar hij een token aanvraagt. De testsuite test [AS 7][as]. |
+| S21 | De sleutel van het clientcertificaat is de enige sleutel die de machtigingen beschermt. | Middel | Ja; deze sleutel ondertekent ook de assertion. De bescherming valt onder de [verantwoordelijkheid van de zorgaanbieder][ver]. |
+| S22 | Alle certificaten van een organisatie leveren dezelfde identificatie van de dienstverlener op. | Laag | Ja; bewuste keuze, zodat een machtiging geldig blijft bij een nieuw certificaat. De afleiding staat in [de bijlage van GF Authentication][afl]. |
+| S23 | Het Client ID Metadata Document en de URL ervan staan onder controle van de beheerder van de client. | Laag | Ja; de host moet in het clientcertificaat staan ([AS 2][as]). |
+| S24 | Het ophalen van clientmetadata kan worden misbruikt voor *server-side request forgery*. | Laag | Ja, beperkt; ophalen pas na controle van certificaat en host, en zelden ([GF-AUTN-6][autn6]). |
+| S25 | Het domein van de client komt in het kritieke pad van het tokenrequest. | Laag | Ja, beperkt; één document per dienstverlener, met een cache tot 24 uur ([GF-AUTN-6][autn6]). |
+| S26 | De vergelijking op *subject DN* is kwetsbaar door verschillen in schrijfwijze en bij certificaatvernieuwing. | Laag | Nee; `tls_client_auth_san_dns` ([AS 3][as]). |
+| S27 | Een dienstverlener met een geldige machtiging stuurt valse of ongewenste notificaties. | Laag | Ja. Er lekken geen gegevens: de ontvanger haalt alleen op bij een bron die hij heeft gecontroleerd ([Bron][bron]). De gevolgen zijn hinder, en zonder snelheidsbeperking onbeschikbaarheid. De afzender is herleidbaar via de logging. |
+
+## C.6 Restrisico's
+
+Na de maatregelen blijven deze risico's over:
+- Een machtiging blijft geldig tot zij verloopt (S1).
+- Wie een machtiging ziet, kan haar gebruiken bij een authorization server die [AS 7][as] niet uitvoert (S20).
+- De sleutel van het clientcertificaat beschermt alle machtigingen van een dienstverlener (S21).
+- Valse of ongewenste notificaties (S27), en overbelasting: de specificatie stelt geen grenzen aan het aantal verzoeken.
+- Een notificatie kan een client naar een intern adres sturen. Dat werkt alleen als daar een server draait met een certificaat van de vertrouwenslijst.
+- Een TLS-terminerende proxy valt onder de [verantwoordelijkheid van de zorgaanbieder][ver].
+
+## C.7 Testsuite
+
+Elke maatregel in deze bijlage levert ten minste één negatieve test op: een verzoek dat moet worden afgewezen. Voorbeelden zijn een machtiging van een andere dienstverlener ([AS 7][as]), een assertion met `alg` `none` of met `jku` ([AS 4][as]) en een machtiging als assertion ([AS 4][as]). De afleidingsregels voor de identificatie van de dienstverlener ([bijlage][afl]) krijgen per regel een eigen test. Als eisenlijst gebruikt de testsuite [OWASP ASVS 5.0](https://owasp.org/www-project-application-security-verification-standard/), hoofdstukken V9 (*Self-contained Tokens*), V10 (*OAuth and OIDC*) en V12 (*Secure Communication*).
+
+[as]: ./authentication.html#validation-by-the-authorization-server
+[rs]: ./authentication.html#validation-by-the-resource-server
+[bron]: ./authentication.html#verification-of-the-source
+[ver]: ./authentication.html#responsibility-of-the-care-provider
+[tr]: ./authentication.html#transport-and-certificates
+[afl]: ./authentication.html#appendix-deriving-the-service-provider-identifier
+[geldig]: ./authentication.html#validity-and-renewal
+[log]: ./authentication.html#logging
+[err]: ./authentication.html#error-handling
+[autn4]: ./authentication.html#gf-autn-4-request-access-token
+[autn6]: ./authentication.html#gf-autn-6-get-client-metadata
+[bgz3]: ./authentication-bgz-eoverdracht.html#gf-autn-3-get-protected-resource-metadata
+[bgzpriv]: ./authentication-bgz-eoverdracht.html#privacy-considerations
+[bgzauth]: ./authentication-bgz-eoverdracht.html#authorization-by-the-resource-server
+[bgzas]: ./authentication-bgz-eoverdracht.html#choosing-the-authorization-server
